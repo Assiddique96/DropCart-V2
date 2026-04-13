@@ -1,0 +1,333 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Required for creating a User: id, name, email, image, cart (optional JSON string)
+model User {
+    id         String   @id
+    name       String
+    email      String
+    image      String
+    cart       Json     @default("{}")
+    isBanned   Boolean  @default(false)
+    banReason  String?
+    createdAt  DateTime @default(now())
+
+    // Relations
+    ratings     Rating[]
+    Address     Address[]
+    store       Store?
+    buyerOrders Order[]   @relation("BuyerRelation")
+}
+
+enum ProductOrigin {
+    LOCAL   // ships domestically, ETA 7-10 days, COD available
+    ABROAD  // ships internationally, ETA 20-25 days, no COD
+}
+
+// Required for creating a Product: name, description, mrp, price, images, category, storeId
+model Product {
+    id           String         @id @default(cuid())
+    name         String
+    description  String
+    mrp          Float
+    price        Float
+    images       String[]
+    category     String
+    inStock      Boolean        @default(true)
+    quantity     Int            @default(0)
+    sku          String?
+    tags         String[]       @default([])
+    scheduledAt  DateTime?
+    origin       ProductOrigin  @default(LOCAL)
+    isDigital    Boolean        @default(false)   // true = downloadable product
+    downloadUrl  String?        // secure URL for digital file (set after order paid)
+    storeId      String
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+
+    // Relations
+    store          Store                 @relation(fields: [storeId], references: [id], onDelete: Cascade)
+    orderItems     OrderItem[]
+    rating         Rating[]
+    variantGroups  ProductVariantGroup[]
+}
+
+/**
+ * ProductVariantGroup — defines one axis of variation for a product.
+ * Examples:
+ *   { label: "Color",   type: "IMAGE",  required: true  }
+ *   { label: "Storage", type: "TEXT",   required: true  }
+ *   { label: "Bundle",  type: "TEXT",   required: false }
+ *
+ * type: "TEXT" = text pill selector, "IMAGE" = thumbnail swatch selector
+ */
+model ProductVariantGroup {
+    id        String                @id @default(cuid())
+    productId String
+    label     String                // e.g. "Color", "Storage", "Model", "Bundle"
+    type      VariantGroupType      @default(TEXT)
+    required  Boolean               @default(true)
+    position  Int                   @default(0)     // display order
+
+    product  Product                @relation(fields: [productId], references: [id], onDelete: Cascade)
+    options  ProductVariantOption[]
+
+    @@unique([productId, label])
+}
+
+enum VariantGroupType {
+    TEXT   // shown as text pills / buttons
+    IMAGE  // shown as image swatches with label
+}
+
+/**
+ * ProductVariantOption — one selectable value within a group.
+ * Examples for group "Color":
+ *   { label: "Midnight Black", image: "https://...", priceModifier: 0 }
+ * Examples for group "Storage":
+ *   { label: "128 GB", priceModifier: 0 }
+ *   { label: "256 GB", priceModifier: 5000 }
+ *   { label: "512 GB", priceModifier: 15000 }
+ *
+ * priceModifier: added to the base product price (can be negative for discounts).
+ */
+model ProductVariantOption {
+    id            String  @id @default(cuid())
+    groupId       String
+    label         String  // display text, e.g. "Midnight Black", "256 GB"
+    image         String? // only used when group type = IMAGE
+    sku           String? // optional per-option SKU
+    priceModifier Float   @default(0)  // added to base price
+    quantity      Int     @default(0)
+    inStock       Boolean @default(true)
+    position      Int     @default(0)  // display order
+
+    group ProductVariantGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+    @@unique([groupId, label])
+}
+
+enum OrderStatus {
+    ORDER_PLACED
+    PROCESSING
+    SHIPPED
+    DELIVERED
+    CANCELLED
+}
+
+enum PaymentMethod {
+    COD
+    STRIPE
+    PAYSTACK
+    FLUTTERWAVE
+}
+
+enum PayoutStatus {
+    PENDING
+    PAID
+}
+
+// Required for creating an Order: total, userId, storeId, addressId, isPaid, paymentMethod, isCouponUsed, coupon (JSON), orderItems (nested)
+model Order {
+    id              String        @id @default(cuid())
+    total           Float
+    status          OrderStatus   @default(ORDER_PLACED)
+    userId          String
+    storeId         String
+    addressId       String
+    isPaid          Boolean       @default(false)
+    paymentMethod   PaymentMethod
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+    isCouponUsed    Boolean       @default(false)
+    coupon          Json          @default("{}")
+    notes           String?       // buyer special instructions
+    trackingNumber  String?       // seller-assigned shipping tracking number
+    orderItems      OrderItem[]
+
+    // Relations
+    user    User    @relation("BuyerRelation", fields: [userId], references: [id])
+    store   Store   @relation(fields: [storeId], references: [id])
+    address Address @relation(fields: [addressId], references: [id])
+    refund  Refund?
+}
+
+// Required for creating an OrderItem: orderId, productId, quantity, price
+model OrderItem {
+    orderId            String
+    productId          String
+    quantity           Int
+    price              Float
+    fulfilledQuantity  Int    @default(0) // tracks partial fulfillment
+
+    // Relations
+    order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+    product Product @relation(fields: [productId], references: [id])
+
+    @@id([orderId, productId])
+}
+
+enum RefundStatus {
+    REQUESTED
+    APPROVED
+    REJECTED
+    REFUNDED
+}
+
+// Refund / return requests
+model Refund {
+    id        String       @id @default(cuid())
+    orderId   String       @unique
+    reason    String
+    status    RefundStatus @default(REQUESTED)
+    adminNote String?
+    amount    Float?       // approved refund amount (null until approved)
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
+
+    // Relations
+    order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+// Required for creating a Rating: rating, review, userId, productId
+model Rating {
+    id              String   @id @default(cuid())
+    rating          Int
+    review          String
+    reviewImages    String[] @default([])  // optional buyer-uploaded images
+    userId          String
+    productId       String
+    orderId         String
+    sellerResponse  String?
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+
+    // Relations
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, productId, orderId])
+}
+
+// Required for creating an Address: userId, name, email, street, city, state, zip, country, phone
+model Address {
+    id        String   @id @default(cuid())
+    userId    String
+    name      String
+    email     String
+    street    String
+    city      String
+    state     String
+    zip       String
+    country   String
+    phone     String
+    createdAt DateTime @default(now())
+
+    // Relations
+    Order Order[]
+    user  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum DiscountType {
+    PERCENTAGE  // e.g. 20% off
+    FIXED       // e.g. ₦500 off
+}
+
+// Required for creating a Coupon: code, description, discount, forNewUser, isPublic, expiresAt
+model Coupon {
+    code          String       @id
+    description   String
+    discountType  DiscountType @default(PERCENTAGE)
+    discount      Float        // percentage (0-100) or fixed amount depending on discountType
+    forNewUser    Boolean
+    forMember     Boolean      @default(false)
+    isPublic      Boolean
+    expiresAt     DateTime
+    maxUses       Int?         // null = unlimited
+    usageCount    Int          @default(0)
+    minOrderValue Float?       // null = no minimum
+    storeId       String?      // null = platform-wide; set to restrict to one store
+    createdAt     DateTime     @default(now())
+
+    // Relations
+    store         Store?       @relation(fields: [storeId], references: [id], onDelete: Cascade)
+}
+
+// Required for creating a Store: userId, name, username, email, contact, logo, description, address (optional: , status, isActive)
+// NOTE: One store per user is enforced by @unique on userId. Multi-store support requires removing this constraint.
+model Store {
+    id          String   @id @default(cuid())
+    userId      String   @unique
+    name        String
+    description String
+    username    String   @unique
+    address     String   @default("")  // legacy plain-text (kept for backwards compat)
+    street      String?               // structured address
+    city        String?
+    state       String?
+    zip         String?
+    country     String   @default("Nigeria")
+    status      String   @default("pending")
+    isActive    Boolean  @default(false)
+    logo        String
+    banner      String?
+    email       String
+    contact     String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    Product Product[]
+    Order   Order[]
+    user    User      @relation(fields: [userId], references: [id])
+    Payout  Payout[]
+    Coupon  Coupon[]
+}
+
+// Payout tracking for sellers
+model Payout {
+    id        String       @id @default(cuid())
+    storeId   String
+    amount    Float
+    status    PayoutStatus @default(PENDING)
+    note      String?
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
+
+    // Relations
+    store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+}
+
+/**
+ * Platform-wide configuration — single row, key-value.
+ * Keys in use:
+ *   commission_rate     Float  (e.g. 5.0 = 5%)
+ *   shipping_base_fee   Float  (flat fee for non-members, e.g. 7000)
+ *   shipping_abroad_fee Float  (abroad product shipping fee)
+ *   shipping_free_above Float  (order total above which shipping is free, e.g. 50000)
+ */
+model PlatformConfig {
+    key       String   @id
+    value     String
+    updatedAt DateTime @updatedAt
+}
+
+/**
+ * Audit log — immutable record of admin actions.
+ * Written on every significant admin operation.
+ */
+model AuditLog {
+    id         String   @id @default(cuid())
+    adminId    String   // Clerk user ID of the admin
+    adminEmail String
+    action     String   // e.g. "BAN_USER", "APPROVE_STORE", "RECORD_PAYOUT"
+    targetType String   // e.g. "User", "Store", "Order"
+    targetId   String   // ID of the affected entity
+    details    Json?    // optional metadata (before/after values etc.)
+    createdAt  DateTime @default(now())
+}

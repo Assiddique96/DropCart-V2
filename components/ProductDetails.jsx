@@ -1,0 +1,265 @@
+'use client'
+import { addToCart } from "@/lib/features/cart/cartSlice";
+import toast from "react-hot-toast";
+import { StarIcon, TagIcon, CreditCardIcon, UserIcon, TruckIcon, ClockIcon, BanIcon, CheckIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Counter from "./Counter";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+
+const ProductDetails = ({ product }) => {
+    const productId = product.id;
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦';
+    const isAbroad = product.origin === 'ABROAD';
+
+    const cart = useSelector(state => state.cart.cartItems);
+    const dispatch = useDispatch();
+    const router = useRouter();
+
+    const [mainImage, setMainImage] = useState(product.images[0]);
+    const [selectedOptions, setSelectedOptions] = useState({}) // { [groupLabel]: optionLabel }
+    const variantGroups = product.variantGroups || []
+
+    // Compute effective price based on selected options' price modifiers
+    const priceModifierTotal = variantGroups.reduce((sum, group) => {
+        const selected = group.options?.find(o => o.label === selectedOptions[group.label])
+        return sum + (selected?.priceModifier ?? 0)
+    }, 0)
+    const effectivePrice = product.price + priceModifierTotal
+
+    // All required groups must have a selection before adding to cart
+    const requiredGroups = variantGroups.filter(g => g.required)
+    const allRequiredSelected = requiredGroups.every(g => selectedOptions[g.label])
+    const canAddToCart = variantGroups.length === 0 || allRequiredSelected
+
+    const handleAddToCart = () => {
+        if (!canAddToCart) {
+            const missing = requiredGroups.filter(g => !selectedOptions[g.label]).map(g => g.label)
+            toast.error(`Please select: ${missing.join(", ")}`)
+            return
+        }
+        addToCartHandler()
+    }
+    const [shippingFees, setShippingFees] = useState({ local: 7000, abroad: 15000 });
+
+    useEffect(() => {
+        axios.get('/api/config').then(({ data }) => {
+            setShippingFees({
+                local:  data.shipping_base_fee   ?? 7000,
+                abroad: data.shipping_abroad_fee ?? 15000,
+            });
+        }).catch(() => {});
+    }, []);
+
+    const addToCartHandler = () => dispatch(addToCart({ productId }));
+
+    const avgRating = product.rating?.length
+        ? product.rating.reduce((acc, item) => acc + item.rating, 0) / product.rating.length
+        : 0;
+
+    const shippingFee = isAbroad ? shippingFees.abroad : shippingFees.local;
+    const eta = isAbroad ? '20 – 25 days' : '7 – 10 days';
+
+    return (
+        <div className="flex max-lg:flex-col gap-12">
+            {/* Image gallery */}
+            <div className="flex max-sm:flex-col-reverse gap-3">
+                <div className="flex sm:flex-col gap-3">
+                    {product.images.map((image, index) => (
+                        <div key={index} onClick={() => setMainImage(image)}
+                            className="bg-slate-100 flex items-center justify-center size-16 rounded-lg cursor-pointer hover:ring-2 hover:ring-slate-300 transition">
+                            <Image src={image} className="max-h-12 w-auto" alt="" width={48} height={48} />
+                        </div>
+                    ))}
+                </div>
+                <div className="relative flex justify-center items-center h-80 sm:size-100 bg-slate-100 rounded-lg">
+                    <Image src={mainImage} alt={product.name} width={280} height={280} className="object-contain max-h-72" />
+                    {/* Abroad badge on main image */}
+                    {isAbroad && (
+                        <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
+                            ✈️ Shipped from Abroad
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Product info */}
+            <div className="flex-1">
+                <h1 className="text-3xl font-semibold text-slate-800">{product.name}</h1>
+
+                {/* Ratings */}
+                <div className="flex items-center mt-2 gap-2">
+                    {Array(5).fill('').map((_, i) => (
+                        <StarIcon key={i} size={14} className="text-transparent mt-0.5"
+                            fill={avgRating >= i + 1 ? "#00C950" : "#D1D5DB"} />
+                    ))}
+                    <p className="text-sm text-slate-500">{product.rating?.length || 0} Reviews</p>
+                </div>
+
+                {/* Price */}
+                <div className="flex items-center my-5 gap-3">
+                    <p className="text-2xl font-bold text-slate-800">{currency}{effectivePrice.toLocaleString()}</p>
+                    {product.mrp > product.price && (
+                        <p className="text-lg text-slate-400 line-through">{currency}{product.mrp.toLocaleString()}</p>
+                    )}
+                    {product.mrp > product.price && (
+                        <span className="text-xs font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                            Save {((product.mrp - product.price) / product.mrp * 100).toFixed(0)}%
+                        </span>
+                    )}
+                    {priceModifierTotal !== 0 && (
+                        <span className="text-xs text-slate-400">
+                            (base {currency}{product.price.toLocaleString()} {priceModifierTotal > 0 ? "+" : ""}{priceModifierTotal.toLocaleString()})
+                        </span>
+                    )}
+                </div>
+
+                {/* Variant selectors */}
+                {variantGroups.length > 0 && (
+                    <div className="space-y-4 mb-6">
+                        {variantGroups.map(group => (
+                            <div key={group.id}>
+                                <p className="text-xs font-semibold text-slate-600 mb-2 flex items-center gap-1">
+                                    {group.label}
+                                    {group.required && <span className="text-red-400">*</span>}
+                                    {selectedOptions[group.label] && (
+                                        <span className="font-normal text-slate-400 ml-1">— {selectedOptions[group.label]}</span>
+                                    )}
+                                </p>
+
+                                {group.type === "IMAGE" ? (
+                                    /* Image swatch selector */
+                                    <div className="flex flex-wrap gap-2">
+                                        {group.options?.map(opt => {
+                                            const isSelected = selectedOptions[group.label] === opt.label
+                                            return (
+                                                <button key={opt.id} type="button"
+                                                    onClick={() => setSelectedOptions(p => ({ ...p, [group.label]: opt.label }))}
+                                                    disabled={!opt.inStock}
+                                                    title={opt.label + (opt.priceModifier ? ` (${opt.priceModifier > 0 ? "+" : ""}${opt.priceModifier.toLocaleString()})` : "")}
+                                                    className={`relative group/swatch rounded-lg border-2 overflow-hidden transition ${
+                                                        isSelected ? "border-slate-800 shadow-md" : "border-slate-200 hover:border-slate-400"
+                                                    } ${!opt.inStock ? "opacity-40 cursor-not-allowed" : ""}`}>
+                                                    {opt.image ? (
+                                                        <img src={opt.image} alt={opt.label} className="w-14 h-14 object-cover" />
+                                                    ) : (
+                                                        <div className="w-14 h-14 bg-slate-100 flex items-center justify-center text-xs text-slate-500 p-1 text-center leading-tight">
+                                                            {opt.label}
+                                                        </div>
+                                                    )}
+                                                    {isSelected && (
+                                                        <div className="absolute inset-0 bg-slate-800/20 flex items-center justify-center">
+                                                            <CheckIcon size={18} className="text-white drop-shadow" />
+                                                        </div>
+                                                    )}
+                                                    {!opt.inStock && (
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <div className="w-full h-px bg-red-400 rotate-45 absolute" />
+                                                        </div>
+                                                    )}
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                ) : (
+                                    /* Text pill selector */
+                                    <div className="flex flex-wrap gap-2">
+                                        {group.options?.map(opt => {
+                                            const isSelected = selectedOptions[group.label] === opt.label
+                                            return (
+                                                <button key={opt.id} type="button"
+                                                    onClick={() => setSelectedOptions(p => ({ ...p, [group.label]: opt.label }))}
+                                                    disabled={!opt.inStock}
+                                                    className={`px-3.5 py-1.5 rounded-lg text-sm border-2 font-medium transition ${
+                                                        isSelected
+                                                            ? "border-slate-800 bg-slate-800 text-white"
+                                                            : "border-slate-200 text-slate-600 hover:border-slate-400"
+                                                    } ${!opt.inStock ? "opacity-40 cursor-not-allowed line-through" : ""}`}>
+                                                    {opt.label}
+                                                    {opt.priceModifier !== 0 && (
+                                                        <span className={`text-xs ml-1 ${isSelected ? "text-slate-300" : "text-slate-400"}`}>
+                                                            {opt.priceModifier > 0 ? "+" : ""}{opt.priceModifier.toLocaleString()}
+                                                        </span>
+                                                    )}
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Shipping & delivery info panel */}
+                <div className={`rounded-xl border p-4 mb-6 space-y-2.5 ${isAbroad ? 'border-blue-100 bg-blue-50/60' : 'border-slate-100 bg-slate-50'}`}>
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Shipping & Delivery</p>
+
+                    <div className="flex items-center gap-3 text-sm text-slate-700">
+                        <TruckIcon size={15} className={isAbroad ? 'text-blue-500' : 'text-slate-400'} />
+                        <span>
+                            <span className="font-medium">{isAbroad ? '✈️ Shipped from Abroad' : '🏠 Local Product'}</span>
+                            <span className="text-slate-500"> · {currency}{shippingFee.toLocaleString()} shipping fee</span>
+                        </span>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                        <ClockIcon size={15} className="text-slate-400" />
+                        <span>Estimated delivery: <span className="font-medium">{eta}</span></span>
+                    </div>
+
+                    {isAbroad ? (
+                        <div className="flex items-center gap-3 text-sm text-blue-700">
+                            <BanIcon size={15} className="text-blue-400" />
+                            <span>Cash on Delivery <span className="font-semibold">not available</span> for internationally shipped items</span>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-3 text-sm text-green-700">
+                            <CreditCardIcon size={15} className="text-green-400" />
+                            <span>COD available · Pay online or on delivery</span>
+                        </div>
+                    )}
+                </div>
+
+                {/* Add to cart */}
+                <div className="flex items-end gap-5">
+                    {cart[productId] && (
+                        <div className="flex flex-col gap-2">
+                            <p className="text-sm font-semibold text-slate-700">Quantity</p>
+                            <Counter productId={productId} />
+                        </div>
+                    )}
+                    <button
+                        onClick={() => !cart[productId] ? handleAddToCart() : router.push('/cart')}
+                        className={`px-10 py-3 text-sm font-medium rounded-lg transition active:scale-95 ${
+                            !canAddToCart && !cart[productId]
+                                ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                                : "bg-slate-800 text-white hover:bg-slate-900"
+                        }`}>
+                        {!cart[productId] ? 'Add to Cart' : 'View Cart'}
+                    </button>
+                </div>
+
+                <hr className="border-slate-200 my-5" />
+
+                {/* Trust badges */}
+                <div className="flex flex-col gap-3 text-slate-500 text-sm">
+                    <p className="flex gap-3 items-center"><CreditCardIcon size={15} className="text-slate-400" /> 100% Secured Payment</p>
+                    <p className="flex gap-3 items-center"><UserIcon size={15} className="text-slate-400" /> Trusted by thousands of buyers</p>
+                    {product.tags?.length > 0 && (
+                        <div className="flex items-center gap-2 flex-wrap mt-1">
+                            <TagIcon size={14} className="text-slate-400" />
+                            {product.tags.map(tag => (
+                                <span key={tag} className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{tag}</span>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ProductDetails;
