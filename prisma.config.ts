@@ -9,3 +9,4 @@ export default defineConfig({
     url: env('DIRECT_URL') ?? env('DATABASE_URL'),
   },
 })
+ 

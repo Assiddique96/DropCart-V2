@@ -4,9 +4,6 @@ import prisma from "@/src/db";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Stripe sends raw body - must disable body parsing
-export const config = { api: { bodyParser: false } };
-
 export async function POST(request) {
   const body = await request.text();
   const sig = request.headers.get("stripe-signature");
