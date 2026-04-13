@@ -30,6 +30,14 @@ const OrderSummary = ({ totalPrice, items }) => {
         ? ALL_PAYMENT_METHODS.filter(m => m.id !== 'COD')
         : ALL_PAYMENT_METHODS
 
+    const [paymentMethod, setPaymentMethod] = useState('COD');
+    const [selectedAddress, setSelectedAddress] = useState(null);
+    const [showAddressModal, setShowAddressModal] = useState(false);
+    const [couponCodeInput, setCouponCodeInput] = useState('');
+    const [coupon, setCoupon] = useState('');
+    const [orderNotes, setOrderNotes] = useState('');
+    const [shippingFees, setShippingFees] = useState({ local: 7000, abroad: 15000 });
+
     useEffect(() => {
         if (hasAbroadItems && paymentMethod === 'COD') {
             setPaymentMethod('STRIPE'); // Switch them away from COD if it's no longer allowed
@@ -42,14 +50,6 @@ const OrderSummary = ({ totalPrice, items }) => {
     const router = useRouter();
 
     const addressList = useSelector(state => state.address.list);
-
-    const [paymentMethod, setPaymentMethod] = useState('COD');
-    const [selectedAddress, setSelectedAddress] = useState(null);
-    const [showAddressModal, setShowAddressModal] = useState(false);
-    const [couponCodeInput, setCouponCodeInput] = useState('');
-    const [coupon, setCoupon] = useState('');
-    const [orderNotes, setOrderNotes] = useState('');
-    const [shippingFees, setShippingFees] = useState({ local: 7000, abroad: 15000 });
     const shippingFee = hasAbroadItems ? shippingFees.abroad : shippingFees.local;
 
     // Load dynamic shipping fees
