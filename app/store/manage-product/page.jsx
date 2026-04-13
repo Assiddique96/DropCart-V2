@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, Fragment } from "react"
 import { toast } from "react-hot-toast"
 import Image from "next/image"
 import Loading from "@/components/Loading"
@@ -212,7 +212,7 @@ export default function StoreManageProducts() {
                         </thead>
                         <tbody className="divide-y divide-slate-100 text-slate-700">
                             {products.map((product) => (
-                                <>
+                                <Fragment key={product.id}>
                                     <tr key={product.id} className="hover:bg-slate-50 transition-colors">
                                         <td className="px-4 py-3">
                                             <div className="flex gap-3 items-center">
@@ -300,6 +300,8 @@ export default function StoreManageProducts() {
                                                             <option value="ABROAD">✈️ Shipped from Abroad</option>
                                                         </select>
                                                     </label>
+                                                    <label className="flex flex-col gap-1 text-xs">
+                                                        SKU
                                                         <input type="text" value={editForm.sku ?? ''}
                                                             onChange={e => setEditForm({ ...editForm, sku: e.target.value })}
                                                             placeholder="e.g. ABC-001"
@@ -325,6 +327,8 @@ export default function StoreManageProducts() {
                                                             className="text-xs border border-slate-200 rounded p-1.5 bg-white" />
                                                         {newImages.length > 0 && <span className="text-blue-500">{newImages.length} file(s) selected</span>}
                                                     </label>
+                                                    <label className="flex flex-col gap-1 text-xs sm:col-span-2 lg:col-span-3">
+                                                        Description
                                                         <textarea value={editForm.description} rows={3}
                                                             onChange={e => setEditForm({ ...editForm, description: e.target.value })}
                                                             className="border border-slate-200 rounded p-2 outline-none text-sm resize-none bg-white" />
@@ -343,7 +347,7 @@ export default function StoreManageProducts() {
                                             </td>
                                         </tr>
                                     )}
-                                </>
+                                </Fragment>
                             ))}
                         </tbody>
                     </table>
