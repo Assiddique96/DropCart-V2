@@ -11,14 +11,12 @@ import { fetchCart } from '@/lib/features/cart/cartSlice';
 import { addNotification } from '@/lib/features/notifications/notificationsSlice';
 
 const ALL_PAYMENT_METHODS = [
-    { id: 'COD',         label: 'Cash on Delivery',  description: 'Pay when your order arrives' },
-    { id: 'STRIPE',      label: 'Card (Stripe)',      description: 'Visa, Mastercard, Amex' },
-    { id: 'PAYSTACK',    label: 'Paystack',           description: 'Cards, bank transfer, USSD' },
-    { id: 'FLUTTERWAVE', label: 'Flutterwave',        description: 'Cards, mobile money, bank' },
+    { id: 'COD', label: 'Cash on Delivery', description: 'Pay when your order arrives' },
+    { id: 'STRIPE', label: 'Card (Stripe)', description: 'Visa, Mastercard, Amex' },
+    { id: 'PAYSTACK', label: 'Paystack', description: 'Cards, bank transfer, USSD' },
+    { id: 'FLUTTERWAVE', label: 'Flutterwave', description: 'Cards, mobile money, bank' },
 ]
-    const PAYMENT_METHODS = hasAbroadItems
-        ? ALL_PAYMENT_METHODS.filter(m => m.id !== 'COD')
-        : ALL_PAYMENT_METHODS
+
 
 const OrderSummary = ({ totalPrice, items }) => {
     // Detect if cart has any ABROAD items (for COD block and shipping fee display)
@@ -27,6 +25,16 @@ const OrderSummary = ({ totalPrice, items }) => {
         const product = allProducts.find(p => p.id === item.id)
         return product?.origin === 'ABROAD'
     }) ?? false
+
+    const PAYMENT_METHODS = hasAbroadItems
+        ? ALL_PAYMENT_METHODS.filter(m => m.id !== 'COD')
+        : ALL_PAYMENT_METHODS
+
+    useEffect(() => {
+        if (hasAbroadItems && paymentMethod === 'COD') {
+            setPaymentMethod('STRIPE'); // Switch them away from COD if it's no longer allowed
+        }
+    }, [hasAbroadItems, paymentMethod]);
     const { user } = useUser();
     const { getToken } = useAuth();
     const dispatch = useDispatch();
@@ -48,10 +56,10 @@ const OrderSummary = ({ totalPrice, items }) => {
     useEffect(() => {
         axios.get('/api/config').then(({ data }) => {
             setShippingFees({
-                local:  data.shipping_base_fee   ?? 7000,
+                local: data.shipping_base_fee ?? 7000,
                 abroad: data.shipping_abroad_fee ?? 15000,
             });
-        }).catch(() => {});
+        }).catch(() => { });
     }, []);
 
     const handleCouponCode = async (event) => {
@@ -71,9 +79,9 @@ const OrderSummary = ({ totalPrice, items }) => {
 
     const redirectToPayment = async (orderIds, token) => {
         const endpointMap = {
-            STRIPE:      { url: '/api/stripe',      key: 'session',           urlKey: 'url' },
-            PAYSTACK:    { url: '/api/paystack',     key: 'authorization_url', urlKey: null  },
-            FLUTTERWAVE: { url: '/api/flutterwave',  key: 'payment_link',      urlKey: null  },
+            STRIPE: { url: '/api/stripe', key: 'session', urlKey: 'url' },
+            PAYSTACK: { url: '/api/paystack', key: 'authorization_url', urlKey: null },
+            FLUTTERWAVE: { url: '/api/flutterwave', key: 'payment_link', urlKey: null },
         };
         const ep = endpointMap[paymentMethod];
         const { data } = await axios.post(ep.url, { orderIds }, { headers: { Authorization: `Bearer ${token}` } });
