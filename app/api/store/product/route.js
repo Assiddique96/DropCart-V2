@@ -91,10 +91,23 @@ export async function GET(request) {
 
     const products = await prisma.product.findMany({
       where: { storeId },
-      include: { variants: true },
+      include: {
+        variantGroups: {
+          include: {
+            options: true,
+          },
+        },
+      },
       orderBy: { createdAt: "desc" },
     });
-    return NextResponse.json({ products });
+
+    const normalizedProducts = products.map((product) => ({
+      ...product,
+      // Backward-compatible flattened variant list for legacy UI consumers.
+      variants: product.variantGroups.flatMap((group) => group.options),
+    }));
+
+    return NextResponse.json({ products: normalizedProducts });
   } catch (error) {
     return NextResponse.json({ error: error.code || error.message }, { status: 400 });
   }
