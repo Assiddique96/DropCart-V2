@@ -6,6 +6,7 @@ import { MailIcon, MapPinIcon } from "lucide-react"
 import Loading from "@/components/Loading"
 import Image from "next/image"
 import axios from "axios"
+import toast from "react-hot-toast"
 
 
 export default function StoreShop() {
@@ -16,6 +17,7 @@ export default function StoreShop() {
     const [loading, setLoading] = useState(true)
 
     const fetchStoreData = async () => {
+       setLoading(true)
        try {
         const {data} = await axios.get(`/api/store/data?username=${username}`)
         setStoreInfo(data.store)
@@ -28,35 +30,54 @@ export default function StoreShop() {
 
     useEffect(() => {
         fetchStoreData()
-    }, [])
+    }, [username])
 
     return !loading ? (
         <div className="min-h-[70vh] mx-6">
 
-            {/* Store Info Banner */}
+            {/* Store card; banner is the card background when set */}
             {storeInfo && (
-                <div className="max-w-7xl mx-auto bg-slate-50 rounded-xl p-6 md:p-10 mt-6 flex flex-col md:flex-row items-center gap-6 shadow-xs">
-                    <Image
-                        src={storeInfo.logo}
-                        alt={storeInfo.name}
-                        className="size-32 sm:size-38 object-cover border-2 border-slate-100 rounded-md"
-                        width={200}
-                        height={200}
-                    />
-                    <div className="text-center md:text-left">
-                        <h1 className="text-3xl font-semibold text-slate-800">{storeInfo.name}</h1>
-                        <p className="text-sm text-slate-600 mt-2 max-w-lg">{storeInfo.description}</p>
-                        <div className="text-xs text-slate-500 mt-4 space-y-1"></div>
-                        <div className="space-y-2 text-sm text-slate-500">
-                            <div className="flex items-center">
-                                <MapPinIcon className="w-4 h-4 text-gray-500 mr-2" />
-                                <span>{storeInfo.address}</span>
+                <div
+                    className={`max-w-7xl mx-auto mt-6 relative overflow-hidden rounded-xl border border-slate-100 shadow-xs min-h-[200px] md:min-h-[220px] ${storeInfo.banner ? '' : 'bg-slate-50'}`}
+                >
+                    {storeInfo.banner ? (
+                        <>
+                            <Image
+                                src={storeInfo.banner}
+                                alt=""
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 1280px) 100vw, 1280px"
+                                priority
+                            />
+                            <div
+                                className="absolute inset-0 bg-gradient-to-br from-white/92 via-white/85 to-slate-50/78 backdrop-blur-[1px]"
+                                aria-hidden
+                            />
+                        </>
+                    ) : null}
+                    <div className="relative z-10 p-6 md:p-10 flex flex-col md:flex-row items-center gap-6">
+                        <Image
+                            src={storeInfo.logo}
+                            alt={storeInfo.name}
+                            className="size-32 sm:size-38 object-cover border-2 border-slate-100 rounded-md shadow-sm bg-white"
+                            width={200}
+                            height={200}
+                        />
+                        <div className="text-center md:text-left">
+                            <h1 className="text-3xl font-semibold text-slate-800">{storeInfo.name}</h1>
+                            <p className="text-sm text-slate-600 mt-2 max-w-lg">{storeInfo.description}</p>
+                            <div className="text-xs text-slate-500 mt-4 space-y-1"></div>
+                            <div className="space-y-2 text-sm text-slate-500">
+                                <div className="flex items-center justify-center md:justify-start">
+                                    <MapPinIcon className="w-4 h-4 text-gray-500 mr-2 shrink-0" />
+                                    <span>{storeInfo.address}</span>
+                                </div>
+                                <div className="flex items-center justify-center md:justify-start">
+                                    <MailIcon className="w-4 h-4 text-gray-500 mr-2 shrink-0" />
+                                    <span>{storeInfo.email}</span>
+                                </div>
                             </div>
-                            <div className="flex items-center">
-                                <MailIcon className="w-4 h-4 text-gray-500 mr-2" />
-                                <span>{storeInfo.email}</span>
-                            </div>
-                           
                         </div>
                     </div>
                 </div>

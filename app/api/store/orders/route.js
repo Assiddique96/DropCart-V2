@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "src/db";
 import authSeller from "@/middlewares/authSeller";
+import { isOrderConsideredPaid } from "@/lib/orderPayment";
 
 // get all orders for the seller
 export async function GET(request) {
@@ -14,10 +15,14 @@ export async function GET(request) {
         }
         const orders = await prisma.order.findMany({
             where: {storeId},
-            include: { user: true, address: true, orderItems: { include: { product: true } } },
+            include: { user: true, address: true, refund: true, orderItems: { include: { product: true } } },
             orderBy: { createdAt: "desc" }
         })
-        return NextResponse.json({orders})
+        const ordersOut = orders.map((o) => ({
+            ...o,
+            isPaid: isOrderConsideredPaid(o),
+        }))
+        return NextResponse.json({ orders: ordersOut })
     } catch (error) {
         console.log(error)
         return NextResponse.json({error: "Failed to fetch orders"}, {status: 500})

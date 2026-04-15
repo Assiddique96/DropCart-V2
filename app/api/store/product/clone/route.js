@@ -4,11 +4,20 @@ import prisma from "src/db";
 import authSeller from "@/middlewares/authSeller";
 import { defaultLimiter } from "@/lib/rateLimit";
 
+const variantInclude = {
+  variantGroups: {
+    orderBy: { position: "asc" },
+    include: {
+      options: { orderBy: { position: "asc" } },
+    },
+  },
+};
+
 /**
  * POST /api/store/product/clone
  * Body: { productId }
- * Duplicates a product (and its variants) with "Copy of " prepended to the name.
- * The clone starts as out-of-stock (inStock: false, quantity: 0).
+ * Duplicates a product (and its variant groups/options) with "Copy of " prepended to the name.
+ * The clone starts as out-of-stock (inStock: false, quantity: 0); option rows also reset stock.
  */
 export async function POST(request) {
   const limit = defaultLimiter.check(request);
@@ -24,12 +33,11 @@ export async function POST(request) {
 
     const original = await prisma.product.findFirst({
       where: { id: productId, storeId },
-      include: { variants: true },
+      include: variantInclude,
     });
     if (!original) return NextResponse.json({ error: "Product not found" }, { status: 404 });
 
-    // Destructure fields we don't want to copy directly
-    const { id, createdAt, updatedAt, variants, ...rest } = original;
+    const { id, createdAt, updatedAt, variantGroups, ...rest } = original;
 
     const clone = await prisma.product.create({
       data: {
@@ -38,19 +46,32 @@ export async function POST(request) {
         inStock: false,
         quantity: 0,
         sku: original.sku ? `${original.sku}-copy` : null,
-        scheduledAt: null, // clone starts as unscheduled draft
-        variants: variants.length > 0 ? {
-          create: variants.map(({ id: _id, productId: _pid, ...v }) => ({
-            ...v,
-            quantity: 0,
-            inStock: false,
-          })),
-        } : undefined,
+        scheduledAt: null,
+        variantGroups:
+          variantGroups.length > 0
+            ? {
+                create: variantGroups.map(({ id: _gid, productId: _pid, options, ...group }) => ({
+                  ...group,
+                  options: {
+                    create: options.map(({ id: _oid, groupId: _gid2, ...opt }) => ({
+                      ...opt,
+                      quantity: 0,
+                      inStock: false,
+                    })),
+                  },
+                })),
+              }
+            : undefined,
       },
-      include: { variants: true },
+      include: variantInclude,
     });
 
-    return NextResponse.json({ message: "Product cloned successfully.", product: clone });
+    const product = {
+      ...clone,
+      variants: clone.variantGroups.flatMap((group) => group.options),
+    };
+
+    return NextResponse.json({ message: "Product cloned successfully.", product });
   } catch (error) {
     console.error("Clone error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

@@ -36,8 +36,24 @@ export async function POST(request) {
       return NextResponse.json({ error: "Rating (1-5) and review text are required." }, { status: 400 });
     }
 
-    const order = await prisma.order.findUnique({ where: { id: orderId, userId } });
-    if (!order) return NextResponse.json({ error: "Order not found" }, { status: 400 });
+    const order = await prisma.order.findUnique({ where: { id: orderId } });
+    if (!order || order.userId !== userId) {
+      return NextResponse.json({ error: "Order not found" }, { status: 400 });
+    }
+
+    if (order.status !== "DELIVERED") {
+      return NextResponse.json(
+        { error: "You can only review products after the order is delivered." },
+        { status: 400 }
+      );
+    }
+
+    const lineItem = await prisma.orderItem.findUnique({
+      where: { orderId_productId: { orderId, productId } },
+    });
+    if (!lineItem) {
+      return NextResponse.json({ error: "Product is not part of this order." }, { status: 400 });
+    }
 
     const existing = await prisma.rating.findFirst({ where: { productId, orderId } });
     if (existing) return NextResponse.json({ error: "Product already rated for this order" }, { status: 400 });

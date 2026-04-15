@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "src/db";
 import authSeller from "@/middlewares/authSeller";
+import { isOrderConsideredPaid } from "@/lib/orderPayment";
 
 export async function GET(request) {
   try {
@@ -37,7 +38,7 @@ export async function GET(request) {
 
     // Revenue breakdown
     const totalEarnings = Math.round(allOrders.reduce((s, o) => s + (o.total || 0), 0));
-    const paidEarnings  = Math.round(allOrders.filter(o => o.isPaid).reduce((s, o) => s + o.total, 0));
+    const paidEarnings  = Math.round(allOrders.filter(o => isOrderConsideredPaid(o)).reduce((s, o) => s + o.total, 0));
 
     // Order status breakdown
     const statusBreakdown = allOrders.reduce((acc, o) => {

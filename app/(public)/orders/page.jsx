@@ -6,8 +6,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Loading from "@/components/Loading";
 import toast from "react-hot-toast";
 import { XCircleIcon, RotateCcwIcon, TruckIcon, RefreshCwIcon, DownloadIcon } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addNotification } from "@/lib/features/notifications/notificationsSlice";
+import { isOrderConsideredPaid } from "@/lib/orderPayment";
+import RatingModal from "@/components/RatingModal";
+import Rating from "@/components/Rating";
 
 const STATUS_COLORS = {
     ORDER_PLACED: 'bg-blue-50 text-blue-700',
@@ -24,6 +27,7 @@ function OrdersContent() {
     const { user, isLoaded } = useUser()
     const router = useRouter()
     const dispatch = useDispatch()
+    const { ratings } = useSelector((state) => state.rating)
     const searchParams = useSearchParams()
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
 
@@ -37,6 +41,7 @@ function OrdersContent() {
     const [refundReason, setRefundReason] = useState('')
     const [refunding, setRefunding] = useState(false)
     const [retrying, setRetrying] = useState(null)
+    const [ratingModal, setRatingModal] = useState(null)
 
     // Handle Stripe/Paystack/Flutterwave return
     useEffect(() => {
@@ -125,7 +130,8 @@ function OrdersContent() {
                         {orders.map(order => {
                             const isExpanded = expandedOrder === order.id
                             const stepIndex = STATUS_STEPS.indexOf(order.status)
-                            const showRetry = !order.isPaid && order.paymentMethod !== 'COD' && order.status !== 'CANCELLED'
+                            const paid = isOrderConsideredPaid(order)
+                            const showRetry = !paid && order.paymentMethod !== 'COD' && order.status !== 'CANCELLED'
 
                             return (
                                 <div key={order.id} className="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
@@ -135,8 +141,8 @@ function OrdersContent() {
                                         <div className="flex gap-4 flex-wrap">
                                             <span>Placed: <b className="text-slate-700">{new Date(order.createdAt).toLocaleDateString()}</b></span>
                                             <span>Total: <b className="text-slate-700">{currency}{order.total.toLocaleString()}</b></span>
-                                            <span className={order.isPaid ? 'text-green-600 font-medium' : 'text-amber-600'}>
-                                                {order.paymentMethod} {order.isPaid ? '(Paid ✓)' : '(Unpaid)'}
+                                            <span className={paid ? 'text-green-600 font-medium' : 'text-amber-600'}>
+                                                {order.paymentMethod} {paid ? '(Paid ✓)' : '(Unpaid)'}
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2 flex-wrap" onClick={e => e.stopPropagation()}>
@@ -203,17 +209,45 @@ function OrdersContent() {
 
                                     {/* Items */}
                                     <div className="divide-y divide-slate-100">
-                                        {order.orderItems.slice(0, isExpanded ? undefined : 2).map((item, i) => (
-                                            <div key={i} className="flex items-center gap-4 px-5 py-3">
+                                        {order.orderItems.slice(0, isExpanded ? undefined : 2).map((item, i) => {
+                                            const existingRating = ratings.find(
+                                                (r) => r.orderId === order.id && r.productId === item.productId
+                                            )
+                                            return (
+                                            <div key={`${order.id}-${item.productId}-${i}`} className="flex flex-wrap items-center gap-3 px-5 py-3">
                                                 <img src={item.product?.images?.[0]} alt=""
-                                                    className="w-12 h-12 object-cover rounded border border-slate-100" />
-                                                <div className="flex-1 text-sm text-slate-700">
+                                                    className="w-12 h-12 object-cover rounded border border-slate-100 shrink-0" />
+                                                <div className="flex-1 min-w-0 text-sm text-slate-700">
                                                     <p className="font-medium">{item.product?.name}</p>
                                                     <p className="text-slate-400 text-xs">Qty: {item.quantity} × {currency}{item.price}</p>
                                                 </div>
-                                                <p className="font-semibold text-slate-800 text-sm">{currency}{(item.price * item.quantity).toLocaleString()}</p>
+                                                <div className="flex items-center gap-3 shrink-0 ml-auto">
+                                                    <p className="font-semibold text-slate-800 text-sm">{currency}{(item.price * item.quantity).toLocaleString()}</p>
+                                                    {order.status === 'DELIVERED' && (
+                                                        <div
+                                                            className="flex flex-col items-end gap-0.5"
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            {existingRating ? (
+                                                                <div className="flex flex-col items-end gap-0.5">
+                                                                    <Rating value={existingRating.rating} />
+                                                                    <span className="text-[10px] text-green-600 font-medium">Review submitted</span>
+                                                                </div>
+                                                            ) : (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => setRatingModal({ orderId: order.id, productId: item.productId })}
+                                                                    className="text-xs font-medium text-green-600 hover:text-green-700 hover:bg-green-50 px-2.5 py-1.5 rounded-lg border border-green-200/80 transition"
+                                                                >
+                                                                    Rate product
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
-                                        ))}
+                                            )
+                                        })}
                                         {!isExpanded && order.orderItems.length > 2 && (
                                             <button onClick={() => setExpandedOrder(order.id)}
                                                 className="w-full text-center text-xs text-slate-400 py-2 hover:text-slate-600 transition">
@@ -284,6 +318,10 @@ function OrdersContent() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {ratingModal && (
+                <RatingModal ratingModal={ratingModal} setRatingModal={setRatingModal} />
             )}
 
             {/* Refund modal */}

@@ -6,6 +6,7 @@ import { PaymentMethod } from "@/src/generated/prisma";
 import { strictLimiter, looseLimiter } from "@/lib/rateLimit";
 import { sanitizeString } from "@/lib/sanitize";
 import { inngest } from "@/inngest/client";
+import { isOrderConsideredPaid } from "@/lib/orderPayment";
 
 // create order
 export async function POST(request) {
@@ -255,30 +256,25 @@ export async function GET(request) {
     try {
         const { userId } = getAuth(request);
         const orders = await prisma.order.findMany({
-            where: { 
-                userId, 
-                OR: [
-                    { paymentMethod: PaymentMethod.COD },
-                    { AND: [
-                        { paymentMethod: PaymentMethod.STRIPE },
-                        { isPaid: true }
-                    ]}
-                ] 
-            },
+            where: { userId },
             include: {
-                // ✅ Address belongs to the ORDER, move it here
-                address: true, 
+                address: true,
+                refund: true,
                 orderItems: {
                     include: {
                         product: true,
                     }
                 }
-            }, 
-            // ✅ This is now correctly placed to sort orders by date
+            },
             orderBy: { createdAt: 'desc' }
         });
-        
-        return NextResponse.json({ orders });
+
+        const ordersOut = orders.map((o) => ({
+            ...o,
+            isPaid: isOrderConsideredPaid(o),
+        }));
+
+        return NextResponse.json({ orders: ordersOut });
     } catch (error) {
         //console.error(error);
         return NextResponse.json({ error: error.message }, { status: 400 });

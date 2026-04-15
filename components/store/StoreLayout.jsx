@@ -8,6 +8,7 @@ import SellerSidebar from "./StoreSidebar"
 import { dummyStoreData } from "@/assets/assets"
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
+import StoreOrderNotificationsPoller from "../StoreOrderNotificationsPoller"
 
 const StoreLayout = ({ children }) => {
 
@@ -47,6 +48,7 @@ const StoreLayout = ({ children }) => {
             <div className="flex flex-1 items-start h-full overflow-y-scroll no-scrollbar">
                 <SellerSidebar storeInfo={storeInfo} />
                 <div className="flex-1 h-full p-5 lg:pl-12 lg:pt-12 overflow-y-scroll">
+                    <StoreOrderNotificationsPoller />
                     {children}
                 </div>
             </div>

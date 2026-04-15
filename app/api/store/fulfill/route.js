@@ -69,7 +69,11 @@ export async function POST(request) {
     }
 
     if (newStatus !== order.status) {
-      await prisma.order.update({ where: { id: orderId }, data: { status: newStatus } });
+      const data = { status: newStatus };
+      if (newStatus === "DELIVERED" && order.paymentMethod === "COD") {
+        data.isPaid = true;
+      }
+      await prisma.order.update({ where: { id: orderId }, data });
     }
 
     return NextResponse.json({

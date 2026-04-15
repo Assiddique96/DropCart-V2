@@ -5,8 +5,7 @@ import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { XCircleIcon, TruckIcon, PackageCheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
-import { useDispatch } from "react-redux"
-import { addNotification } from "@/lib/features/notifications/notificationsSlice"
+import { isOrderConsideredPaid } from "@/lib/orderPayment"
 
 const STATUS_COLORS = {
     ORDER_PLACED: 'bg-blue-50 text-blue-700',
@@ -19,8 +18,6 @@ const STATUS_COLORS = {
 export default function StoreOrders() {
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
     const [orders, setOrders] = useState([])
-    const [prevOrderCount, setPrevOrderCount] = useState(null)
-    const dispatch = useDispatch()
     const [loading, setLoading] = useState(true)
     const [selectedOrder, setSelectedOrder] = useState(null)
     const [cancelModal, setCancelModal] = useState(null)
@@ -39,18 +36,6 @@ export default function StoreOrders() {
             const { data } = await axios.get("/api/store/orders", { headers: { Authorization: `Bearer ${token}` } })
             const fresh = data.orders
             setOrders(fresh)
-
-            // Notify seller of new orders since last fetch
-            if (prevOrderCount !== null && fresh.length > prevOrderCount) {
-                const newCount = fresh.length - prevOrderCount
-                dispatch(addNotification({
-                    type: 'order',
-                    title: `${newCount} New Order${newCount > 1 ? 's' : ''}! 🛍️`,
-                    message: `You have ${newCount} new order${newCount > 1 ? 's' : ''} waiting to be processed.`,
-                    link: '/store/orders',
-                }))
-            }
-            setPrevOrderCount(fresh.length)
         } catch (e) {
             toast.error(e?.response?.data?.error || e.message)
         } finally {
@@ -62,8 +47,15 @@ export default function StoreOrders() {
         try {
             const token = await getToken()
             await axios.post("/api/store/update-order-status", { orderId, status }, { headers: { Authorization: `Bearer ${token}` } })
-            setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o))
-            if (selectedOrder?.id === orderId) setSelectedOrder(p => ({ ...p, status }))
+            setOrders(prev => prev.map(o => {
+                if (o.id !== orderId) return o
+                const next = { ...o, status }
+                return { ...next, isPaid: isOrderConsideredPaid(next) }
+            }))
+            if (selectedOrder?.id === orderId) {
+                const next = { ...selectedOrder, status }
+                setSelectedOrder({ ...next, isPaid: isOrderConsideredPaid(next) })
+            }
             toast.success("Status updated")
         } catch (e) { toast.error(e?.response?.data?.error || e.message) }
     }
@@ -93,7 +85,15 @@ export default function StoreOrders() {
             const { data } = await axios.post("/api/store/fulfill", { orderId: order.id, items }, { headers: { Authorization: `Bearer ${token}` } })
             toast.success(data.message)
             if (data.newStatus !== order.status) {
-                setOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: data.newStatus } : o))
+                setOrders(prev => prev.map(o => {
+                    if (o.id !== order.id) return o
+                    const next = { ...o, status: data.newStatus }
+                    return { ...next, isPaid: isOrderConsideredPaid(next) }
+                }))
+                if (selectedOrder?.id === order.id) {
+                    const next = { ...selectedOrder, status: data.newStatus }
+                    setSelectedOrder({ ...next, isPaid: isOrderConsideredPaid(next) })
+                }
             }
             setFulfillmentOpen(null)
         } catch (e) { toast.error(e?.response?.data?.error || e.message) }
@@ -134,7 +134,7 @@ export default function StoreOrders() {
                                 <span className="font-medium text-slate-700">#{index + 1}</span>
                                 <span>{order.user?.name}</span>
                                 <span className="font-semibold text-slate-800">{currency}{order.total.toLocaleString()}</span>
-                                <span>{order.paymentMethod}{order.isPaid ? ' ✓' : ''}</span>
+                                <span>{order.paymentMethod}{isOrderConsideredPaid(order) ? ' ✓' : ''}</span>
                                 {order.trackingNumber && (
                                     <span className="flex items-center gap-1 text-purple-600">
                                         <TruckIcon size={11} /> {order.trackingNumber}

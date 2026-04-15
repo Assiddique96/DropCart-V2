@@ -18,9 +18,13 @@ export async function GET(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Delivered orders that have been paid
+    // Delivered revenue: paid online, or COD (collected at delivery)
     const deliveredOrders = await prisma.order.findMany({
-      where: { storeId, status: "DELIVERED", isPaid: true },
+      where: {
+        storeId,
+        status: "DELIVERED",
+        OR: [{ isPaid: true }, { paymentMethod: "COD" }],
+      },
       select: { total: true },
     });
 

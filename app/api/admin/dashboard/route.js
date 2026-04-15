@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "src/db";
 import authAdmin from "@/middlewares/authAdmin";
+import { isOrderConsideredPaid } from "@/lib/orderPayment";
 
 export async function GET(request) {
   try {
@@ -9,7 +10,7 @@ export async function GET(request) {
     const isAdmin = await authAdmin(userId);
     if (!isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const [orders, products, stores, users, allOrders, cancelledCount, paidOrders] = await Promise.all([
+    const [orders, products, stores, users, allOrders, cancelledCount] = await Promise.all([
       prisma.order.count(),
       prisma.product.count(),
       prisma.store.count({ where: { status: "approved" } }),
@@ -18,14 +19,12 @@ export async function GET(request) {
         select: { createdAt: true, total: true, isPaid: true, status: true, paymentMethod: true },
       }),
       prisma.order.count({ where: { status: "CANCELLED" } }),
-      prisma.order.findMany({
-        where: { isPaid: true },
-        select: { total: true },
-      }),
     ]);
 
     const totalRevenue = allOrders.reduce((s, o) => s + o.total, 0);
-    const paidRevenue = paidOrders.reduce((s, o) => s + o.total, 0);
+    const paidRevenue = allOrders
+      .filter((o) => isOrderConsideredPaid(o))
+      .reduce((s, o) => s + o.total, 0);
     const unpaidRevenue = totalRevenue - paidRevenue;
 
     return NextResponse.json({

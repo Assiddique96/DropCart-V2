@@ -19,9 +19,14 @@ export async function POST(request) {
       return NextResponse.json({ error: "Order not found for your store" }, { status: 404 });
     }
 
+    const data = { status };
+    if (status === "DELIVERED" && order.paymentMethod === "COD") {
+      data.isPaid = true;
+    }
+
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
-      data: { status },
+      data,
     });
 
     // Fire shipping notification when status changes to SHIPPED

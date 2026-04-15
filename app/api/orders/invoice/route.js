@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
 import { formatCurrency, CURRENCY_SYMBOL } from "@/lib/currency";
+import { isOrderConsideredPaid } from "@/lib/orderPayment";
 import { looseLimiter } from "@/lib/rateLimit";
 
 /**
@@ -44,6 +45,7 @@ export async function GET(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
+    const paid = isOrderConsideredPaid(order);
     const itemsSubtotal = order.orderItems.reduce((s, i) => s + i.price * i.quantity, 0);
     const shippingFee   = order.total - itemsSubtotal;
     const invoiceNum    = `INV-${order.id.slice(-8).toUpperCase()}`;
@@ -108,7 +110,7 @@ export async function GET(request) {
       <h2>${invoiceNum}</h2>
       <p>Issued: ${issueDate}</p>
       <p>Payment: ${order.paymentMethod}</p>
-      <span class="badge ${order.isPaid ? 'paid' : 'unpaid'}">${order.isPaid ? 'PAID' : 'PAYMENT PENDING'}</span>
+      <span class="badge ${paid ? 'paid' : 'unpaid'}">${paid ? 'PAID' : 'PAYMENT PENDING'}</span>
     </div>
   </div>
 
