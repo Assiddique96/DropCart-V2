@@ -131,6 +131,18 @@ exports.Prisma.UserScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  message: 'message',
+  type: 'type',
+  link: 'link',
+  read: 'read',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -374,6 +386,7 @@ exports.PayoutStatus = exports.$Enums.PayoutStatus = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  Notification: 'Notification',
   Product: 'Product',
   ProductVariantGroup: 'ProductVariantGroup',
   ProductVariantOption: 'ProductVariantOption',
