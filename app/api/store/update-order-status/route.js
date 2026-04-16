@@ -3,6 +3,7 @@ import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
 import authSeller from "@/middlewares/authSeller";
 import { inngest } from "@/inngest/client";
+import { createNotification } from "@/lib/serverNotifications";
 
 export async function POST(request) {
   try {
@@ -28,6 +29,25 @@ export async function POST(request) {
       where: { id: orderId },
       data,
     });
+
+    if (status !== order.status) {
+      await createNotification({
+        userId: order.userId,
+        type: "order",
+        title: `Order ${status.toLowerCase().replace(/_/g, " ")}`,
+        message:
+          status === "PROCESSING"
+            ? "The store is preparing your order."
+            : status === "SHIPPED"
+              ? "Your order is on the way."
+              : status === "DELIVERED"
+                ? "Your order has been delivered."
+                : status === "CANCELLED"
+                  ? "Your order has been cancelled."
+                  : `Your order status changed to ${status}.`,
+        link: "/orders",
+      });
+    }
 
     // Fire shipping notification when status changes to SHIPPED
     if (status === "SHIPPED" && order.status !== "SHIPPED") {

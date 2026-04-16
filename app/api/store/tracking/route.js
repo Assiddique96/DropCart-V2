@@ -4,6 +4,7 @@ import prisma from "@/src/db";
 import authSeller from "@/middlewares/authSeller";
 import { defaultLimiter } from "@/lib/rateLimit";
 import { sanitizeString } from "@/lib/sanitize";
+import { createNotification } from "@/lib/serverNotifications";
 
 /**
  * POST /api/store/tracking
@@ -49,6 +50,16 @@ export async function POST(request) {
       where: { id: orderId },
       data: updateData,
     });
+
+    if (updateData.status === "SHIPPED") {
+      await createNotification({
+        userId: order.userId,
+        type: "order",
+        title: "Order shipped",
+        message: "Your order is on the way. Tracking information has been added.",
+        link: "/orders",
+      });
+    }
 
     // Fire shipping notification if we advanced status
     if (updateData.status === "SHIPPED") {

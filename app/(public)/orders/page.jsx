@@ -6,8 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Loading from "@/components/Loading";
 import toast from "react-hot-toast";
 import { XCircleIcon, RotateCcwIcon, TruckIcon, RefreshCwIcon, DownloadIcon } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { addNotification } from "@/lib/features/notifications/notificationsSlice";
+import { useSelector } from "react-redux";
 import { isOrderConsideredPaid } from "@/lib/orderPayment";
 import RatingModal from "@/components/RatingModal";
 import Rating from "@/components/Rating";
@@ -26,7 +25,6 @@ function OrdersContent() {
     const { getToken } = useAuth()
     const { user, isLoaded } = useUser()
     const router = useRouter()
-    const dispatch = useDispatch()
     const { ratings } = useSelector((state) => state.rating)
     const searchParams = useSearchParams()
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
@@ -48,12 +46,6 @@ function OrdersContent() {
         const payment = searchParams.get('payment')
         if (payment === 'success') {
             toast.success('Payment successful! Your order is confirmed.')
-            dispatch(addNotification({
-                type: 'order',
-                title: 'Payment Successful 🎉',
-                message: 'Your payment was confirmed and your order is being processed.',
-                link: '/orders',
-            }))
         }
         if (payment === 'cancelled') toast.error('Payment cancelled. Your order is still saved — retry from here.')
     }, [])

@@ -3,6 +3,7 @@ import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
 import authSeller from "@/middlewares/authSeller";
 import { defaultLimiter } from "@/lib/rateLimit";
+import { createNotification } from "@/lib/serverNotifications";
 
 /**
  * POST /api/store/fulfill
@@ -74,6 +75,17 @@ export async function POST(request) {
         data.isPaid = true;
       }
       await prisma.order.update({ where: { id: orderId }, data });
+
+      await createNotification({
+        userId: order.userId,
+        type: "order",
+        title: newStatus === "DELIVERED" ? "Order delivered" : "Order processing",
+        message:
+          newStatus === "DELIVERED"
+            ? "Your order has been delivered."
+            : "Your order is now being processed.",
+        link: "/orders",
+      });
     }
 
     return NextResponse.json({

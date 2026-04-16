@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
 import { defaultLimiter } from "@/lib/rateLimit";
+import { createNotifications } from "@/lib/serverNotifications";
 
 /**
  * POST /api/orders/cancel
@@ -78,6 +79,27 @@ export async function POST(request) {
         },
       },
     });
+
+    await createNotifications([
+      {
+        userId: order.userId,
+        type: "order",
+        title: "Order cancelled",
+        message: isBuyer
+          ? "You cancelled your order."
+          : "Your order was cancelled by the seller.",
+        link: "/orders",
+      },
+      {
+        userId: order.store.userId,
+        type: "order",
+        title: "Order cancelled",
+        message: isBuyer
+          ? "A buyer cancelled an order."
+          : "You cancelled an order.",
+        link: "/store/orders",
+      },
+    ]);
 
     return NextResponse.json({ message: "Order cancelled successfully." });
   } catch (error) {

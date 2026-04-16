@@ -4,6 +4,7 @@ import prisma from "src/db";
 import authAdmin from "@/middlewares/authAdmin";
 import { defaultLimiter, looseLimiter } from "@/lib/rateLimit";
 import { sanitizeString, sanitizeNumber } from "@/lib/sanitize";
+import { createNotifications } from "@/lib/serverNotifications";
 
 /**
  * GET /api/admin/refunds — list all refund requests
@@ -81,12 +82,58 @@ export async function PATCH(request) {
       },
     });
 
+    const refundWithOrder = await prisma.refund.findUnique({
+      where: { id: refundId },
+      include: {
+        order: {
+          include: {
+            store: { select: { userId: true } },
+          },
+        },
+      },
+    });
+
     // If marking as refunded, also update the order status back to reflect refund
     if (action === "mark_refunded") {
       await prisma.order.update({
         where: { id: updated.orderId },
         data: { status: "CANCELLED" }, // treat fully refunded orders as cancelled
       });
+    }
+
+    if (refundWithOrder?.order) {
+      const buyerMessage =
+        action === "approve"
+          ? "Your refund was approved."
+          : action === "reject"
+            ? "Your refund request was not approved."
+            : "Your refund has been issued.";
+
+      const sellerMessage =
+        action === "approve"
+          ? "A refund request was approved by admin."
+          : action === "reject"
+            ? "A refund request was rejected by admin."
+            : "A refund has been marked as completed.";
+
+      await createNotifications([
+        {
+          userId: refundWithOrder.order.userId,
+          type: "order",
+          title: action === "approve" ? "Refund approved" : action === "reject" ? "Refund request declined" : "Refund completed",
+          message: buyerMessage,
+          link: "/orders",
+        },
+        refundWithOrder.order.store?.userId
+          ? {
+              userId: refundWithOrder.order.store.userId,
+              type: "order",
+              title: action === "approve" ? "Refund approved" : action === "reject" ? "Refund rejected" : "Refund completed",
+              message: sellerMessage,
+              link: "/store/orders",
+            }
+          : null,
+      ].filter(Boolean));
     }
 
     return NextResponse.json({ message: `Refund ${statusMap[action].toLowerCase()}.`, refund: updated });

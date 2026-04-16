@@ -7,6 +7,7 @@ import { strictLimiter, looseLimiter } from "@/lib/rateLimit";
 import { sanitizeString } from "@/lib/sanitize";
 import { inngest } from "@/inngest/client";
 import { isOrderConsideredPaid } from "@/lib/orderPayment";
+import { createNotifications } from "@/lib/serverNotifications";
 
 // create order
 export async function POST(request) {
@@ -203,6 +204,13 @@ export async function POST(request) {
     try {
         const buyer = await prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } });
         const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$';
+        const dbNotifications = [{
+            userId,
+            type: 'order',
+            title: 'Order placed',
+            message: `Your order has been placed successfully.${orderIds.length > 1 ? ` ${orderIds.length} orders were created.` : ''}`,
+            link: '/orders',
+        }];
 
         // Fire order confirmation email to buyer
         await inngest.send({
@@ -223,9 +231,16 @@ export async function POST(request) {
 
         // Fire new order notification to each seller
         for (const [storeId] of ordersByStore.entries()) {
-            const store = await prisma.store.findUnique({ where: { id: storeId }, select: { name: true, email: true } });
+            const store = await prisma.store.findUnique({ where: { id: storeId }, select: { name: true, email: true, userId: true } });
             const storeOrder = await prisma.order.findFirst({ where: { storeId, userId }, orderBy: { createdAt: 'desc' } });
             if (store && storeOrder) {
+                dbNotifications.push({
+                    userId: store.userId,
+                    type: 'order',
+                    title: 'New order received',
+                    message: `You have a new order from ${buyer?.name || 'a customer'}.`,
+                    link: '/store/orders',
+                });
                 await inngest.send({
                     name: "app/order.new",
                     data: {
@@ -238,6 +253,7 @@ export async function POST(request) {
                 });
             }
         }
+        await createNotifications(dbNotifications);
     } catch (notifError) {
         // Notification failure must never break the order flow
         console.error("Notification error (non-fatal):", notifError);

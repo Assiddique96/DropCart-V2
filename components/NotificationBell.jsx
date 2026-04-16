@@ -1,7 +1,13 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
+import { useUser } from '@clerk/nextjs'
 import { useSelector, useDispatch } from 'react-redux'
-import { markAsRead, markAllRead, clearNotifications } from '@/lib/features/notifications/notificationsSlice'
+import {
+    fetchNotifications,
+    markNotificationAsRead,
+    markAllNotificationsRead,
+    clearAllNotifications,
+} from '@/lib/features/notifications/notificationsSlice'
 import { BellIcon, PackageIcon, StarIcon, CircleDollarSignIcon, InfoIcon, CheckCheckIcon, Trash2Icon } from 'lucide-react'
 import Link from 'next/link'
 
@@ -13,10 +19,22 @@ const TYPE_ICONS = {
 }
 
 export default function NotificationBell() {
+    const { user } = useUser()
     const dispatch = useDispatch()
-    const { items, unreadCount } = useSelector(state => state.notifications)
+    const { items, unreadCount, loaded } = useSelector(state => state.notifications)
     const [open, setOpen] = useState(false)
     const ref = useRef()
+
+    useEffect(() => {
+        if (!user) return
+        if (!loaded) dispatch(fetchNotifications())
+
+        const id = setInterval(() => {
+            dispatch(fetchNotifications())
+        }, 30000)
+
+        return () => clearInterval(id)
+    }, [dispatch, loaded, user])
 
     // Close on outside click
     useEffect(() => {
@@ -26,11 +44,12 @@ export default function NotificationBell() {
     }, [])
 
     const handleOpen = () => {
+        if (user) dispatch(fetchNotifications())
         setOpen(v => !v)
     }
 
     const handleClick = (notif) => {
-        dispatch(markAsRead(notif.id))
+        if (!notif.read) dispatch(markNotificationAsRead(notif.id))
         setOpen(false)
     }
 
@@ -67,13 +86,13 @@ export default function NotificationBell() {
                         <p className="text-sm font-semibold text-slate-800">Notifications</p>
                         <div className="flex gap-2">
                             {unreadCount > 0 && (
-                                <button onClick={() => dispatch(markAllRead())}
+                                <button onClick={() => dispatch(markAllNotificationsRead())}
                                     className="text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1 transition">
                                     <CheckCheckIcon size={12} /> Mark all read
                                 </button>
                             )}
                             {items.length > 0 && (
-                                <button onClick={() => dispatch(clearNotifications())}
+                                <button onClick={() => dispatch(clearAllNotifications())}
                                     className="text-xs text-slate-400 hover:text-red-500 transition">
                                     <Trash2Icon size={12} />
                                 </button>

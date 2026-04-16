@@ -12,7 +12,6 @@ import { fetchAddress } from "@/lib/features/address/addressSlice";
 import { fetchUserRatings } from "@/lib/features/rating/ratingSlice";
 import { initWishlist } from "@/lib/features/wishlist/wishlistSlice";
 import { initRecentlyViewed } from "@/lib/features/recentlyViewed/recentlyViewedSlice";
-import BuyerOrderNotificationsPoller from "@/components/BuyerOrderNotificationsPoller";
 
 export default function PublicLayout({ children }) {
 
@@ -46,7 +45,6 @@ export default function PublicLayout({ children }) {
         <>
             <Banner />
             <Navbar />
-            <BuyerOrderNotificationsPoller />
             {children}
             <Footer />
         </>

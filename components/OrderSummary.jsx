@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import { Show, useAuth, useUser } from '@clerk/nextjs';
 import axios from 'axios';
 import { fetchCart } from '@/lib/features/cart/cartSlice';
-import { addNotification } from '@/lib/features/notifications/notificationsSlice';
 
 const ALL_PAYMENT_METHODS = [
     { id: 'COD', label: 'Cash on Delivery', description: 'Pay when your order arrives' },
@@ -111,12 +110,6 @@ const OrderSummary = ({ totalPrice, items }) => {
 
             if (paymentMethod === 'COD') {
                 toast.success(data.message);
-                dispatch(addNotification({
-                    type: 'order',
-                    title: 'Order Placed! 🎉',
-                    message: `Your order has been placed successfully. ${data.orderIds?.length > 1 ? `${data.orderIds.length} orders created.` : ''}`,
-                    link: '/orders',
-                }));
                 router.push('/orders');
                 dispatch(fetchCart({ getToken }));
             } else {

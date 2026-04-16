@@ -3,6 +3,7 @@ import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
 import { defaultLimiter } from "@/lib/rateLimit";
 import { sanitizeString } from "@/lib/sanitize";
+import { createNotifications } from "@/lib/serverNotifications";
 
 /**
  * POST /api/orders/refund
@@ -57,6 +58,30 @@ export async function POST(request) {
     const refund = await prisma.refund.create({
       data: { orderId, reason },
     });
+
+    const store = await prisma.store.findUnique({
+      where: { id: order.storeId },
+      select: { userId: true },
+    });
+
+    await createNotifications([
+      {
+        userId,
+        type: "order",
+        title: "Refund request submitted",
+        message: "Your refund request was received and is being reviewed.",
+        link: "/orders",
+      },
+      store?.userId
+        ? {
+            userId: store.userId,
+            type: "order",
+            title: "New refund request",
+            message: `A buyer requested a refund for order ${order.id.slice(0, 8)}.`,
+            link: "/store/orders",
+          }
+        : null,
+    ].filter(Boolean));
 
     return NextResponse.json({ message: "Refund request submitted successfully.", refund });
   } catch (error) {
