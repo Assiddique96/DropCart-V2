@@ -19,7 +19,7 @@ import { sanitizeString, sanitizeNumber } from "@/lib/sanitize";
  */
 
 const REQUIRED_COLS  = ["name", "description", "mrp", "price", "category"];
-const OPTIONAL_COLS  = ["quantity", "sku", "tags", "image_url", "origin"];
+const OPTIONAL_COLS  = ["quantity", "sku", "tags", "image_url", "origin", "accept_cod"];
 const MAX_ROWS       = 200;
 
 const VALID_CATEGORIES = [
@@ -104,6 +104,9 @@ export async function POST(request) {
       const quantity = row.quantity ? Math.max(0, parseInt(row.quantity, 10)) : 0;
       const sku = row.sku ? sanitizeString(row.sku, 100) : null;
       const origin = row.origin?.toUpperCase() === 'ABROAD' ? 'ABROAD' : 'LOCAL';
+      const codRaw = row.accept_cod?.trim().toLowerCase();
+      const acceptCod =
+        origin === 'LOCAL' ? !['false', '0', 'no', 'off'].includes(codRaw || 'true') : false;
 
       const tags = row.tags
         ? row.tags.split("|").map(t => sanitizeString(t.trim(), 50)).filter(Boolean).slice(0, 10)
@@ -120,7 +123,21 @@ export async function POST(request) {
       if (rowErrors.length > 0) {
         errors.push({ line, errors: rowErrors });
       } else {
-        validRows.push({ name, description, mrp, price, category, quantity, sku, tags, images, origin, inStock: quantity > 0, storeId });
+        validRows.push({
+          name,
+          description,
+          mrp,
+          price,
+          category,
+          quantity,
+          sku,
+          tags,
+          images,
+          origin,
+          acceptCod,
+          inStock: quantity > 0,
+          storeId,
+        });
       }
     }
 

@@ -51,6 +51,7 @@ export async function POST(request) {
       tags:        formData.get("tags"),
       scheduledAt: formData.get("scheduledAt"),
       origin:      formData.get("origin"),
+      acceptCod:   formData.get("acceptCod"),
     });
 
     if (errors.length > 0) return NextResponse.json({ error: errors.join(" ") }, { status: 400 });
@@ -130,6 +131,8 @@ export async function PATCH(request) {
     const existing = await prisma.product.findFirst({ where: { id: productId, storeId } });
     if (!existing) return NextResponse.json({ error: "Product not found" }, { status: 404 });
 
+    const acceptCodSource = formData.has("acceptCod") ? formData.get("acceptCod") : existing.acceptCod;
+
     const { data: sanitized, errors } = sanitizeProductInput({
       name:        formData.get("name")        ?? existing.name,
       description: formData.get("description") ?? existing.description,
@@ -140,6 +143,7 @@ export async function PATCH(request) {
       tags:        formData.get("tags")        ?? existing.tags.join(","),
       scheduledAt: formData.get("scheduledAt") ?? existing.scheduledAt,
       origin:      formData.get("origin")      ?? existing.origin,
+      acceptCod:   acceptCodSource,
     });
 
     if (errors.length > 0) return NextResponse.json({ error: errors.join(" ") }, { status: 400 });

@@ -13,6 +13,7 @@ const ProductDetails = ({ product }) => {
     const productId = product.id;
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦';
     const isAbroad = product.origin === 'ABROAD';
+    const acceptsCod = !isAbroad && product.acceptCod !== false;
 
     const cart = useSelector(state => state.cart.cartItems);
     const dispatch = useDispatch();
@@ -215,10 +216,15 @@ const ProductDetails = ({ product }) => {
                             <BanIcon size={15} className="text-blue-400" />
                             <span>Cash on Delivery <span className="font-semibold">not available</span> for internationally shipped items</span>
                         </div>
-                    ) : (
+                    ) : acceptsCod ? (
                         <div className="flex items-center gap-3 text-sm text-green-700">
                             <CreditCardIcon size={15} className="text-green-400" />
                             <span>COD available · Pay online or on delivery</span>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-3 text-sm text-amber-800">
+                            <BanIcon size={15} className="text-amber-500" />
+                            <span>Cash on Delivery is <span className="font-semibold">disabled</span> for this product by the seller · Online payment only</span>
                         </div>
                     )}
                 </div>

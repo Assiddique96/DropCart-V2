@@ -157,6 +157,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   tags: 'tags',
   scheduledAt: 'scheduledAt',
   origin: 'origin',
+  acceptCod: 'acceptCod',
   isDigital: 'isDigital',
   downloadUrl: 'downloadUrl',
   storeId: 'storeId',

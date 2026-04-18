@@ -88,7 +88,7 @@ export async function POST(request) {
     for (const item of items) {
         const product = await prisma.product.findUnique({
             where: { id: item.id },
-            select: { storeId: true, price: true, origin: true }
+            select: { storeId: true, price: true, origin: true, acceptCod: true }
         });
         if (!product) continue;
         const storeId = product.storeId;
@@ -98,19 +98,25 @@ export async function POST(request) {
         ordersByStore.get(storeId).push({
             ...item,
             price: product.price,
-            origin: product.origin ?? 'LOCAL'
+            origin: product.origin ?? 'LOCAL',
+            acceptCod: product.acceptCod !== false,
         });
     }
 
-    // Block COD for carts containing ABROAD items
-    const hasAbroadItems = Array.from(ordersByStore.values())
-        .flat()
-        .some(item => item.origin === 'ABROAD');
+    const flatOrderItems = Array.from(ordersByStore.values()).flat();
+    const hasAbroadItems = flatOrderItems.some((item) => item.origin === "ABROAD");
+    const codNotAllowed = flatOrderItems.some(
+        (item) => item.origin === "ABROAD" || (item.origin === "LOCAL" && item.acceptCod === false),
+    );
 
-    if (paymentMethod === 'COD' && hasAbroadItems) {
+    if (paymentMethod === "COD" && codNotAllowed) {
         return NextResponse.json(
-            { error: "Cash on Delivery is not available for internationally shipped (Shipped from Abroad) products. Please choose an online payment method." },
-            { status: 400 }
+            {
+                error: hasAbroadItems
+                    ? "Cash on Delivery is not available for internationally shipped (Shipped from Abroad) products. Please choose an online payment method."
+                    : "Cash on Delivery is not available for one or more items in your cart. Please choose an online payment method or remove those items.",
+            },
+            { status: 400 },
         );
     }
 
@@ -200,7 +206,7 @@ export async function POST(request) {
         }).catch(() => {}); // non-fatal
     }
 
-    // Fetch buyer info and store info for notifications
+    // In-app + email: persist DB notifications first; Inngest can fail without blocking the tray
     try {
         const buyer = await prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } });
         const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$';
@@ -212,24 +218,9 @@ export async function POST(request) {
             link: '/orders',
         }];
 
-        // Fire order confirmation email to buyer
-        await inngest.send({
-            name: "app/order.confirmed",
-            data: {
-                orderId: orderIds.join(', '),
-                userEmail: buyer.email,
-                userName: buyer.name,
-                orderTotal: fullAmount,
-                currency,
-                items: Array.from(ordersByStore.values()).flat().map(i => ({
-                    name: i.name || i.id,
-                    quantity: i.quantity,
-                    price: i.price,
-                })),
-            }
-        });
+        /** @type {Array<{ storeEmail: string, storeName: string, orderId: string, orderTotal: number }>} */
+        const inngestSellerPushes = [];
 
-        // Fire new order notification to each seller
         for (const [storeId] of ordersByStore.entries()) {
             const store = await prisma.store.findUnique({ where: { id: storeId }, select: { name: true, email: true, userId: true } });
             const storeOrder = await prisma.order.findFirst({ where: { storeId, userId }, orderBy: { createdAt: 'desc' } });
@@ -241,21 +232,60 @@ export async function POST(request) {
                     message: `You have a new order from ${buyer?.name || 'a customer'}.`,
                     link: '/store/orders',
                 });
-                await inngest.send({
-                    name: "app/order.new",
-                    data: {
-                        storeEmail: store.email,
-                        storeName: store.name,
-                        orderId: storeOrder.id,
-                        orderTotal: storeOrder.total,
-                        currency,
-                    }
+                inngestSellerPushes.push({
+                    storeEmail: store.email,
+                    storeName: store.name,
+                    orderId: storeOrder.id,
+                    orderTotal: storeOrder.total,
                 });
             }
         }
-        await createNotifications(dbNotifications);
+
+        try {
+            await createNotifications(dbNotifications);
+        } catch (dbNotifError) {
+            console.error("DB notification create error (non-fatal):", dbNotifError);
+        }
+
+        if (buyer) {
+            try {
+                await inngest.send({
+                    name: "app/order.confirmed",
+                    data: {
+                        orderId: orderIds.join(', '),
+                        userEmail: buyer.email,
+                        userName: buyer.name,
+                        orderTotal: fullAmount,
+                        currency,
+                        items: Array.from(ordersByStore.values()).flat().map(i => ({
+                            name: i.name || i.id,
+                            quantity: i.quantity,
+                            price: i.price,
+                        })),
+                    }
+                });
+            } catch (e) {
+                console.error("Inngest app/order.confirmed (non-fatal):", e);
+            }
+        }
+
+        for (const s of inngestSellerPushes) {
+            try {
+                await inngest.send({
+                    name: "app/order.new",
+                    data: {
+                        storeEmail: s.storeEmail,
+                        storeName: s.storeName,
+                        orderId: s.orderId,
+                        orderTotal: s.orderTotal,
+                        currency,
+                    }
+                });
+            } catch (e) {
+                console.error("Inngest app/order.new (non-fatal):", e);
+            }
+        }
     } catch (notifError) {
-        // Notification failure must never break the order flow
         console.error("Notification error (non-fatal):", notifError);
     }
 

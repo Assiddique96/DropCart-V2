@@ -4885,6 +4885,7 @@ export namespace Prisma {
     sku: string | null
     scheduledAt: Date | null
     origin: $Enums.ProductOrigin | null
+    acceptCod: boolean | null
     isDigital: boolean | null
     downloadUrl: string | null
     storeId: string | null
@@ -4904,6 +4905,7 @@ export namespace Prisma {
     sku: string | null
     scheduledAt: Date | null
     origin: $Enums.ProductOrigin | null
+    acceptCod: boolean | null
     isDigital: boolean | null
     downloadUrl: string | null
     storeId: string | null
@@ -4925,6 +4927,7 @@ export namespace Prisma {
     tags: number
     scheduledAt: number
     origin: number
+    acceptCod: number
     isDigital: number
     downloadUrl: number
     storeId: number
@@ -4958,6 +4961,7 @@ export namespace Prisma {
     sku?: true
     scheduledAt?: true
     origin?: true
+    acceptCod?: true
     isDigital?: true
     downloadUrl?: true
     storeId?: true
@@ -4977,6 +4981,7 @@ export namespace Prisma {
     sku?: true
     scheduledAt?: true
     origin?: true
+    acceptCod?: true
     isDigital?: true
     downloadUrl?: true
     storeId?: true
@@ -4998,6 +5003,7 @@ export namespace Prisma {
     tags?: true
     scheduledAt?: true
     origin?: true
+    acceptCod?: true
     isDigital?: true
     downloadUrl?: true
     storeId?: true
@@ -5106,6 +5112,7 @@ export namespace Prisma {
     tags: string[]
     scheduledAt: Date | null
     origin: $Enums.ProductOrigin
+    acceptCod: boolean
     isDigital: boolean
     downloadUrl: string | null
     storeId: string
@@ -5146,6 +5153,7 @@ export namespace Prisma {
     tags?: boolean
     scheduledAt?: boolean
     origin?: boolean
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: boolean
     storeId?: boolean
@@ -5172,6 +5180,7 @@ export namespace Prisma {
     tags?: boolean
     scheduledAt?: boolean
     origin?: boolean
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: boolean
     storeId?: boolean
@@ -5194,6 +5203,7 @@ export namespace Prisma {
     tags?: boolean
     scheduledAt?: boolean
     origin?: boolean
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: boolean
     storeId?: boolean
@@ -5216,6 +5226,7 @@ export namespace Prisma {
     tags?: boolean
     scheduledAt?: boolean
     origin?: boolean
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: boolean
     storeId?: boolean
@@ -5223,7 +5234,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mrp" | "price" | "images" | "category" | "inStock" | "quantity" | "sku" | "tags" | "scheduledAt" | "origin" | "isDigital" | "downloadUrl" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mrp" | "price" | "images" | "category" | "inStock" | "quantity" | "sku" | "tags" | "scheduledAt" | "origin" | "acceptCod" | "isDigital" | "downloadUrl" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     store?: boolean | StoreDefaultArgs<ExtArgs>
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
@@ -5260,6 +5271,10 @@ export namespace Prisma {
       tags: string[]
       scheduledAt: Date | null
       origin: $Enums.ProductOrigin
+      /**
+       * LOCAL only: seller may disable COD. Always false in DB for ABROAD (enforced in API).
+       */
+      acceptCod: boolean
       isDigital: boolean
       downloadUrl: string | null
       storeId: string
@@ -5705,6 +5720,7 @@ export namespace Prisma {
     readonly tags: FieldRef<"Product", 'String[]'>
     readonly scheduledAt: FieldRef<"Product", 'DateTime'>
     readonly origin: FieldRef<"Product", 'ProductOrigin'>
+    readonly acceptCod: FieldRef<"Product", 'Boolean'>
     readonly isDigital: FieldRef<"Product", 'Boolean'>
     readonly downloadUrl: FieldRef<"Product", 'String'>
     readonly storeId: FieldRef<"Product", 'String'>
@@ -20143,6 +20159,7 @@ export namespace Prisma {
     tags: 'tags',
     scheduledAt: 'scheduledAt',
     origin: 'origin',
+    acceptCod: 'acceptCod',
     isDigital: 'isDigital',
     downloadUrl: 'downloadUrl',
     storeId: 'storeId',
@@ -20743,6 +20760,7 @@ export namespace Prisma {
     tags?: StringNullableListFilter<"Product">
     scheduledAt?: DateTimeNullableFilter<"Product"> | Date | string | null
     origin?: EnumProductOriginFilter<"Product"> | $Enums.ProductOrigin
+    acceptCod?: BoolFilter<"Product"> | boolean
     isDigital?: BoolFilter<"Product"> | boolean
     downloadUrl?: StringNullableFilter<"Product"> | string | null
     storeId?: StringFilter<"Product"> | string
@@ -20768,6 +20786,7 @@ export namespace Prisma {
     tags?: SortOrder
     scheduledAt?: SortOrderInput | SortOrder
     origin?: SortOrder
+    acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrderInput | SortOrder
     storeId?: SortOrder
@@ -20796,6 +20815,7 @@ export namespace Prisma {
     tags?: StringNullableListFilter<"Product">
     scheduledAt?: DateTimeNullableFilter<"Product"> | Date | string | null
     origin?: EnumProductOriginFilter<"Product"> | $Enums.ProductOrigin
+    acceptCod?: BoolFilter<"Product"> | boolean
     isDigital?: BoolFilter<"Product"> | boolean
     downloadUrl?: StringNullableFilter<"Product"> | string | null
     storeId?: StringFilter<"Product"> | string
@@ -20821,6 +20841,7 @@ export namespace Prisma {
     tags?: SortOrder
     scheduledAt?: SortOrderInput | SortOrder
     origin?: SortOrder
+    acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrderInput | SortOrder
     storeId?: SortOrder
@@ -20850,6 +20871,7 @@ export namespace Prisma {
     tags?: StringNullableListFilter<"Product">
     scheduledAt?: DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
     origin?: EnumProductOriginWithAggregatesFilter<"Product"> | $Enums.ProductOrigin
+    acceptCod?: BoolWithAggregatesFilter<"Product"> | boolean
     isDigital?: BoolWithAggregatesFilter<"Product"> | boolean
     downloadUrl?: StringNullableWithAggregatesFilter<"Product"> | string | null
     storeId?: StringWithAggregatesFilter<"Product"> | string
@@ -22026,6 +22048,7 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
     createdAt?: Date | string
@@ -22050,6 +22073,7 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
     storeId: string
@@ -22074,6 +22098,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22098,6 +22123,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
@@ -22122,6 +22148,7 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
     storeId: string
@@ -22143,6 +22170,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22163,6 +22191,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
@@ -23593,6 +23622,7 @@ export namespace Prisma {
     tags?: SortOrder
     scheduledAt?: SortOrder
     origin?: SortOrder
+    acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrder
     storeId?: SortOrder
@@ -23618,6 +23648,7 @@ export namespace Prisma {
     sku?: SortOrder
     scheduledAt?: SortOrder
     origin?: SortOrder
+    acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrder
     storeId?: SortOrder
@@ -23637,6 +23668,7 @@ export namespace Prisma {
     sku?: SortOrder
     scheduledAt?: SortOrder
     origin?: SortOrder
+    acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrder
     storeId?: SortOrder
@@ -26660,6 +26692,7 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
     createdAt?: Date | string
@@ -26683,6 +26716,7 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
     storeId: string
@@ -26754,6 +26788,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26777,6 +26812,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
@@ -27284,6 +27320,7 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
     createdAt?: Date | string
@@ -27307,6 +27344,7 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
     storeId: string
@@ -27393,6 +27431,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27416,6 +27455,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
@@ -27562,6 +27602,7 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
     createdAt?: Date | string
@@ -27585,6 +27626,7 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
     storeId: string
@@ -27665,6 +27707,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27688,6 +27731,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
@@ -27965,6 +28009,7 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
     createdAt?: Date | string
@@ -27988,6 +28033,7 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
     createdAt?: Date | string
@@ -28189,6 +28235,7 @@ export namespace Prisma {
     tags?: StringNullableListFilter<"Product">
     scheduledAt?: DateTimeNullableFilter<"Product"> | Date | string | null
     origin?: EnumProductOriginFilter<"Product"> | $Enums.ProductOrigin
+    acceptCod?: BoolFilter<"Product"> | boolean
     isDigital?: BoolFilter<"Product"> | boolean
     downloadUrl?: StringNullableFilter<"Product"> | string | null
     storeId?: StringFilter<"Product"> | string
@@ -28911,6 +28958,7 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
     createdAt?: Date | string
@@ -28971,6 +29019,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28994,6 +29043,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29017,6 +29067,7 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

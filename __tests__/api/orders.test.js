@@ -115,15 +115,27 @@ describe('Order shipping fee logic', () => {
   });
 });
 
-describe('COD restriction for ABROAD items', () => {
+describe('COD restriction (abroad + local opt-out)', () => {
   function isCODBlocked(items, paymentMethod) {
-    const hasAbroadItems = items.some(i => i.origin === 'ABROAD');
-    return paymentMethod === 'COD' && hasAbroadItems;
+    const codNotAllowed = items.some(
+      (i) => i.origin === 'ABROAD' || (i.origin === 'LOCAL' && i.acceptCod === false),
+    );
+    return paymentMethod === 'COD' && codNotAllowed;
   }
 
-  test('COD is allowed for LOCAL-only carts', () => {
+  test('COD is allowed for LOCAL-only carts with COD enabled', () => {
+    const items = [{ origin: 'LOCAL', acceptCod: true }];
+    expect(isCODBlocked(items, 'COD')).toBe(false);
+  });
+
+  test('COD is allowed when acceptCod omitted on local (backward compatible)', () => {
     const items = [{ origin: 'LOCAL' }];
     expect(isCODBlocked(items, 'COD')).toBe(false);
+  });
+
+  test('COD is blocked for LOCAL when seller disabled COD', () => {
+    const items = [{ origin: 'LOCAL', acceptCod: false }];
+    expect(isCODBlocked(items, 'COD')).toBe(true);
   });
 
   test('COD is blocked for ABROAD carts', () => {
@@ -132,7 +144,7 @@ describe('COD restriction for ABROAD items', () => {
   });
 
   test('COD is blocked for mixed carts containing ABROAD', () => {
-    const items = [{ origin: 'LOCAL' }, { origin: 'ABROAD' }];
+    const items = [{ origin: 'LOCAL', acceptCod: true }, { origin: 'ABROAD' }];
     expect(isCODBlocked(items, 'COD')).toBe(true);
   });
 

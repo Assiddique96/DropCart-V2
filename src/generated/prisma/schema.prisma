@@ -62,6 +62,8 @@ model Product {
   tags        String[]      @default([])
   scheduledAt DateTime?
   origin      ProductOrigin @default(LOCAL)
+  /// LOCAL only: seller may disable COD. Always false in DB for ABROAD (enforced in API).
+  acceptCod   Boolean       @default(true)
   isDigital   Boolean       @default(false) // true = downloadable product
   downloadUrl String? // secure URL for digital file (set after order paid)
   storeId     String

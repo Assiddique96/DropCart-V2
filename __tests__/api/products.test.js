@@ -36,8 +36,9 @@ describe('Product origin rules', () => {
     return origin === 'ABROAD' ? '20 – 25 days' : '7 – 10 days';
   }
 
-  function isCODAllowed(origin) {
-    return origin !== 'ABROAD';
+  function isCODAllowed(origin, acceptCod = true) {
+    if (origin === 'ABROAD') return false;
+    return acceptCod !== false;
   }
 
   function getShippingFee(origin, fees = { local: 7000, abroad: 15000 }) {
@@ -52,12 +53,16 @@ describe('Product origin rules', () => {
     expect(getETA('ABROAD')).toBe('20 – 25 days');
   });
 
-  test('COD is allowed for LOCAL products', () => {
-    expect(isCODAllowed('LOCAL')).toBe(true);
+  test('COD is allowed for LOCAL products with acceptCod', () => {
+    expect(isCODAllowed('LOCAL', true)).toBe(true);
+  });
+
+  test('COD is not allowed for LOCAL when seller disabled COD', () => {
+    expect(isCODAllowed('LOCAL', false)).toBe(false);
   });
 
   test('COD is not allowed for ABROAD products', () => {
-    expect(isCODAllowed('ABROAD')).toBe(false);
+    expect(isCODAllowed('ABROAD', true)).toBe(false);
   });
 
   test('LOCAL product uses local shipping fee', () => {

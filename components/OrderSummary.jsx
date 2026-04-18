@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { Show, useAuth, useUser } from '@clerk/nextjs';
 import axios from 'axios';
 import { fetchCart } from '@/lib/features/cart/cartSlice';
+import { cartBlocksCod } from '@/lib/codAvailability';
 
 const ALL_PAYMENT_METHODS = [
     { id: 'COD', label: 'Cash on Delivery', description: 'Pay when your order arrives' },
@@ -25,7 +26,9 @@ const OrderSummary = ({ totalPrice, items }) => {
         return product?.origin === 'ABROAD'
     }) ?? false
 
-    const PAYMENT_METHODS = hasAbroadItems
+    const codBlocked = cartBlocksCod(allProducts, items)
+
+    const PAYMENT_METHODS = codBlocked
         ? ALL_PAYMENT_METHODS.filter(m => m.id !== 'COD')
         : ALL_PAYMENT_METHODS
 
@@ -38,10 +41,10 @@ const OrderSummary = ({ totalPrice, items }) => {
     const [shippingFees, setShippingFees] = useState({ local: 7000, abroad: 15000 });
 
     useEffect(() => {
-        if (hasAbroadItems && paymentMethod === 'COD') {
-            setPaymentMethod('STRIPE'); // Switch them away from COD if it's no longer allowed
+        if (codBlocked && paymentMethod === 'COD') {
+            setPaymentMethod('STRIPE');
         }
-    }, [hasAbroadItems, paymentMethod]);
+    }, [codBlocked, paymentMethod]);
     const { user } = useUser();
     const { getToken } = useAuth();
     const dispatch = useDispatch();
@@ -191,7 +194,12 @@ const OrderSummary = ({ totalPrice, items }) => {
                         ✈️ Your cart includes items <span className="font-semibold">Shipped from Abroad</span>. Higher shipping rate applies. Delivery in <span className="font-semibold">20–25 days</span>. COD not available.
                     </div>
                 )}
-                {!hasAbroadItems && (
+                {!hasAbroadItems && codBlocked && (
+                    <div className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+                        At least one local product in your cart does not accept Cash on Delivery. Please pay online or adjust your cart.
+                    </div>
+                )}
+                {!hasAbroadItems && !codBlocked && (
                     <p className="text-xs text-slate-400">🏠 Local shipping · Delivery in 7–10 days</p>
                 )}
                 {coupon && (

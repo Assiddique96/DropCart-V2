@@ -68,9 +68,9 @@ export default function StoreManageProducts() {
     }
 
     const downloadCSVTemplate = () => {
-        const header = "name,description,mrp,price,category,quantity,sku,tags,image_url,origin"
-        const example = "Sample T-Shirt,A comfortable cotton t-shirt,5000,3500,Clothing,10,TSH-001,fashion|clothing,https://example.com/image.jpg,LOCAL"
-        const example2 = "Imported Sneakers,Premium sneakers from abroad,25000,19000,Clothing,5,SNK-001,shoes|imported,https://example.com/sneaker.jpg,ABROAD"
+        const header = "name,description,mrp,price,category,quantity,sku,tags,image_url,origin,accept_cod"
+        const example = "Sample T-Shirt,A comfortable cotton t-shirt,5000,3500,Clothing,10,TSH-001,fashion|clothing,https://example.com/image.jpg,LOCAL,true"
+        const example2 = "Imported Sneakers,Premium sneakers from abroad,25000,19000,Clothing,5,SNK-001,shoes|imported,https://example.com/sneaker.jpg,ABROAD,"
         const blob = new Blob([header + "\n" + example + "\n" + example2], { type: "text/csv" })
         const url = URL.createObjectURL(blob)
         const a = document.createElement("a"); a.href = url; a.download = "dropcart-import-template.csv"; a.click()
@@ -116,6 +116,7 @@ export default function StoreManageProducts() {
             tags: Array.isArray(product.tags) ? product.tags.join(', ') : '',
             scheduledAt: product.scheduledAt ? new Date(product.scheduledAt).toISOString().slice(0,16) : '',
             origin: product.origin ?? 'LOCAL',
+            acceptCod: (product.origin ?? 'LOCAL') === 'ABROAD' ? false : product.acceptCod !== false,
         })
         setNewImages([])
     }
@@ -142,6 +143,7 @@ export default function StoreManageProducts() {
             if (editForm.tags) formData.append("tags", editForm.tags)
             if (editForm.scheduledAt) formData.append("scheduledAt", editForm.scheduledAt)
             formData.append("origin", editForm.origin || "LOCAL")
+            formData.append("acceptCod", editForm.origin === "LOCAL" ? (editForm.acceptCod ? "true" : "false") : "false")
             newImages.forEach(img => formData.append("images", img))
 
             const { data } = await axios.patch("/api/store/product", formData, {
@@ -294,12 +296,30 @@ export default function StoreManageProducts() {
                                                     <label className="flex flex-col gap-1 text-xs">
                                                         Shipping Origin
                                                         <select value={editForm.origin ?? 'LOCAL'}
-                                                            onChange={e => setEditForm({ ...editForm, origin: e.target.value })}
+                                                            onChange={(e) => {
+                                                                const v = e.target.value
+                                                                setEditForm((f) => ({
+                                                                    ...f,
+                                                                    origin: v,
+                                                                    acceptCod: v === 'LOCAL' ? (f.origin === 'ABROAD' ? true : f.acceptCod !== false) : false,
+                                                                }))
+                                                            }}
                                                             className="border border-slate-200 rounded p-2 outline-none text-sm bg-white">
                                                             <option value="LOCAL">🏠 Local Product</option>
                                                             <option value="ABROAD">✈️ Shipped from Abroad</option>
                                                         </select>
                                                     </label>
+                                                    {editForm.origin === 'LOCAL' && (
+                                                        <label className="flex flex-col gap-1 text-xs sm:col-span-2">
+                                                            <span className="flex items-center gap-2 cursor-pointer select-none">
+                                                                <input type="checkbox" checked={!!editForm.acceptCod}
+                                                                    onChange={e => setEditForm({ ...editForm, acceptCod: e.target.checked })}
+                                                                    className="accent-green-600" />
+                                                                Accept Cash on Delivery (COD) for this product
+                                                            </span>
+                                                            <span className="text-slate-400 font-normal pl-6">If unchecked, buyers must pay online.</span>
+                                                        </label>
+                                                    )}
                                                     <label className="flex flex-col gap-1 text-xs">
                                                         SKU
                                                         <input type="text" value={editForm.sku ?? ''}

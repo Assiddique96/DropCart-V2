@@ -25,6 +25,7 @@ export default function StoreAddProduct() {
     const [productInfo, setProductInfo] = useState({
         name: "", description: "", mrp: "", price: "",
         category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL",
+        acceptCod: true,
     })
 
     // Variant builder state — fully customizable groups
@@ -146,6 +147,7 @@ export default function StoreAddProduct() {
             const formData = new FormData()
             Object.entries(productInfo).forEach(([k, v]) => {
                 if (k === "tags") formData.append("tags", v.join(","))
+                else if (k === "acceptCod") formData.append("acceptCod", v ? "true" : "false")
                 else formData.append(k, v)
             })
             images.forEach(img => formData.append("images", img))
@@ -164,7 +166,7 @@ export default function StoreAddProduct() {
             }
 
             // Reset form
-            setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL" })
+            setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", acceptCod: true })
             setImages([]); setAiUsed(false); setVariantGroups([]); setNewOptionInputs({})
         } catch (error) {
             toast.error(error.response?.data?.error || error.message)
@@ -283,7 +285,11 @@ export default function StoreAddProduct() {
                         <label key={opt.value}
                             className={`flex flex-col gap-1 border-2 rounded-xl p-4 cursor-pointer transition ${productInfo.origin === opt.value ? opt.color : 'border-slate-200 hover:border-slate-300'}`}>
                             <input type="radio" name="origin" value={opt.value} checked={productInfo.origin === opt.value}
-                                onChange={e => setProductInfo(p => ({ ...p, origin: e.target.value }))} className="sr-only" />
+                                onChange={() => setProductInfo(p => ({
+                                    ...p,
+                                    origin: opt.value,
+                                    acceptCod: opt.value === 'LOCAL' ? true : false,
+                                }))} className="sr-only" />
                             <span className="text-xl">{opt.icon}</span>
                             <span className="text-sm font-semibold text-slate-800">{opt.label}</span>
                             <span className="text-xs text-slate-500">{opt.desc}</span>
@@ -292,6 +298,22 @@ export default function StoreAddProduct() {
                         </label>
                     ))}
                 </div>
+                {productInfo.origin === 'LOCAL' && (
+                    <label className="mt-4 flex items-start gap-3 cursor-pointer rounded-xl border border-slate-200 bg-white p-4 hover:border-slate-300 transition">
+                        <input
+                            type="checkbox"
+                            checked={productInfo.acceptCod}
+                            onChange={e => setProductInfo(p => ({ ...p, acceptCod: e.target.checked }))}
+                            className="mt-0.5 accent-green-600"
+                        />
+                        <div>
+                            <span className="text-sm font-medium text-slate-800">Accept Cash on Delivery (COD)</span>
+                            <p className="text-xs text-slate-500 mt-1">
+                                Buyers can pay when the order arrives. Turn off if you only want online payment for this product.
+                            </p>
+                        </div>
+                    </label>
+                )}
             </div>
 
             <div className="mb-6">

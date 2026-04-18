@@ -44,6 +44,9 @@ export async function POST(request) {
     }
 
     const notification = await createNotification({ userId, title, message, type, link });
+    if (!notification) {
+      return NextResponse.json({ error: "Could not create notification." }, { status: 500 });
+    }
     return NextResponse.json({ notification }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

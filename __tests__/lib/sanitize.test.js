@@ -166,6 +166,21 @@ describe('sanitizeProductInput', () => {
     expect(data.origin).toBe('ABROAD');
   });
 
+  test('ABROAD forces acceptCod false', () => {
+    const { data } = sanitizeProductInput({ ...valid, origin: 'ABROAD', acceptCod: 'true' });
+    expect(data.acceptCod).toBe(false);
+  });
+
+  test('LOCAL defaults acceptCod to true', () => {
+    const { data } = sanitizeProductInput({ ...valid, origin: 'LOCAL' });
+    expect(data.acceptCod).toBe(true);
+  });
+
+  test('LOCAL can opt out of COD', () => {
+    const { data } = sanitizeProductInput({ ...valid, origin: 'LOCAL', acceptCod: 'false' });
+    expect(data.acceptCod).toBe(false);
+  });
+
   test('returns null scheduledAt for invalid date', () => {
     const { data } = sanitizeProductInput({ ...valid, scheduledAt: 'not-a-date' });
     expect(data.scheduledAt).toBeNull();
