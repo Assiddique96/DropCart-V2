@@ -16,7 +16,7 @@ export default function CookieConsentToast() {
   useEffect(() => {
     if (!ready) return;
     const toastId = toast(
-      <div className="text-sm">
+      <div className="text-sm bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 p-1 rounded-lg">
         <p className="text-slate-700 dark:text-slate-200">
           We use cookies to improve your experience.
         </p>
@@ -35,7 +35,12 @@ export default function CookieConsentToast() {
           </button>
         </div>
       </div>,
-      { duration: Infinity, position: "bottom-right", id: "cookie-consent" },
+      {
+        duration: Infinity,
+        position: "bottom-right",
+        id: "cookie-consent",
+        className: "!rounded-xl !border !border-slate-200 dark:!border-slate-700 !bg-white dark:!bg-slate-900 !text-slate-700 dark:!text-slate-200 !shadow-lg",
+      },
     );
   }, [ready]);
 

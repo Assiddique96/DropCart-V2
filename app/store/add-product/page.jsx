@@ -175,17 +175,17 @@ export default function StoreAddProduct() {
     }
 
     return (
-        <form onSubmit={onSubmit} className="text-slate-500 mb-28 max-w-2xl">
-            <h1 className="text-2xl mb-6">Add New <span className="text-slate-800 font-medium">Product</span></h1>
+        <form onSubmit={onSubmit} className="text-slate-500 dark:text-slate-300 mb-28 max-w-2xl">
+            <h1 className="text-2xl mb-6">Add New <span className="text-slate-800 dark:text-slate-100 font-medium">Product</span></h1>
 
             {/* Images */}
             <div className="mb-6">
-                <p className="text-sm font-medium text-slate-600 mb-2">Product Images <span className="text-slate-400 text-xs">({images.length}/{MAX_IMAGES})</span></p>
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Product Images <span className="text-slate-400 text-xs">({images.length}/{MAX_IMAGES})</span></p>
                 <div className="flex flex-wrap gap-3">
                     {images.map((img, idx) => (
                         <div key={idx} className="relative group">
                             <Image src={URL.createObjectURL(img)} width={80} height={80}
-                                className="h-20 w-20 object-cover rounded-lg border border-slate-200" alt="" />
+                                className="h-20 w-20 object-cover rounded-lg border border-slate-200 dark:border-slate-700" alt="" />
                             <button type="button" onClick={() => removeImage(idx)}
                                 className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition">
                                 <XIcon size={10} />
@@ -211,78 +211,78 @@ export default function StoreAddProduct() {
 
             {/* Name */}
             <div className="mb-4">
-                <label className="text-xs text-slate-500 mb-1 block">Product Name *</label>
+                <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Product Name *</label>
                 <input type="text" name="name" value={productInfo.name} onChange={onChange}
                     placeholder="Enter product name" required
-                    className="w-full p-2.5 border border-slate-200 rounded-lg outline-none text-sm focus:border-slate-400 transition" />
+                    className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm focus:border-slate-400 transition" />
             </div>
 
             {/* Description */}
             <div className="mb-4">
-                <label className="text-xs text-slate-500 mb-1 block">Description *</label>
+                <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Description *</label>
                 <textarea name="description" value={productInfo.description} onChange={onChange}
                     placeholder="Describe your product" rows={4} required
-                    className="w-full p-2.5 border border-slate-200 rounded-lg outline-none text-sm resize-none focus:border-slate-400 transition" />
+                    className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm resize-none focus:border-slate-400 transition" />
             </div>
 
             {/* Prices + Qty */}
             <div className="grid grid-cols-3 gap-3 mb-4">
                 <div>
-                    <label className="text-xs text-slate-500 mb-1 block">MRP *</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">MRP *</label>
                     <input type="number" name="mrp" value={productInfo.mrp} onChange={onChange}
                         placeholder="0" min="0" step="0.01" required
-                        className="w-full p-2.5 border border-slate-200 rounded-lg outline-none text-sm" />
+                        className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
                 </div>
                 <div>
-                    <label className="text-xs text-slate-500 mb-1 block">Offer Price *</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Offer Price *</label>
                     <input type="number" name="price" value={productInfo.price} onChange={onChange}
                         placeholder="0" min="0" step="0.01" required
-                        className="w-full p-2.5 border border-slate-200 rounded-lg outline-none text-sm" />
+                        className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
                 </div>
                 <div>
-                    <label className="text-xs text-slate-500 mb-1 block">Stock Qty</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Stock Qty</label>
                     <input type="number" name="quantity" value={productInfo.quantity} onChange={onChange}
                         placeholder="0" min="0"
-                        className="w-full p-2.5 border border-slate-200 rounded-lg outline-none text-sm" />
+                        className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
                 </div>
             </div>
 
             {/* Category + SKU */}
             <div className="grid grid-cols-2 gap-3 mb-4">
                 <div>
-                    <label className="text-xs text-slate-500 mb-1 block">Category *</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Category *</label>
                     <select name="category" value={productInfo.category}
                         onChange={e => setProductInfo(p => ({ ...p, category: e.target.value }))} required
-                        className="w-full p-2.5 border border-slate-200 rounded-lg outline-none text-sm">
+                        className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm">
                         <option value="">Select category</option>
                         {categories.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                 </div>
                 <div>
-                    <label className="text-xs text-slate-500 mb-1 block">SKU / Barcode</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">SKU / Barcode</label>
                     <input type="text" name="sku" value={productInfo.sku} onChange={onChange}
                         placeholder="e.g. ABC-001"
-                        className="w-full p-2.5 border border-slate-200 rounded-lg outline-none text-sm" />
+                        className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
                 </div>
             </div>
 
             {/* Schedule publish */}
             <div className="mb-4">
-                <label className="text-xs text-slate-500 mb-1 block">Schedule Publish Date <span className="text-slate-300">(leave blank to publish immediately)</span></label>
+                <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Schedule Publish Date <span className="text-slate-300">(leave blank to publish immediately)</span></label>
                 <input type="datetime-local" name="scheduledAt" value={productInfo.scheduledAt} onChange={onChange}
-                    className="w-full p-2.5 border border-slate-200 rounded-lg outline-none text-sm" />
+                    className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
             </div>
 
             {/* Origin */}
             <div className="mb-6">
-                <p className="text-xs text-slate-500 mb-2 font-medium">Shipping Origin *</p>
+                <p className="text-xs text-slate-500 dark:text-slate-300 mb-2 font-medium">Shipping Origin *</p>
                 <div className="grid grid-cols-2 gap-3">
                     {[
                         { value: 'LOCAL',  label: 'Local Product',       icon: '🏠', desc: 'Ships domestically',   eta: 'Delivery: 7 – 10 days',  cod: 'COD available',       color: 'border-green-400 bg-green-50', badge: 'text-green-700 bg-green-100' },
                         { value: 'ABROAD', label: 'Shipped from Abroad', icon: '✈️', desc: 'Ships internationally', eta: 'Delivery: 20 – 25 days', cod: 'Online payment only', color: 'border-blue-400 bg-blue-50',  badge: 'text-blue-700 bg-blue-100'  },
                     ].map(opt => (
                         <label key={opt.value}
-                            className={`flex flex-col gap-1 border-2 rounded-xl p-4 cursor-pointer transition ${productInfo.origin === opt.value ? opt.color : 'border-slate-200 hover:border-slate-300'}`}>
+                            className={`flex flex-col gap-1 border-2 rounded-xl p-4 cursor-pointer transition ${productInfo.origin === opt.value ? opt.color : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'}`}>
                             <input type="radio" name="origin" value={opt.value} checked={productInfo.origin === opt.value}
                                 onChange={() => setProductInfo(p => ({
                                     ...p,
@@ -290,15 +290,15 @@ export default function StoreAddProduct() {
                                     acceptCod: opt.value === 'LOCAL' ? true : false,
                                 }))} className="sr-only" />
                             <span className="text-xl">{opt.icon}</span>
-                            <span className="text-sm font-semibold text-slate-800">{opt.label}</span>
-                            <span className="text-xs text-slate-500">{opt.desc}</span>
-                            <span className="text-xs text-slate-500">{opt.eta}</span>
+                            <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">{opt.label}</span>
+                            <span className="text-xs text-slate-500 dark:text-slate-300">{opt.desc}</span>
+                            <span className="text-xs text-slate-500 dark:text-slate-300">{opt.eta}</span>
                             <span className={`text-xs px-2 py-0.5 rounded-full font-medium w-fit mt-1 ${opt.badge}`}>{opt.cod}</span>
                         </label>
                     ))}
                 </div>
                 {productInfo.origin === 'LOCAL' && (
-                    <label className="mt-4 flex items-start gap-3 cursor-pointer rounded-xl border border-slate-200 bg-white p-4 hover:border-slate-300 transition">
+                    <label className="mt-4 flex items-start gap-3 cursor-pointer rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 hover:border-slate-300 transition">
                         <input
                             type="checkbox"
                             checked={productInfo.acceptCod}
@@ -306,8 +306,8 @@ export default function StoreAddProduct() {
                             className="mt-0.5 accent-green-600"
                         />
                         <div>
-                            <span className="text-sm font-medium text-slate-800">Accept Cash on Delivery (COD)</span>
-                            <p className="text-xs text-slate-500 mt-1">
+                            <span className="text-sm font-medium text-slate-800 dark:text-slate-100">Accept Cash on Delivery (COD)</span>
+                            <p className="text-xs text-slate-500 dark:text-slate-300 mt-1">
                                 Buyers can pay when the order arrives. Turn off if you only want online payment for this product.
                             </p>
                         </div>
@@ -316,21 +316,21 @@ export default function StoreAddProduct() {
             </div>
 
             <div className="mb-6">
-                <label className="text-xs text-slate-500 mb-1 block">Tags <span className="text-slate-300">(up to 10)</span></label>
+                <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Tags <span className="text-slate-300">(up to 10)</span></label>
                 <div className="flex gap-2">
                     <input type="text" value={tagInput} onChange={e => setTagInput(e.target.value)}
                         onKeyDown={e => e.key === "Enter" && (e.preventDefault(), addTag())}
                         placeholder="Type a tag and press Enter"
-                        className="flex-1 p-2.5 border border-slate-200 rounded-lg outline-none text-sm" />
+                        className="flex-1 p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
                     <button type="button" onClick={addTag}
-                        className="px-3 border border-slate-200 rounded-lg text-slate-500 hover:border-slate-400 transition">
+                        className="px-3 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 dark:text-slate-300 hover:border-slate-400 transition">
                         <PlusIcon size={15} />
                     </button>
                 </div>
                 {productInfo.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-2">
                         {productInfo.tags.map(tag => (
-                            <span key={tag} className="flex items-center gap-1 text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full">
+                            <span key={tag} className="flex items-center gap-1 text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2.5 py-1 rounded-full">
                                 {tag}
                                 <XIcon size={10} className="cursor-pointer hover:text-red-500" onClick={() => removeTag(tag)} />
                             </span>
@@ -340,9 +340,9 @@ export default function StoreAddProduct() {
             </div>
 
             {/* Variants */}
-            <div className="mb-6 border border-slate-200 rounded-xl p-4 space-y-4">
+            <div className="mb-6 border border-slate-200 dark:border-slate-700 rounded-xl p-4 space-y-4">
                 <div>
-                    <p className="text-sm font-medium text-slate-700">Product Variants</p>
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Product Variants</p>
                     <p className="text-xs text-slate-400 mt-0.5">
                         Add customisable options — Color, Storage, Model, Bundle, Size, or anything else.
                         Use <strong>Image</strong> type for swatches with photos.
@@ -356,12 +356,12 @@ export default function StoreAddProduct() {
                         <input value={newGroupLabel} onChange={e => setNewGroupLabel(e.target.value)}
                             onKeyDown={e => e.key === "Enter" && (e.preventDefault(), addVariantGroup())}
                             placeholder="e.g. Color, Storage, Model, Bundle..."
-                            className="w-full p-2 border border-slate-200 rounded-lg text-xs outline-none focus:border-slate-400 transition" />
+                            className="w-full p-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none focus:border-slate-400 transition" />
                     </div>
                     <div className="shrink-0">
                         <label className="text-xs text-slate-400 mb-1 block">Type</label>
                         <select value={newGroupType} onChange={e => setNewGroupType(e.target.value)}
-                            className="p-2 border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                            className="p-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none bg-white dark:bg-slate-900">
                             <option value="TEXT">📝 Text pills</option>
                             <option value="IMAGE">🖼️ Image swatches</option>
                         </select>
@@ -374,11 +374,11 @@ export default function StoreAddProduct() {
 
                 {/* Existing groups */}
                 {variantGroups.map((group, gIdx) => (
-                    <div key={gIdx} className="border border-slate-100 rounded-xl p-3 bg-slate-50/50 space-y-3">
+                    <div key={gIdx} className="border border-slate-100 dark:border-slate-800 rounded-xl p-3 bg-slate-50 dark:bg-slate-900/50 space-y-3">
                         {/* Group header */}
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <span className="text-xs font-semibold text-slate-700">{group.label}</span>
+                                <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{group.label}</span>
                                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${group.type === "IMAGE" ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}`}>
                                     {group.type === "IMAGE" ? "🖼️ Image" : "📝 Text"}
                                 </span>
@@ -399,12 +399,12 @@ export default function StoreAddProduct() {
                         {group.options.length > 0 && (
                             <div className="flex flex-wrap gap-2">
                                 {group.options.map((opt, oIdx) => (
-                                    <div key={oIdx} className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs group/opt">
+                                    <div key={oIdx} className="flex items-center gap-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs group/opt">
                                         {group.type === "IMAGE" && opt.image && (
-                                            <img src={opt.image} alt="" className="w-6 h-6 rounded object-cover border border-slate-200" />
+                                            <img src={opt.image} alt="" className="w-6 h-6 rounded object-cover border border-slate-200 dark:border-slate-700" />
                                         )}
                                         <div>
-                                            <p className="font-medium text-slate-700">{opt.label}</p>
+                                            <p className="font-medium text-slate-700 dark:text-slate-200">{opt.label}</p>
                                             {opt.priceModifier !== 0 && (
                                                 <p className="text-[10px] text-green-600">
                                                     {opt.priceModifier > 0 ? "+" : ""}{opt.priceModifier.toLocaleString()}
@@ -431,7 +431,7 @@ export default function StoreAddProduct() {
                                     onChange={e => setNewOptionInputs(p => ({ ...p, [gIdx]: { ...p[gIdx], label: e.target.value } }))}
                                     onKeyDown={e => e.key === "Enter" && (e.preventDefault(), addOptionToGroup(gIdx))}
                                     placeholder={group.type === "IMAGE" ? "e.g. Midnight Black" : "e.g. 256 GB"}
-                                    className="w-full p-1.5 border border-slate-200 rounded text-xs outline-none bg-white" />
+                                    className="w-full p-1.5 border border-slate-200 dark:border-slate-700 rounded text-xs outline-none bg-white dark:bg-slate-900" />
                             </div>
 
                             {group.type === "IMAGE" && (
@@ -441,7 +441,7 @@ export default function StoreAddProduct() {
                                         value={newOptionInputs[gIdx]?.image || ""}
                                         onChange={e => setNewOptionInputs(p => ({ ...p, [gIdx]: { ...p[gIdx], image: e.target.value } }))}
                                         placeholder="https://..."
-                                        className="w-full p-1.5 border border-slate-200 rounded text-xs outline-none bg-white" />
+                                        className="w-full p-1.5 border border-slate-200 dark:border-slate-700 rounded text-xs outline-none bg-white dark:bg-slate-900" />
                                 </div>
                             )}
 
@@ -452,7 +452,7 @@ export default function StoreAddProduct() {
                                     value={newOptionInputs[gIdx]?.priceModifier || ""}
                                     onChange={e => setNewOptionInputs(p => ({ ...p, [gIdx]: { ...p[gIdx], priceModifier: e.target.value } }))}
                                     placeholder="0"
-                                    className="w-full p-1.5 border border-slate-200 rounded text-xs outline-none bg-white" />
+                                    className="w-full p-1.5 border border-slate-200 dark:border-slate-700 rounded text-xs outline-none bg-white dark:bg-slate-900" />
                             </div>
 
                             <div className="w-20">
@@ -462,7 +462,7 @@ export default function StoreAddProduct() {
                                     value={newOptionInputs[gIdx]?.quantity || ""}
                                     onChange={e => setNewOptionInputs(p => ({ ...p, [gIdx]: { ...p[gIdx], quantity: e.target.value } }))}
                                     placeholder="0"
-                                    className="w-full p-1.5 border border-slate-200 rounded text-xs outline-none bg-white" />
+                                    className="w-full p-1.5 border border-slate-200 dark:border-slate-700 rounded text-xs outline-none bg-white dark:bg-slate-900" />
                             </div>
 
                             <button type="button" onClick={() => addOptionToGroup(gIdx)}

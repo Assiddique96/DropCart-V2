@@ -59,10 +59,10 @@ export default function AdminProducts() {
     }
 
     return (
-        <div className="text-slate-500 mb-28">
+        <div className="text-slate-500 dark:text-slate-300 mb-28">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
                 <div>
-                    <h1 className="text-2xl">All <span className="text-slate-800 font-medium">Products</span></h1>
+                    <h1 className="text-2xl">All <span className="text-slate-800 dark:text-slate-100 font-medium">Products</span></h1>
                     <p className="text-xs text-slate-400 mt-0.5">{total} total products across all stores</p>
                 </div>
                 <div className="flex gap-3 flex-wrap">
@@ -70,11 +70,11 @@ export default function AdminProducts() {
                         <SearchIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                         <input type="text" value={search} onChange={e => setSearch(e.target.value)}
                             placeholder="Search products or stores..."
-                            className="border border-slate-200 rounded-lg pl-8 pr-8 py-2 text-sm outline-none w-56" />
+                            className="border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-8 py-2 text-sm outline-none w-56" />
                         {search && <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400"><XIcon size={13} /></button>}
                     </div>
                     <select value={category} onChange={e => setCategory(e.target.value)}
-                        className="border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none text-slate-600">
+                        className="border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none text-slate-600 dark:text-slate-300">
                         <option value="">All Categories</option>
                         {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
@@ -83,9 +83,9 @@ export default function AdminProducts() {
 
             {loading ? <Loading /> : (
                 <>
-                    <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+                    <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <table className="w-full text-sm text-left">
-                            <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                            <thead className="bg-slate-50 dark:bg-slate-900 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-300">
                                 <tr>
                                     <th className="px-4 py-3">Product</th>
                                     <th className="px-4 py-3 hidden md:table-cell">Store</th>
@@ -96,16 +96,16 @@ export default function AdminProducts() {
                                     <th className="px-4 py-3">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100 text-slate-700">
+                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200">
                                 {products.map(product => (
                                     <tr key={product.id} className="hover:bg-slate-50 transition-colors">
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-3">
                                                 {product.images?.[0] && (
-                                                    <Image src={product.images[0]} alt="" width={36} height={36} className="w-9 h-9 rounded object-cover border border-slate-100" />
+                                                    <Image src={product.images[0]} alt="" width={36} height={36} className="w-9 h-9 rounded object-cover border border-slate-100 dark:border-slate-800" />
                                                 )}
                                                 <div>
-                                                    <p className="font-medium text-slate-800 truncate max-w-[140px]">{product.name}</p>
+                                                    <p className="font-medium text-slate-800 dark:text-slate-100 truncate max-w-[140px]">{product.name}</p>
                                                     {product.sku && <p className="text-xs text-slate-400">{product.sku}</p>}
                                                 </div>
                                             </div>
@@ -149,7 +149,7 @@ export default function AdminProducts() {
                         <div className="flex items-center justify-center gap-2 mt-6">
                             {Array.from({ length: Math.min(totalPages, 8) }, (_, i) => i + 1).map(p => (
                                 <button key={p} onClick={() => setPage(p)}
-                                    className={`w-8 h-8 rounded-lg text-sm transition ${page === p ? 'bg-slate-800 text-white' : 'border border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+                                    className={`w-8 h-8 rounded-lg text-sm transition ${page === p ? 'bg-slate-800 text-white' : 'border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'}`}>
                                     {p}
                                 </button>
                             ))}
@@ -160,9 +160,9 @@ export default function AdminProducts() {
 
             {confirmDelete && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full mx-4">
-                        <h3 className="font-semibold text-slate-800 mb-1">Delete Product?</h3>
-                        <p className="text-sm text-slate-500 mb-1"><span className="font-medium">{confirmDelete.name}</span></p>
+                    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg p-6 max-w-sm w-full mx-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-1">Delete Product?</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-300 mb-1"><span className="font-medium">{confirmDelete.name}</span></p>
                         <p className="text-xs text-slate-400 mb-4">From store: {confirmDelete.store?.name}. This cannot be undone.</p>
                         <div className="flex gap-3">
                             <button onClick={() => deleteProduct(confirmDelete.id)} disabled={deleting}
@@ -170,7 +170,7 @@ export default function AdminProducts() {
                                 {deleting ? "Deleting..." : "Delete"}
                             </button>
                             <button onClick={() => setConfirmDelete(null)}
-                                className="flex-1 bg-slate-100 text-slate-700 py-2 rounded-lg text-sm hover:bg-slate-200 transition">Cancel</button>
+                                className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 py-2 rounded-lg text-sm hover:bg-slate-200 transition">Cancel</button>
                         </div>
                     </div>
                 </div>

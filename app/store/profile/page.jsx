@@ -73,17 +73,17 @@ export default function StoreProfile() {
     const bannerPreview = newBanner ? URL.createObjectURL(newBanner) : store?.banner
 
     return (
-        <div className="text-slate-500 mb-28 max-w-2xl">
-            <h1 className="text-2xl mb-1">Store <span className="text-slate-800 font-medium">Profile</span></h1>
+        <div className="text-slate-500 dark:text-slate-300 mb-28 max-w-2xl">
+            <h1 className="text-2xl mb-1">Store <span className="text-slate-800 dark:text-slate-100 font-medium">Profile</span></h1>
             <p className="text-xs text-slate-400 mb-8">
-                Username <span className="font-mono text-slate-600">@{store?.username}</span> cannot be changed after approval.
+                Username <span className="font-mono text-slate-600 dark:text-slate-300">@{store?.username}</span> cannot be changed after approval.
             </p>
 
             {/* Banner */}
             <div className="mb-6">
-                <p className="text-xs text-slate-500 mb-2">Store Banner <span className="text-slate-300">(optional, displays on your shop page)</span></p>
+                <p className="text-xs text-slate-500 dark:text-slate-300 mb-2">Store Banner <span className="text-slate-300">(optional, displays on your shop page)</span></p>
                 <label className="cursor-pointer block">
-                    <div className={`relative w-full h-32 rounded-xl overflow-hidden border-2 border-dashed border-slate-200 flex items-center justify-center bg-slate-50 hover:border-slate-400 transition`}>
+                    <div className={`relative w-full h-32 rounded-xl overflow-hidden border-2 border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-center bg-slate-50 dark:bg-slate-900 hover:border-slate-400 transition`}>
                         {bannerPreview ? (
                             <Image src={bannerPreview} alt="banner" fill className="object-cover" />
                         ) : (
@@ -99,9 +99,9 @@ export default function StoreProfile() {
 
             {/* Logo */}
             <div className="mb-6">
-                <p className="text-xs text-slate-500 mb-2">Store Logo</p>
+                <p className="text-xs text-slate-500 dark:text-slate-300 mb-2">Store Logo</p>
                 <label className="cursor-pointer inline-block">
-                    <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-slate-200 hover:border-slate-400 transition">
+                    <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 hover:border-slate-400 transition">
                         <Image src={logoPreview || assets.upload_area} alt="logo" fill className="object-cover" />
                     </div>
                     <input type="file" accept="image/*" hidden onChange={e => setNewLogo(e.target.files[0])} />
@@ -117,36 +117,36 @@ export default function StoreProfile() {
                     { label: "Contact Number", key: "contact", type: "text", placeholder: "+234..." },
                 ].map(({ label, key, type, placeholder }) => (
                     <div key={key}>
-                        <label className="text-xs text-slate-500 mb-1 block">{label}</label>
+                        <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">{label}</label>
                         <input
                             type={type}
                             value={form[key]}
                             onChange={e => setForm({ ...form, [key]: e.target.value })}
                             placeholder={placeholder}
-                            className="w-full border border-slate-200 rounded-lg p-2.5 text-sm outline-none focus:border-slate-400 transition"
+                            className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none focus:border-slate-400 transition"
                         />
                     </div>
                 ))}
 
                 <div>
-                    <label className="text-xs text-slate-500 mb-1 block">Description</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Description</label>
                     <textarea
                         value={form.description}
                         onChange={e => setForm({ ...form, description: e.target.value })}
                         rows={4}
                         placeholder="Tell buyers about your store..."
-                        className="w-full border border-slate-200 rounded-lg p-2.5 text-sm outline-none resize-none focus:border-slate-400 transition"
+                        className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none resize-none focus:border-slate-400 transition"
                     />
                 </div>
 
                 <div>
-                    <label className="text-xs text-slate-500 mb-1 block">Address</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Address</label>
                     <textarea
                         value={form.address}
                         onChange={e => setForm({ ...form, address: e.target.value })}
                         rows={2}
                         placeholder="Store physical address"
-                        className="w-full border border-slate-200 rounded-lg p-2.5 text-sm outline-none resize-none focus:border-slate-400 transition"
+                        className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none resize-none focus:border-slate-400 transition"
                     />
                 </div>
             </div>

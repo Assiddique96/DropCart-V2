@@ -176,15 +176,15 @@ export default function StoreManageProducts() {
     if (loading) return <Loading />
 
     return (
-        <div className="text-slate-500 mb-28">
+        <div className="text-slate-500 dark:text-slate-300 mb-28">
             <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-                <h1 className="text-2xl">Manage <span className="text-slate-800 font-medium">Products</span></h1>
+                <h1 className="text-2xl">Manage <span className="text-slate-800 dark:text-slate-100 font-medium">Products</span></h1>
                 <div className="flex items-center gap-2">
                     <button onClick={downloadCSVTemplate}
-                        className="flex items-center gap-1.5 text-xs px-3 py-2 border border-slate-200 rounded-lg text-slate-500 hover:border-slate-400 transition">
+                        className="flex items-center gap-1.5 text-xs px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 dark:text-slate-300 hover:border-slate-400 transition">
                         <DownloadIcon size={13} /> CSV Template
                     </button>
-                    <label className={`flex items-center gap-1.5 text-xs px-3 py-2 border border-slate-200 rounded-lg text-slate-500 hover:border-slate-400 transition cursor-pointer ${importing ? 'opacity-50' : ''}`}>
+                    <label className={`flex items-center gap-1.5 text-xs px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 dark:text-slate-300 hover:border-slate-400 transition cursor-pointer ${importing ? 'opacity-50' : ''}`}>
                         <UploadIcon size={13} /> {importing ? "Importing..." : "Import CSV"}
                         <input type="file" accept=".csv" hidden ref={csvRef} onChange={handleCSVImport} disabled={importing} />
                     </label>
@@ -194,9 +194,9 @@ export default function StoreManageProducts() {
             {products.length === 0 ? (
                 <p className="text-slate-400">No products yet. Add your first product.</p>
             ) : (
-                <div className="overflow-x-auto rounded-lg border border-slate-200 shadow-sm">
+                <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
                     <table className="w-full text-left text-sm">
-                        <thead className="bg-slate-50 text-gray-700 uppercase tracking-wider text-xs">
+                        <thead className="bg-slate-50 dark:bg-slate-900 text-gray-700 uppercase tracking-wider text-xs">
                             <tr>
                                 <th className="px-4 py-3">Product</th>
                                 <th className="px-4 py-3 hidden md:table-cell">Category</th>
@@ -207,21 +207,21 @@ export default function StoreManageProducts() {
                                 <th className="px-4 py-3">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 text-slate-700">
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200">
                             {products.map((product) => (
                                 <Fragment key={product.id}>
                                     <tr key={product.id} className="hover:bg-slate-50 transition-colors">
                                         <td className="px-4 py-3">
                                             <div className="flex gap-3 items-center">
-                                                <Image width={44} height={44} className="rounded border border-slate-100 object-cover" src={product.images[0]} alt="" />
-                                                <span className="font-medium text-slate-800 max-w-[140px] truncate">{product.name}</span>
+                                                <Image width={44} height={44} className="rounded border border-slate-100 dark:border-slate-800 object-cover" src={product.images[0]} alt="" />
+                                                <span className="font-medium text-slate-800 dark:text-slate-100 max-w-[140px] truncate">{product.name}</span>
                                             </div>
                                         </td>
                                         <td className="px-4 py-3 hidden md:table-cell text-slate-400 text-xs">{product.category}</td>
                                         <td className="px-4 py-3 hidden md:table-cell line-through text-slate-400">{currency}{product.mrp.toLocaleString()}</td>
-                                        <td className="px-4 py-3 font-medium text-slate-800">{currency}{product.price.toLocaleString()}</td>
+                                        <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-100">{currency}{product.price.toLocaleString()}</td>
                                         <td className="px-4 py-3">
-                                            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${product.quantity > 0 ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-400'}`}>
+                                            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${product.quantity > 0 ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
                                                 {product.quantity ?? 0}
                                             </span>
                                         </td>
@@ -231,7 +231,7 @@ export default function StoreManageProducts() {
                                                     onChange={() => toast.promise(toggleStock(product.id), { loading: "Updating..." })}
                                                     checked={product.inStock} />
                                                 <div className="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-green-500 transition-colors duration-200"></div>
-                                                <span className="dot absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-4"></span>
+                                                <span className="dot absolute left-1 top-1 w-3 h-3 bg-white dark:bg-slate-900 rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-4"></span>
                                             </label>
                                         </td>
                                         <td className="px-4 py-3">
@@ -260,13 +260,13 @@ export default function StoreManageProducts() {
                                                         Name
                                                         <input type="text" value={editForm.name}
                                                             onChange={e => setEditForm({ ...editForm, name: e.target.value })}
-                                                            className="border border-slate-200 rounded p-2 outline-none text-sm bg-white" />
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
                                                     </label>
                                                     <label className="flex flex-col gap-1 text-xs">
                                                         Category
                                                         <select value={editForm.category}
                                                             onChange={e => setEditForm({ ...editForm, category: e.target.value })}
-                                                            className="border border-slate-200 rounded p-2 outline-none text-sm bg-white">
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
                                                             {categories.map(c => <option key={c} value={c}>{c}</option>)}
                                                         </select>
                                                     </label>
@@ -274,19 +274,19 @@ export default function StoreManageProducts() {
                                                         MRP ({currency})
                                                         <input type="number" value={editForm.mrp}
                                                             onChange={e => setEditForm({ ...editForm, mrp: e.target.value })}
-                                                            className="border border-slate-200 rounded p-2 outline-none text-sm bg-white" />
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
                                                     </label>
                                                     <label className="flex flex-col gap-1 text-xs">
                                                         Offer Price ({currency})
                                                         <input type="number" value={editForm.price}
                                                             onChange={e => setEditForm({ ...editForm, price: e.target.value })}
-                                                            className="border border-slate-200 rounded p-2 outline-none text-sm bg-white" />
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
                                                     </label>
                                                     <label className="flex flex-col gap-1 text-xs">
                                                         Quantity in Stock
                                                         <input type="number" min="0" value={editForm.quantity}
                                                             onChange={e => setEditForm({ ...editForm, quantity: e.target.value })}
-                                                            className="border border-slate-200 rounded p-2 outline-none text-sm bg-white" />
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
                                                     </label>
                                                     <label className="flex flex-col gap-1 text-xs">
                                                         Shipping Origin
@@ -299,7 +299,7 @@ export default function StoreManageProducts() {
                                                                     acceptCod: v === 'LOCAL' ? (f.origin === 'ABROAD' ? true : f.acceptCod !== false) : false,
                                                                 }))
                                                             }}
-                                                            className="border border-slate-200 rounded p-2 outline-none text-sm bg-white">
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
                                                             <option value="LOCAL">🏠 Local Product</option>
                                                             <option value="ABROAD">✈️ Shipped from Abroad</option>
                                                         </select>
@@ -320,33 +320,33 @@ export default function StoreManageProducts() {
                                                         <input type="text" value={editForm.sku ?? ''}
                                                             onChange={e => setEditForm({ ...editForm, sku: e.target.value })}
                                                             placeholder="e.g. ABC-001"
-                                                            className="border border-slate-200 rounded p-2 outline-none text-sm bg-white" />
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
                                                     </label>
                                                     <label className="flex flex-col gap-1 text-xs">
                                                         Tags (comma-separated)
                                                         <input type="text" value={editForm.tags ?? ''}
                                                             onChange={e => setEditForm({ ...editForm, tags: e.target.value })}
                                                             placeholder="e.g. fashion, summer"
-                                                            className="border border-slate-200 rounded p-2 outline-none text-sm bg-white" />
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
                                                     </label>
                                                     <label className="flex flex-col gap-1 text-xs">
                                                         Scheduled Publish
                                                         <input type="datetime-local" value={editForm.scheduledAt ?? ''}
                                                             onChange={e => setEditForm({ ...editForm, scheduledAt: e.target.value })}
-                                                            className="border border-slate-200 rounded p-2 outline-none text-sm bg-white" />
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
                                                     </label>
                                                     <label className="flex flex-col gap-1 text-xs">
                                                         Replace Images (optional)
                                                         <input type="file" multiple accept="image/*"
                                                             onChange={e => setNewImages(Array.from(e.target.files))}
-                                                            className="text-xs border border-slate-200 rounded p-1.5 bg-white" />
+                                                            className="text-xs border border-slate-200 dark:border-slate-700 rounded p-1.5 bg-white dark:bg-slate-900" />
                                                         {newImages.length > 0 && <span className="text-blue-500">{newImages.length} file(s) selected</span>}
                                                     </label>
                                                     <label className="flex flex-col gap-1 text-xs sm:col-span-2 lg:col-span-3">
                                                         Description
                                                         <textarea value={editForm.description} rows={3}
                                                             onChange={e => setEditForm({ ...editForm, description: e.target.value })}
-                                                            className="border border-slate-200 rounded p-2 outline-none text-sm resize-none bg-white" />
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm resize-none bg-white dark:bg-slate-900" />
                                                     </label>
                                                 </div>
                                                 <div className="flex gap-3 mt-4">
@@ -355,7 +355,7 @@ export default function StoreManageProducts() {
                                                         <CheckIcon size={14} /> {saving ? "Saving..." : "Save Changes"}
                                                     </button>
                                                     <button onClick={cancelEdit}
-                                                        className="flex items-center gap-1.5 bg-slate-100 text-slate-600 px-4 py-1.5 rounded hover:bg-slate-200 transition text-sm">
+                                                        className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-1.5 rounded hover:bg-slate-200 transition text-sm">
                                                         <XIcon size={14} /> Cancel
                                                     </button>
                                                 </div>
@@ -371,9 +371,9 @@ export default function StoreManageProducts() {
 
             {confirmDeleteId && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full mx-4">
-                        <h3 className="text-lg font-semibold text-slate-800 mb-2">Delete Product?</h3>
-                        <p className="text-slate-500 text-sm mb-6">
+                    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg p-6 max-w-sm w-full mx-4">
+                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">Delete Product?</h3>
+                        <p className="text-slate-500 dark:text-slate-300 text-sm mb-6">
                             This cannot be undone. Products with active orders cannot be deleted.
                         </p>
                         <div className="flex gap-3">
@@ -384,7 +384,7 @@ export default function StoreManageProducts() {
                                 {deletingId === confirmDeleteId ? "Deleting..." : "Yes, Delete"}
                             </button>
                             <button onClick={() => setConfirmDeleteId(null)}
-                                className="flex-1 bg-slate-100 text-slate-700 py-2 rounded hover:bg-slate-200 transition text-sm">
+                                className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 py-2 rounded hover:bg-slate-200 transition text-sm">
                                 Cancel
                             </button>
                         </div>

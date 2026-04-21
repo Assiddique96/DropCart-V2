@@ -35,7 +35,7 @@ export default function AdminDashboard() {
         { title: 'Total Orders', value: data.orders, icon: TagsIcon, sub: `${data.cancelledOrders} cancelled`, color: 'text-blue-600 bg-blue-50' },
         { title: 'Total Products', value: data.products, icon: ShoppingBasketIcon, color: 'text-purple-600 bg-purple-50' },
         { title: 'Active Stores', value: data.stores, icon: StoreIcon, color: 'text-indigo-600 bg-indigo-50' },
-        { title: 'Total Users', value: data.users, icon: UsersIcon, color: 'text-slate-600 bg-slate-100' },
+        { title: 'Total Users', value: data.users, icon: UsersIcon, color: 'text-slate-600 bg-slate-100 dark:bg-slate-800' },
     ]
 
     return (

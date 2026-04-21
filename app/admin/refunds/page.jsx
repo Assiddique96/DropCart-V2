@@ -10,7 +10,7 @@ const STATUS_COLORS = {
     REQUESTED: 'bg-blue-50 text-blue-700',
     APPROVED:  'bg-green-50 text-green-700',
     REJECTED:  'bg-red-50 text-red-500',
-    REFUNDED:  'bg-slate-100 text-slate-500',
+    REFUNDED:  'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300',
 }
 
 export default function AdminRefunds() {
@@ -56,16 +56,16 @@ export default function AdminRefunds() {
     }
 
     return (
-        <div className="text-slate-500 mb-28">
+        <div className="text-slate-500 dark:text-slate-300 mb-28">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
                 <div>
-                    <h1 className="text-2xl">Refund <span className="text-slate-800 font-medium">Requests</span></h1>
+                    <h1 className="text-2xl">Refund <span className="text-slate-800 dark:text-slate-100 font-medium">Requests</span></h1>
                     <p className="text-xs text-slate-400 mt-0.5">{refunds.length} request{refunds.length !== 1 ? 's' : ''}</p>
                 </div>
                 <div className="flex gap-2">
                     {['', 'REQUESTED', 'APPROVED', 'REJECTED', 'REFUNDED'].map(s => (
                         <button key={s} onClick={() => setFilter(s)}
-                            className={`text-xs px-3 py-1.5 rounded-lg border transition ${filter === s ? 'bg-slate-800 text-white border-slate-800' : 'border-slate-200 text-slate-500 hover:border-slate-400'}`}>
+                            className={`text-xs px-3 py-1.5 rounded-lg border transition ${filter === s ? 'bg-slate-800 text-white border-slate-800' : 'border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-300 hover:border-slate-400'}`}>
                             {s || 'All'}
                         </button>
                     ))}
@@ -73,9 +73,9 @@ export default function AdminRefunds() {
             </div>
 
             {loading ? <Loading /> : (
-                <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+                <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                     <table className="w-full text-sm text-left">
-                        <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                        <thead className="bg-slate-50 dark:bg-slate-900 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-300">
                             <tr>
                                 <th className="px-4 py-3">Customer</th>
                                 <th className="px-4 py-3">Store</th>
@@ -86,16 +86,16 @@ export default function AdminRefunds() {
                                 <th className="px-4 py-3">Action</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 text-slate-700">
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200">
                             {refunds.map(refund => (
                                 <tr key={refund.id} className="hover:bg-slate-50 transition-colors">
                                     <td className="px-4 py-3">
                                         <p className="font-medium">{refund.order?.user?.name}</p>
                                         <p className="text-xs text-slate-400">{refund.order?.user?.email}</p>
                                     </td>
-                                    <td className="px-4 py-3 text-xs text-slate-500">{refund.order?.store?.name}</td>
+                                    <td className="px-4 py-3 text-xs text-slate-500 dark:text-slate-300">{refund.order?.store?.name}</td>
                                     <td className="px-4 py-3 font-semibold">{currency}{refund.order?.total?.toLocaleString()}</td>
-                                    <td className="px-4 py-3 text-xs text-slate-500 max-w-[180px] truncate" title={refund.reason}>{refund.reason}</td>
+                                    <td className="px-4 py-3 text-xs text-slate-500 dark:text-slate-300 max-w-[180px] truncate" title={refund.reason}>{refund.reason}</td>
                                     <td className="px-4 py-3">
                                         <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${STATUS_COLORS[refund.status]}`}>
                                             {refund.status}
@@ -118,7 +118,7 @@ export default function AdminRefunds() {
                                         )}
                                         {refund.status === 'APPROVED' && (
                                             <button onClick={() => { setActionModal(refund); setForm({ action: 'mark_refunded', adminNote: '', amount: refund.amount || '' }) }}
-                                                className="flex items-center gap-1 text-xs text-slate-600 hover:text-slate-900 transition">
+                                                className="flex items-center gap-1 text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 transition">
                                                 <RotateCcwIcon size={13} /> Mark Refunded
                                             </button>
                                         )}
@@ -139,26 +139,26 @@ export default function AdminRefunds() {
             {/* Action modal */}
             {actionModal && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full mx-4">
-                        <h3 className="text-lg font-semibold text-slate-800 mb-1 capitalize">
+                    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg p-6 max-w-md w-full mx-4">
+                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1 capitalize">
                             {form.action === 'mark_refunded' ? 'Mark as Refunded' : form.action} Refund
                         </h3>
-                        <p className="text-sm text-slate-500 mb-1">Customer: {actionModal.order?.user?.name}</p>
-                        <p className="text-sm text-slate-500 mb-4">Reason: <span className="italic">{actionModal.reason}</span></p>
+                        <p className="text-sm text-slate-500 dark:text-slate-300 mb-1">Customer: {actionModal.order?.user?.name}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-300 mb-4">Reason: <span className="italic">{actionModal.reason}</span></p>
 
                         {['approve', 'mark_refunded'].includes(form.action) && (
                             <div className="mb-3">
-                                <label className="text-xs text-slate-500 mb-1 block">Refund Amount ({currency})</label>
+                                <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Refund Amount ({currency})</label>
                                 <input type="number" min="0" value={form.amount}
                                     onChange={e => setForm(f => ({ ...f, amount: e.target.value }))}
-                                    className="w-full border border-slate-200 rounded-lg p-2.5 text-sm outline-none" />
+                                    className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none" />
                             </div>
                         )}
                         <div className="mb-4">
-                            <label className="text-xs text-slate-500 mb-1 block">Admin Note (optional)</label>
+                            <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Admin Note (optional)</label>
                             <textarea value={form.adminNote} onChange={e => setForm(f => ({ ...f, adminNote: e.target.value }))}
                                 rows={3} placeholder="Internal note visible to admin only"
-                                className="w-full border border-slate-200 rounded-lg p-2.5 text-sm outline-none resize-none" />
+                                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none resize-none" />
                         </div>
                         <div className="flex gap-3">
                             <button onClick={handleAction} disabled={submitting}
@@ -170,7 +170,7 @@ export default function AdminRefunds() {
                                 {submitting ? "Processing..." : "Confirm"}
                             </button>
                             <button onClick={() => setActionModal(null)}
-                                className="flex-1 py-2 rounded-lg bg-slate-100 text-slate-700 text-sm hover:bg-slate-200 transition">Cancel</button>
+                                className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm hover:bg-slate-200 transition">Cancel</button>
                         </div>
                     </div>
                 </div>

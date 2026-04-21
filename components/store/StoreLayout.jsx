@@ -45,7 +45,7 @@ const StoreLayout = ({ children }) => {
     return loading ? (
         <Loading />
     ) : isSeller ? (
-        <div className="flex flex-col h-screen bg-slate-50 dark:bg-slate-950">
+        <div className="panel-theme flex flex-col h-screen bg-slate-50 dark:bg-slate-950">
             <SellerNavbar activeStore={storeInfo} />
             <div className="flex flex-1 items-start h-full overflow-y-scroll no-scrollbar">
                 <SellerSidebar storeInfo={storeInfo} stores={stores} onStoreChange={fetchIsSeller} />

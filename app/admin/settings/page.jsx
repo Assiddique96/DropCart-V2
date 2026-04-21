@@ -70,15 +70,15 @@ export default function AdminSettings() {
     ]
 
     return (
-        <div className="text-slate-500 mb-28 max-w-2xl">
-            <h1 className="text-2xl mb-1">Platform <span className="text-slate-800 font-medium">Settings</span></h1>
+        <div className="text-slate-500 dark:text-slate-300 mb-28 max-w-2xl">
+            <h1 className="text-2xl mb-1">Platform <span className="text-slate-800 dark:text-slate-100 font-medium">Settings</span></h1>
             <p className="text-xs text-slate-400 mb-8">Changes take effect immediately for all new orders.</p>
 
             <div className="space-y-6">
                 {fields.map(field => (
-                    <div key={field.key} className="border border-slate-200 rounded-xl p-5">
+                    <div key={field.key} className="border border-slate-200 dark:border-slate-700 rounded-xl p-5">
                         <label className="block">
-                            <p className="font-medium text-slate-700 text-sm">{field.label}</p>
+                            <p className="font-medium text-slate-700 dark:text-slate-200 text-sm">{field.label}</p>
                             <p className="text-xs text-slate-400 mt-0.5 mb-3">{field.description}</p>
                             <input
                                 type="number"
@@ -87,7 +87,7 @@ export default function AdminSettings() {
                                 step={field.step}
                                 value={config[field.key]}
                                 onChange={e => setConfig({ ...config, [field.key]: e.target.value })}
-                                className="border border-slate-200 rounded-lg p-2.5 px-4 outline-none w-full max-w-xs text-slate-800 text-sm"
+                                className="border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 px-4 outline-none w-full max-w-xs text-slate-800 dark:text-slate-100 text-sm"
                             />
                         </label>
                     </div>

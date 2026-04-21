@@ -57,13 +57,13 @@ export default function AdminApprove() {
     }, [user])
 
     return !loading ? (
-        <div className="text-slate-500 mb-28">
-            <h1 className="text-2xl">Approve <span className="text-slate-800 font-medium">Stores</span></h1>
+        <div className="text-slate-500 dark:text-slate-300 mb-28">
+            <h1 className="text-2xl">Approve <span className="text-slate-800 dark:text-slate-100 font-medium">Stores</span></h1>
 
             {stores.length ? (
                 <div className="flex flex-col gap-4 mt-4">
                     {stores.map((store) => (
-                        <div key={store.id} className="bg-white border rounded-lg shadow-sm p-6 flex max-md:flex-col gap-4 md:items-end max-w-4xl" >
+                        <div key={store.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm p-6 flex max-md:flex-col gap-4 md:items-end max-w-4xl" >
                             {/* Store Info */}
                             <StoreInfo store={store} />
 
@@ -72,7 +72,7 @@ export default function AdminApprove() {
                                 <button onClick={() => toast.promise(handleApprove({ storeId: store.id, status: 'approved' }), { loading: "approving" })} className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm" >
                                     Approve
                                 </button>
-                                <button onClick={() => toast.promise(handleApprove({ storeId: store.id, status: 'rejected' }), { loading: 'rejecting' })} className="px-4 py-2 bg-slate-500 text-white rounded hover:bg-slate-600 text-sm" >
+                                <button onClick={() => toast.promise(handleApprove({ storeId: store.id, status: 'rejected' }), { loading: 'rejecting' })} className="px-4 py-2 bg-slate-50 dark:bg-slate-9000 text-white rounded hover:bg-slate-600 text-sm" >
                                     Reject
                                 </button>
                             </div>

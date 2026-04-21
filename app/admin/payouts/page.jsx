@@ -48,10 +48,10 @@ export default function AdminPayouts() {
     if (loading) return <Loading />
 
     return (
-        <div className="text-slate-500 mb-28">
+        <div className="text-slate-500 dark:text-slate-300 mb-28">
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h1 className="text-2xl">Seller <span className="text-slate-800 font-medium">Payouts</span></h1>
+                    <h1 className="text-2xl">Seller <span className="text-slate-800 dark:text-slate-100 font-medium">Payouts</span></h1>
                     <p className="text-xs text-slate-400 mt-0.5">{payouts.length} payout records</p>
                 </div>
                 <button onClick={() => setShowForm(v => !v)}
@@ -61,27 +61,27 @@ export default function AdminPayouts() {
             </div>
 
             {showForm && (
-                <div className="border border-slate-200 rounded-xl p-5 mb-6 max-w-lg bg-slate-50">
-                    <h3 className="text-sm font-semibold text-slate-700 mb-4">New Payout</h3>
+                <div className="border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6 max-w-lg bg-slate-50 dark:bg-slate-900">
+                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-4">New Payout</h3>
                     <div className="space-y-3">
                         <div>
-                            <label className="text-xs text-slate-500 mb-1 block">Store</label>
+                            <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Store</label>
                             <select value={form.storeId} onChange={e => setForm({ ...form, storeId: e.target.value })}
-                                className="w-full border border-slate-200 rounded-lg p-2.5 text-sm outline-none">
+                                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none">
                                 <option value="">Select store...</option>
                                 {stores.map(s => <option key={s.id} value={s.id}>{s.name} ({s.username})</option>)}
                             </select>
                         </div>
                         <div>
-                            <label className="text-xs text-slate-500 mb-1 block">Amount ({currency})</label>
+                            <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Amount ({currency})</label>
                             <input type="number" min="0" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })}
-                                placeholder="0.00" className="w-full border border-slate-200 rounded-lg p-2.5 text-sm outline-none" />
+                                placeholder="0.00" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none" />
                         </div>
                         <div>
-                            <label className="text-xs text-slate-500 mb-1 block">Note (optional)</label>
+                            <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Note (optional)</label>
                             <input type="text" value={form.note} onChange={e => setForm({ ...form, note: e.target.value })}
                                 placeholder="e.g. Bank transfer - March 2025"
-                                className="w-full border border-slate-200 rounded-lg p-2.5 text-sm outline-none" />
+                                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none" />
                         </div>
                         <div className="flex gap-3 pt-1">
                             <button onClick={submitPayout} disabled={submitting}
@@ -89,15 +89,15 @@ export default function AdminPayouts() {
                                 <CheckCircleIcon size={14} /> {submitting ? "Saving..." : "Record Payout"}
                             </button>
                             <button onClick={() => setShowForm(false)}
-                                className="px-5 py-2 bg-slate-100 text-slate-700 text-sm rounded-lg hover:bg-slate-200 transition">Cancel</button>
+                                className="px-5 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm rounded-lg hover:bg-slate-200 transition">Cancel</button>
                         </div>
                     </div>
                 </div>
             )}
 
-            <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+            <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <table className="w-full text-sm text-left">
-                    <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                    <thead className="bg-slate-50 dark:bg-slate-900 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-300">
                         <tr>
                             <th className="px-4 py-3">Store</th>
                             <th className="px-4 py-3">Amount</th>
@@ -106,10 +106,10 @@ export default function AdminPayouts() {
                             <th className="px-4 py-3">Date</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-slate-700">
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200">
                         {payouts.map(p => (
                             <tr key={p.id} className="hover:bg-slate-50 transition-colors">
-                                <td className="px-4 py-3 font-medium text-slate-800">{p.store?.name}<span className="text-xs text-slate-400 ml-1">@{p.store?.username}</span></td>
+                                <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-100">{p.store?.name}<span className="text-xs text-slate-400 ml-1">@{p.store?.username}</span></td>
                                 <td className="px-4 py-3 font-semibold">{currency}{p.amount.toLocaleString()}</td>
                                 <td className="px-4 py-3">
                                     <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${p.status === 'PAID' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>

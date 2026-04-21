@@ -92,7 +92,7 @@ export default function Dashboard() {
             {/* Revenue chart */}
             {data.revenueChart?.length > 0 && (
                 <div className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/70 rounded-xl p-5 mb-8">
-                    <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-100 mb-4">Revenue — last {period} days</h2>
+                    <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 dark:text-slate-100 mb-4">Revenue — last {period} days</h2>
                     <ResponsiveContainer width="100%" height={200}>
                         <AreaChart data={data.revenueChart}>
                             <defs>
@@ -115,7 +115,7 @@ export default function Dashboard() {
                 {/* Order status breakdown */}
                 {statusEntries.length > 0 && (
                     <div className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/70 rounded-xl p-5">
-                        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-100 mb-4">Order Status Breakdown</h2>
+                        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 dark:text-slate-100 mb-4">Order Status Breakdown</h2>
                         <div className="space-y-3">
                             {statusEntries.map(([status, count]) => {
                                 const total = data.totalOrders
@@ -123,7 +123,7 @@ export default function Dashboard() {
                                 return (
                                     <div key={status}>
                                         <div className="flex justify-between text-xs mb-1">
-                                            <span className="text-slate-600 dark:text-slate-200">{status.replace('_', ' ')}</span>
+                                            <span className="text-slate-600 dark:text-slate-300 dark:text-slate-200">{status.replace('_', ' ')}</span>
                                             <span className="text-slate-400 dark:text-slate-400">{count} ({pct}%)</span>
                                         </div>
                                         <div className="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -139,20 +139,20 @@ export default function Dashboard() {
                 {/* Top products */}
                 {data.topProducts?.length > 0 && (
                     <div className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/70 rounded-xl p-5">
-                        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-100 mb-4">Top Products by Orders</h2>
+                        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 dark:text-slate-100 mb-4">Top Products by Orders</h2>
                         <div className="space-y-3">
                             {data.topProducts.map((p, i) => (
                                 <div key={p.productId} className="flex items-center gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg p-1.5 transition"
                                     onClick={() => router.push(`/product/${p.productId}`)}>
                                     <span className="text-xs font-bold text-slate-300 dark:text-slate-500 w-4">{i + 1}</span>
                                     {p.image && (
-                                        <Image src={p.image} alt="" width={36} height={36} className="w-9 h-9 rounded object-cover border border-slate-100 dark:border-slate-700" />
+                                        <Image src={p.image} alt="" width={36} height={36} className="w-9 h-9 rounded object-cover border border-slate-100 dark:border-slate-800 dark:border-slate-700" />
                                     )}
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-xs font-medium text-slate-700 dark:text-slate-100 truncate">{p.name}</p>
+                                        <p className="text-xs font-medium text-slate-700 dark:text-slate-200 dark:text-slate-100 truncate">{p.name}</p>
                                         <p className="text-xs text-slate-400 dark:text-slate-400">{p.orderCount} orders · {p.totalQty} units</p>
                                     </div>
-                                    <p className="text-xs font-semibold text-slate-600 dark:text-slate-200 shrink-0">{currency}{p.price.toLocaleString()}</p>
+                                    <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 dark:text-slate-200 shrink-0">{currency}{p.price.toLocaleString()}</p>
                                 </div>
                             ))}
                         </div>
@@ -161,14 +161,14 @@ export default function Dashboard() {
             </div>
 
             {/* Recent reviews */}
-            <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-100 mb-4">Latest Reviews</h2>
+            <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 dark:text-slate-100 mb-4">Latest Reviews</h2>
             <div className="max-w-4xl space-y-4">
                 {data.ratings.slice(0, 5).map((review, i) => (
                     <div key={i} className="flex max-sm:flex-col gap-5 sm:items-start justify-between py-4 border-b border-slate-100 dark:border-slate-800 text-sm text-slate-600 dark:text-slate-300">
                         <div className="flex gap-3">
                             <Image src={review.user.image} alt="" className="w-9 h-9 aspect-square rounded-full object-cover shrink-0" width={36} height={36} />
                             <div>
-                                <p className="font-medium text-slate-700 dark:text-slate-100">{review.user.name}</p>
+                                <p className="font-medium text-slate-700 dark:text-slate-200 dark:text-slate-100">{review.user.name}</p>
                                 <p className="text-slate-400 dark:text-slate-400 text-xs">{new Date(review.createdAt).toLocaleDateString()}</p>
                                 <p className="mt-2 text-slate-500 dark:text-slate-300 max-w-xs leading-6">{review.review}</p>
                             </div>

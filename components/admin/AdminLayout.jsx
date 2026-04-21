@@ -44,7 +44,7 @@ const AdminLayout = ({ children }) => {
     return loading ? (
         <Loading />
     ) : isAdmin ? (
-        <div className="flex flex-col h-screen bg-slate-50 dark:bg-slate-950">
+        <div className="panel-theme flex flex-col h-screen bg-slate-50 dark:bg-slate-950">
             <AdminNavbar />
             <div className="flex flex-1 items-start h-full overflow-y-scroll no-scrollbar">
                 <AdminSidebar />
