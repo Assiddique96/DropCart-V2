@@ -45,7 +45,7 @@ export async function GET(request) {
           isBanned: true,
           banReason: true,
           createdAt: true,
-          stores: { select: { id: true, name: true, status: true, isActive: true }, orderBy: { createdAt: "desc" } },
+          stores: { select: { id: true, name: true, username: true, status: true, isActive: true }, orderBy: { createdAt: "desc" } },
           _count: { select: { buyerOrders: true } },
         },
       }),

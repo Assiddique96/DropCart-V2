@@ -5,6 +5,7 @@ import axios from "axios"
 import toast from "react-hot-toast"
 import Loading from "@/components/Loading"
 import Image from "next/image"
+import Link from "next/link"
 import { SearchIcon, ShieldOffIcon, ShieldCheckIcon, StoreIcon, XIcon } from "lucide-react"
 
 export default function AdminUsers() {
@@ -241,13 +242,24 @@ export default function AdminUsers() {
                                             </span>
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={() => toggleUserStore(store.id)}
-                                        disabled={togglingStoreId === store.id}
-                                        className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-white hover:bg-slate-900 disabled:opacity-50 transition"
-                                    >
-                                        {togglingStoreId === store.id ? "Updating..." : store.isActive ? "Deactivate" : "Activate"}
-                                    </button>
+                                    <div className="flex items-center gap-2">
+                                        {store.username && (
+                                            <Link
+                                                href={`/shop/${store.username}`}
+                                                target="_blank"
+                                                className="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+                                            >
+                                                Open store
+                                            </Link>
+                                        )}
+                                        <button
+                                            onClick={() => toggleUserStore(store.id)}
+                                            disabled={togglingStoreId === store.id}
+                                            className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-white hover:bg-slate-900 disabled:opacity-50 transition"
+                                        >
+                                            {togglingStoreId === store.id ? "Updating..." : store.isActive ? "Deactivate" : "Activate"}
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                         </div>
