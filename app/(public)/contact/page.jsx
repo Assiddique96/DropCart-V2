@@ -24,7 +24,7 @@ export default function ContactPage() {
                 <div className="text-center mb-12">
                     <h1 className="text-3xl font-semibold text-slate-800 dark:text-slate-100">About & <span className="text-green-500">Contact</span></h1>
                     <p className="text-slate-500 dark:text-slate-300 mt-3 max-w-xl mx-auto text-sm">
-                        DropCart is a multi-vendor marketplace helping verified sellers reach customers across Nigeria with secure checkout and fast delivery.
+                        Shpinx is a multi-vendor marketplace helping verified sellers reach customers across Nigeria with secure checkout and fast delivery.
                     </p>
                     <p className="text-slate-500 dark:text-slate-300 mt-3 max-w-md mx-auto text-sm">
                         Have a question, partnership inquiry, or need support? We'd love to hear from you.
@@ -39,7 +39,7 @@ export default function ContactPage() {
                             {[
                                 { icon: MailIcon, label: "Email", value: "support@dropcart.ng" },
                                 { icon: PhoneIcon, label: "Phone", value: "+234 800 000 0000" },
-                                { icon: MapPinIcon, label: "Address", value: "Lagos, Nigeria" },
+                                { icon: MapPinIcon, label: "Address", value: "Abuja, Nigeria" },
                             ].map(({ icon: Icon, label, value }) => (
                                 <div key={label} className="flex items-start gap-4">
                                     <div className="p-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-200 mt-0.5">
