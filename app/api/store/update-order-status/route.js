@@ -5,6 +5,28 @@ import authSeller from "@/middlewares/authSeller";
 import { inngest } from "@/inngest/client";
 import { createNotification } from "@/lib/serverNotifications";
 
+const TRACKING_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // avoid confusing chars (0/O, 1/I)
+
+function generateTrackingNumber(length = 6) {
+  let out = "";
+  for (let i = 0; i < length; i++) {
+    out += TRACKING_ALPHABET[Math.floor(Math.random() * TRACKING_ALPHABET.length)];
+  }
+  return out;
+}
+
+async function generateUniqueTrackingNumber() {
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const candidate = generateTrackingNumber(6);
+    const existing = await prisma.order.findFirst({
+      where: { trackingNumber: candidate },
+      select: { id: true },
+    });
+    if (!existing) return candidate;
+  }
+  throw new Error("Failed to generate unique tracking number");
+}
+
 export async function POST(request) {
   try {
     const { userId } = getAuth(request);
@@ -23,6 +45,11 @@ export async function POST(request) {
     const data = { status };
     if (status === "DELIVERED" && order.paymentMethod === "COD") {
       data.isPaid = true;
+    }
+
+    // Auto-generate tracking number when seller marks as SHIPPED
+    if (status === "SHIPPED" && !order.trackingNumber) {
+      data.trackingNumber = await generateUniqueTrackingNumber();
     }
 
     const updatedOrder = await prisma.order.update({

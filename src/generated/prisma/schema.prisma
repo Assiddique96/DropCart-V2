@@ -165,7 +165,7 @@ model Order {
   isCouponUsed   Boolean       @default(false)
   coupon         Json          @default("{}")
   notes          String? // buyer special instructions
-  trackingNumber String? // seller-assigned shipping tracking number
+  trackingNumber String? // shipping tracking number (auto-generated when marked SHIPPED)
   orderItems     OrderItem[]
 
   // Relations
@@ -279,25 +279,38 @@ model Coupon {
 // Required for creating a Store: userId, name, username, email, contact, logo, description, address (optional: , status, isActive)
 // NOTE: One store per user is enforced by @unique on userId. Multi-store support requires removing this constraint.
 model Store {
-  id          String   @id @default(cuid())
-  userId      String   @unique
+  id          String  @id @default(cuid())
+  userId      String  @unique
   name        String
   description String
-  username    String   @unique
-  address     String   @default("") // legacy plain-text (kept for backwards compat)
+  username    String  @unique
+  address     String  @default("") // legacy plain-text (kept for backwards compat)
   street      String? // structured address
   city        String?
   state       String?
   zip         String?
-  country     String   @default("Nigeria")
-  status      String   @default("pending")
-  isActive    Boolean  @default(false)
+  country     String  @default("Nigeria")
+  status      String  @default("pending")
+  isActive    Boolean @default(false)
   logo        String
   banner      String?
   email       String
   contact     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  // ─── Verification & compliance ───────────────────────────────────────────
+  cacNumber                  String? // CAC registration number
+  verificationDocumentType   String? // "NIN" | "PASSPORT"
+  verificationDocumentNumber String? // NIN number or passport number
+  verificationDocumentUrl    String? // image of document
+  facialVerificationUrl      String? // selfie image for facial verification
+
+  // ─── Payout details ─────────────────────────────────────────────────────
+  payoutBankName      String?
+  payoutAccountName   String?
+  payoutAccountNumber String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   Product Product[]
   Order   Order[]

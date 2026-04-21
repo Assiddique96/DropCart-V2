@@ -283,6 +283,14 @@ exports.Prisma.StoreScalarFieldEnum = {
   banner: 'banner',
   email: 'email',
   contact: 'contact',
+  cacNumber: 'cacNumber',
+  verificationDocumentType: 'verificationDocumentType',
+  verificationDocumentNumber: 'verificationDocumentNumber',
+  verificationDocumentUrl: 'verificationDocumentUrl',
+  facialVerificationUrl: 'facialVerificationUrl',
+  payoutBankName: 'payoutBankName',
+  payoutAccountName: 'payoutAccountName',
+  payoutAccountNumber: 'payoutAccountNumber',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

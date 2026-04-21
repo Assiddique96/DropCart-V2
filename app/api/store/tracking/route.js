@@ -3,14 +3,15 @@ import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
 import authSeller from "@/middlewares/authSeller";
 import { defaultLimiter } from "@/lib/rateLimit";
-import { sanitizeString } from "@/lib/sanitize";
 import { createNotification } from "@/lib/serverNotifications";
 
 /**
  * POST /api/store/tracking
- * Seller assigns a tracking number to an order.
- * Body: { orderId, trackingNumber }
- * Optionally auto-advances status to SHIPPED if still PROCESSING.
+ * Tracking numbers are system-generated and not editable.
+ * This endpoint exists for backwards compatibility with older seller UIs.
+ * Body: { orderId }
+ * - If the order has no tracking number, one is generated and status is set to SHIPPED.
+ * - If the order already has a tracking number, the request is rejected (not editable).
  */
 export async function POST(request) {
   const limit = defaultLimiter.check(request);
@@ -21,11 +22,9 @@ export async function POST(request) {
     const storeId = await authSeller(userId);
     if (!storeId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { orderId, trackingNumber: rawTracking } = await request.json();
-    const trackingNumber = sanitizeString(rawTracking, 200);
-
-    if (!orderId || !trackingNumber) {
-      return NextResponse.json({ error: "Order ID and tracking number are required." }, { status: 400 });
+    const { orderId } = await request.json();
+    if (!orderId) {
+      return NextResponse.json({ error: "Order ID is required." }, { status: 400 });
     }
 
     // Verify order belongs to this store
@@ -39,12 +38,38 @@ export async function POST(request) {
       );
     }
 
-    const updateData = { trackingNumber };
-
-    // Auto-advance to SHIPPED when tracking is added
-    if (["ORDER_PLACED", "PROCESSING"].includes(order.status)) {
-      updateData.status = "SHIPPED";
+    if (order.trackingNumber) {
+      return NextResponse.json(
+        { error: "Tracking number is already assigned and cannot be edited." },
+        { status: 409 }
+      );
     }
+
+    const TRACKING_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // avoid confusing chars (0/O, 1/I)
+    const generateTrackingNumber = (length = 6) => {
+      let out = "";
+      for (let i = 0; i < length; i++) {
+        out += TRACKING_ALPHABET[Math.floor(Math.random() * TRACKING_ALPHABET.length)];
+      }
+      return out;
+    };
+
+    const generateUniqueTrackingNumber = async () => {
+      for (let attempt = 0; attempt < 20; attempt++) {
+        const candidate = generateTrackingNumber(6);
+        const existing = await prisma.order.findFirst({
+          where: { trackingNumber: candidate },
+          select: { id: true },
+        });
+        if (!existing) return candidate;
+      }
+      throw new Error("Failed to generate unique tracking number");
+    };
+
+    const updateData = {
+      trackingNumber: await generateUniqueTrackingNumber(),
+      status: "SHIPPED",
+    };
 
     const updated = await prisma.order.update({
       where: { id: orderId },
@@ -56,7 +81,7 @@ export async function POST(request) {
         userId: order.userId,
         type: "order",
         title: "Order shipped",
-        message: "Your order is on the way. Tracking information has been added.",
+        message: "Your order is on the way. A tracking number has been generated.",
         link: "/orders",
       });
     }

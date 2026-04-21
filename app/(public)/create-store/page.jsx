@@ -25,6 +25,16 @@ export default function CreateStore() {
     contact: "",
     address: "",
     image: "",
+
+    cacNumber: "",
+    verificationDocumentType: "NIN",
+    verificationDocumentNumber: "",
+    verificationDocumentImage: "",
+    facialVerificationImage: "",
+
+    payoutBankName: "",
+    payoutAccountName: "",
+    payoutAccountNumber: "",
   });
 
   const onChangeHandler = (e) => {
@@ -95,6 +105,16 @@ export default function CreateStore() {
       formData.append("contact", storeInfo.contact);
       formData.append("address", storeInfo.address);
       formData.append("image", storeInfo.image);
+
+      formData.append("cacNumber", storeInfo.cacNumber);
+      formData.append("verificationDocumentType", storeInfo.verificationDocumentType);
+      formData.append("verificationDocumentNumber", storeInfo.verificationDocumentNumber);
+      formData.append("verificationDocumentImage", storeInfo.verificationDocumentImage);
+      formData.append("facialVerificationImage", storeInfo.facialVerificationImage);
+
+      formData.append("payoutBankName", storeInfo.payoutBankName);
+      formData.append("payoutAccountName", storeInfo.payoutAccountName);
+      formData.append("payoutAccountNumber", storeInfo.payoutAccountNumber);
 
       const { data } = await axios.post("/api/store/create", formData, {
         headers: {
@@ -183,13 +203,23 @@ export default function CreateStore() {
               className="border border-slate-300 outline-slate-400 w-full max-w-lg p-2 rounded"
             />
 
-            <p>Name</p>
+            <p>Business Name</p>
             <input
               name="name"
               onChange={onChangeHandler}
               value={storeInfo.name}
               type="text"
-              placeholder="Enter your store name"
+              placeholder="Enter your registered business name"
+              className="border border-slate-300 outline-slate-400 w-full max-w-lg p-2 rounded"
+            />
+
+            <p>CAC Registration Number</p>
+            <input
+              name="cacNumber"
+              onChange={onChangeHandler}
+              value={storeInfo.cacNumber}
+              type="text"
+              placeholder="e.g. RC1234567"
               className="border border-slate-300 outline-slate-400 w-full max-w-lg p-2 rounded"
             />
 
@@ -203,7 +233,7 @@ export default function CreateStore() {
               className="border border-slate-300 outline-slate-400 w-full max-w-lg p-2 rounded resize-none"
             />
 
-            <p>Email</p>
+            <p>Business Email</p>
             <input
               name="email"
               onChange={onChangeHandler}
@@ -213,7 +243,7 @@ export default function CreateStore() {
               className="border border-slate-300 outline-slate-400 w-full max-w-lg p-2 rounded"
             />
 
-            <p>Contact Number</p>
+            <p>Business Mobile Number</p>
             <input
               name="contact"
               onChange={onChangeHandler}
@@ -223,7 +253,7 @@ export default function CreateStore() {
               className="border border-slate-300 outline-slate-400 w-full max-w-lg p-2 rounded"
             />
 
-            <p>Address</p>
+            <p>Business Address</p>
             <textarea
               name="address"
               onChange={onChangeHandler}
@@ -232,6 +262,141 @@ export default function CreateStore() {
               placeholder="Enter your store address"
               className="border border-slate-300 outline-slate-400 w-full max-w-lg p-2 rounded resize-none"
             />
+
+            <div className="w-full max-w-lg mt-4 p-4 border border-slate-200 rounded-lg bg-slate-50">
+              <p className="text-slate-700 font-medium">Verification</p>
+              <p className="text-xs text-slate-500 mt-1">
+                Provide a valid ID document and a selfie for facial verification.
+              </p>
+
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <p className="text-sm">Document Type</p>
+                  <select
+                    name="verificationDocumentType"
+                    onChange={onChangeHandler}
+                    value={storeInfo.verificationDocumentType}
+                    className="border border-slate-300 outline-slate-400 w-full p-2 rounded bg-white"
+                  >
+                    <option value="NIN">NIN</option>
+                    <option value="PASSPORT">Passport</option>
+                  </select>
+                </div>
+
+                <div>
+                  <p className="text-sm">{storeInfo.verificationDocumentType} Number</p>
+                  <input
+                    name="verificationDocumentNumber"
+                    onChange={onChangeHandler}
+                    value={storeInfo.verificationDocumentNumber}
+                    type="text"
+                    placeholder={`Enter your ${storeInfo.verificationDocumentType} number`}
+                    className="border border-slate-300 outline-slate-400 w-full p-2 rounded bg-white"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label className="cursor-pointer">
+                  <p className="text-sm">Upload {storeInfo.verificationDocumentType} Photo</p>
+                  <div className="mt-2 rounded-lg border border-slate-200 bg-white p-3 flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-md bg-slate-100 overflow-hidden flex items-center justify-center">
+                      {storeInfo.verificationDocumentImage ? (
+                        <Image
+                          src={URL.createObjectURL(storeInfo.verificationDocumentImage)}
+                          alt=""
+                          width={48}
+                          height={48}
+                          className="w-12 h-12 object-cover"
+                        />
+                      ) : (
+                        <span className="text-xs text-slate-400">No file</span>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-500">Tap to choose an image</p>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      setStoreInfo({ ...storeInfo, verificationDocumentImage: e.target.files[0] })
+                    }
+                    hidden
+                  />
+                </label>
+
+                <label className="cursor-pointer">
+                  <p className="text-sm">Facial Verification (Selfie)</p>
+                  <div className="mt-2 rounded-lg border border-slate-200 bg-white p-3 flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-md bg-slate-100 overflow-hidden flex items-center justify-center">
+                      {storeInfo.facialVerificationImage ? (
+                        <Image
+                          src={URL.createObjectURL(storeInfo.facialVerificationImage)}
+                          alt=""
+                          width={48}
+                          height={48}
+                          className="w-12 h-12 object-cover"
+                        />
+                      ) : (
+                        <span className="text-xs text-slate-400">No file</span>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-500">Tap to take/upload a selfie</p>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="user"
+                    onChange={(e) =>
+                      setStoreInfo({ ...storeInfo, facialVerificationImage: e.target.files[0] })
+                    }
+                    hidden
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div className="w-full max-w-lg mt-4 p-4 border border-slate-200 rounded-lg bg-white">
+              <p className="text-slate-700 font-medium">Bank details for payout</p>
+              <div className="mt-4 space-y-3">
+                <div>
+                  <p className="text-sm">Bank Name</p>
+                  <input
+                    name="payoutBankName"
+                    onChange={onChangeHandler}
+                    value={storeInfo.payoutBankName}
+                    type="text"
+                    placeholder="e.g. Access Bank"
+                    className="border border-slate-300 outline-slate-400 w-full p-2 rounded"
+                  />
+                </div>
+
+                <div>
+                  <p className="text-sm">Account Name</p>
+                  <input
+                    name="payoutAccountName"
+                    onChange={onChangeHandler}
+                    value={storeInfo.payoutAccountName}
+                    type="text"
+                    placeholder="Account holder name"
+                    className="border border-slate-300 outline-slate-400 w-full p-2 rounded"
+                  />
+                </div>
+
+                <div>
+                  <p className="text-sm">Account Number</p>
+                  <input
+                    name="payoutAccountNumber"
+                    onChange={onChangeHandler}
+                    value={storeInfo.payoutAccountNumber}
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="10-digit account number"
+                    className="border border-slate-300 outline-slate-400 w-full p-2 rounded"
+                  />
+                </div>
+              </div>
+            </div>
 
             <button className="bg-slate-800 text-white px-12 py-2 rounded mt-10 mb-40 active:scale-95 hover:bg-slate-900 transition ">
               Submit

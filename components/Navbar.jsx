@@ -3,14 +3,16 @@ import {
     PackageIcon, Search, ShoppingCart, HeartIcon,
     ChevronDownIcon, MonitorIcon, ShirtIcon, HomeIcon,
     SparklesIcon, ToyBrickIcon, DumbbellIcon, BookOpenIcon,
-    UtensilsIcon, PaletteIcon, GridIcon, PlaneIcon, MenuIcon, XIcon
+    UtensilsIcon, PaletteIcon, GridIcon, PlaneIcon, MenuIcon, XIcon,
+    StoreIcon, ShieldCheckIcon
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useUser, useClerk, UserButton, Show } from "@clerk/nextjs";
+import { useAuth, useClerk, useUser, UserButton, Show } from "@clerk/nextjs";
 import NotificationBell from './NotificationBell';
+import axios from "axios";
 
 const CATEGORIES = [
     { name: "Electronics",        icon: MonitorIcon,    color: "text-blue-500",   bg: "bg-blue-50",   desc: "Phones, laptops, gadgets" },
@@ -31,17 +33,20 @@ const FEATURED_LINKS = [
     { label: "Shipped from Abroad", href: "/shop?origin=abroad",          emoji: "✈️" },
     { label: "Under ₦5,000",      href: "/shop?maxPrice=5000",            emoji: "💰" },
     { label: "Deals & Coupons",   href: "/pricing",                       emoji: "🎟️" },
-    { label: "Create a Store",    href: "/create-store",                  emoji: "🏪" },
+    { label: "Track Order",       href: "/track",                         emoji: "📦" },
 ]
 
 const Navbar = () => {
     const { user } = useUser()
     const { openSignIn } = useClerk()
+    const { getToken } = useAuth()
     const router = useRouter()
 
     const [search, setSearch] = useState('')
     const [megaOpen, setMegaOpen] = useState(false)
     const [mobileOpen, setMobileOpen] = useState(false)
+    const [isAdmin, setIsAdmin] = useState(false)
+    const [isSeller, setIsSeller] = useState(false)
     const cartCount = useSelector(state => state.cart.total)
     const wishlistCount = useSelector(state => state.wishlist.items.length)
     const megaRef = useRef()
@@ -60,6 +65,41 @@ const Navbar = () => {
     // Close on route change
     useEffect(() => { setMegaOpen(false); setMobileOpen(false) }, [])
 
+    useEffect(() => {
+        let active = true
+
+        const fetchRoles = async () => {
+            if (!user) {
+                if (!active) return
+                setIsAdmin(false)
+                setIsSeller(false)
+                return
+            }
+
+            try {
+                const token = await getToken()
+                const headers = token ? { Authorization: `Bearer ${token}` } : undefined
+
+                const [adminRes, sellerRes] = await Promise.allSettled([
+                    axios.get("/api/admin/is-admin", { headers }),
+                    axios.get("/api/store/is-seller", { headers }),
+                ])
+
+                if (!active) return
+
+                setIsAdmin(adminRes.status === "fulfilled" ? Boolean(adminRes.value?.data?.isAdmin) : false)
+                setIsSeller(sellerRes.status === "fulfilled" ? Boolean(sellerRes.value?.data?.isSeller) : false)
+            } catch {
+                if (!active) return
+                setIsAdmin(false)
+                setIsSeller(false)
+            }
+        }
+
+        fetchRoles()
+        return () => { active = false }
+    }, [user, getToken])
+
     const handleSearch = (e) => {
         e.preventDefault()
         router.push(`/shop?search=${search}`)
@@ -72,6 +112,12 @@ const Navbar = () => {
         setMegaOpen(false)
         setMobileOpen(false)
     }
+
+    const storeCta = isSeller
+        ? { label: "Store Dashboard", href: "/store", emoji: "🏪" }
+        : { label: "Create a Store", href: "/create-store", emoji: "🏪" }
+
+    const featuredLinks = [...FEATURED_LINKS, storeCta]
 
     return (
         <nav className="relative bg-white z-50" ref={megaRef}>
@@ -103,6 +149,19 @@ const Navbar = () => {
 
                         <Link href="/pricing" className="hover:text-slate-900 transition">Pricing</Link>
                         <Link href="/contact" className="hover:text-slate-900 transition">Contact</Link>
+                        {isSeller && (
+                            <Link href="/store" className="hover:text-slate-900 transition font-medium">
+                                Store Dashboard
+                            </Link>
+                        )}
+                        {isAdmin && (
+                            <Link
+                                href="/admin"
+                                className="px-4 py-2 rounded-full bg-green-500 hover:bg-green-600 transition text-white text-sm font-semibold"
+                            >
+                                Admin Dashboard
+                            </Link>
+                        )}
 
                         <Link href="/wishlist" className="relative flex items-center gap-1.5 hover:text-slate-900 transition">
                             <HeartIcon size={16} />
@@ -146,6 +205,20 @@ const Navbar = () => {
                                 <NotificationBell />
                                 <UserButton>
                                     <UserButton.MenuItems>
+                                        {isSeller && (
+                                            <UserButton.Action
+                                                labelIcon={<StoreIcon size={16} />}
+                                                label="Store Dashboard"
+                                                onClick={() => router.push('/store')}
+                                            />
+                                        )}
+                                        {isAdmin && (
+                                            <UserButton.Action
+                                                labelIcon={<ShieldCheckIcon size={16} />}
+                                                label="Admin Dashboard"
+                                                onClick={() => router.push('/admin')}
+                                            />
+                                        )}
                                         <UserButton.Action labelIcon={<PackageIcon size={16} />} label="My Orders" onClick={() => router.push('/orders')} />
                                         <UserButton.Action labelIcon={<HeartIcon size={16} />} label="Wishlist" onClick={() => router.push('/wishlist')} />
                                     </UserButton.MenuItems>
@@ -206,7 +279,7 @@ const Navbar = () => {
 
                                 <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">Quick Links</p>
                                 <div className="space-y-1">
-                                    {FEATURED_LINKS.map(link => (
+                                    {featuredLinks.map(link => (
                                         <Link key={link.href} href={link.href}
                                             onClick={() => setMegaOpen(false)}
                                             className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 transition group">
@@ -219,9 +292,9 @@ const Navbar = () => {
                                 <div className="mt-6 p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-100">
                                     <p className="text-sm font-semibold text-indigo-800 mb-1">🚀 Sell on DropCart</p>
                                     <p className="text-xs text-indigo-600 mb-3">Reach thousands of buyers across Nigeria</p>
-                                    <Link href="/create-store" onClick={() => setMegaOpen(false)}
+                                    <Link href={storeCta.href} onClick={() => setMegaOpen(false)}
                                         className="text-xs font-semibold text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-1.5 rounded-full transition inline-block">
-                                        Open your store →
+                                        {isSeller ? "Go to dashboard →" : "Open your store →"}
                                     </Link>
                                 </div>
                             </div>
@@ -250,6 +323,7 @@ const Navbar = () => {
                                 { label: "Cart", href: "/cart", badge: cartCount, icon: ShoppingCart },
                                 { label: "Wishlist", href: "/wishlist", badge: wishlistCount, icon: HeartIcon },
                                 { label: "Orders", href: "/orders", icon: PackageIcon },
+                                { label: "Track", href: "/track", icon: Search },
                             ].map(item => (
                                 <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
                                     className="relative flex flex-col items-center gap-1 p-3 bg-slate-50 rounded-xl text-slate-600 hover:bg-slate-100 transition">
@@ -264,6 +338,25 @@ const Navbar = () => {
                             ))}
                         </div>
 
+                        {(isSeller || isAdmin) && (
+                            <div className="grid grid-cols-2 gap-2">
+                                {isSeller && (
+                                    <Link href="/store" onClick={() => setMobileOpen(false)}
+                                        className="flex items-center justify-center gap-2 p-3 bg-slate-50 rounded-xl text-slate-700 hover:bg-slate-100 transition text-sm font-medium">
+                                        <StoreIcon size={16} />
+                                        Store Dashboard
+                                    </Link>
+                                )}
+                                {isAdmin && (
+                                    <Link href="/admin" onClick={() => setMobileOpen(false)}
+                                        className="flex items-center justify-center gap-2 p-3 bg-green-500 rounded-xl text-white hover:bg-green-600 transition text-sm font-semibold">
+                                        <ShieldCheckIcon size={16} />
+                                        Admin Dashboard
+                                    </Link>
+                                )}
+                            </div>
+                        )}
+
                         {/* Auth */}
                         {!user ? (
                             <button onClick={() => { openSignIn(); setMobileOpen(false) }}
@@ -274,6 +367,12 @@ const Navbar = () => {
                             <div className="flex items-center gap-3 px-1">
                                 <UserButton>
                                     <UserButton.MenuItems>
+                                        {isSeller && (
+                                            <UserButton.Action labelIcon={<StoreIcon size={16} />} label="Store Dashboard" onClick={() => router.push('/store')} />
+                                        )}
+                                        {isAdmin && (
+                                            <UserButton.Action labelIcon={<ShieldCheckIcon size={16} />} label="Admin Dashboard" onClick={() => router.push('/admin')} />
+                                        )}
                                         <UserButton.Action labelIcon={<PackageIcon size={16} />} label="My Orders" onClick={() => router.push('/orders')} />
                                         <UserButton.Action labelIcon={<HeartIcon size={16} />} label="Wishlist" onClick={() => router.push('/wishlist')} />
                                     </UserButton.MenuItems>
@@ -302,7 +401,7 @@ const Navbar = () => {
                         <div>
                             <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 px-1">Quick Links</p>
                             <div className="space-y-0.5">
-                                {FEATURED_LINKS.map(link => (
+                                {featuredLinks.map(link => (
                                     <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)}
                                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 transition">
                                         <span>{link.emoji}</span>
@@ -315,9 +414,9 @@ const Navbar = () => {
                         <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl">
                             <p className="text-sm font-semibold text-indigo-800">🚀 Sell on DropCart</p>
                             <p className="text-xs text-indigo-600 mt-0.5 mb-3">Reach buyers across Nigeria</p>
-                            <Link href="/create-store" onClick={() => setMobileOpen(false)}
+                            <Link href={storeCta.href} onClick={() => setMobileOpen(false)}
                                 className="text-xs font-semibold text-white bg-indigo-500 px-4 py-1.5 rounded-full inline-block">
-                                Open your store →
+                                {isSeller ? "Go to dashboard →" : "Open your store →"}
                             </Link>
                         </div>
                     </div>

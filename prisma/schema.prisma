@@ -167,7 +167,7 @@ model Order {
     isCouponUsed    Boolean       @default(false)
     coupon          Json          @default("{}")
     notes           String?       // buyer special instructions
-    trackingNumber  String?       // seller-assigned shipping tracking number
+    trackingNumber  String?       // shipping tracking number (auto-generated when marked SHIPPED)
     orderItems      OrderItem[]
 
     // Relations
@@ -298,6 +298,19 @@ model Store {
     banner      String?
     email       String
     contact     String
+
+    // ─── Verification & compliance ───────────────────────────────────────────
+    cacNumber                  String? // CAC registration number
+    verificationDocumentType   String? // "NIN" | "PASSPORT"
+    verificationDocumentNumber String? // NIN number or passport number
+    verificationDocumentUrl    String? // image of document
+    facialVerificationUrl      String? // selfie image for facial verification
+
+    // ─── Payout details ─────────────────────────────────────────────────────
+    payoutBankName      String?
+    payoutAccountName   String?
+    payoutAccountNumber String?
+
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
 

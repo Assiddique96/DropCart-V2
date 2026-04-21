@@ -4,6 +4,7 @@ import imagekit from "@/configs/imageKit";
 import prisma from "src/db";
 import { strictLimiter } from "@/lib/rateLimit";
 import { sanitizeStoreInput } from "@/lib/sanitize";
+import { sanitizeString } from "@/lib/sanitize";
 
 // Creating Store
 export async function POST(request) {
@@ -32,8 +33,44 @@ export async function POST(request) {
     const { name, username, description, email, contact, address } = sanitized;
     const image = formData.get("image");
 
+    // Verification fields
+    const cacNumber = sanitizeString(formData.get("cacNumber"), 50);
+    const verificationDocumentType = sanitizeString(formData.get("verificationDocumentType"), 20).toUpperCase();
+    const verificationDocumentNumber = sanitizeString(formData.get("verificationDocumentNumber"), 100);
+    const verificationDocumentImage = formData.get("verificationDocumentImage");
+    const facialVerificationImage = formData.get("facialVerificationImage");
+
+    // Payout fields
+    const payoutBankName = sanitizeString(formData.get("payoutBankName"), 100);
+    const payoutAccountName = sanitizeString(formData.get("payoutAccountName"), 120);
+    const payoutAccountNumber = sanitizeString(formData.get("payoutAccountNumber"), 30);
+
     if (!image) {
       return NextResponse.json({ error: "Store logo image is required." }, { status: 400 });
+    }
+
+    if (!cacNumber) {
+      return NextResponse.json({ error: "CAC registration number is required." }, { status: 400 });
+    }
+
+    if (!["NIN", "PASSPORT"].includes(verificationDocumentType)) {
+      return NextResponse.json({ error: "Verification document type must be NIN or PASSPORT." }, { status: 400 });
+    }
+
+    if (!verificationDocumentNumber) {
+      return NextResponse.json({ error: "Verification document number is required." }, { status: 400 });
+    }
+
+    if (!(verificationDocumentImage instanceof File) || verificationDocumentImage.size === 0) {
+      return NextResponse.json({ error: "Verification document photo is required." }, { status: 400 });
+    }
+
+    if (!(facialVerificationImage instanceof File) || facialVerificationImage.size === 0) {
+      return NextResponse.json({ error: "Facial verification photo (selfie) is required." }, { status: 400 });
+    }
+
+    if (!payoutBankName || !payoutAccountName || !payoutAccountNumber) {
+      return NextResponse.json({ error: "Bank details (bank name, account name, account number) are required for payouts." }, { status: 400 });
     }
 
     // 1. Check if store already exists
@@ -54,12 +91,26 @@ export async function POST(request) {
       return NextResponse.json({ error: "Username already taken" }, { status: 400 });
     }
 
-    // 3. Upload image to ImageKit
-    const buffer = Buffer.from(await image.arrayBuffer());
-    const uploadResponse = await imagekit.upload({
-      file: buffer,
+    // 3. Upload images to ImageKit
+    const logoBuffer = Buffer.from(await image.arrayBuffer());
+    const logoUpload = await imagekit.upload({
+      file: logoBuffer,
       fileName: image.name,
       folder: "logos",
+    });
+
+    const docBuffer = Buffer.from(await verificationDocumentImage.arrayBuffer());
+    const docUpload = await imagekit.upload({
+      file: docBuffer,
+      fileName: verificationDocumentImage.name || `doc-${Date.now()}`,
+      folder: "verification/documents",
+    });
+
+    const selfieBuffer = Buffer.from(await facialVerificationImage.arrayBuffer());
+    const selfieUpload = await imagekit.upload({
+      file: selfieBuffer,
+      fileName: facialVerificationImage.name || `selfie-${Date.now()}`,
+      folder: "verification/selfies",
     });
 
     // 4. Wrap DB operations in a sub-try/catch for cleanup
@@ -73,7 +124,17 @@ export async function POST(request) {
           email,
           contact,
           address,
-          logo: uploadResponse.url,
+          logo: logoUpload.url,
+
+          cacNumber,
+          verificationDocumentType,
+          verificationDocumentNumber,
+          verificationDocumentUrl: docUpload.url,
+          facialVerificationUrl: selfieUpload.url,
+
+          payoutBankName,
+          payoutAccountName,
+          payoutAccountNumber,
         },
       });
 
@@ -86,7 +147,9 @@ export async function POST(request) {
 
     } catch (dbError) {
       // If DB fails, delete the image we just uploaded
-      await imagekit.deleteFile(uploadResponse.fileId);
+      await imagekit.deleteFile(logoUpload.fileId);
+      await imagekit.deleteFile(docUpload.fileId);
+      await imagekit.deleteFile(selfieUpload.fileId);
       throw dbError; // Pass it to the outer catch
     }
 

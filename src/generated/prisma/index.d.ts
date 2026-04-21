@@ -15639,6 +15639,14 @@ export namespace Prisma {
     banner: string | null
     email: string | null
     contact: string | null
+    cacNumber: string | null
+    verificationDocumentType: string | null
+    verificationDocumentNumber: string | null
+    verificationDocumentUrl: string | null
+    facialVerificationUrl: string | null
+    payoutBankName: string | null
+    payoutAccountName: string | null
+    payoutAccountNumber: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -15661,6 +15669,14 @@ export namespace Prisma {
     banner: string | null
     email: string | null
     contact: string | null
+    cacNumber: string | null
+    verificationDocumentType: string | null
+    verificationDocumentNumber: string | null
+    verificationDocumentUrl: string | null
+    facialVerificationUrl: string | null
+    payoutBankName: string | null
+    payoutAccountName: string | null
+    payoutAccountNumber: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -15683,6 +15699,14 @@ export namespace Prisma {
     banner: number
     email: number
     contact: number
+    cacNumber: number
+    verificationDocumentType: number
+    verificationDocumentNumber: number
+    verificationDocumentUrl: number
+    facialVerificationUrl: number
+    payoutBankName: number
+    payoutAccountName: number
+    payoutAccountNumber: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -15707,6 +15731,14 @@ export namespace Prisma {
     banner?: true
     email?: true
     contact?: true
+    cacNumber?: true
+    verificationDocumentType?: true
+    verificationDocumentNumber?: true
+    verificationDocumentUrl?: true
+    facialVerificationUrl?: true
+    payoutBankName?: true
+    payoutAccountName?: true
+    payoutAccountNumber?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -15729,6 +15761,14 @@ export namespace Prisma {
     banner?: true
     email?: true
     contact?: true
+    cacNumber?: true
+    verificationDocumentType?: true
+    verificationDocumentNumber?: true
+    verificationDocumentUrl?: true
+    facialVerificationUrl?: true
+    payoutBankName?: true
+    payoutAccountName?: true
+    payoutAccountNumber?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -15751,6 +15791,14 @@ export namespace Prisma {
     banner?: true
     email?: true
     contact?: true
+    cacNumber?: true
+    verificationDocumentType?: true
+    verificationDocumentNumber?: true
+    verificationDocumentUrl?: true
+    facialVerificationUrl?: true
+    payoutBankName?: true
+    payoutAccountName?: true
+    payoutAccountNumber?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -15846,6 +15894,14 @@ export namespace Prisma {
     banner: string | null
     email: string
     contact: string
+    cacNumber: string | null
+    verificationDocumentType: string | null
+    verificationDocumentNumber: string | null
+    verificationDocumentUrl: string | null
+    facialVerificationUrl: string | null
+    payoutBankName: string | null
+    payoutAccountName: string | null
+    payoutAccountNumber: string | null
     createdAt: Date
     updatedAt: Date
     _count: StoreCountAggregateOutputType | null
@@ -15885,6 +15941,14 @@ export namespace Prisma {
     banner?: boolean
     email?: boolean
     contact?: boolean
+    cacNumber?: boolean
+    verificationDocumentType?: boolean
+    verificationDocumentNumber?: boolean
+    verificationDocumentUrl?: boolean
+    facialVerificationUrl?: boolean
+    payoutBankName?: boolean
+    payoutAccountName?: boolean
+    payoutAccountNumber?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     Product?: boolean | Store$ProductArgs<ExtArgs>
@@ -15913,6 +15977,14 @@ export namespace Prisma {
     banner?: boolean
     email?: boolean
     contact?: boolean
+    cacNumber?: boolean
+    verificationDocumentType?: boolean
+    verificationDocumentNumber?: boolean
+    verificationDocumentUrl?: boolean
+    facialVerificationUrl?: boolean
+    payoutBankName?: boolean
+    payoutAccountName?: boolean
+    payoutAccountNumber?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15936,6 +16008,14 @@ export namespace Prisma {
     banner?: boolean
     email?: boolean
     contact?: boolean
+    cacNumber?: boolean
+    verificationDocumentType?: boolean
+    verificationDocumentNumber?: boolean
+    verificationDocumentUrl?: boolean
+    facialVerificationUrl?: boolean
+    payoutBankName?: boolean
+    payoutAccountName?: boolean
+    payoutAccountNumber?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15959,11 +16039,19 @@ export namespace Prisma {
     banner?: boolean
     email?: boolean
     contact?: boolean
+    cacNumber?: boolean
+    verificationDocumentType?: boolean
+    verificationDocumentNumber?: boolean
+    verificationDocumentUrl?: boolean
+    facialVerificationUrl?: boolean
+    payoutBankName?: boolean
+    payoutAccountName?: boolean
+    payoutAccountNumber?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "username" | "address" | "street" | "city" | "state" | "zip" | "country" | "status" | "isActive" | "logo" | "banner" | "email" | "contact" | "createdAt" | "updatedAt", ExtArgs["result"]["store"]>
+  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "username" | "address" | "street" | "city" | "state" | "zip" | "country" | "status" | "isActive" | "logo" | "banner" | "email" | "contact" | "cacNumber" | "verificationDocumentType" | "verificationDocumentNumber" | "verificationDocumentUrl" | "facialVerificationUrl" | "payoutBankName" | "payoutAccountName" | "payoutAccountNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["store"]>
   export type StoreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Product?: boolean | Store$ProductArgs<ExtArgs>
     Order?: boolean | Store$OrderArgs<ExtArgs>
@@ -16006,6 +16094,14 @@ export namespace Prisma {
       banner: string | null
       email: string
       contact: string
+      cacNumber: string | null
+      verificationDocumentType: string | null
+      verificationDocumentNumber: string | null
+      verificationDocumentUrl: string | null
+      facialVerificationUrl: string | null
+      payoutBankName: string | null
+      payoutAccountName: string | null
+      payoutAccountNumber: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["store"]>
@@ -16453,6 +16549,14 @@ export namespace Prisma {
     readonly banner: FieldRef<"Store", 'String'>
     readonly email: FieldRef<"Store", 'String'>
     readonly contact: FieldRef<"Store", 'String'>
+    readonly cacNumber: FieldRef<"Store", 'String'>
+    readonly verificationDocumentType: FieldRef<"Store", 'String'>
+    readonly verificationDocumentNumber: FieldRef<"Store", 'String'>
+    readonly verificationDocumentUrl: FieldRef<"Store", 'String'>
+    readonly facialVerificationUrl: FieldRef<"Store", 'String'>
+    readonly payoutBankName: FieldRef<"Store", 'String'>
+    readonly payoutAccountName: FieldRef<"Store", 'String'>
+    readonly payoutAccountNumber: FieldRef<"Store", 'String'>
     readonly createdAt: FieldRef<"Store", 'DateTime'>
     readonly updatedAt: FieldRef<"Store", 'DateTime'>
   }
@@ -20312,6 +20416,14 @@ export namespace Prisma {
     banner: 'banner',
     email: 'email',
     contact: 'contact',
+    cacNumber: 'cacNumber',
+    verificationDocumentType: 'verificationDocumentType',
+    verificationDocumentNumber: 'verificationDocumentNumber',
+    verificationDocumentUrl: 'verificationDocumentUrl',
+    facialVerificationUrl: 'facialVerificationUrl',
+    payoutBankName: 'payoutBankName',
+    payoutAccountName: 'payoutAccountName',
+    payoutAccountNumber: 'payoutAccountNumber',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -21562,6 +21674,14 @@ export namespace Prisma {
     banner?: StringNullableFilter<"Store"> | string | null
     email?: StringFilter<"Store"> | string
     contact?: StringFilter<"Store"> | string
+    cacNumber?: StringNullableFilter<"Store"> | string | null
+    verificationDocumentType?: StringNullableFilter<"Store"> | string | null
+    verificationDocumentNumber?: StringNullableFilter<"Store"> | string | null
+    verificationDocumentUrl?: StringNullableFilter<"Store"> | string | null
+    facialVerificationUrl?: StringNullableFilter<"Store"> | string | null
+    payoutBankName?: StringNullableFilter<"Store"> | string | null
+    payoutAccountName?: StringNullableFilter<"Store"> | string | null
+    payoutAccountNumber?: StringNullableFilter<"Store"> | string | null
     createdAt?: DateTimeFilter<"Store"> | Date | string
     updatedAt?: DateTimeFilter<"Store"> | Date | string
     Product?: ProductListRelationFilter
@@ -21589,6 +21709,14 @@ export namespace Prisma {
     banner?: SortOrderInput | SortOrder
     email?: SortOrder
     contact?: SortOrder
+    cacNumber?: SortOrderInput | SortOrder
+    verificationDocumentType?: SortOrderInput | SortOrder
+    verificationDocumentNumber?: SortOrderInput | SortOrder
+    verificationDocumentUrl?: SortOrderInput | SortOrder
+    facialVerificationUrl?: SortOrderInput | SortOrder
+    payoutBankName?: SortOrderInput | SortOrder
+    payoutAccountName?: SortOrderInput | SortOrder
+    payoutAccountNumber?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     Product?: ProductOrderByRelationAggregateInput
@@ -21619,6 +21747,14 @@ export namespace Prisma {
     banner?: StringNullableFilter<"Store"> | string | null
     email?: StringFilter<"Store"> | string
     contact?: StringFilter<"Store"> | string
+    cacNumber?: StringNullableFilter<"Store"> | string | null
+    verificationDocumentType?: StringNullableFilter<"Store"> | string | null
+    verificationDocumentNumber?: StringNullableFilter<"Store"> | string | null
+    verificationDocumentUrl?: StringNullableFilter<"Store"> | string | null
+    facialVerificationUrl?: StringNullableFilter<"Store"> | string | null
+    payoutBankName?: StringNullableFilter<"Store"> | string | null
+    payoutAccountName?: StringNullableFilter<"Store"> | string | null
+    payoutAccountNumber?: StringNullableFilter<"Store"> | string | null
     createdAt?: DateTimeFilter<"Store"> | Date | string
     updatedAt?: DateTimeFilter<"Store"> | Date | string
     Product?: ProductListRelationFilter
@@ -21646,6 +21782,14 @@ export namespace Prisma {
     banner?: SortOrderInput | SortOrder
     email?: SortOrder
     contact?: SortOrder
+    cacNumber?: SortOrderInput | SortOrder
+    verificationDocumentType?: SortOrderInput | SortOrder
+    verificationDocumentNumber?: SortOrderInput | SortOrder
+    verificationDocumentUrl?: SortOrderInput | SortOrder
+    facialVerificationUrl?: SortOrderInput | SortOrder
+    payoutBankName?: SortOrderInput | SortOrder
+    payoutAccountName?: SortOrderInput | SortOrder
+    payoutAccountNumber?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: StoreCountOrderByAggregateInput
@@ -21674,6 +21818,14 @@ export namespace Prisma {
     banner?: StringNullableWithAggregatesFilter<"Store"> | string | null
     email?: StringWithAggregatesFilter<"Store"> | string
     contact?: StringWithAggregatesFilter<"Store"> | string
+    cacNumber?: StringNullableWithAggregatesFilter<"Store"> | string | null
+    verificationDocumentType?: StringNullableWithAggregatesFilter<"Store"> | string | null
+    verificationDocumentNumber?: StringNullableWithAggregatesFilter<"Store"> | string | null
+    verificationDocumentUrl?: StringNullableWithAggregatesFilter<"Store"> | string | null
+    facialVerificationUrl?: StringNullableWithAggregatesFilter<"Store"> | string | null
+    payoutBankName?: StringNullableWithAggregatesFilter<"Store"> | string | null
+    payoutAccountName?: StringNullableWithAggregatesFilter<"Store"> | string | null
+    payoutAccountNumber?: StringNullableWithAggregatesFilter<"Store"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Store"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Store"> | Date | string
   }
@@ -22920,6 +23072,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Product?: ProductCreateNestedManyWithoutStoreInput
@@ -22947,6 +23107,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
@@ -22972,6 +23140,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Product?: ProductUpdateManyWithoutStoreNestedInput
@@ -22999,6 +23175,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
@@ -23025,6 +23209,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23046,6 +23238,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23068,6 +23268,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -24347,6 +24555,14 @@ export namespace Prisma {
     banner?: SortOrder
     email?: SortOrder
     contact?: SortOrder
+    cacNumber?: SortOrder
+    verificationDocumentType?: SortOrder
+    verificationDocumentNumber?: SortOrder
+    verificationDocumentUrl?: SortOrder
+    facialVerificationUrl?: SortOrder
+    payoutBankName?: SortOrder
+    payoutAccountName?: SortOrder
+    payoutAccountNumber?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -24369,6 +24585,14 @@ export namespace Prisma {
     banner?: SortOrder
     email?: SortOrder
     contact?: SortOrder
+    cacNumber?: SortOrder
+    verificationDocumentType?: SortOrder
+    verificationDocumentNumber?: SortOrder
+    verificationDocumentUrl?: SortOrder
+    facialVerificationUrl?: SortOrder
+    payoutBankName?: SortOrder
+    payoutAccountName?: SortOrder
+    payoutAccountNumber?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -24391,6 +24615,14 @@ export namespace Prisma {
     banner?: SortOrder
     email?: SortOrder
     contact?: SortOrder
+    cacNumber?: SortOrder
+    verificationDocumentType?: SortOrder
+    verificationDocumentNumber?: SortOrder
+    verificationDocumentUrl?: SortOrder
+    facialVerificationUrl?: SortOrder
+    payoutBankName?: SortOrder
+    payoutAccountName?: SortOrder
+    payoutAccountNumber?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -26020,6 +26252,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Product?: ProductCreateNestedManyWithoutStoreInput
@@ -26045,6 +26285,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
@@ -26229,6 +26477,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Product?: ProductUpdateManyWithoutStoreNestedInput
@@ -26254,6 +26510,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
@@ -26422,6 +26686,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Order?: OrderCreateNestedManyWithoutStoreInput
@@ -26448,6 +26720,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Order?: OrderUncheckedCreateNestedManyWithoutStoreInput
@@ -26574,6 +26854,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Order?: OrderUpdateManyWithoutStoreNestedInput
@@ -26600,6 +26888,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Order?: OrderUncheckedUpdateManyWithoutStoreNestedInput
@@ -26981,6 +27277,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Product?: ProductCreateNestedManyWithoutStoreInput
@@ -27007,6 +27311,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
@@ -27162,6 +27474,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Product?: ProductUpdateManyWithoutStoreNestedInput
@@ -27188,6 +27508,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
@@ -27896,6 +28224,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Product?: ProductCreateNestedManyWithoutStoreInput
@@ -27922,6 +28258,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
@@ -27962,6 +28306,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Product?: ProductUpdateManyWithoutStoreNestedInput
@@ -27988,6 +28340,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
@@ -28381,6 +28741,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Product?: ProductCreateNestedManyWithoutStoreInput
@@ -28407,6 +28775,14 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
@@ -28447,6 +28823,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Product?: ProductUpdateManyWithoutStoreNestedInput
@@ -28473,6 +28857,14 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput

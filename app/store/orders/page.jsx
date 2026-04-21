@@ -23,7 +23,6 @@ export default function StoreOrders() {
     const [cancelModal, setCancelModal] = useState(null)
     const [cancelReason, setCancelReason] = useState('')
     const [cancelling, setCancelling] = useState(false)
-    const [trackingInputs, setTrackingInputs] = useState({})
     const [fulfillmentOpen, setFulfillmentOpen] = useState(null)
     const [fulfillQty, setFulfillQty] = useState({})
     const [submitting, setSubmitting] = useState(false)
@@ -46,32 +45,32 @@ export default function StoreOrders() {
     const updateStatus = async (orderId, status) => {
         try {
             const token = await getToken()
-            await axios.post("/api/store/update-order-status", { orderId, status }, { headers: { Authorization: `Bearer ${token}` } })
+            const { data } = await axios.post(
+                "/api/store/update-order-status",
+                { orderId, status },
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            const updated = data?.updatedOrder
+
             setOrders(prev => prev.map(o => {
                 if (o.id !== orderId) return o
-                const next = { ...o, status }
+                const next = {
+                    ...o,
+                    status,
+                    trackingNumber: updated?.trackingNumber ?? o.trackingNumber,
+                }
                 return { ...next, isPaid: isOrderConsideredPaid(next) }
             }))
             if (selectedOrder?.id === orderId) {
-                const next = { ...selectedOrder, status }
+                const next = {
+                    ...selectedOrder,
+                    status,
+                    trackingNumber: updated?.trackingNumber ?? selectedOrder.trackingNumber,
+                }
                 setSelectedOrder({ ...next, isPaid: isOrderConsideredPaid(next) })
             }
             toast.success("Status updated")
         } catch (e) { toast.error(e?.response?.data?.error || e.message) }
-    }
-
-    const saveTracking = async (orderId) => {
-        const trackingNumber = trackingInputs[orderId]?.trim()
-        if (!trackingNumber) return toast.error("Enter a tracking number first.")
-        setSubmitting(true)
-        try {
-            const token = await getToken()
-            const { data } = await axios.post("/api/store/tracking", { orderId, trackingNumber }, { headers: { Authorization: `Bearer ${token}` } })
-            toast.success(data.message)
-            setOrders(prev => prev.map(o => o.id === orderId ? { ...o, trackingNumber, status: data.order.status } : o))
-            if (selectedOrder?.id === orderId) setSelectedOrder(p => ({ ...p, trackingNumber, status: data.order.status }))
-        } catch (e) { toast.error(e?.response?.data?.error || e.message) }
-        setSubmitting(false)
     }
 
     const saveFulfillment = async (order) => {
@@ -211,19 +210,12 @@ export default function StoreOrders() {
                                                 </select>
                                             </div>
 
-                                            {/* Tracking number */}
+                                            {/* Tracking number (read-only, auto-generated on SHIPPED) */}
                                             <div className="flex items-center gap-2">
-                                                <input
-                                                    type="text"
-                                                    value={trackingInputs[order.id] ?? order.trackingNumber ?? ''}
-                                                    onChange={e => setTrackingInputs(p => ({ ...p, [order.id]: e.target.value }))}
-                                                    placeholder="Tracking number"
-                                                    className="border border-slate-200 rounded text-xs p-1.5 outline-none w-40"
-                                                />
-                                                <button onClick={() => saveTracking(order.id)} disabled={submitting}
-                                                    className="flex items-center gap-1 text-xs px-2.5 py-1.5 bg-purple-600 text-white rounded hover:bg-purple-700 transition disabled:opacity-50">
-                                                    <TruckIcon size={11} /> Save
-                                                </button>
+                                                <span className="text-xs text-slate-400">Tracking:</span>
+                                                <span className="text-xs font-semibold text-purple-700">
+                                                    {order.trackingNumber || "Auto-generated on SHIPPED"}
+                                                </span>
                                             </div>
 
                                             {/* Partial fulfillment */}
