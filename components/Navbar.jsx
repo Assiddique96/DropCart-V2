@@ -128,7 +128,7 @@ const Navbar = () => {
 
                     {/* Logo */}
                     <Link href="/" className="relative text-4xl font-semibold text-slate-400 shrink-0" onClick={() => setMobileOpen(false)}>
-                        <span className="text-gray-600">Drop</span>Cart<span className="text-gray-600 text-5xl leading-0">.</span>
+                        <span className="text-gray-600">Shp</span>inx<span className="text-gray-600 text-5xl leading-0">.</span>
                         <p className="absolute text-xs font-semibold -top-1 -right-8 px-3 py-0.5 rounded-full text-white bg-gray-500">.NG</p>
                         <Show when={{ plan: 'plus' }}>
                             <p className="absolute text-xs font-semibold -top-1 -right-8 px-3 py-0.5 rounded-full text-white bg-indigo-500">Plus</p>
@@ -295,7 +295,7 @@ const Navbar = () => {
                                 </div>
 
                                 <div className="mt-6 p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-100">
-                                    <p className="text-sm font-semibold text-indigo-800 mb-1">🚀 Sell on DropCart</p>
+                                    <p className="text-sm font-semibold text-indigo-800 mb-1">🚀 Sell on Shpinx</p>
                                     <p className="text-xs text-indigo-600 mb-3">Reach thousands of buyers across Nigeria</p>
                                     <Link href={storeCta.href} onClick={() => setMegaOpen(false)}
                                         className="text-xs font-semibold text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-1.5 rounded-full transition inline-block">
@@ -417,7 +417,7 @@ const Navbar = () => {
                         </div>
 
                         <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 rounded-xl border border-transparent dark:border-slate-700">
-                            <p className="text-sm font-semibold text-indigo-800 dark:text-indigo-300">🚀 Sell on DropCart</p>
+                            <p className="text-sm font-semibold text-indigo-800 dark:text-indigo-300">🚀 Sell on Shpinx</p>
                             <p className="text-xs text-indigo-600 dark:text-indigo-200 mt-0.5 mb-3">Reach buyers across Nigeria</p>
                             <Link href={storeCta.href} onClick={() => setMobileOpen(false)}
                                 className="text-xs font-semibold text-white bg-indigo-500 px-4 py-1.5 rounded-full inline-block">
