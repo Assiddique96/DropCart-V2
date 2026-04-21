@@ -39,19 +39,19 @@ export default function AdminDashboard() {
     ]
 
     return (
-        <div className="text-slate-500 mb-28">
-            <h1 className="text-2xl mb-4">Admin <span className="text-slate-800 font-medium">Dashboard</span></h1>
+        <div className="text-slate-500 dark:text-slate-300 mb-28">
+            <h1 className="text-2xl mb-4">Admin <span className="text-slate-800 dark:text-slate-100 font-medium">Dashboard</span></h1>
 
             <div className="flex flex-wrap gap-4 mb-10">
                 {cards.map((card, i) => (
-                    <div key={i} className="flex items-center gap-5 border border-slate-200 p-4 px-5 rounded-xl min-w-[180px]">
+                    <div key={i} className="flex items-center gap-5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/70 hover:shadow-sm dark:hover:shadow-slate-950/50 transition p-4 px-5 rounded-xl min-w-[180px]">
                         <div className={`p-2.5 rounded-full ${card.color}`}>
                             <card.icon size={20} />
                         </div>
                         <div>
-                            <p className="text-xs text-slate-400">{card.title}</p>
-                            <p className="text-xl font-semibold text-slate-800 mt-0.5">{card.value}</p>
-                            {card.sub && <p className="text-xs text-slate-400 mt-0.5">{card.sub}</p>}
+                            <p className="text-xs text-slate-400 dark:text-slate-400">{card.title}</p>
+                            <p className="text-xl font-semibold text-slate-800 dark:text-slate-100 mt-0.5">{card.value}</p>
+                            {card.sub && <p className="text-xs text-slate-400 dark:text-slate-400 mt-0.5">{card.sub}</p>}
                         </div>
                     </div>
                 ))}

@@ -22,20 +22,20 @@ const AdminSidebar = () => {
     ]
 
     return (
-        <div className="inline-flex h-full flex-col gap-5 border-r border-slate-200 sm:min-w-60">
+        <div className="inline-flex h-full flex-col gap-5 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 sm:min-w-60">
             <div className="flex flex-col gap-3 justify-center items-center pt-8 max-sm:hidden">
                 {user && (
                     <>
                         <Image className="w-14 h-14 rounded-full" src={user.imageUrl} alt="" width={80} height={80} />
-                        <p className="text-slate-700 text-sm">{user.fullName}</p>
-                        <span className="text-xs px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full">Admin</span>
+                        <p className="text-slate-700 dark:text-slate-200 text-sm">{user.fullName}</p>
+                        <span className="text-xs px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 rounded-full">Admin</span>
                     </>
                 )}
             </div>
             <div className="max-sm:mt-6">
                 {sidebarLinks.map((link, index) => (
                     <Link key={index} href={link.href}
-                        className={`relative flex items-center gap-3 text-slate-500 hover:bg-slate-50 p-2.5 transition ${pathname === link.href ? 'bg-slate-100 sm:text-slate-600' : ''}`}>
+                        className={`relative flex items-center gap-3 text-slate-500 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 p-2.5 transition ${pathname === link.href ? 'bg-slate-100 dark:bg-slate-800 sm:text-slate-600 dark:sm:text-slate-100' : ''}`}>
                         <link.icon size={18} className="sm:ml-5" />
                         <p className="max-sm:hidden">{link.name}</p>
                         {pathname === link.href && (
