@@ -136,97 +136,99 @@ const Navbar = () => {
                     </Link>
 
                     {/* Desktop nav */}
-                    <div className="hidden sm:flex items-center gap-4 lg:gap-6 text-slate-600 dark:text-slate-300 text-sm">
-                        <Link href="/" className="hover:text-slate-900 transition">Home</Link>
+                    <div className="hidden sm:flex items-center gap-4 xl:gap-6 text-slate-600 dark:text-slate-300 text-sm">
+                        <div className="flex items-center gap-3 lg:gap-4">
+                            <Link href="/" className="hover:text-slate-900 dark:hover:text-white transition">Home</Link>
 
-                        {/* Categories mega menu trigger */}
-                        <button
-                            onClick={() => setMegaOpen(v => !v)}
-                            className={`flex items-center gap-1 hover:text-slate-900 transition font-medium ${megaOpen ? 'text-slate-900' : ''}`}
-                        >
-                            Shop
-                            <ChevronDownIcon size={14} className={`transition-transform duration-200 ${megaOpen ? 'rotate-180' : ''}`} />
-                        </button>
-
-                        <Link href="/pricing" className="hover:text-slate-900 transition">Pricing</Link>
-                        <Link href="/contact" className="hover:text-slate-900 transition">Contact</Link>
-                        {isSeller && (
-                            <Link href="/store" className="hover:text-slate-900 transition font-medium">
-                                Store Dashboard
-                            </Link>
-                        )}
-                        {isAdmin && (
-                            <Link
-                                href="/admin"
-                                className="px-4 py-2 rounded-full bg-green-500 hover:bg-green-600 transition text-white text-sm font-semibold"
+                            {/* Categories mega menu trigger */}
+                            <button
+                                onClick={() => setMegaOpen(v => !v)}
+                                className={`flex items-center gap-1 hover:text-slate-900 dark:hover:text-white transition font-medium ${megaOpen ? 'text-slate-900 dark:text-white' : ''}`}
                             >
-                                Admin Dashboard
-                            </Link>
-                        )}
+                                Shop
+                                <ChevronDownIcon size={14} className={`transition-transform duration-200 ${megaOpen ? 'rotate-180' : ''}`} />
+                            </button>
 
-                        <Link href="/wishlist" className="relative flex items-center gap-1.5 hover:text-slate-900 transition">
-                            <HeartIcon size={16} />
-                            Wishlist
-                            {wishlistCount > 0 && (
-                                <span className="absolute -top-1.5 left-2.5 text-[8px] text-white bg-red-500 min-w-[14px] h-3.5 px-0.5 rounded-full flex items-center justify-center">
-                                    {wishlistCount}
-                                </span>
+                            <Link href="/pricing" className="hover:text-slate-900 dark:hover:text-white transition">Pricing</Link>
+                            <Link href="/contact" className="hover:text-slate-900 dark:hover:text-white transition">Contact</Link>
+                            {isSeller && (
+                                <Link href="/store" className="hover:text-slate-900 dark:hover:text-white transition font-medium whitespace-nowrap">
+                                    Store Dashboard
+                                </Link>
                             )}
-                        </Link>
+                        </div>
 
                         {/* Search */}
-                        <form onSubmit={handleSearch} className="hidden xl:flex items-center text-sm gap-2 bg-slate-100 px-4 py-2.5 rounded-full min-w-48">
+                        <form onSubmit={handleSearch} className="hidden lg:flex items-center text-sm gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-2.5 rounded-full w-56 xl:w-72 border border-transparent dark:border-slate-800">
                             <Search size={15} className="text-slate-500 shrink-0" />
                             <input
-                                className="w-full bg-transparent outline-none placeholder-slate-400 text-slate-700"
+                                className="w-full bg-transparent outline-none placeholder-slate-400 text-slate-700 dark:text-slate-200"
                                 type="text" placeholder="Search products..."
                                 value={search} onChange={e => setSearch(e.target.value)} required
                             />
                         </form>
 
-                        {/* Cart */}
-                        <Link href="/cart" className="relative flex items-center gap-1.5 hover:text-slate-900 transition">
-                            <ShoppingCart size={16} />
-                            Cart
-                            {cartCount > 0 && (
-                                <span className="absolute -top-1.5 left-2 text-[8px] text-white bg-slate-700 min-w-[14px] h-3.5 px-0.5 rounded-full flex items-center justify-center">
-                                    {cartCount}
-                                </span>
-                            )}
-                        </Link>
-                        <ThemeToggle />
+                        <div className="flex items-center gap-2 xl:gap-3">
+                            <Link href="/wishlist" className="relative flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition whitespace-nowrap">
+                                <HeartIcon size={16} />
+                                <span className="hidden xl:inline">Wishlist</span>
+                                {wishlistCount > 0 && (
+                                    <span className="absolute -top-1.5 left-2.5 text-[8px] text-white bg-red-500 min-w-[14px] h-3.5 px-0.5 rounded-full flex items-center justify-center">
+                                        {wishlistCount}
+                                    </span>
+                                )}
+                            </Link>
 
-                        {/* Auth */}
-                        {!user ? (
-                            <button onClick={openSignIn}
-                                className="px-6 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full text-sm">
-                                Login
-                            </button>
-                        ) : (
-                            <div className="flex items-center gap-2.5">
-                                <NotificationBell />
-                                <UserButton>
-                                    <UserButton.MenuItems>
-                                        {isSeller && (
-                                            <UserButton.Action
-                                                labelIcon={<StoreIcon size={16} />}
-                                                label="Store Dashboard"
-                                                onClick={() => router.push('/store')}
-                                            />
-                                        )}
-                                        {isAdmin && (
-                                            <UserButton.Action
-                                                labelIcon={<ShieldCheckIcon size={16} />}
-                                                label="Admin Dashboard"
-                                                onClick={() => router.push('/admin')}
-                                            />
-                                        )}
-                                        <UserButton.Action labelIcon={<PackageIcon size={16} />} label="My Orders" onClick={() => router.push('/orders')} />
-                                        <UserButton.Action labelIcon={<HeartIcon size={16} />} label="Wishlist" onClick={() => router.push('/wishlist')} />
-                                    </UserButton.MenuItems>
-                                </UserButton>
-                            </div>
-                        )}
+                            <Link href="/cart" className="relative flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition whitespace-nowrap">
+                                <ShoppingCart size={16} />
+                                <span className="hidden xl:inline">Cart</span>
+                                {cartCount > 0 && (
+                                    <span className="absolute -top-1.5 left-2 text-[8px] text-white bg-slate-700 min-w-[14px] h-3.5 px-0.5 rounded-full flex items-center justify-center">
+                                        {cartCount}
+                                    </span>
+                                )}
+                            </Link>
+                            <ThemeToggle />
+                            {isAdmin && (
+                                <Link
+                                    href="/admin"
+                                    className="hidden xl:inline-flex px-4 py-2 rounded-full bg-green-500 hover:bg-green-600 transition text-white text-sm font-semibold whitespace-nowrap"
+                                >
+                                    Admin Dashboard
+                                </Link>
+                            )}
+
+                            {!user ? (
+                                <button onClick={openSignIn}
+                                    className="px-5 xl:px-6 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full text-sm whitespace-nowrap">
+                                    Login
+                                </button>
+                            ) : (
+                                <div className="flex items-center gap-2.5">
+                                    <NotificationBell />
+                                    <UserButton>
+                                        <UserButton.MenuItems>
+                                            {isSeller && (
+                                                <UserButton.Action
+                                                    labelIcon={<StoreIcon size={16} />}
+                                                    label="Store Dashboard"
+                                                    onClick={() => router.push('/store')}
+                                                />
+                                            )}
+                                            {isAdmin && (
+                                                <UserButton.Action
+                                                    labelIcon={<ShieldCheckIcon size={16} />}
+                                                    label="Admin Dashboard"
+                                                    onClick={() => router.push('/admin')}
+                                                />
+                                            )}
+                                            <UserButton.Action labelIcon={<PackageIcon size={16} />} label="My Orders" onClick={() => router.push('/orders')} />
+                                            <UserButton.Action labelIcon={<HeartIcon size={16} />} label="Wishlist" onClick={() => router.push('/wishlist')} />
+                                        </UserButton.MenuItems>
+                                    </UserButton>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Mobile controls */}
