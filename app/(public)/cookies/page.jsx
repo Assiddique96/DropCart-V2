@@ -25,8 +25,8 @@ export default function CookiesPolicyPage() {
                         <p>We collect essential data for functionality, verification, and security:</p>
                         <ul className="list-disc pl-5 space-y-1">
                             <li><span className="font-medium text-slate-700">Personal identifiers</span>: name, email, mobile number, business name, house/business address.</li>
-                            <li><span className="font-medium text-slate-700">Verification data:</span>: NIN/International passport data page and number, CAC registration, facial verification.</li>
-                            <li><span className="font-medium text-slate-700">Device permissions:</span>: camera access, microphone access, location access, contact access.</li>
+                            <li><span className="font-medium text-slate-700">Verification data</span>: NIN/International passport data page and number, CAC registration, facial verification.</li>
+                            <li><span className="font-medium text-slate-700">Device permissions</span>: camera access, microphone access, location access, contact access.</li>
                         </ul>
                         <p>These are processed only with consent or for contract performance, as required under NDPA sections 24-25.</p>
                     </section>
