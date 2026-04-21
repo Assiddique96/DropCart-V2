@@ -5,7 +5,7 @@ import authSeller from "@/middlewares/authSeller";
 import { defaultLimiter, looseLimiter } from "@/lib/rateLimit";
 import { sanitizeString, sanitizeNumber } from "@/lib/sanitize";
 
-async function getSeller(userId) { return await authSeller(userId); }
+async function getSeller(userId, storeId) { return await authSeller(userId, storeId); }
 async function ownProduct(productId, storeId) {
   return await prisma.product.findFirst({ where: { id: productId, storeId } });
 }
@@ -20,7 +20,7 @@ export async function GET(request) {
 
   try {
     const { userId } = getAuth(request);
-    const storeId = await getSeller(userId);
+  const storeId = await getSeller(userId, request.headers.get("x-store-id"));
     if (!storeId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { searchParams } = new URL(request.url);
@@ -55,7 +55,7 @@ export async function POST(request) {
 
   try {
     const { userId } = getAuth(request);
-    const storeId = await getSeller(userId);
+  const storeId = await getSeller(userId, request.headers.get("x-store-id"));
     if (!storeId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { productId, groups } = await request.json();

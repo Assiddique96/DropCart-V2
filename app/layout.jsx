@@ -3,6 +3,8 @@ import { Toaster } from "react-hot-toast";
 import StoreProvider from "./StoreProvider";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import ThemeProvider from "@/components/ThemeProvider";
+import CookieConsentToast from "@/components/CookieConsentToast";
 
 const outfit = Outfit({ subsets: ["latin"], weight: ["400", "500", "600"] });
 
@@ -31,11 +33,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
          <ClerkProvider> 
-            <html lang="en">
+            <html lang="en" suppressHydrationWarning>
                 <body className={`${outfit.className} antialiased`}>
                     <StoreProvider>
-                        <Toaster />
-                        {children}
+                        <ThemeProvider>
+                            <Toaster />
+                            <CookieConsentToast />
+                            {children}
+                        </ThemeProvider>
                     </StoreProvider>
                 </body>
             </html>

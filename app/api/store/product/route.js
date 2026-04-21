@@ -36,7 +36,7 @@ export async function POST(request) {
 
   try {
     const { userId } = getAuth(request);
-    const storeId = await authSeller(userId);
+    const storeId = await authSeller(userId, request.headers.get("x-store-id"));
     if (!storeId) return NextResponse.json({ error: "Not authorized" }, { status: 401 });
 
     const formData = await request.formData();
@@ -87,7 +87,7 @@ export async function POST(request) {
 export async function GET(request) {
   try {
     const { userId } = getAuth(request);
-    const storeId = await authSeller(userId);
+    const storeId = await authSeller(userId, request.headers.get("x-store-id"));
     if (!storeId) return NextResponse.json({ error: "Not authorized" }, { status: 401 });
 
     const products = await prisma.product.findMany({
@@ -121,7 +121,7 @@ export async function PATCH(request) {
 
   try {
     const { userId } = getAuth(request);
-    const storeId = await authSeller(userId);
+    const storeId = await authSeller(userId, request.headers.get("x-store-id"));
     if (!storeId) return NextResponse.json({ error: "Not authorized" }, { status: 401 });
 
     const formData = await request.formData();
@@ -177,7 +177,7 @@ export async function DELETE(request) {
 
   try {
     const { userId } = getAuth(request);
-    const storeId = await authSeller(userId);
+    const storeId = await authSeller(userId, request.headers.get("x-store-id"));
     if (!storeId) return NextResponse.json({ error: "Not authorized" }, { status: 401 });
 
     const { searchParams } = new URL(request.url);

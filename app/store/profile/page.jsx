@@ -7,6 +7,7 @@ import Loading from "@/components/Loading"
 import Image from "next/image"
 import { SaveIcon, UploadIcon } from "lucide-react"
 import { assets } from "@/assets/assets"
+import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
 export default function StoreProfile() {
     const { getToken } = useAuth()
@@ -21,9 +22,8 @@ export default function StoreProfile() {
 
     const fetchProfile = async () => {
         try {
-            const token = await getToken()
             const { data } = await axios.get("/api/store/profile", {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: await getStoreAuthHeaders(getToken)
             })
             setStore(data.store)
             setForm({
@@ -47,14 +47,13 @@ export default function StoreProfile() {
     const handleSave = async () => {
         setSaving(true)
         try {
-            const token = await getToken()
             const formData = new FormData()
             Object.entries(form).forEach(([k, v]) => formData.append(k, v))
             if (newLogo) formData.append("logo", newLogo)
             if (newBanner) formData.append("banner", newBanner)
 
             const { data } = await axios.patch("/api/store/profile", formData, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: await getStoreAuthHeaders(getToken)
             })
             toast.success(data.message)
             setStore(data.store)

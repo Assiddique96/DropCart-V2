@@ -5,15 +5,11 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import Loading from "@/components/Loading";
 import { useAuth, useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 
 export default function CreateStore() {
   const { user } = useUser();
   const { getToken } = useAuth();
-  const router = useRouter();
-  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
-  const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
@@ -51,26 +47,15 @@ export default function CreateStore() {
         },
       });
       if (["pending", "approved", "rejected"].includes(data.status)) {
-        setAlreadySubmitted(true);
-        setStatus(data.status);
         switch (data.status) {
           case "approved":
-            setMessage(
-              "Your store has been approved! Redirecting to dashboard...",
-            );
-            setTimeout(() => {
-              router.push("/store");
-            }, 5000);
+            setMessage("You already have an approved store. You can still create another store.");
             break;
           case "pending":
-            setMessage(
-              "Your store details are under review. Please wait for the admin to approve your store.",
-            );
+            setMessage("You have at least one store under review. New submissions are still allowed.");
             break;
           case "rejected":
-            setMessage(
-              "Unfortunately, your store details were rejected. Please review the requirements and submit again.",
-            );
+            setMessage("A previous submission was rejected. You can submit a new store.");
             break;
 
           default:
@@ -148,8 +133,12 @@ export default function CreateStore() {
 
   return !loading ? (
     <>
-      {!alreadySubmitted ? (
         <div className="mx-6 min-h-[70vh] my-16">
+          {message && (
+            <div className="max-w-7xl mx-auto mb-6 p-3 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-600">
+              {message}
+            </div>
+          )}
           <form
             onSubmit={(e) =>
               toast.promise(onSubmitHandler(e), {
@@ -403,19 +392,6 @@ export default function CreateStore() {
             </button>
           </form>
         </div>
-      ) : (
-        <div className="min-h-[80vh] flex flex-col items-center justify-center">
-          <p className="sm:text-2xl lg:text-3xl mx-5 font-semibold text-slate-500 text-center max-w-2xl">
-            {message}
-          </p>
-          {status === "approved" && (
-            <p className="mt-5 text-slate-400">
-              redirecting to dashboard in{" "}
-              <span className="font-semibold">5 seconds</span>
-            </p>
-          )}
-        </div>
-      )}
     </>
   ) : (
     <Loading />

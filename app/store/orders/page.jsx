@@ -6,6 +6,7 @@ import axios from "axios"
 import toast from "react-hot-toast"
 import { XCircleIcon, TruckIcon, PackageCheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 import { isOrderConsideredPaid } from "@/lib/orderPayment"
+import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
 const STATUS_COLORS = {
     ORDER_PLACED: 'bg-blue-50 text-blue-700',
@@ -31,8 +32,7 @@ export default function StoreOrders() {
 
     const fetchOrders = async () => {
         try {
-            const token = await getToken()
-            const { data } = await axios.get("/api/store/orders", { headers: { Authorization: `Bearer ${token}` } })
+            const { data } = await axios.get("/api/store/orders", { headers: await getStoreAuthHeaders(getToken) })
             const fresh = data.orders
             setOrders(fresh)
         } catch (e) {
@@ -44,11 +44,10 @@ export default function StoreOrders() {
 
     const updateStatus = async (orderId, status) => {
         try {
-            const token = await getToken()
             const { data } = await axios.post(
                 "/api/store/update-order-status",
                 { orderId, status },
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: await getStoreAuthHeaders(getToken) }
             )
             const updated = data?.updatedOrder
 
@@ -76,12 +75,11 @@ export default function StoreOrders() {
     const saveFulfillment = async (order) => {
         setSubmitting(true)
         try {
-            const token = await getToken()
             const items = order.orderItems.map(item => ({
                 productId: item.productId,
                 fulfilledQuantity: parseInt(fulfillQty[`${order.id}_${item.productId}`] ?? item.fulfilledQuantity ?? 0),
             }))
-            const { data } = await axios.post("/api/store/fulfill", { orderId: order.id, items }, { headers: { Authorization: `Bearer ${token}` } })
+            const { data } = await axios.post("/api/store/fulfill", { orderId: order.id, items }, { headers: await getStoreAuthHeaders(getToken) })
             toast.success(data.message)
             if (data.newStatus !== order.status) {
                 setOrders(prev => prev.map(o => {

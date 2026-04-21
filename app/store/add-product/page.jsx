@@ -6,6 +6,7 @@ import { useState, useRef } from "react"
 import { toast } from "react-hot-toast"
 import axios from "axios"
 import { XIcon, PlusIcon, SparklesIcon, UploadIcon, ImageIcon, TypeIcon, ChevronDownIcon } from "lucide-react"
+import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
 const categories = [
     'Electronics', 'Clothing', 'Home & Kitchen', 'Beauty & Health',
@@ -114,11 +115,10 @@ export default function StoreAddProduct() {
         reader.onloadend = async () => {
             const base64String = reader.result.split(",")[1]
             const mimeType = file.type
-            const token = await getToken()
             try {
                 await toast.promise(
                     axios.post('/api/store/ai', { base64Image: base64String, mimeType }, {
-                        headers: { Authorization: `Bearer ${token}` }
+                        headers: await getStoreAuthHeaders(getToken)
                     }),
                     {
                         loading: "Analysing image with AI...",
@@ -143,7 +143,6 @@ export default function StoreAddProduct() {
         if (images.length === 0) return toast.error("Upload at least one product image.")
         setLoading(true)
         try {
-            const token = await getToken()
             const formData = new FormData()
             Object.entries(productInfo).forEach(([k, v]) => {
                 if (k === "tags") formData.append("tags", v.join(","))
@@ -153,7 +152,7 @@ export default function StoreAddProduct() {
             images.forEach(img => formData.append("images", img))
 
             const { data } = await axios.post("/api/store/product", formData, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: await getStoreAuthHeaders(getToken)
             })
             toast.success(data.message)
 
@@ -161,7 +160,7 @@ export default function StoreAddProduct() {
             if (variantGroups.length > 0 && data.productId) {
                 await axios.post("/api/store/product/variants",
                     { productId: data.productId, groups: variantGroups },
-                    { headers: { Authorization: `Bearer ${token}` } }
+                    { headers: await getStoreAuthHeaders(getToken) }
                 )
             }
 

@@ -1,10 +1,11 @@
 'use client'
 import { usePathname } from "next/navigation"
-import { HomeIcon, LayoutListIcon, SquarePenIcon, SquarePlusIcon, CircleDollarSignIcon, UserCircleIcon } from "lucide-react"
+import { HomeIcon, LayoutListIcon, SquarePenIcon, SquarePlusIcon, CircleDollarSignIcon, UserCircleIcon, StoreIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { ACTIVE_STORE_KEY } from "@/lib/storeAuthHeaders"
 
-const StoreSidebar = ({storeInfo}) => {
+const StoreSidebar = ({storeInfo, stores = [], onStoreChange}) => {
 
     const pathname = usePathname()
 
@@ -15,6 +16,7 @@ const StoreSidebar = ({storeInfo}) => {
         { name: 'Orders',          href: '/store/orders',         icon: LayoutListIcon },
         { name: 'Payouts',         href: '/store/payouts',        icon: CircleDollarSignIcon },
         { name: 'Store Profile',   href: '/store/profile',        icon: UserCircleIcon },
+        { name: 'My Stores',       href: '/store/stores',         icon: StoreIcon },
     ]
 
     return (
@@ -23,6 +25,23 @@ const StoreSidebar = ({storeInfo}) => {
                 <Image className="w-14 h-14 rounded-full shadow-md" src={storeInfo?.logo} alt="" width={80} height={80} />
                 <p className="text-slate-700">{storeInfo?.name}</p>
             </div>
+            {stores.length > 1 && (
+                <div className="px-3">
+                    <p className="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Active Store</p>
+                    <select
+                        value={storeInfo?.id || ""}
+                        onChange={(e) => {
+                            localStorage.setItem(ACTIVE_STORE_KEY, e.target.value);
+                            onStoreChange?.();
+                        }}
+                        className="w-full rounded-md border border-slate-200 text-xs p-2 bg-white text-slate-700"
+                    >
+                        {stores.map((store) => (
+                            <option key={store.id} value={store.id}>{store.name}</option>
+                        ))}
+                    </select>
+                </div>
+            )}
 
             <div className="max-sm:mt-6">
                 {

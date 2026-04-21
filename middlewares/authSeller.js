@@ -1,19 +1,23 @@
 import prisma from "src/db";
 
-const authSeller = async (userId) => {
+const authSeller = async (userId, preferredStoreId) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: { store: true },
+    if (!userId) return false;
+    const stores = await prisma.store.findMany({
+      where: { userId, status: "approved" },
+      orderBy: { createdAt: "asc" },
+      select: { id: true },
     });
 
-    if (user.store) {
-      if (user.store.status === "approved") {
-        return user.store.id
-      }
-    }else{
-        return false
+    if (!stores.length) {
+      return false;
     }
+
+    if (preferredStoreId && stores.some((store) => store.id === preferredStoreId)) {
+      return preferredStoreId;
+    }
+
+    return stores[0].id;
   } catch (error) {
     console.error(error)
     return false

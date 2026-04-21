@@ -6,6 +6,7 @@ import Loading from "@/components/Loading"
 import { useAuth, useUser } from "@clerk/nextjs"
 import axios from "axios"
 import { PencilIcon, Trash2Icon, XIcon, CheckIcon, CopyIcon, UploadIcon, DownloadIcon } from "lucide-react"
+import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
 const categories = ['Electronics', 'Clothing', 'Home & Kitchen', 'Beauty & Health', 'Toys & Games', 'Sports & Outdoors', 'Books & Media', 'Food & Drink', 'Hobbies & Crafts', 'Others']
 
@@ -29,9 +30,8 @@ export default function StoreManageProducts() {
     const cloneProduct = async (productId) => {
         setCloning(productId)
         try {
-            const token = await getToken()
             const { data } = await axios.post("/api/store/product/clone", { productId }, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: await getStoreAuthHeaders(getToken)
             })
             toast.success("Product cloned successfully.")
             setProducts(prev => [data.product, ...prev])
@@ -46,11 +46,10 @@ export default function StoreManageProducts() {
         if (!file) return
         setImporting(true)
         try {
-            const token = await getToken()
             const formData = new FormData()
             formData.append("csv", file)
             const { data } = await axios.post("/api/store/product/bulk-import", formData, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: await getStoreAuthHeaders(getToken)
             })
             toast.success(data.message)
             fetchProducts()
@@ -79,9 +78,8 @@ export default function StoreManageProducts() {
 
     const fetchProducts = async () => {
         try {
-            const token = await getToken()
             const { data } = await axios.get("/api/store/product", {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: await getStoreAuthHeaders(getToken)
             })
             setProducts(data.products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
         } catch (error) {
@@ -92,9 +90,8 @@ export default function StoreManageProducts() {
 
     const toggleStock = async (productId) => {
         try {
-            const token = await getToken()
             const { data } = await axios.post("/api/store/stock-toggle", { productId }, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: await getStoreAuthHeaders(getToken)
             })
             setProducts(products.map(p => p.id === productId ? { ...p, inStock: !p.inStock } : p))
             toast.success(data.message)
@@ -130,7 +127,6 @@ export default function StoreManageProducts() {
     const saveEdit = async (productId) => {
         setSaving(true)
         try {
-            const token = await getToken()
             const formData = new FormData()
             formData.append("productId", productId)
             formData.append("name", editForm.name)
@@ -147,7 +143,7 @@ export default function StoreManageProducts() {
             newImages.forEach(img => formData.append("images", img))
 
             const { data } = await axios.patch("/api/store/product", formData, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: await getStoreAuthHeaders(getToken)
             })
             toast.success(data.message)
             setProducts(products.map(p => p.id === productId ? data.product : p))
@@ -161,9 +157,8 @@ export default function StoreManageProducts() {
     const deleteProduct = async (productId) => {
         setDeletingId(productId)
         try {
-            const token = await getToken()
             await axios.delete(`/api/store/product?productId=${productId}`, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: await getStoreAuthHeaders(getToken)
             })
             toast.success("Product deleted.")
             setProducts(products.filter(p => p.id !== productId))

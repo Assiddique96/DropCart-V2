@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
 import toast from "react-hot-toast"
+import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 import Loading from "@/components/Loading"
 import { CircleDollarSignIcon, ClockIcon, CheckCircleIcon } from "lucide-react"
 
@@ -20,9 +21,8 @@ export default function SellerPayouts() {
 
     const fetchPayouts = async () => {
         try {
-            const token = await getToken()
             const { data: res } = await axios.get("/api/store/payouts", {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: await getStoreAuthHeaders(getToken)
             })
             setData(res)
         } catch (error) {

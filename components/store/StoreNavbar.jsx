@@ -2,7 +2,7 @@
 import { useUser, UserButton } from "@clerk/nextjs"
 import Link from "next/link"
 
-const StoreNavbar = () => {
+const StoreNavbar = ({ activeStore }) => {
 
     const {user} = useUser()
 
@@ -16,7 +16,12 @@ const StoreNavbar = () => {
                 </p>
             </Link>
             <div className="flex items-center gap-3">
-                <p>Hi, {user?.firstName}</p>
+                <div className="text-right leading-tight">
+                    <p className="text-sm">Hi, {user?.firstName}</p>
+                    <p className="text-[11px] text-slate-400">
+                        Active: {activeStore?.name || "Store"}
+                    </p>
+                </div>
                 <UserButton />
             </div>
         </div>

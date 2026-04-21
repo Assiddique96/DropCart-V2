@@ -73,16 +73,7 @@ export async function POST(request) {
       return NextResponse.json({ error: "Bank details (bank name, account name, account number) are required for payouts." }, { status: 400 });
     }
 
-    // 1. Check if store already exists
-    const store = await prisma.store.findFirst({
-      where: { userId: userId },
-    });
-
-    if (store) {
-      return NextResponse.json({ status: store.status });
-    }
-
-    // 2. Check if username is taken
+    // 1. Check if username is taken
     const isUsernameTaken = await prisma.store.findFirst({
       where: { username: username.toLowerCase() },
     });
@@ -91,7 +82,7 @@ export async function POST(request) {
       return NextResponse.json({ error: "Username already taken" }, { status: 400 });
     }
 
-    // 3. Upload images to ImageKit
+    // 2. Upload images to ImageKit
     const logoBuffer = Buffer.from(await image.arrayBuffer());
     const logoUpload = await imagekit.upload({
       file: logoBuffer,
@@ -113,7 +104,7 @@ export async function POST(request) {
       folder: "verification/selfies",
     });
 
-    // 4. Wrap DB operations in a sub-try/catch for cleanup
+    // 3. Wrap DB operations in a sub-try/catch for cleanup
     try {
       const newStore = await prisma.store.create({
         data: {
@@ -136,11 +127,6 @@ export async function POST(request) {
           payoutAccountName,
           payoutAccountNumber,
         },
-      });
-
-      await prisma.user.update({
-        where: { id: userId },
-        data: { store: { connect: { id: newStore.id } } },
       });
 
       return NextResponse.json({ message: "Applied, Awaiting approval" });
@@ -169,9 +155,9 @@ export async function GET(request) {
         const {userId} = getAuth(request)
 
         // check is user have already registered a store
-        const store = await prisma. store.findFirst({
+        const store = await prisma.store.findFirst({
             where: { userId: userId}
-
+            , orderBy: { createdAt: "desc" }
         })
 
 // if store is already registered then send status of store

@@ -20,7 +20,7 @@ export async function POST(request) {
       
     }
 
-    const storeId = await authSeller(userId);
+    const storeId = await authSeller(userId, request.headers.get("x-store-id"));
     if (!storeId) {
       return NextResponse.json({ error: "Not authorized" }, { status: 401 });
     }

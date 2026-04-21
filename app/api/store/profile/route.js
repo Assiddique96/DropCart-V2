@@ -14,7 +14,7 @@ import { sanitizeStoreInput } from "@/lib/sanitize";
 export async function GET(request) {
   try {
     const { userId } = getAuth(request);
-    const storeId = await authSeller(userId);
+    const storeId = await authSeller(userId, request.headers.get("x-store-id"));
     if (!storeId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const store = await prisma.store.findUnique({
@@ -40,7 +40,7 @@ export async function PATCH(request) {
 
   try {
     const { userId } = getAuth(request);
-    const storeId = await authSeller(userId);
+    const storeId = await authSeller(userId, request.headers.get("x-store-id"));
     if (!storeId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const existingStore = await prisma.store.findUnique({ where: { id: storeId } });

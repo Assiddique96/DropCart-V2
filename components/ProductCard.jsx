@@ -35,7 +35,7 @@ const ProductCard = ({ product }) => {
 
     return (
         <Link href={`/product/${product.id}`} className="group max-xl:mx-auto relative">
-            <div className="relative bg-[#F5F5F5] h-40 sm:w-60 sm:h-68 rounded-lg flex items-center justify-center overflow-hidden">
+            <div className="relative bg-[#F5F5F5] dark:bg-slate-900 h-40 sm:w-60 sm:h-68 rounded-lg flex items-center justify-center overflow-hidden">
                 <Image
                     width={500} height={500}
                     className="max-h-30 sm:max-h-40 w-auto group-hover:scale-110 transition duration-300"
@@ -52,12 +52,12 @@ const ProductCard = ({ product }) => {
                 {/* Wishlist button */}
                 <button
                     onClick={handleWishlist}
-                    className="absolute top-2 right-2 p-1.5 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:scale-110 transition"
+                    className="absolute top-2 right-2 p-1.5 rounded-full bg-white/95 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 backdrop-blur-sm shadow-sm hover:scale-110 transition"
                     title={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                 >
                     <HeartIcon
                         size={16}
-                        className={isWishlisted ? 'text-red-500' : 'text-slate-400'}
+                        className={isWishlisted ? 'text-red-500' : 'text-slate-700 dark:text-slate-200'}
                         fill={isWishlisted ? '#ef4444' : 'none'}
                     />
                 </button>

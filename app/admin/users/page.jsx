@@ -104,11 +104,14 @@ export default function AdminUsers() {
                                         <td className="px-4 py-3 hidden md:table-cell text-slate-400 text-xs">{user.email}</td>
                                         <td className="px-4 py-3 hidden lg:table-cell">{user._count?.buyerOrders ?? 0}</td>
                                         <td className="px-4 py-3 hidden lg:table-cell">
-                                            {user.store ? (
-                                                <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${user.store.isActive ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
-                                                    <StoreIcon size={11} /> {user.store.name}
+                                            {user.stores?.[0] ? (
+                                                <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${user.stores[0].isActive ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                                                    <StoreIcon size={11} /> {user.stores[0].name}
                                                 </span>
                                             ) : <span className="text-slate-300 text-xs">—</span>}
+                                            {!!user.stores?.length && (
+                                                <p className="text-[10px] text-slate-400 mt-1">{user.stores.length} store(s)</p>
+                                            )}
                                         </td>
                                         <td className="px-4 py-3">
                                             <span className={`text-xs px-2 py-1 rounded-full font-medium ${user.isBanned ? 'bg-red-100 text-red-600' : 'bg-green-50 text-green-700'}`}>

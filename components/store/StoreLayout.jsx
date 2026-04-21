@@ -7,6 +7,7 @@ import SellerNavbar from "./StoreNavbar"
 import SellerSidebar from "./StoreSidebar"
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
+import { ACTIVE_STORE_KEY, getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
 const StoreLayout = ({ children }) => {
 
@@ -14,17 +15,20 @@ const StoreLayout = ({ children }) => {
     const [isSeller, setIsSeller] = useState(false)
     const [loading, setLoading] = useState(true)
     const [storeInfo, setStoreInfo] = useState(null)
+    const [stores, setStores] = useState([])
 
     const fetchIsSeller = async () => {
         try {
-            const token = await getToken()
+            const headers = await getStoreAuthHeaders(getToken)
             const {data} = await axios.get("/api/store/is-seller", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+                headers
             })
             setIsSeller(data.isSeller)
             setStoreInfo(data.storeInfo)
+            setStores(data.stores || [])
+            if (data.activeStoreId && typeof window !== "undefined") {
+                localStorage.setItem(ACTIVE_STORE_KEY, data.activeStoreId)
+            }
     
 } catch (error) {
     console.log(error)
@@ -42,9 +46,9 @@ const StoreLayout = ({ children }) => {
         <Loading />
     ) : isSeller ? (
         <div className="flex flex-col h-screen">
-            <SellerNavbar />
+            <SellerNavbar activeStore={storeInfo} />
             <div className="flex flex-1 items-start h-full overflow-y-scroll no-scrollbar">
-                <SellerSidebar storeInfo={storeInfo} />
+                <SellerSidebar storeInfo={storeInfo} stores={stores} onStoreChange={fetchIsSeller} />
                 <div className="flex-1 h-full p-5 lg:pl-12 lg:pt-12 overflow-y-scroll">
                     {children}
                 </div>

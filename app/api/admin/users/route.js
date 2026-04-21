@@ -7,7 +7,7 @@ import { sanitizeString } from "@/lib/sanitize";
 import { writeAuditLog, AUDIT_ACTIONS } from "@/lib/auditLog";
 import { clerkClient } from "@clerk/nextjs/server";
 
-// GET /api/admin/users — list all users with store and order info
+// GET /api/admin/users — list all users with stores and order info
 export async function GET(request) {
   const limit = looseLimiter.check(request);
   if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
@@ -45,7 +45,7 @@ export async function GET(request) {
           isBanned: true,
           banReason: true,
           createdAt: true,
-          store: { select: { id: true, name: true, status: true, isActive: true } },
+          stores: { select: { id: true, name: true, status: true, isActive: true }, orderBy: { createdAt: "desc" } },
           _count: { select: { buyerOrders: true } },
         },
       }),

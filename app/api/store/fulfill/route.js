@@ -18,7 +18,7 @@ export async function POST(request) {
 
   try {
     const { userId } = getAuth(request);
-    const storeId = await authSeller(userId);
+    const storeId = await authSeller(userId, request.headers.get("x-store-id"));
     if (!storeId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { orderId, items } = await request.json();

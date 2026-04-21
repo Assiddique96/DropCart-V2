@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer components {
     @keyframes marqueeScroll {
@@ -12,8 +13,37 @@
 }
 
 @layer base {
+    body {
+        @apply bg-white text-slate-700 dark:bg-slate-950 dark:text-slate-200;
+    }
     button {
         cursor: pointer;
+    }
+    /* Improve readability for legacy hardcoded light text classes in dark mode */
+    .dark .text-slate-400,
+    .dark .text-slate-500,
+    .dark .text-slate-600,
+    .dark .text-slate-700,
+    .dark .text-slate-800,
+    .dark .text-slate-900,
+    .dark .text-gray-400,
+    .dark .text-gray-500,
+    .dark .text-gray-600,
+    .dark .text-gray-700,
+    .dark .text-gray-800,
+    .dark .text-gray-900,
+    .dark .text-zinc-400,
+    .dark .text-zinc-500,
+    .dark .text-zinc-600,
+    .dark .text-zinc-700,
+    .dark .text-zinc-800,
+    .dark .text-zinc-900,
+    .dark .text-black {
+        color: rgb(226 232 240) !important;
+    }
+    .dark input::placeholder,
+    .dark textarea::placeholder {
+        color: rgb(148 163 184) !important;
     }
 }
 

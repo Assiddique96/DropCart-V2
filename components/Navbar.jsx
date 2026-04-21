@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { useAuth, useClerk, useUser, UserButton, Show } from "@clerk/nextjs";
 import NotificationBell from './NotificationBell';
 import axios from "axios";
+import ThemeToggle from "./ThemeToggle";
 
 const CATEGORIES = [
     { name: "Electronics",        icon: MonitorIcon,    color: "text-blue-500",   bg: "bg-blue-50",   desc: "Phones, laptops, gadgets" },
@@ -120,7 +121,7 @@ const Navbar = () => {
     const featuredLinks = [...FEATURED_LINKS, storeCta]
 
     return (
-        <nav className="relative bg-white z-50" ref={megaRef}>
+        <nav className="sticky top-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 supports-[backdrop-filter]:dark:bg-slate-950/80 z-50" ref={megaRef}>
             {/* ─── Main bar ─── */}
             <div className="mx-6">
                 <div className="flex items-center justify-between max-w-7xl mx-auto py-4">
@@ -135,7 +136,7 @@ const Navbar = () => {
                     </Link>
 
                     {/* Desktop nav */}
-                    <div className="hidden sm:flex items-center gap-4 lg:gap-6 text-slate-600 text-sm">
+                    <div className="hidden sm:flex items-center gap-4 lg:gap-6 text-slate-600 dark:text-slate-300 text-sm">
                         <Link href="/" className="hover:text-slate-900 transition">Home</Link>
 
                         {/* Categories mega menu trigger */}
@@ -193,6 +194,7 @@ const Navbar = () => {
                                 </span>
                             )}
                         </Link>
+                        <ThemeToggle />
 
                         {/* Auth */}
                         {!user ? (
@@ -230,19 +232,20 @@ const Navbar = () => {
                     {/* Mobile controls */}
                     <div className="sm:hidden flex items-center gap-2">
                         {user && <NotificationBell />}
+                        <ThemeToggle compact />
                         <button onClick={() => setMobileOpen(v => !v)}
-                            className="p-1.5 rounded-lg hover:bg-slate-100 transition text-slate-600">
+                            className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition text-slate-600 dark:text-slate-200">
                             {mobileOpen ? <XIcon size={22} /> : <MenuIcon size={22} />}
                         </button>
                     </div>
                 </div>
             </div>
 
-            <hr className="border-slate-200" />
+            <hr className="border-slate-200 dark:border-slate-800" />
 
             {/* ─── Mega menu (desktop) ─── */}
             {megaOpen && (
-                <div className="absolute top-full left-0 right-0 bg-white shadow-2xl border-t border-slate-100 z-50">
+                <div className="absolute top-full left-0 right-0 bg-white dark:bg-slate-950 shadow-2xl border-t border-slate-100 dark:border-slate-800 z-50">
                     <div className="max-w-7xl mx-auto px-6 py-8">
                         <div className="grid grid-cols-12 gap-8">
 
@@ -305,20 +308,20 @@ const Navbar = () => {
 
             {/* ─── Mobile menu ─── */}
             {mobileOpen && (
-                <div className="sm:hidden absolute top-full left-0 right-0 bg-white shadow-xl border-t border-slate-100 z-50 max-h-[85vh] overflow-y-auto" ref={mobileRef}>
+                <div className="sm:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-950 shadow-xl border-t border-slate-100 dark:border-slate-800 z-50 max-h-[85vh] overflow-y-auto" ref={mobileRef}>
                     <div className="p-4 space-y-4">
                         {/* Search */}
-                        <form onSubmit={handleSearch} className="flex items-center gap-2 bg-slate-100 px-4 py-2.5 rounded-full">
+                        <form onSubmit={handleSearch} className="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-2.5 rounded-full border border-transparent dark:border-slate-800">
                             <Search size={15} className="text-slate-400 shrink-0" />
                             <input
-                                className="w-full bg-transparent outline-none placeholder-slate-400 text-sm"
+                                className="w-full bg-transparent outline-none placeholder-slate-400 text-sm text-slate-700 dark:text-slate-200"
                                 type="text" placeholder="Search products..."
                                 value={search} onChange={e => setSearch(e.target.value)} required
                             />
                         </form>
 
                         {/* Top links */}
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-4 gap-2">
                             {[
                                 { label: "Cart", href: "/cart", badge: cartCount, icon: ShoppingCart },
                                 { label: "Wishlist", href: "/wishlist", badge: wishlistCount, icon: HeartIcon },
@@ -326,7 +329,7 @@ const Navbar = () => {
                                 { label: "Track", href: "/track", icon: Search },
                             ].map(item => (
                                 <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
-                                    className="relative flex flex-col items-center gap-1 p-3 bg-slate-50 rounded-xl text-slate-600 hover:bg-slate-100 transition">
+                                    className="relative flex flex-col items-center gap-1 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                                     <item.icon size={18} />
                                     <span className="text-xs">{item.label}</span>
                                     {item.badge > 0 && (
@@ -342,7 +345,7 @@ const Navbar = () => {
                             <div className="grid grid-cols-2 gap-2">
                                 {isSeller && (
                                     <Link href="/store" onClick={() => setMobileOpen(false)}
-                                        className="flex items-center justify-center gap-2 p-3 bg-slate-50 rounded-xl text-slate-700 hover:bg-slate-100 transition text-sm font-medium">
+                                        className="flex items-center justify-center gap-2 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-sm font-medium">
                                         <StoreIcon size={16} />
                                         Store Dashboard
                                     </Link>
@@ -387,8 +390,8 @@ const Navbar = () => {
                             <div className="grid grid-cols-2 gap-1.5">
                                 {CATEGORIES.map(cat => (
                                     <button key={cat.name} onClick={() => goToCategory(cat.name)}
-                                        className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 transition text-left">
-                                        <div className={`p-1.5 rounded-lg ${cat.bg} shrink-0`}>
+                                        className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-left">
+                                        <div className={`p-1.5 rounded-lg ${cat.bg} dark:bg-slate-800 shrink-0`}>
                                             <cat.icon size={13} className={cat.color} />
                                         </div>
                                         <span className="text-xs font-medium text-slate-700 leading-tight">{cat.name}</span>
@@ -403,7 +406,7 @@ const Navbar = () => {
                             <div className="space-y-0.5">
                                 {featuredLinks.map(link => (
                                     <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)}
-                                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 transition">
+                                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition">
                                         <span>{link.emoji}</span>
                                         <span className="text-sm text-slate-600">{link.label}</span>
                                     </Link>
@@ -411,9 +414,9 @@ const Navbar = () => {
                             </div>
                         </div>
 
-                        <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl">
-                            <p className="text-sm font-semibold text-indigo-800">🚀 Sell on DropCart</p>
-                            <p className="text-xs text-indigo-600 mt-0.5 mb-3">Reach buyers across Nigeria</p>
+                        <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 rounded-xl border border-transparent dark:border-slate-700">
+                            <p className="text-sm font-semibold text-indigo-800 dark:text-indigo-300">🚀 Sell on DropCart</p>
+                            <p className="text-xs text-indigo-600 dark:text-indigo-200 mt-0.5 mb-3">Reach buyers across Nigeria</p>
                             <Link href={storeCta.href} onClick={() => setMobileOpen(false)}
                                 className="text-xs font-semibold text-white bg-indigo-500 px-4 py-1.5 rounded-full inline-block">
                                 {isSeller ? "Go to dashboard →" : "Open your store →"}

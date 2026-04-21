@@ -8,6 +8,7 @@ import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
 const STATUS_COLORS = {
     ORDER_PLACED: '#3b82f6',
@@ -34,9 +35,8 @@ export default function Dashboard() {
     const fetchDashboard = async () => {
         setLoading(true)
         try {
-            const token = await getToken()
             const { data: res } = await axios.get(`/api/store/dashboard?period=${period}`, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: await getStoreAuthHeaders(getToken)
             })
             setData(res)
         } catch (e) {

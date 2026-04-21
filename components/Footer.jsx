@@ -50,9 +50,9 @@ const Footer = () => {
     ]
 
     return (
-        <footer className="mx-6 bg-white">
+        <footer className="mx-4 sm:mx-6 bg-white dark:bg-slate-950">
             <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col md:flex-row items-start justify-between gap-10 py-10 border-b border-slate-500/30 text-slate-500">
+                <div className="flex flex-col md:flex-row items-start justify-between gap-10 py-10 border-b border-slate-500/30 text-slate-500 dark:text-slate-300">
                     <div>
                         <Link href="/" className="text-4xl font-semibold text-slate-600">
                             <span className="text-gray-600">Drop</span>Cart<span className="text-gray-600 text-5xl leading-0"></span>
@@ -66,7 +66,7 @@ const Footer = () => {
                             ))}
                         </div>
                     </div>
-                    <div className="flex flex-wrap justify-between w-full md:w-[45%] gap-5 text-sm ">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:flex md:flex-wrap justify-between w-full md:w-[45%] gap-5 text-sm ">
                         {linkSections.map((section, index) => (
                             <div key={index}>
                                 <h3 className="font-medium text-slate-700 md:mb-5 mb-3">{section.title}</h3>
