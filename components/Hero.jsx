@@ -21,7 +21,7 @@ const Hero = () => {
                             Gadgets you'll love. Prices you'll trust.
                         </h2>
                         <div className='text-slate-800 text-sm font-medium mt-4 sm:mt-8'>
-                             <p>Perfect for small and medium-sized business.</p>
+                             <p>Perfect for small and medium-sized businesses.</p>
                             <p>Order from the comfort of your home/office anywhere nation wide.</p>
                         </div>
                         <div className='text-slate-800 text-sm font-medium mt-4 sm:mt-8'>
