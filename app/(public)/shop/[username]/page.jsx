@@ -77,6 +77,10 @@ export default function StoreShop() {
                                     <MailIcon className="w-4 h-4 text-gray-500 mr-2 shrink-0" />
                                     <span>{storeInfo.email}</span>
                                 </div>
+                                <div className="flex items-center justify-center md:justify-start">
+                                    <span className="text-xs uppercase tracking-wide font-medium text-slate-600">ADDED ON:</span>
+                                    <span className="ml-2">{new Date(storeInfo.createdAt).toLocaleDateString()}</span>
+                                </div>
                             </div>
                         </div>
                     </div>

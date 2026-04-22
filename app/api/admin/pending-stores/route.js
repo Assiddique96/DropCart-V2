@@ -3,7 +3,7 @@ import prisma from "src/db";
 import authAdmin from "@/middlewares/authAdmin";
 import { getAuth } from "@clerk/nextjs/server";
 
-// API to get all pending stores for admin approval
+// API to get pending/rejected stores for admin verification workflow
 
 export async function GET(request) {
   try {
@@ -15,8 +15,9 @@ export async function GET(request) {
     }
 
     const stores = await prisma.store.findMany({
-      where: { status: "pending" },
+      where: { status: { in: ["pending", "rejected"] } },
       include: { user: true },
+      orderBy: { createdAt: "desc" },
     });
 
     return NextResponse.json({ stores });

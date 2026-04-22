@@ -1,5 +1,4 @@
 'use client'
-import { storesDummyData } from "@/assets/assets"
 import StoreInfo from "@/components/admin/StoreInfo"
 import Loading from "@/components/Loading"
 import { useAuth, useUser } from "@clerk/nextjs"
@@ -11,6 +10,8 @@ export default function AdminStores() {
     const {user} = useUser()
     const {getToken} = useAuth()
     const [stores, setStores] = useState([])
+    const [counts, setCounts] = useState({ total: 0, approved: 0, pending: 0, rejected: 0 })
+    const [statusFilter, setStatusFilter] = useState("all")
     const [loading, setLoading] = useState(true)
 
     const fetchStores = async () => {
@@ -21,7 +22,8 @@ export default function AdminStores() {
                     Authorization: `Bearer ${token}`
                 }
             })
-            setStores(data)
+            setStores(data.stores || [])
+            setCounts(data.counts || { total: 0, approved: 0, pending: 0, rejected: 0 })
         } catch (error) {
             toast.error(error?.response?.data?.message || error.message)
         } 
@@ -53,13 +55,37 @@ export default function AdminStores() {
         }
     }, [user])
 
+    const filteredStores = statusFilter === "all"
+        ? stores
+        : stores.filter((store) => store.status === statusFilter)
+
     return !loading ? (
         <div className="text-slate-500 dark:text-slate-300 mb-28">
-            <h1 className="text-2xl">Live <span className="text-slate-800 dark:text-slate-100 font-medium">Stores</span></h1>
+            <h1 className="text-2xl">All <span className="text-slate-800 dark:text-slate-100 font-medium">Stores</span></h1>
+            <div className="mt-4 flex flex-wrap gap-2 text-sm">
+                {[
+                    { key: "all", label: `All (${counts.total})` },
+                    { key: "approved", label: `Approved (${counts.approved})` },
+                    { key: "pending", label: `Pending (${counts.pending})` },
+                    { key: "rejected", label: `Rejected (${counts.rejected})` },
+                ].map((item) => (
+                    <button
+                        key={item.key}
+                        onClick={() => setStatusFilter(item.key)}
+                        className={`px-3 py-1.5 rounded-full border transition ${
+                            statusFilter === item.key
+                                ? "bg-slate-800 text-white border-slate-800"
+                                : "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-slate-400"
+                        }`}
+                    >
+                        {item.label}
+                    </button>
+                ))}
+            </div>
 
-            {stores.length ? (
+            {filteredStores.length ? (
                 <div className="flex flex-col gap-4 mt-4">
-                    {stores.map((store) => (
+                    {filteredStores.map((store) => (
                         <div key={store.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm p-6 flex max-md:flex-col gap-4 md:items-end max-w-4xl" >
                             {/* Store Info */}
                             <StoreInfo store={store} />
@@ -79,7 +105,7 @@ export default function AdminStores() {
                 </div>
             ) : (
                 <div className="flex items-center justify-center h-80">
-                    <h1 className="text-3xl text-slate-400 font-medium">No stores Available</h1>
+                    <h1 className="text-3xl text-slate-400 font-medium">No stores found</h1>
                 </div>
             )
             }

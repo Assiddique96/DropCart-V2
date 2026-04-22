@@ -23,11 +23,18 @@ export async function POST(request) {
                 where: {id: storeId},
                 data: {status: "approved", isActive: true}
             })
+        } else if (status === "pending") {
+            await prisma.store.update({
+                where: {id: storeId},
+                data: {status: "pending", isActive: false}
+            })
         }else if (status === "rejected") {
             await prisma.store.update({
                 where: {id: storeId},
                 data: {status: "rejected", isActive: false}
             })
+        } else {
+            return NextResponse.json({ error: "Invalid status" }, { status: 400 })
         }
 
         // Audit log
@@ -36,7 +43,11 @@ export async function POST(request) {
         await writeAuditLog({
             adminId: userId,
             adminEmail: adminUser?.emailAddresses?.[0]?.emailAddress || "unknown",
-            action: status === "approved" ? AUDIT_ACTIONS.APPROVE_STORE : AUDIT_ACTIONS.REJECT_STORE,
+            action: status === "approved"
+                ? AUDIT_ACTIONS.APPROVE_STORE
+                : status === "rejected"
+                ? AUDIT_ACTIONS.REJECT_STORE
+                : "PENDING_STORE",
             targetType: "Store",
             targetId: storeId,
             details: { status },

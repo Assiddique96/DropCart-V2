@@ -197,6 +197,11 @@ const ProductDetails = ({ product }) => {
                 {/* Shipping & delivery info panel */}
                 <div className={`rounded-xl border p-4 mb-6 space-y-2.5 ${isAbroad ? 'border-blue-100 bg-blue-50/60' : 'border-slate-100 bg-slate-50'}`}>
                     <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Shipping & Delivery</p>
+                    {product.madeIn && (
+                        <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                            MADE IN {String(product.madeIn).toUpperCase()}
+                        </p>
+                    )}
 
                     <div className="flex items-center gap-3 text-sm text-slate-700">
                         <TruckIcon size={15} className={isAbroad ? 'text-blue-500' : 'text-slate-400'} />

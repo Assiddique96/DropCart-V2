@@ -1,6 +1,6 @@
 'use client'
 import Loading from "@/components/Loading"
-import { CircleDollarSignIcon, ShoppingBasketIcon, StarIcon, TagsIcon, PackageCheckIcon, BanknoteIcon } from "lucide-react"
+import { CircleDollarSignIcon, ShoppingBasketIcon, StarIcon, TagsIcon, PackageCheckIcon, BanknoteIcon, ChevronRightIcon } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -50,14 +50,57 @@ export default function Dashboard() {
     if (loading || !data) return <Loading />
 
     const summaryCards = [
-        { title: 'Total Orders',    value: data.totalOrders,                              icon: TagsIcon,            color: 'text-blue-600 bg-blue-50' },
+        { title: 'Total Orders',    value: data.totalOrders,                                   icon: TagsIcon,            color: 'text-blue-600 bg-blue-50', href: '/store/orders' },
         { title: 'Total Earnings',  value: `${currency}${data.totalEarnings.toLocaleString()}`, icon: CircleDollarSignIcon, color: 'text-green-600 bg-green-50',
-          sub: `${currency}${data.paidEarnings.toLocaleString()} paid · ${currency}${data.pendingEarnings.toLocaleString()} pending` },
-        { title: 'Products',        value: `${data.inStockProducts} / ${data.totalProducts}`, icon: ShoppingBasketIcon,   color: 'text-purple-600 bg-purple-50',
-          sub: 'in stock / total' },
-        { title: 'Reviews',         value: data.totalReviews,                             icon: StarIcon,            color: 'text-amber-600 bg-amber-50',
+          sub: `${currency}${data.paidEarnings.toLocaleString()} paid · ${currency}${data.pendingEarnings.toLocaleString()} pending`, href: '/store/payouts' },
+        { title: 'Products',        value: `${data.inStockProducts} / ${data.totalProducts}`,  icon: ShoppingBasketIcon,   color: 'text-purple-600 bg-purple-50',
+          sub: 'in stock / total', href: '/store/manage-product' },
+        { title: 'Reviews',         value: data.totalReviews,                                  icon: StarIcon,            color: 'text-amber-600 bg-amber-50',
           sub: data.avgRating ? `Avg: ${data.avgRating} ★` : 'No reviews yet' },
     ]
+
+    const SummaryCard = ({ card }) => (
+        <button
+            type="button"
+            onClick={() => card.href && router.push(card.href)}
+            disabled={!card.href}
+            className={[
+                "relative text-left overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800",
+                "bg-white dark:bg-slate-900/60",
+                "p-4 sm:p-5",
+                "transition",
+                card.href ? "hover:-translate-y-0.5 hover:shadow-sm dark:hover:shadow-slate-950/40" : "cursor-default opacity-95",
+            ].join(" ")}
+        >
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-slate-50/60 to-transparent dark:from-white/5" />
+
+            <div className="relative flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3">
+                    <div className={`p-2.5 rounded-xl ${card.color} ring-1 ring-black/5`}>
+                        <card.icon size={18} />
+                    </div>
+                    <div>
+                        <p className="text-xs text-slate-400 dark:text-slate-400">{card.title}</p>
+                        <p className="text-2xl font-semibold text-slate-800 dark:text-slate-100 mt-1 leading-none">
+                            {card.value}
+                        </p>
+                    </div>
+                </div>
+
+                {card.href && (
+                    <span className="text-slate-300 dark:text-slate-600">
+                        <ChevronRightIcon size={18} />
+                    </span>
+                )}
+            </div>
+
+            {card.sub && (
+                <p className="relative mt-3 text-xs text-slate-400 dark:text-slate-400 leading-relaxed">
+                    {card.sub}
+                </p>
+            )}
+        </button>
+    )
 
     const statusEntries = Object.entries(data.statusBreakdown || {})
 
@@ -77,16 +120,7 @@ export default function Dashboard() {
 
             {/* Summary cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                {summaryCards.map((card, i) => (
-                    <div key={i} className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/70 rounded-xl p-4 hover:shadow-sm dark:hover:shadow-slate-950/50 transition">
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className={`p-2 rounded-full ${card.color}`}><card.icon size={16} /></div>
-                            <p className="text-xs text-slate-400 dark:text-slate-400">{card.title}</p>
-                        </div>
-                        <p className="text-xl font-semibold text-slate-800 dark:text-slate-100">{card.value}</p>
-                        {card.sub && <p className="text-xs text-slate-400 dark:text-slate-400 mt-0.5">{card.sub}</p>}
-                    </div>
-                ))}
+                {summaryCards.map((card, i) => <SummaryCard key={i} card={card} />)}
             </div>
 
             {/* Revenue chart */}

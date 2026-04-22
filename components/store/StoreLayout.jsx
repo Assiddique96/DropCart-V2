@@ -2,16 +2,17 @@
 import { useEffect, useState } from "react"
 import Loading from "../Loading"
 import Link from "next/link"
-import { ArrowRightIcon } from "lucide-react"
-import SellerNavbar from "./StoreNavbar"
-import SellerSidebar from "./StoreSidebar"
-import { useAuth } from "@clerk/nextjs"
+import { ArrowRightIcon, CircleDollarSignIcon, HomeIcon, LayoutListIcon, SquarePenIcon, SquarePlusIcon, StoreIcon, UserCircleIcon } from "lucide-react"
+import { useAuth, useUser } from "@clerk/nextjs"
 import axios from "axios"
 import { ACTIVE_STORE_KEY, getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
+import DashboardShell from "@/components/dashboard/DashboardShell"
+import Image from "next/image"
 
 const StoreLayout = ({ children }) => {
 
     const {getToken} = useAuth()
+    const { user } = useUser()
     const [isSeller, setIsSeller] = useState(false)
     const [loading, setLoading] = useState(true)
     const [storeInfo, setStoreInfo] = useState(null)
@@ -45,15 +46,53 @@ const StoreLayout = ({ children }) => {
     return loading ? (
         <Loading />
     ) : isSeller ? (
-        <div className="panel-theme flex flex-col h-screen bg-slate-50 dark:bg-slate-950">
-            <SellerNavbar activeStore={storeInfo} />
-            <div className="flex flex-1 items-start h-full overflow-y-scroll no-scrollbar">
-                <SellerSidebar storeInfo={storeInfo} stores={stores} onStoreChange={fetchIsSeller} />
-                <div className="flex-1 h-full p-5 lg:pl-12 lg:pt-12 overflow-y-scroll bg-slate-50 dark:bg-slate-950">
-                    {children}
+        <DashboardShell
+            user={user}
+            badgeLabel="Seller"
+            topbarSubtitle={storeInfo?.name ? `Active store: ${storeInfo.name}` : "Manage your store, products, orders & payouts"}
+            navItems={[
+                { name: 'Dashboard',       href: '/store',                icon: HomeIcon },
+                { name: 'Add Product',     href: '/store/add-product',    icon: SquarePlusIcon },
+                { name: 'Manage Product',  href: '/store/manage-product', icon: SquarePenIcon },
+                { name: 'Orders',          href: '/store/orders',         icon: LayoutListIcon },
+                { name: 'Payouts',         href: '/store/payouts',        icon: CircleDollarSignIcon },
+                { name: 'Store Profile',   href: '/store/profile',        icon: UserCircleIcon },
+                { name: 'My Stores',       href: '/store/stores',         icon: StoreIcon },
+            ]}
+            sidebarHeader={
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 shrink-0">
+                        {storeInfo?.logo ? (
+                            <Image src={storeInfo.logo} alt="" width={40} height={40} className="w-10 h-10 object-cover" />
+                        ) : null}
+                    </div>
+                    <div className="min-w-0">
+                        <p className="text-xs uppercase tracking-wider text-slate-400 dark:text-slate-400">
+                            Seller Workspace
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
+                            {storeInfo?.name || "Store"}
+                        </p>
+                        {stores?.length > 1 && (
+                            <select
+                                value={storeInfo?.id || ""}
+                                onChange={(e) => {
+                                    localStorage.setItem(ACTIVE_STORE_KEY, e.target.value);
+                                    fetchIsSeller();
+                                }}
+                                className="mt-2 w-full rounded-lg border border-slate-200 dark:border-slate-800 text-xs px-2.5 py-2 bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-200"
+                            >
+                                {stores.map((s) => (
+                                    <option key={s.id} value={s.id}>{s.name}</option>
+                                ))}
+                            </select>
+                        )}
+                    </div>
                 </div>
-            </div>
-        </div>
+            }
+        >
+            {children}
+        </DashboardShell>
     ) : (
         <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
             <h1 className="text-2xl sm:text-4xl font-semibold text-slate-400">You are not authorized to access this page</h1>

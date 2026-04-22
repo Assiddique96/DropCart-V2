@@ -25,7 +25,7 @@ export default function StoreAddProduct() {
 
     const [productInfo, setProductInfo] = useState({
         name: "", description: "", mrp: "", price: "",
-        category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL",
+        category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "",
         acceptCod: true,
     })
 
@@ -165,7 +165,7 @@ export default function StoreAddProduct() {
             }
 
             // Reset form
-            setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", acceptCod: true })
+            setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", acceptCod: true })
             setImages([]); setAiUsed(false); setVariantGroups([]); setNewOptionInputs({})
         } catch (error) {
             toast.error(error.response?.data?.error || error.message)
@@ -264,6 +264,18 @@ export default function StoreAddProduct() {
                         placeholder="e.g. ABC-001"
                         className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
                 </div>
+            </div>
+
+            <div className="mb-4">
+                <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">MADE IN ...</label>
+                <input
+                    type="text"
+                    name="madeIn"
+                    value={productInfo.madeIn}
+                    onChange={onChange}
+                    placeholder="e.g. Nigeria, China, Germany"
+                    className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm"
+                />
             </div>
 
             {/* Schedule publish */}

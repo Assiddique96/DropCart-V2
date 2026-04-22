@@ -2,11 +2,10 @@
 import { useEffect, useState } from "react"
 import Loading from "../Loading"
 import Link from "next/link"
-import { ArrowRightIcon } from "lucide-react"
-import AdminNavbar from "./AdminNavbar"
-import AdminSidebar from "./AdminSidebar"
+import { CircleDollarSignIcon, HomeIcon, RotateCcwIcon, SettingsIcon, ShieldCheckIcon, ShoppingBasketIcon, StoreIcon, TicketPercentIcon, UsersIcon, PackageIcon, ArrowUpRightIcon } from "lucide-react"
 import { useAuth, useUser } from "@clerk/nextjs"
 import axios from "axios"
+import DashboardShell from "@/components/dashboard/DashboardShell"
 
 const AdminLayout = ({ children }) => {
 
@@ -35,30 +34,55 @@ const AdminLayout = ({ children }) => {
     }
 
     useEffect(() => {
-        if (user){
-            fetchIsAdmin()
-        }
         fetchIsAdmin()
     }, [user])
 
     return loading ? (
         <Loading />
     ) : isAdmin ? (
-        <div className="panel-theme flex flex-col h-screen bg-slate-50 dark:bg-slate-950">
-            <AdminNavbar />
-            <div className="flex flex-1 items-start h-full overflow-y-scroll no-scrollbar">
-                <AdminSidebar />
-                <div className="flex-1 h-full p-5 lg:pl-12 lg:pt-12 overflow-y-scroll bg-slate-50 dark:bg-slate-950">
-                    {children}
+        <DashboardShell
+            user={user}
+            badgeLabel="Admin"
+            topbarSubtitle="Manage stores, users, products, payouts & platform settings"
+            rightSlot={
+                <Link
+                    href="/"
+                    className="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-950/40 transition"
+                >
+                    Home <ArrowUpRightIcon size={14} />
+                </Link>
+            }
+            navItems={[
+                { name: 'Dashboard',     href: '/admin',           icon: HomeIcon },
+                { name: 'Orders',        href: '/admin/orders',    icon: PackageIcon },
+                { name: 'Stores',        href: '/admin/stores',    icon: StoreIcon },
+                { name: 'Store Applications', href: '/admin/approve',   icon: ShieldCheckIcon },
+                { name: 'Users',         href: '/admin/users',     icon: UsersIcon },
+                { name: 'Products',      href: '/admin/products',  icon: ShoppingBasketIcon },
+                { name: 'Coupons',       href: '/admin/coupons',   icon: TicketPercentIcon },
+                { name: 'Payouts',       href: '/admin/payouts',   icon: CircleDollarSignIcon },
+                { name: 'Refunds',       href: '/admin/refunds',   icon: RotateCcwIcon },
+                { name: 'Settings',      href: '/admin/settings',  icon: SettingsIcon },
+            ]}
+            sidebarHeader={
+                <div>
+                    <p className="text-xs uppercase tracking-wider text-slate-400 dark:text-slate-400">
+                        Admin Console
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
+                        {user?.fullName || "Admin"}
+                    </p>
+                    <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-400 truncate">
+                        Full access tools
+                    </p>
                 </div>
-            </div>
-        </div>
+            }
+        >
+            {children}
+        </DashboardShell>
     ) : (
         <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
             <h1 className="text-2xl sm:text-4xl font-semibold text-slate-400">You are not authorized to access this page</h1>
-            <Link href="/" className="bg-slate-700 text-white flex items-center gap-2 mt-8 p-2 px-6 max-sm:text-sm rounded-full">
-                Go to home <ArrowRightIcon size={18} />
-            </Link>
         </div>
     )
 }
