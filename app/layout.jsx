@@ -10,21 +10,21 @@ const outfit = Outfit({ subsets: ["latin"], weight: ["400", "500", "600"] });
 
 export const metadata = {
     title: {
-        default: "DropCart — Nigeria's Multi-Vendor Marketplace",
-        template: "%s — DropCart",
+        default: "Shpinx — Nigeria's Multi-Vendor Marketplace",
+        template: "%s — Shpinx",
     },
     description: "Shop thousands of products from verified sellers across Nigeria. Fast delivery, secure payments, and the best deals all in one place.",
     keywords: ["ecommerce", "Nigeria", "online shopping", "marketplace", "multi-vendor"],
     openGraph: {
-        title: "DropCart — Nigeria's Multi-Vendor Marketplace",
+        title: "Shpinx — Nigeria's Multi-Vendor Marketplace",
         description: "Shop thousands of products from verified sellers across Nigeria.",
         type: "website",
         locale: "en_NG",
-        siteName: "DropCart",
+        siteName: "Shpinx",
     },
     twitter: {
         card: "summary_large_image",
-        title: "DropCart — Nigeria's Multi-Vendor Marketplace",
+        title: "Shpinx — Nigeria's Multi-Vendor Marketplace",
         description: "Shop thousands of products from verified sellers across Nigeria.",
     },
     robots: { index: true, follow: true },
