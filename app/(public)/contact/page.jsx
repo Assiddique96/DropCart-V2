@@ -24,10 +24,10 @@ export default function ContactPage() {
                 <div className="text-center mb-12">
                     <h1 className="text-3xl font-semibold text-slate-800 dark:text-slate-100">About & <span className="text-green-500">Contact</span></h1>
                     <p className="text-slate-500 dark:text-slate-300 mt-3 max-w-xl mx-auto text-sm">
-                        Shpinx is a multi-vendor marketplace helping verified sellers reach customers across Nigeria with secure checkout and fast delivery.
+                        Shpinx is a multi-vendor marketplace helping verified businesses reach businesses across Nigeria with secure checkout and fast delivery.
                     </p>
                     <p className="text-slate-500 dark:text-slate-300 mt-3 max-w-md mx-auto text-sm">
-                        Have a question, partnership inquiry, or need support? We'd love to hear from you.
+                        Do you have any question, partnership inquiry, or need support? We'd love to hear from you.
                     </p>
                 </div>
 
