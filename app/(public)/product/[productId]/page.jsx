@@ -29,7 +29,7 @@ export default function Product() {
     }, [productId, products]);
 
     const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
-    const shareText = product ? `Check out ${product.name} on DropCart` : 'Check this out on DropCart';
+    const shareText = product ? `Check out ${product.name} on Shpinx` : 'Check this out on Shpinx';
 
     const shareOnFacebook = () => {
         window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank', 'width=600,height=400');
