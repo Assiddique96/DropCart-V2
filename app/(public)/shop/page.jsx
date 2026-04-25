@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useSelector } from "react-redux"
 import { SlidersHorizontalIcon, XIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
-const CATEGORIES = ['Electronics', 'Clothing', 'Phones', 'Laptops', 'Home & Kitchen', 'Beauty & Health', 'Toys & Games', 'Sports & Outdoors', 'Books & Media', 'Food & Drink', 'Hobbies & Crafts', 'Others']
+const CATEGORIES = ['Electronics', 'Clothing', 'Smartphones', 'Solars', 'Accessories', 'Laptops', 'Home & Kitchen', 'Beauty & Health', 'Toys & Games', 'Sports & Outdoors', 'Books & Media', 'Food & Drink', 'Hobbies & Crafts', 'Others']
 const SORT_OPTIONS = [
     { value: 'newest', label: 'Newest First' },
     { value: 'price_asc', label: 'Price: Low to High' },
