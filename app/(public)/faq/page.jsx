@@ -61,7 +61,7 @@ export default function FaqPage() {
                 <div className="text-center mb-12">
                     <h1 className="text-3xl font-semibold text-slate-800">Frequently Asked <span className="text-green-500">Questions</span></h1>
                     <p className="text-slate-500 mt-3 text-sm max-w-xl mx-auto">
-                        Quick answers to common questions about DropCart. If you can’t find what you need, please reach out via our Contact page.
+                        Quick answers to common questions about Shpinx. If you can’t find what you need, please reach out via our Contact page.
                     </p>
                 </div>
 
