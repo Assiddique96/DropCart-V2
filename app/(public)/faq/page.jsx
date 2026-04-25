@@ -1,28 +1,56 @@
 export const metadata = {
-    title: "FAQs — DropCart",
-    description: "Frequently asked questions about shopping, orders, payments, returns, and store accounts on DropCart.",
+    title: "FAQs — Shpinx",
+    description: "Frequently asked questions about shopping, orders, payments, returns, and store accounts on Sphinx.",
 }
 
 const FAQS = [
     {
-        q: "What is DropCart?",
-        a: "DropCart is an online marketplace where you can browse products from multiple stores, place orders, and track delivery in one place.",
+        q: "What is Shpinx?",
+        a: "Shpinx is Nigeria’s multi-vendor marketplace that connects small and medium-sized businesses with customers who want quality gadgets and products at trusted prices.",
     },
     {
-        q: "How do I place an order?",
-        a: "Add items to your cart, proceed to checkout, provide your delivery details, and complete payment. You can track your order from the Orders page.",
+        q: "Who can shop on Shpinx?",
+        a: "Individuals and businesses anywhere in Nigeria can place orders from the comfort of their home or office and have items delivered nationwide.",
     },
     {
-        q: "What payment methods are supported?",
-        a: "Payment options can vary by checkout configuration, but typically include card and bank transfer via supported payment providers.",
+        q: "How do I get started?",
+        a: "Simply create an account (or log in), browse products, add items to your cart, and complete checkout using your preferred payment method.",
     },
     {
-        q: "Can I return an item?",
-        a: "Return eligibility depends on the item and the store’s return policy. If a return is available, you can request it from your Orders page.",
+        q: "What types of products are available?",
+        a: "Shpinx offers a wide range of gadgets and other products curated for small and medium businesses, with new listings added regularly.",
     },
     {
-        q: "How do I become a store owner?",
-        a: "Visit the Create Store page and complete the application. Once approved, you’ll be able to manage products and orders from your Store dashboard.",
+        q: "How much does shipping cost?",
+        a: "Shpinx currently offers free shipping on all orders nationwide, with no minimum spend required.",
+    },
+     {
+        q: "How long does delivery take?",
+        a: "Delivery times vary by location and logistics partners, but most orders within major cities are delivered within 2–5 business days. You’ll receive tracking updates after checkout.",
+    },
+    {
+        q: "What is the return policy?",
+        a: "Shpinx offers a 7-day easy-return policy. If you’re not satisfied, you can return most eligible items within 7 days of delivery.",
+    },
+    {
+        q: "Are there any conditions for returns?",
+        a: "Items must be unused, in original packaging, and accompanied by the receipt or order confirmation. Refunds are processed once the returned item is inspected and accepted.",
+    },
+    {
+        q: "Which payment methods are accepted?",
+        a: "You can pay securely using major Nigerian payment gateways (card, bank transfer, USSD, and other supported options). The exact list depends on your selected vendor and current integrations.",
+    },
+    {
+        q: "Is my payment information safe?",
+        a: "All payment pages use industrystandard encryption and are processed via certified payment partners to protect your card and personal data.",
+    },
+    {
+        q: "Is there 24/7 customer support?",
+        a: "Shpinx offers 24/7 customer support via inapp chat, email, or phone so you can get help with orders, payments, and general questions.",
+    },
+    {
+        q: "What do I need to register as a vendor?",
+        a: "You need a valid email and phone number, your business or personal details, a pickup/warehouse address, and a bank account for payouts. In some cases, we may request CAC registration or a valid ID for verification.",
     },
 ]
 
