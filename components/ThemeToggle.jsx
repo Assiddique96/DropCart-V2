@@ -27,7 +27,7 @@ export default function ThemeToggle({ compact = false }) {
           } ${
             activeTheme === option.id
               ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
-              : "text-slate-200 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100"
+              : "text-slate-200 hover:text-slate-800 dark:text-slate-200 dark:hover:text-slate-100"
           }`}
           aria-label={`Switch to ${option.label} theme`}
           title={option.label}
