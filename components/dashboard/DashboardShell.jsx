@@ -37,7 +37,7 @@ const DashboardShell = ({
             <div className="min-w-0">
               <div className="flex items-center gap-2 min-w-0">
                 <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
-                  DropCart
+                  Shpinx
                 </p>
                 {badgeLabel && (
                   <span className="text-[10px] font-semibold tracking-wide px-2 py-0.5 rounded-full bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shrink-0">
