@@ -17,7 +17,7 @@ export default function ThemeToggle({ compact = false }) {
   if (!mounted) return null;
 
   return (
-    <div className={`flex items-center rounded-full border border-slate-200 dark:border-slate-200 ${compact ? "p-0.5" : "p-1"} bg-white dark:bg-slate-900`}>
+    <div className={`flex items-center rounded-full border border-slate-200 dark:border-slate-700 ${compact ? "p-0.5" : "p-1"} bg-white dark:bg-slate-900`}>
       {OPTIONS.map((option) => (
         <button
           key={option.id}
