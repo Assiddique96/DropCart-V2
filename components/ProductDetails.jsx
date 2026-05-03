@@ -9,13 +9,27 @@ import Counter from "./Counter";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
+const normalizeVariants = (variants = {}) => {
+    return Object.keys(variants).sort().reduce((acc, key) => {
+        acc[key] = variants[key];
+        return acc;
+    }, {});
+};
+
+const areVariantsEqual = (a = {}, b = {}) => {
+    const aKeys = Object.keys(a).sort();
+    const bKeys = Object.keys(b).sort();
+    if (aKeys.length !== bKeys.length) return false;
+    return aKeys.every((key, index) => key === bKeys[index] && String(a[key]) === String(b[key]));
+};
+
 const ProductDetails = ({ product }) => {
     const productId = product.id;
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦';
     const isAbroad = product.origin === 'ABROAD';
     const acceptsCod = !isAbroad && product.acceptCod !== false;
 
-    const cart = useSelector(state => state.cart.cartItems);
+    const { items: cartItems, cartItems: cartSummary } = useSelector(state => state.cart);
     const dispatch = useDispatch();
     const router = useRouter();
 
@@ -34,6 +48,11 @@ const ProductDetails = ({ product }) => {
     const requiredGroups = variantGroups.filter(g => g.required)
     const allRequiredSelected = requiredGroups.every(g => selectedOptions[g.label])
     const canAddToCart = variantGroups.length === 0 || allRequiredSelected
+
+    const exactCartItem = cartItems.find(item => item.productId === productId && areVariantsEqual(item.variants, selectedOptions))
+    const exactVariantQuantity = exactCartItem?.quantity ?? 0
+    const productQuantity = cartSummary[productId] || 0
+    const isVariantProduct = variantGroups.length > 0
 
     const handleAddToCart = () => {
         if (!canAddToCart) {
@@ -54,7 +73,7 @@ const ProductDetails = ({ product }) => {
         }).catch(() => {});
     }, []);
 
-    const addToCartHandler = () => dispatch(addToCart({ productId }));
+    const addToCartHandler = () => dispatch(addToCart({ productId, variants: normalizeVariants(selectedOptions) }));
 
     const avgRating = product.rating?.length
         ? product.rating.reduce((acc, item) => acc + item.rating, 0) / product.rating.length
@@ -236,20 +255,23 @@ const ProductDetails = ({ product }) => {
 
                 {/* Add to cart */}
                 <div className="flex items-end gap-5">
-                    {cart[productId] && (
+                    {(isVariantProduct ? exactVariantQuantity > 0 : productQuantity > 0) && (
                         <div className="flex flex-col gap-2">
                             <p className="text-sm font-semibold text-slate-700">Quantity</p>
-                            <Counter productId={productId} />
+                            <Counter productId={productId} variants={isVariantProduct ? normalizeVariants(selectedOptions) : {}} />
                         </div>
                     )}
                     <button
-                        onClick={() => !cart[productId] ? handleAddToCart() : router.push('/cart')}
+                        onClick={() => (!isVariantProduct && productQuantity > 0) ? router.push('/cart') : handleAddToCart()}
                         className={`px-10 py-3 text-sm font-medium rounded-lg transition active:scale-95 ${
-                            !canAddToCart && !cart[productId]
+                            !canAddToCart && (!isVariantProduct || productQuantity === 0)
                                 ? "bg-slate-300 text-slate-500 cursor-not-allowed"
                                 : "bg-slate-800 text-white hover:bg-slate-900"
                         }`}>
-                        {!cart[productId] ? 'Add to Cart' : 'View Cart'}
+                        {isVariantProduct
+                            ? exactVariantQuantity > 0 ? 'Add one more' : 'Add to Cart'
+                            : productQuantity > 0 ? 'View Cart' : 'Add to Cart'
+                        }
                     </button>
                 </div>
 

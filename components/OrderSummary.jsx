@@ -107,7 +107,11 @@ const OrderSummary = ({ totalPrice, items }) => {
             };
             if (coupon) orderData.couponCode = coupon.code;
 
-            const { data } = await axios.post('/api/orders', orderData, {
+            const normalizedItems = items.map(item => ({
+                ...item,
+                productId: item.productId || item.id,
+            }));
+            const { data } = await axios.post('/api/orders', { ...orderData, items: normalizedItems }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

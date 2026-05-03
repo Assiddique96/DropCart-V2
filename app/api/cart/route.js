@@ -1,13 +1,10 @@
 import prisma from "@/src/db";
 import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { defaultLimiter, looseLimiter } from "@/lib/rateLimit";
+
 
 // update user cart API route handler
 export async function POST(request) {
-    const limit = defaultLimiter.check(request);
-    if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
     try {
         const { userId } = getAuth(request);
         if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -15,11 +12,18 @@ export async function POST(request) {
         const { cart } = await request.json();
 
         // Basic cart validation — prevent oversized payloads
-        if (typeof cart !== 'object' || Array.isArray(cart)) {
+        if (!Array.isArray(cart)) {
             return NextResponse.json({ error: "Invalid cart format" }, { status: 400 });
         }
-        if (Object.keys(cart).length > 100) {
+        if (cart.length > 100) {
             return NextResponse.json({ error: "Cart cannot exceed 100 items" }, { status: 400 });
+        }
+
+        // Validate each item
+        for (const item of cart) {
+            if (typeof item !== 'object' || !item.productId || typeof item.quantity !== 'number' || item.quantity < 0) {
+                return NextResponse.json({ error: "Invalid cart item format" }, { status: 400 });
+            }
         }
 
         await prisma.user.update({
@@ -34,9 +38,6 @@ export async function POST(request) {
 
 // get user cart API route handler
 export async function GET(request) {
-    const limit = looseLimiter.check(request);
-    if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
     try {
         const { userId } = getAuth(request);
         if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -45,7 +46,10 @@ export async function GET(request) {
             where: { id: userId },
             select: { cart: true }
         });
-        return NextResponse.json({ cart: user?.cart ?? {} });
+        const cartData = user?.cart ?? [];
+        // Ensure it's an array
+        const cart = Array.isArray(cartData) ? cartData : [];
+        return NextResponse.json({ cart });
     } catch (error) {
         return NextResponse.json({ error: error.message }, { status: 400 });
     }

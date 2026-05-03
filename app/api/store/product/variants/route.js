@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "src/db";
 import authSeller from "@/middlewares/authSeller";
-import { defaultLimiter, looseLimiter } from "@/lib/rateLimit";
+
 import { sanitizeString, sanitizeNumber } from "@/lib/sanitize";
 
 async function getSeller(userId, storeId) { return await authSeller(userId, storeId); }
@@ -15,9 +15,6 @@ async function ownProduct(productId, storeId) {
  * Returns all variant groups with their options for the product.
  */
 export async function GET(request) {
-  const limit = looseLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
   const storeId = await getSeller(userId, request.headers.get("x-store-id"));
@@ -50,9 +47,6 @@ export async function GET(request) {
  * Full replace — deletes all existing groups for this product and recreates from the payload.
  */
 export async function POST(request) {
-  const limit = defaultLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
   const storeId = await getSeller(userId, request.headers.get("x-store-id"));
@@ -119,12 +113,9 @@ export async function POST(request) {
  * Updates a single option without replacing all groups.
  */
 export async function PATCH(request) {
-  const limit = defaultLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
-    const storeId = await getSeller(userId);
+    const storeId = await getSeller(userId, request.headers.get("x-store-id"));
     if (!storeId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { optionId, ...updates } = await request.json();

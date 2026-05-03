@@ -3,7 +3,7 @@ import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
 import authSeller from "@/middlewares/authSeller";
 import imagekit from "@/configs/imageKit";
-import { defaultLimiter } from "@/lib/rateLimit";
+
 import { sanitizeStoreInput } from "@/lib/sanitize";
 
 /**

@@ -1,15 +1,12 @@
 import prisma from "@/src/db";
 import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { defaultLimiter, looseLimiter } from "@/lib/rateLimit";
+
 import { sanitizeString, sanitizeNumber } from "@/lib/sanitize";
 import imagekit from "@/configs/imageKit";
 
 // POST — submit a new rating (multipart/form-data to support image uploads)
 export async function POST(request) {
-  const limit = defaultLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
 

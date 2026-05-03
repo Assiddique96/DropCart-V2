@@ -38,9 +38,6 @@ export async function GET(request) {
 
 // POST /api/admin/config — upsert one or more config values
 export async function POST(request) {
-  const limit = defaultLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
     const isAdmin = await authAdmin(userId);

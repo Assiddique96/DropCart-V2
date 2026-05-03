@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "src/db";
 import authSeller from "@/middlewares/authSeller";
-import { defaultLimiter, looseLimiter } from "@/lib/rateLimit";
 import { sanitizeString } from "@/lib/sanitize";
 import { inngest } from "@/inngest/client";
 
@@ -16,9 +15,6 @@ import { inngest } from "@/inngest/client";
  */
 
 export async function GET(request) {
-    const limit = looseLimiter.check(request);
-    if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
     try {
         const { userId } = getAuth(request);
         const storeId = await authSeller(userId, request.headers.get("x-store-id"));
@@ -35,9 +31,6 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-    const limit = defaultLimiter.check(request);
-    if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
     try {
         const { userId } = getAuth(request);
         const storeId = await authSeller(userId, request.headers.get("x-store-id"));
@@ -89,9 +82,6 @@ export async function POST(request) {
 }
 
 export async function DELETE(request) {
-    const limit = defaultLimiter.check(request);
-    if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
     try {
         const { userId } = getAuth(request);
         const storeId = await authSeller(userId, request.headers.get("x-store-id"));

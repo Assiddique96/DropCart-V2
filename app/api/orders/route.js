@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/src/db";
 import { getAuth } from "@clerk/nextjs/server";
 import { PaymentMethod } from "@/src/generated/prisma";
-import { strictLimiter, looseLimiter } from "@/lib/rateLimit";
+
 import { sanitizeString } from "@/lib/sanitize";
 import { inngest } from "@/inngest/client";
 import { isOrderConsideredPaid } from "@/lib/orderPayment";
@@ -12,10 +12,7 @@ import { createNotifications } from "@/lib/serverNotifications";
 // create order
 export async function POST(request) {
   // Rate limit: max 5 orders per minute per IP
-  const limit = strictLimiter.check(request);
-  if (!limit.allowed) {
-    return NextResponse.json({ error: "Too many requests. Please slow down." }, { status: 429 });
-  }
+
   try {
     const { userId, has } = getAuth(request);
     if (!userId) {
@@ -27,16 +24,28 @@ export async function POST(request) {
     if (userRecord?.isBanned) {
       return NextResponse.json({ error: `Your account has been suspended. ${userRecord.banReason || ''}`.trim() }, { status: 403 });
     }
-    const { addressId, items, couponCode: rawCouponCode, paymentMethod, notes: rawNotes } =
+    const { addressId, items: rawItems, couponCode: rawCouponCode, paymentMethod, notes: rawNotes } =
       await request.json();
+
+    const items = Array.isArray(rawItems) ? rawItems.map(item => ({
+      ...item,
+      productId: item.productId || item.id,
+    })) : [];
 
     // Sanitize inputs
     const couponCode = rawCouponCode ? sanitizeString(rawCouponCode, 50).toUpperCase() : null;
     const notes = rawNotes ? sanitizeString(rawNotes, 500) : null;
     // check if all required fields are present
-    if (!addressId || !items || !paymentMethod || items.length === 0) {
+    if (!addressId || !items || items.length === 0 || !paymentMethod) {
       return NextResponse.json(
         { message: "Missing required fields" },
+        { status: 400 },
+      );
+    }
+
+    if (items.some(item => !item.productId || typeof item.quantity !== 'number' || item.quantity <= 0)) {
+      return NextResponse.json(
+        { message: "Invalid cart items" },
         { status: 400 },
       );
     }
@@ -87,17 +96,32 @@ export async function POST(request) {
     const ordersByStore = new Map();
     for (const item of items) {
         const product = await prisma.product.findUnique({
-            where: { id: item.id },
-            select: { storeId: true, price: true, origin: true, acceptCod: true }
+            where: { id: item.productId },
+            select: { storeId: true, price: true, origin: true, acceptCod: true, variantGroups: { include: { options: true } } }
         });
         if (!product) continue;
         const storeId = product.storeId;
+
+        // Calculate effective price with variant modifiers
+        let effectivePrice = product.price;
+        if (item.variants && product.variantGroups) {
+            for (const group of product.variantGroups) {
+                const selectedOptionLabel = item.variants[group.label];
+                if (selectedOptionLabel) {
+                    const option = group.options.find(o => o.label === selectedOptionLabel);
+                    if (option) {
+                        effectivePrice += option.priceModifier;
+                    }
+                }
+            }
+        }
+
         if (!ordersByStore.has(storeId)) {
             ordersByStore.set(storeId, []);
         }
         ordersByStore.get(storeId).push({
             ...item,
-            price: product.price,
+            price: effectivePrice,
             origin: product.origin ?? 'LOCAL',
             acceptCod: product.acceptCod !== false,
         });
@@ -166,6 +190,24 @@ export async function POST(request) {
             isShippingFeeAdded = true;
         }
 
+        const normalizedSellerItems = Object.values(
+            sellerItems.reduce((acc, item) => {
+                const variantKey = item.variants && Object.keys(item.variants).length
+                    ? JSON.stringify(item.variants)
+                    : '';
+                const key = `${item.productId}::${variantKey}`;
+                if (!acc[key]) {
+                    acc[key] = {
+                        ...item,
+                        variants: item.variants || {},
+                    };
+                } else {
+                    acc[key].quantity += item.quantity;
+                }
+                return acc;
+            }, {}),
+        );
+
         total = parseFloat(total.toFixed(2));
         fullAmount += total;
 
@@ -180,10 +222,11 @@ export async function POST(request) {
                 isCouponUsed: couponCode ? true : false,
                 coupon: coupon ? coupon : {},
                 orderItems: {
-                    create: sellerItems.map(item => ({
-                        productId: item.id,
+                    create: normalizedSellerItems.map(item => ({
+                        productId: item.productId,
                         quantity: item.quantity,
-                        price: item.price
+                        price: item.price,
+                        variants: item.variants || {}
                     }))
                 }
             }

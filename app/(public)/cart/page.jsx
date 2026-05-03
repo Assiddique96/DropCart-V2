@@ -12,7 +12,7 @@ export default function Cart() {
 
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$';
     
-    const { cartItems } = useSelector(state => state.cart);
+    const { items: cartItems } = useSelector(state => state.cart);
     const products = useSelector(state => state.product.list);
 
     const dispatch = useDispatch();
@@ -20,24 +20,38 @@ export default function Cart() {
     const [cartArray, setCartArray] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
 
+    const getVariantPriceModifier = (product, variants = {}) => {
+        if (!product?.variantGroups?.length || !variants || Object.keys(variants).length === 0) return 0;
+        return product.variantGroups.reduce((sum, group) => {
+            const optionLabel = variants[group.label];
+            if (!optionLabel) return sum;
+            const option = group.options?.find(o => o.label === optionLabel);
+            return sum + (option?.priceModifier ?? 0);
+        }, 0);
+    };
+
     const createCartArray = () => {
-        setTotalPrice(0);
-        const cartArray = [];
-        for (const [key, value] of Object.entries(cartItems)) {
-            const product = products.find(product => product.id === key);
-            if (product) {
-                cartArray.push({
-                    ...product,
-                    quantity: value,
-                });
-                setTotalPrice(prev => prev + product.price * value);
-            }
-        }
+        let subtotal = 0;
+        const cartArray = cartItems.map(item => {
+            const product = products.find(product => product.id === item.productId);
+            if (!product) return null;
+            const priceModifier = getVariantPriceModifier(product, item.variants);
+            const unitPrice = product.price + priceModifier;
+            subtotal += unitPrice * item.quantity;
+            return {
+                ...product,
+                quantity: item.quantity,
+                variants: item.variants,
+                unitPrice,
+                priceModifier,
+            };
+        }).filter(Boolean);
         setCartArray(cartArray);
+        setTotalPrice(subtotal);
     }
 
-    const handleDeleteItemFromCart = (productId) => {
-        dispatch(deleteItemFromCart({ productId }))
+    const handleDeleteItemFromCart = (productId, variants = {}) => {
+        dispatch(deleteItemFromCart({ productId, variants }))
     }
 
     useEffect(() => {
@@ -75,15 +89,22 @@ export default function Cart() {
                                             <div>
                                                 <p className="max-sm:text-sm">{item.name}</p>
                                                 <p className="text-xs text-slate-500">{item.category}</p>
-                                                <p>{currency}{item.price}</p>
+                                                {item.variants && Object.keys(item.variants).length > 0 && (
+                                                    <div className="text-xs text-slate-500 mt-1 space-y-1">
+                                                        {Object.entries(item.variants).map(([group, option]) => (
+                                                            <p key={group}>{group}: <span className="font-medium text-slate-700">{option}</span></p>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                                <p className="mt-2">{currency}{item.unitPrice.toLocaleString()}</p>
                                             </div>
                                         </td>
                                         <td className="text-center">
-                                            <Counter productId={item.id} />
+                                            <Counter productId={item.id} variants={item.variants} />
                                         </td>
-                                        <td className="text-center">{currency}{(item.price * item.quantity).toLocaleString()}</td>
+                                        <td className="text-center">{currency}{(item.unitPrice * item.quantity).toLocaleString()}</td>
                                         <td className="text-center max-md:hidden">
-                                            <button onClick={() => handleDeleteItemFromCart(item.id)} className=" text-red-500 hover:bg-red-50 p-2.5 rounded-full active:scale-95 transition-all">
+                                            <button onClick={() => handleDeleteItemFromCart(item.id, item.variants)} className=" text-red-500 hover:bg-red-50 p-2.5 rounded-full active:scale-95 transition-all">
                                                 <Trash2Icon size={18} />
                                             </button>
                                         </td>

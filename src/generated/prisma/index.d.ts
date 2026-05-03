@@ -9845,6 +9845,7 @@ export namespace Prisma {
   }
 
   export type OrderItemMinAggregateOutputType = {
+    id: string | null
     orderId: string | null
     productId: string | null
     quantity: number | null
@@ -9853,6 +9854,7 @@ export namespace Prisma {
   }
 
   export type OrderItemMaxAggregateOutputType = {
+    id: string | null
     orderId: string | null
     productId: string | null
     quantity: number | null
@@ -9861,11 +9863,13 @@ export namespace Prisma {
   }
 
   export type OrderItemCountAggregateOutputType = {
+    id: number
     orderId: number
     productId: number
     quantity: number
     price: number
     fulfilledQuantity: number
+    variants: number
     _all: number
   }
 
@@ -9883,6 +9887,7 @@ export namespace Prisma {
   }
 
   export type OrderItemMinAggregateInputType = {
+    id?: true
     orderId?: true
     productId?: true
     quantity?: true
@@ -9891,6 +9896,7 @@ export namespace Prisma {
   }
 
   export type OrderItemMaxAggregateInputType = {
+    id?: true
     orderId?: true
     productId?: true
     quantity?: true
@@ -9899,11 +9905,13 @@ export namespace Prisma {
   }
 
   export type OrderItemCountAggregateInputType = {
+    id?: true
     orderId?: true
     productId?: true
     quantity?: true
     price?: true
     fulfilledQuantity?: true
+    variants?: true
     _all?: true
   }
 
@@ -9994,11 +10002,13 @@ export namespace Prisma {
   }
 
   export type OrderItemGroupByOutputType = {
+    id: string
     orderId: string
     productId: string
     quantity: number
     price: number
     fulfilledQuantity: number
+    variants: JsonValue
     _count: OrderItemCountAggregateOutputType | null
     _avg: OrderItemAvgAggregateOutputType | null
     _sum: OrderItemSumAggregateOutputType | null
@@ -10021,44 +10031,52 @@ export namespace Prisma {
 
 
   export type OrderItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     orderId?: boolean
     productId?: boolean
     quantity?: boolean
     price?: boolean
     fulfilledQuantity?: boolean
+    variants?: boolean
     order?: boolean | OrderDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["orderItem"]>
 
   export type OrderItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     orderId?: boolean
     productId?: boolean
     quantity?: boolean
     price?: boolean
     fulfilledQuantity?: boolean
+    variants?: boolean
     order?: boolean | OrderDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["orderItem"]>
 
   export type OrderItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     orderId?: boolean
     productId?: boolean
     quantity?: boolean
     price?: boolean
     fulfilledQuantity?: boolean
+    variants?: boolean
     order?: boolean | OrderDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["orderItem"]>
 
   export type OrderItemSelectScalar = {
+    id?: boolean
     orderId?: boolean
     productId?: boolean
     quantity?: boolean
     price?: boolean
     fulfilledQuantity?: boolean
+    variants?: boolean
   }
 
-  export type OrderItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"orderId" | "productId" | "quantity" | "price" | "fulfilledQuantity", ExtArgs["result"]["orderItem"]>
+  export type OrderItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "productId" | "quantity" | "price" | "fulfilledQuantity" | "variants", ExtArgs["result"]["orderItem"]>
   export type OrderItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     order?: boolean | OrderDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
@@ -10079,11 +10097,13 @@ export namespace Prisma {
       product: Prisma.$ProductPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
+      id: string
       orderId: string
       productId: string
       quantity: number
       price: number
       fulfilledQuantity: number
+      variants: Prisma.JsonValue
     }, ExtArgs["result"]["orderItem"]>
     composites: {}
   }
@@ -10167,8 +10187,8 @@ export namespace Prisma {
      * // Get first 10 OrderItems
      * const orderItems = await prisma.orderItem.findMany({ take: 10 })
      * 
-     * // Only select the `orderId`
-     * const orderItemWithOrderIdOnly = await prisma.orderItem.findMany({ select: { orderId: true } })
+     * // Only select the `id`
+     * const orderItemWithIdOnly = await prisma.orderItem.findMany({ select: { id: true } })
      * 
      */
     findMany<T extends OrderItemFindManyArgs>(args?: SelectSubset<T, OrderItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -10212,9 +10232,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Create many OrderItems and only return the `orderId`
-     * const orderItemWithOrderIdOnly = await prisma.orderItem.createManyAndReturn({
-     *   select: { orderId: true },
+     * // Create many OrderItems and only return the `id`
+     * const orderItemWithIdOnly = await prisma.orderItem.createManyAndReturn({
+     *   select: { id: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -10303,9 +10323,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more OrderItems and only return the `orderId`
-     * const orderItemWithOrderIdOnly = await prisma.orderItem.updateManyAndReturn({
-     *   select: { orderId: true },
+     * // Update zero or more OrderItems and only return the `id`
+     * const orderItemWithIdOnly = await prisma.orderItem.updateManyAndReturn({
+     *   select: { id: true },
      *   where: {
      *     // ... provide filter here
      *   },
@@ -10509,11 +10529,13 @@ export namespace Prisma {
    * Fields of the OrderItem model
    */
   interface OrderItemFieldRefs {
+    readonly id: FieldRef<"OrderItem", 'String'>
     readonly orderId: FieldRef<"OrderItem", 'String'>
     readonly productId: FieldRef<"OrderItem", 'String'>
     readonly quantity: FieldRef<"OrderItem", 'Int'>
     readonly price: FieldRef<"OrderItem", 'Float'>
     readonly fulfilledQuantity: FieldRef<"OrderItem", 'Int'>
+    readonly variants: FieldRef<"OrderItem", 'Json'>
   }
     
 
@@ -20350,11 +20372,13 @@ export namespace Prisma {
 
 
   export const OrderItemScalarFieldEnum: {
+    id: 'id',
     orderId: 'orderId',
     productId: 'productId',
     quantity: 'quantity',
     price: 'price',
-    fulfilledQuantity: 'fulfilledQuantity'
+    fulfilledQuantity: 'fulfilledQuantity',
+    variants: 'variants'
   };
 
   export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
@@ -21286,27 +21310,31 @@ export namespace Prisma {
     AND?: OrderItemWhereInput | OrderItemWhereInput[]
     OR?: OrderItemWhereInput[]
     NOT?: OrderItemWhereInput | OrderItemWhereInput[]
+    id?: StringFilter<"OrderItem"> | string
     orderId?: StringFilter<"OrderItem"> | string
     productId?: StringFilter<"OrderItem"> | string
     quantity?: IntFilter<"OrderItem"> | number
     price?: FloatFilter<"OrderItem"> | number
     fulfilledQuantity?: IntFilter<"OrderItem"> | number
+    variants?: JsonFilter<"OrderItem">
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }
 
   export type OrderItemOrderByWithRelationInput = {
+    id?: SortOrder
     orderId?: SortOrder
     productId?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
     fulfilledQuantity?: SortOrder
+    variants?: SortOrder
     order?: OrderOrderByWithRelationInput
     product?: ProductOrderByWithRelationInput
   }
 
   export type OrderItemWhereUniqueInput = Prisma.AtLeast<{
-    orderId_productId?: OrderItemOrderIdProductIdCompoundUniqueInput
+    id?: string
     AND?: OrderItemWhereInput | OrderItemWhereInput[]
     OR?: OrderItemWhereInput[]
     NOT?: OrderItemWhereInput | OrderItemWhereInput[]
@@ -21315,16 +21343,19 @@ export namespace Prisma {
     quantity?: IntFilter<"OrderItem"> | number
     price?: FloatFilter<"OrderItem"> | number
     fulfilledQuantity?: IntFilter<"OrderItem"> | number
+    variants?: JsonFilter<"OrderItem">
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
-  }, "orderId_productId">
+  }, "id">
 
   export type OrderItemOrderByWithAggregationInput = {
+    id?: SortOrder
     orderId?: SortOrder
     productId?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
     fulfilledQuantity?: SortOrder
+    variants?: SortOrder
     _count?: OrderItemCountOrderByAggregateInput
     _avg?: OrderItemAvgOrderByAggregateInput
     _max?: OrderItemMaxOrderByAggregateInput
@@ -21336,11 +21367,13 @@ export namespace Prisma {
     AND?: OrderItemScalarWhereWithAggregatesInput | OrderItemScalarWhereWithAggregatesInput[]
     OR?: OrderItemScalarWhereWithAggregatesInput[]
     NOT?: OrderItemScalarWhereWithAggregatesInput | OrderItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"OrderItem"> | string
     orderId?: StringWithAggregatesFilter<"OrderItem"> | string
     productId?: StringWithAggregatesFilter<"OrderItem"> | string
     quantity?: IntWithAggregatesFilter<"OrderItem"> | number
     price?: FloatWithAggregatesFilter<"OrderItem"> | number
     fulfilledQuantity?: IntWithAggregatesFilter<"OrderItem"> | number
+    variants?: JsonWithAggregatesFilter<"OrderItem">
   }
 
   export type RefundWhereInput = {
@@ -22665,57 +22698,71 @@ export namespace Prisma {
   }
 
   export type OrderItemCreateInput = {
+    id?: string
     quantity: number
     price: number
     fulfilledQuantity?: number
+    variants?: JsonNullValueInput | InputJsonValue
     order: OrderCreateNestedOneWithoutOrderItemsInput
     product: ProductCreateNestedOneWithoutOrderItemsInput
   }
 
   export type OrderItemUncheckedCreateInput = {
+    id?: string
     orderId: string
     productId: string
     quantity: number
     price: number
     fulfilledQuantity?: number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type OrderItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     fulfilledQuantity?: IntFieldUpdateOperationsInput | number
+    variants?: JsonNullValueInput | InputJsonValue
     order?: OrderUpdateOneRequiredWithoutOrderItemsNestedInput
     product?: ProductUpdateOneRequiredWithoutOrderItemsNestedInput
   }
 
   export type OrderItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     orderId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     fulfilledQuantity?: IntFieldUpdateOperationsInput | number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type OrderItemCreateManyInput = {
+    id?: string
     orderId: string
     productId: string
     quantity: number
     price: number
     fulfilledQuantity?: number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type OrderItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     fulfilledQuantity?: IntFieldUpdateOperationsInput | number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type OrderItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
     orderId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     fulfilledQuantity?: IntFieldUpdateOperationsInput | number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type RefundCreateInput = {
@@ -24230,17 +24277,14 @@ export namespace Prisma {
     isNot?: OrderWhereInput
   }
 
-  export type OrderItemOrderIdProductIdCompoundUniqueInput = {
-    orderId: string
-    productId: string
-  }
-
   export type OrderItemCountOrderByAggregateInput = {
+    id?: SortOrder
     orderId?: SortOrder
     productId?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
     fulfilledQuantity?: SortOrder
+    variants?: SortOrder
   }
 
   export type OrderItemAvgOrderByAggregateInput = {
@@ -24250,6 +24294,7 @@ export namespace Prisma {
   }
 
   export type OrderItemMaxOrderByAggregateInput = {
+    id?: SortOrder
     orderId?: SortOrder
     productId?: SortOrder
     quantity?: SortOrder
@@ -24258,6 +24303,7 @@ export namespace Prisma {
   }
 
   export type OrderItemMinOrderByAggregateInput = {
+    id?: SortOrder
     orderId?: SortOrder
     productId?: SortOrder
     quantity?: SortOrder
@@ -26781,17 +26827,21 @@ export namespace Prisma {
   }
 
   export type OrderItemCreateWithoutProductInput = {
+    id?: string
     quantity: number
     price: number
     fulfilledQuantity?: number
+    variants?: JsonNullValueInput | InputJsonValue
     order: OrderCreateNestedOneWithoutOrderItemsInput
   }
 
   export type OrderItemUncheckedCreateWithoutProductInput = {
+    id?: string
     orderId: string
     quantity: number
     price: number
     fulfilledQuantity?: number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type OrderItemCreateOrConnectWithoutProductInput = {
@@ -26963,11 +27013,13 @@ export namespace Prisma {
     AND?: OrderItemScalarWhereInput | OrderItemScalarWhereInput[]
     OR?: OrderItemScalarWhereInput[]
     NOT?: OrderItemScalarWhereInput | OrderItemScalarWhereInput[]
+    id?: StringFilter<"OrderItem"> | string
     orderId?: StringFilter<"OrderItem"> | string
     productId?: StringFilter<"OrderItem"> | string
     quantity?: IntFilter<"OrderItem"> | number
     price?: FloatFilter<"OrderItem"> | number
     fulfilledQuantity?: IntFilter<"OrderItem"> | number
+    variants?: JsonFilter<"OrderItem">
   }
 
   export type RatingUpsertWithWhereUniqueWithoutProductInput = {
@@ -27246,17 +27298,21 @@ export namespace Prisma {
   }
 
   export type OrderItemCreateWithoutOrderInput = {
+    id?: string
     quantity: number
     price: number
     fulfilledQuantity?: number
+    variants?: JsonNullValueInput | InputJsonValue
     product: ProductCreateNestedOneWithoutOrderItemsInput
   }
 
   export type OrderItemUncheckedCreateWithoutOrderInput = {
+    id?: string
     productId: string
     quantity: number
     price: number
     fulfilledQuantity?: number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type OrderItemCreateOrConnectWithoutOrderInput = {
@@ -29266,10 +29322,12 @@ export namespace Prisma {
   }
 
   export type OrderItemCreateManyProductInput = {
+    id?: string
     orderId: string
     quantity: number
     price: number
     fulfilledQuantity?: number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type RatingCreateManyProductInput = {
@@ -29293,24 +29351,30 @@ export namespace Prisma {
   }
 
   export type OrderItemUpdateWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     fulfilledQuantity?: IntFieldUpdateOperationsInput | number
+    variants?: JsonNullValueInput | InputJsonValue
     order?: OrderUpdateOneRequiredWithoutOrderItemsNestedInput
   }
 
   export type OrderItemUncheckedUpdateWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
     orderId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     fulfilledQuantity?: IntFieldUpdateOperationsInput | number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type OrderItemUncheckedUpdateManyWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
     orderId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     fulfilledQuantity?: IntFieldUpdateOperationsInput | number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type RatingUpdateWithoutProductInput = {
@@ -29420,31 +29484,39 @@ export namespace Prisma {
   }
 
   export type OrderItemCreateManyOrderInput = {
+    id?: string
     productId: string
     quantity: number
     price: number
     fulfilledQuantity?: number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type OrderItemUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     fulfilledQuantity?: IntFieldUpdateOperationsInput | number
+    variants?: JsonNullValueInput | InputJsonValue
     product?: ProductUpdateOneRequiredWithoutOrderItemsNestedInput
   }
 
   export type OrderItemUncheckedUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     fulfilledQuantity?: IntFieldUpdateOperationsInput | number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type OrderItemUncheckedUpdateManyWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     fulfilledQuantity?: IntFieldUpdateOperationsInput | number
+    variants?: JsonNullValueInput | InputJsonValue
   }
 
   export type OrderCreateManyAddressInput = {

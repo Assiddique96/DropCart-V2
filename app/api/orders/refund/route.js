@@ -15,9 +15,6 @@ import { createNotifications } from "@/lib/serverNotifications";
  */
 
 export async function POST(request) {
-  const limit = defaultLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
     if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

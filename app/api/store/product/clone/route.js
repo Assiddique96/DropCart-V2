@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "src/db";
 import authSeller from "@/middlewares/authSeller";
-import { defaultLimiter } from "@/lib/rateLimit";
+
 
 const variantInclude = {
   variantGroups: {

@@ -12,10 +12,7 @@ import { createNotifications } from "@/lib/serverNotifications";
  * Sellers can cancel orders that are ORDER_PLACED or PROCESSING.
  */
 export async function POST(request) {
-  const limit = defaultLimiter.check(request);
-  if (!limit.allowed) {
-    return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-  }
+
 
   try {
     const { userId } = getAuth(request);

@@ -2,7 +2,7 @@ import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import imagekit from "@/configs/imageKit";
 import prisma from "src/db";
-import { strictLimiter } from "@/lib/rateLimit";
+
 import { sanitizeStoreInput } from "@/lib/sanitize";
 import { sanitizeString } from "@/lib/sanitize";
 

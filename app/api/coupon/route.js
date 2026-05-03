@@ -1,16 +1,13 @@
 import prisma from "@/src/db";
 import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
-import { defaultLimiter } from "@/lib/rateLimit";
+
 import { sanitizeString } from "@/lib/sanitize";
 
 // Verify coupon
 export async function POST(request) {
     // Rate limit: 30 coupon checks per minute per IP
-    const limit = defaultLimiter.check(request);
-    if (!limit.allowed) {
-        return NextResponse.json({ error: "Too many requests. Please slow down." }, { status: 429 });
-    }
+
     try {
         const { userId, has } = getAuth(request);
         const body = await request.json();

@@ -3,7 +3,7 @@ import authSeller from "@/middlewares/authSeller";
 import prisma from "src/db";
 import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { defaultLimiter } from "@/lib/rateLimit";
+
 import { sanitizeProductInput, sanitizeString } from "@/lib/sanitize";
 
 // ─── Shared image upload helper ─────────────────────────────────────────────
@@ -67,7 +67,7 @@ export async function POST(request) {
     const imageUrls = await uploadImages(images);
     if (imageUrls.length === 0) return NextResponse.json({ error: "Image upload failed." }, { status: 500 });
 
-    await prisma.product.create({
+    const product = await prisma.product.create({
       data: {
         ...sanitized,
         quantity,
@@ -77,7 +77,7 @@ export async function POST(request) {
       },
     });
 
-    return NextResponse.json({ message: "Product added successfully!" });
+    return NextResponse.json({ message: "Product added successfully!", productId: product.id });
   } catch (error) {
     console.error("Add product error:", error);
     return NextResponse.json({ error: error.message || "Failed to add product" }, { status: 500 });

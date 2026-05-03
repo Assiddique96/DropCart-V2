@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "src/db";
 import authAdmin from "@/middlewares/authAdmin";
-import { defaultLimiter, looseLimiter } from "@/lib/rateLimit";
+
 import { sanitizeString, sanitizeNumber } from "@/lib/sanitize";
 import { createNotifications } from "@/lib/serverNotifications";
 
@@ -12,9 +12,6 @@ import { createNotifications } from "@/lib/serverNotifications";
  */
 
 export async function GET(request) {
-  const limit = looseLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
     const isAdmin = await authAdmin(userId);
@@ -51,9 +48,6 @@ export async function GET(request) {
 }
 
 export async function PATCH(request) {
-  const limit = defaultLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
     const isAdmin = await authAdmin(userId);

@@ -3,16 +3,12 @@ import prisma from "src/db";
 import authAdmin from "@/middlewares/authAdmin";
 import { getAuth } from "@clerk/nextjs/server";
 import { inngest } from "@/inngest/client";
-import { defaultLimiter } from "@/lib/rateLimit";
 import { sanitizeString } from "@/lib/sanitize";
 
 // Adding new coupon route for admin to create coupons
 
 export async function POST(request) {
-  const limit = defaultLimiter.check(request);
-  if (!limit.allowed) {
-    return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-  }
+
   try {
     const { userId } = getAuth(request);
     const isAdmin = await authAdmin(userId);

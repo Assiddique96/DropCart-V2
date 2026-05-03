@@ -14,9 +14,6 @@ import { createNotification } from "@/lib/serverNotifications";
  * - If the order already has a tracking number, the request is rejected (not editable).
  */
 export async function POST(request) {
-  const limit = defaultLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
     const storeId = await authSeller(userId, request.headers.get("x-store-id"));

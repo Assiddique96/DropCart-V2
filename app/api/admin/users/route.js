@@ -9,9 +9,6 @@ import { clerkClient } from "@clerk/nextjs/server";
 
 // GET /api/admin/users — list all users with stores and order info
 export async function GET(request) {
-  const limit = looseLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
     const isAdmin = await authAdmin(userId);
@@ -60,9 +57,6 @@ export async function GET(request) {
 
 // PATCH /api/admin/users — ban or unban a user
 export async function PATCH(request) {
-  const limit = defaultLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId: adminId } = getAuth(request);
     const isAdmin = await authAdmin(adminId);

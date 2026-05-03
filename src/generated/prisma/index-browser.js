@@ -205,11 +205,13 @@ exports.Prisma.OrderScalarFieldEnum = {
 };
 
 exports.Prisma.OrderItemScalarFieldEnum = {
+  id: 'id',
   orderId: 'orderId',
   productId: 'productId',
   quantity: 'quantity',
   price: 'price',
-  fulfilledQuantity: 'fulfilledQuantity'
+  fulfilledQuantity: 'fulfilledQuantity',
+  variants: 'variants'
 };
 
 exports.Prisma.RefundScalarFieldEnum = {

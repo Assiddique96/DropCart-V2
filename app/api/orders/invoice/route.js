@@ -3,7 +3,7 @@ import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
 import { formatCurrency, CURRENCY_SYMBOL } from "@/lib/currency";
 import { isOrderConsideredPaid } from "@/lib/orderPayment";
-import { looseLimiter } from "@/lib/rateLimit";
+
 
 /**
  * GET /api/orders/invoice?orderId=xxx
@@ -11,9 +11,6 @@ import { looseLimiter } from "@/lib/rateLimit";
  * Only the buyer or the seller of the order can access their respective invoices.
  */
 export async function GET(request) {
-  const limit = looseLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
     if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

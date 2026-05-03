@@ -14,6 +14,7 @@ const ProductCard = ({ product }) => {
     const wishlistItems = useSelector(state => state.wishlist.items)
     const isWishlisted = wishlistItems.includes(product.id)
     const isAbroad = product.origin === 'ABROAD'
+    const hasVariants = product.variantGroups && product.variantGroups.length > 0
 
     const avgRating = product.rating?.length
         ? Math.round(product.rating.reduce((acc, r) => acc + r.rating, 0) / product.rating.length)
@@ -63,12 +64,14 @@ const ProductCard = ({ product }) => {
                 </button>
 
                 {/* Quick add to cart on hover */}
-                <button
-                    onClick={handleAddToCart}
-                    className="hidden sm:block absolute bottom-0 left-0 right-0 bg-slate-800/90 text-white text-xs py-2 translate-y-full group-hover:translate-y-0 transition-transform duration-200"
-                >
-                    + Add to Cart
-                </button>
+                {!hasVariants && (
+                    <button
+                        onClick={handleAddToCart}
+                        className="hidden sm:block absolute bottom-0 left-0 right-0 bg-slate-800/90 text-white text-xs py-2 translate-y-full group-hover:translate-y-0 transition-transform duration-200"
+                    >
+                        + Add to Cart
+                    </button>
+                )}
             </div>
 
             <div className="flex items-start justify-between gap-2 sm:gap-3 text-sm text-slate-800 dark:text-slate-100 pt-2 w-full min-w-0 sm:max-w-60">

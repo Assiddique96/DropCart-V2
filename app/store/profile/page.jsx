@@ -6,7 +6,7 @@ import toast from "react-hot-toast"
 import Loading from "@/components/Loading"
 import Image from "next/image"
 import { SaveIcon, UploadIcon } from "lucide-react"
-import { assets } from "@/assets/assets"
+//import { assets } from "@/assets/assets"
 import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
 export default function StoreProfile() {

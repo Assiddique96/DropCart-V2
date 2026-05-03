@@ -2,14 +2,11 @@ import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "src/db";
 import authAdmin from "@/middlewares/authAdmin";
-import { defaultLimiter, looseLimiter } from "@/lib/rateLimit";
+
 import { sanitizeString } from "@/lib/sanitize";
 
 // GET /api/admin/products — list all products across all stores
 export async function GET(request) {
-  const limit = looseLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
     const isAdmin = await authAdmin(userId);
@@ -52,9 +49,6 @@ export async function GET(request) {
 
 // DELETE /api/admin/products?productId=xxx — admin force-deletes a product
 export async function DELETE(request) {
-  const limit = defaultLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
     const isAdmin = await authAdmin(userId);

@@ -1,12 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/src/db";
-import { defaultLimiter } from "@/lib/rateLimit";
 import { sanitizeString } from "@/lib/sanitize";
 
 export async function GET(request) {
-  const limit = defaultLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { searchParams } = new URL(request.url);
     const raw = searchParams.get("trackingNumber") || "";

@@ -7,13 +7,13 @@ datasource db {
   provider = "postgresql"
 }
 
-// Required for creating a User: id, name, email, image, cart (optional JSON string)
+// Required for creating a User: id, name, email, image, cart (optional JSON array of cart items)
 model User {
   id        String   @id
   name      String
   email     String
   image     String
-  cart      Json     @default("{}")
+  cart      Json     @default("[]") // array of { productId, quantity, variants? }
   isBanned  Boolean  @default(false)
   banReason String?
   createdAt DateTime @default(now())
@@ -178,17 +178,19 @@ model Order {
 
 // Required for creating an OrderItem: orderId, productId, quantity, price
 model OrderItem {
+  id                String @id @default(cuid())
   orderId           String
   productId         String
   quantity          Int
   price             Float
   fulfilledQuantity Int    @default(0) // tracks partial fulfillment
+  variants          Json   @default("{}") // selected variant options { groupLabel: optionLabel }
 
   // Relations
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
 
-  @@id([orderId, productId])
+  @@index([orderId])
 }
 
 enum RefundStatus {

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
 import { CURRENCY_CODE } from "@/lib/currency";
-import { strictLimiter } from "@/lib/rateLimit";
+
 
 const FLW_SECRET = process.env.FLUTTERWAVE_SECRET_KEY;
 const FLW_BASE   = "https://api.flutterwave.com/v3";
@@ -17,9 +17,6 @@ const FLW_BASE   = "https://api.flutterwave.com/v3";
  */
 
 export async function POST(request) {
-  const limit = strictLimiter.check(request);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
   try {
     const { userId } = getAuth(request);
     if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
