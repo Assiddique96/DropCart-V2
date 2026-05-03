@@ -6,7 +6,7 @@ import ProductCard from './ProductCard'
  * Shows up to 4 products from the same category, excluding the current product.
  * Falls back to products from the same store if same-category count < 2.
  */
-const RelatedProducts = ({ product }) => {
+const RelatedProducts = ({ product }) => {1
     const allProducts = useSelector(state => state.product.list)
 
     const sameCategory = allProducts
