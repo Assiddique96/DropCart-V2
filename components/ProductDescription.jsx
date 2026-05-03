@@ -10,7 +10,7 @@ import toast from "react-hot-toast"
 
 const StarRow = ({ count, total, label }) => (
     <div className="flex items-center gap-2 text-xs">
-        <span className="w-3 text-slate-400">{label}★</span>
+        <span className="w-3 text-slate-300">{label}★</span>
         <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
             <div className="h-full bg-green-400 rounded-full transition-all"
                 style={{ width: total > 0 ? `${(count / total) * 100}%` : '0%' }} />
