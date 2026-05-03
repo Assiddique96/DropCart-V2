@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import Loading from "../Loading"
 import Link from "next/link"
 import { ArrowRightIcon } from "lucide-react"
-import { CircleDollarSignIcon, HomeIcon, RotateCcwIcon, SettingsIcon, ShieldCheckIcon, ShoppingBasketIcon, StoreIcon, TicketPercentIcon, UsersIcon, PackageIcon, ArrowUpRightIcon } from "lucide-react"
+import { CircleDollarSignIcon, HomeIcon, RotateCcwIcon, SettingsIcon, ShieldCheckIcon, ShoppingBasketIcon, StoreIcon, TicketPercentIcon, UsersIcon, PackageIcon, ArrowUpRightIcon, Images } from "lucide-react"
 import { useAuth, useUser } from "@clerk/nextjs"
 import axios from "axios"
 import DashboardShell from "@/components/dashboard/DashboardShell"
@@ -55,6 +55,7 @@ const AdminLayout = ({ children }) => {
             }
             navItems={[
                 { name: 'Dashboard',     href: '/admin',           icon: HomeIcon },
+                { name: 'Home page',     href: '/admin/home',      icon: Images },
                 { name: 'Orders',        href: '/admin/orders',    icon: PackageIcon },
                 { name: 'Stores',        href: '/admin/stores',    icon: StoreIcon },
                 { name: 'Store Applications', href: '/admin/approve',   icon: ShieldCheckIcon },

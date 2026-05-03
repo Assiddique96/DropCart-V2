@@ -20,6 +20,8 @@ export default function StoreManageProducts() {
     const [editingProduct, setEditingProduct] = useState(null)
     const [editForm, setEditForm] = useState({})
     const [newImages, setNewImages] = useState([])
+    /** URLs kept when editing (remove = drop from this list). */
+    const [editImageUrls, setEditImageUrls] = useState([])
     const [saving, setSaving] = useState(false)
     const [deletingId, setDeletingId] = useState(null)
     const [confirmDeleteId, setConfirmDeleteId] = useState(null)
@@ -102,6 +104,7 @@ export default function StoreManageProducts() {
 
     const openEdit = (product) => {
         setEditingProduct(product.id)
+        setEditImageUrls(Array.isArray(product.images) ? [...product.images] : [])
         setEditForm({
             name: product.name,
             description: product.description,
@@ -122,9 +125,18 @@ export default function StoreManageProducts() {
         setEditingProduct(null)
         setEditForm({})
         setNewImages([])
+        setEditImageUrls([])
     }
 
     const saveEdit = async (productId) => {
+        if (editImageUrls.length + newImages.length === 0) {
+            toast.error("Keep at least one image, or add new photos before saving.")
+            return
+        }
+        if (editImageUrls.length + newImages.length > 8) {
+            toast.error("Maximum 8 images per product. Remove some or upload fewer files.")
+            return
+        }
         setSaving(true)
         try {
             const formData = new FormData()
@@ -140,6 +152,7 @@ export default function StoreManageProducts() {
             if (editForm.scheduledAt) formData.append("scheduledAt", editForm.scheduledAt)
             formData.append("origin", editForm.origin || "LOCAL")
             formData.append("acceptCod", editForm.origin === "LOCAL" ? (editForm.acceptCod ? "true" : "false") : "false")
+            formData.append("existingImages", JSON.stringify(editImageUrls))
             newImages.forEach(img => formData.append("images", img))
 
             const { data } = await axios.patch("/api/store/product", formData, {
@@ -335,13 +348,34 @@ export default function StoreManageProducts() {
                                                             onChange={e => setEditForm({ ...editForm, scheduledAt: e.target.value })}
                                                             className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
                                                     </label>
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        Replace Images (optional)
-                                                        <input type="file" multiple accept="image/*"
-                                                            onChange={e => setNewImages(Array.from(e.target.files))}
-                                                            className="text-xs border border-slate-200 dark:border-slate-700 rounded p-1.5 bg-white dark:bg-slate-900" />
-                                                        {newImages.length > 0 && <span className="text-blue-500">{newImages.length} file(s) selected</span>}
-                                                    </label>
+                                                    <div className="flex flex-col gap-2 text-xs sm:col-span-2 lg:col-span-3">
+                                                        <span className="font-medium text-slate-600 dark:text-slate-300">Product images (max 8)</span>
+                                                        <p className="text-slate-400 text-[11px]">Remove photos with ×. Add more below — new uploads are appended until the limit.</p>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {editImageUrls.map((url) => (
+                                                                <div key={url} className="relative h-16 w-16 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 group/img">
+                                                                    <Image src={url} alt="" fill className="object-cover" sizes="64px" />
+                                                                    <button
+                                                                        type="button"
+                                                                        title="Remove image"
+                                                                        onClick={() => setEditImageUrls((prev) => prev.filter((u) => u !== url))}
+                                                                        className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover/img:opacity-100 transition text-white text-xs font-semibold"
+                                                                    >
+                                                                        ×
+                                                                    </button>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                        <label className="flex flex-col gap-1 cursor-pointer">
+                                                            <span className="text-slate-500">Add images</span>
+                                                            <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif"
+                                                                onChange={(e) => setNewImages(Array.from(e.target.files || []))}
+                                                                className="text-xs border border-slate-200 dark:border-slate-700 rounded p-1.5 bg-white dark:bg-slate-900 file:mr-2" />
+                                                            {newImages.length > 0 && (
+                                                                <span className="text-blue-500">{newImages.length} new file(s) will upload on save</span>
+                                                            )}
+                                                        </label>
+                                                    </div>
                                                     <label className="flex flex-col gap-1 text-xs sm:col-span-2 lg:col-span-3">
                                                         Description
                                                         <textarea value={editForm.description} rows={3}

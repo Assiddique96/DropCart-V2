@@ -344,6 +344,7 @@ model Payout {
  *   shipping_base_fee   Float  (flat fee for non-members, e.g. 7000)
  *   shipping_abroad_fee Float  (abroad product shipping fee)
  *   shipping_free_above Float  (order total above which shipping is free, e.g. 50000)
+ *   home_page_content   String (JSON: featured / promo1 / promo2 slide arrays for the public home hero)
  */
 model PlatformConfig {
     key       String   @id

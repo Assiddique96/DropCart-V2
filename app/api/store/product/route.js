@@ -5,6 +5,7 @@ import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import { sanitizeProductInput, sanitizeString } from "@/lib/sanitize";
+import { defaultLimiter } from "@/lib/rateLimit";
 
 // ─── Shared image upload helper ─────────────────────────────────────────────
 async function uploadImages(imageFiles) {
@@ -153,11 +154,37 @@ export async function PATCH(request) {
     const rawQuantity = formData.get("quantity");
     const quantity = rawQuantity !== null ? Math.max(0, parseInt(rawQuantity, 10)) : existing.quantity;
 
-    const newImageFiles = formData.getAll("images").filter(i => i instanceof File && i.size > 0);
-    let images = existing.images;
-    if (newImageFiles.length > 0) {
-      const uploaded = await uploadImages(newImageFiles);
-      if (uploaded.length > 0) images = uploaded;
+    const newImageFiles = formData.getAll("images").filter((i) => i instanceof File && i.size > 0);
+
+    let images;
+    const existingImagesJson = formData.get("existingImages");
+    if (typeof existingImagesJson === "string" && existingImagesJson.trim()) {
+      try {
+        const kept = JSON.parse(existingImagesJson);
+        if (!Array.isArray(kept)) {
+          return NextResponse.json({ error: "existingImages must be a JSON array." }, { status: 400 });
+        }
+        const allowed = new Set(existing.images);
+        const filtered = kept.filter((u) => typeof u === "string" && allowed.has(u));
+        let merged = filtered;
+        if (newImageFiles.length > 0) {
+          const uploaded = await uploadImages(newImageFiles);
+          merged = [...filtered, ...uploaded];
+        }
+        images = merged.slice(0, 8);
+      } catch {
+        return NextResponse.json({ error: "Invalid existingImages JSON." }, { status: 400 });
+      }
+    } else {
+      images = existing.images;
+      if (newImageFiles.length > 0) {
+        const uploaded = await uploadImages(newImageFiles);
+        if (uploaded.length > 0) images = uploaded;
+      }
+    }
+
+    if (!images || images.length === 0) {
+      return NextResponse.json({ error: "At least one product image is required." }, { status: 400 });
     }
 
     const updated = await prisma.product.update({

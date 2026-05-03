@@ -1,9 +1,9 @@
 'use client'
 import { addToCart } from "@/lib/features/cart/cartSlice";
 import toast from "react-hot-toast";
-import { StarIcon, TagIcon, CreditCardIcon, UserIcon, TruckIcon, ClockIcon, BanIcon, CheckIcon } from "lucide-react";
+import { StarIcon, TagIcon, CreditCardIcon, UserIcon, TruckIcon, ClockIcon, BanIcon, CheckIcon, XIcon, ChevronLeftIcon, ChevronRightIcon, ZoomInIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Counter from "./Counter";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,8 +33,64 @@ const ProductDetails = ({ product }) => {
     const dispatch = useDispatch();
     const router = useRouter();
 
-    const [mainImage, setMainImage] = useState(product.images[0]);
+    const images = (product.images || []).filter(Boolean)
+    const [mainIdx, setMainIdx] = useState(0)
+    const [lightboxOpen, setLightboxOpen] = useState(false)
+    const [zoomHover, setZoomHover] = useState(false)
+    const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 })
+    const swipeStart = useRef(0)
+    const swipeBlockedClick = useRef(false)
+
+    const mainImage = images[Math.min(mainIdx, Math.max(0, images.length - 1))] || images[0]
     const [selectedOptions, setSelectedOptions] = useState({}) // { [groupLabel]: optionLabel }
+
+    useEffect(() => {
+        setMainIdx(0)
+    }, [product.id])
+
+    useEffect(() => {
+        if (!lightboxOpen) return
+        const onKey = (e) => {
+            if (e.key === 'Escape') setLightboxOpen(false)
+            if (!images.length) return
+            if (e.key === 'ArrowLeft') setMainIdx((i) => (i - 1 + images.length) % images.length)
+            if (e.key === 'ArrowRight') setMainIdx((i) => (i + 1) % images.length)
+        }
+        window.addEventListener('keydown', onKey)
+        return () => window.removeEventListener('keydown', onKey)
+    }, [lightboxOpen, images.length])
+
+    const goThumb = (idx) => setMainIdx(idx)
+
+    const onMainPointerDown = (e) => {
+        swipeStart.current = e.clientX
+    }
+    const onMainPointerUp = (e) => {
+        if (images.length <= 1) return
+        const dx = e.clientX - swipeStart.current
+        if (Math.abs(dx) > 45) {
+            swipeBlockedClick.current = true
+            setMainIdx((i) => {
+                const len = images.length
+                return dx < 0 ? (i + 1) % len : (i - 1 + len) % len
+            })
+        }
+    }
+    const openZoom = () => {
+        if (swipeBlockedClick.current) {
+            swipeBlockedClick.current = false
+            return
+        }
+        setLightboxOpen(true)
+    }
+
+    useEffect(() => {
+        if (lightboxOpen) {
+            const prev = document.body.style.overflow
+            document.body.style.overflow = 'hidden'
+            return () => { document.body.style.overflow = prev }
+        }
+    }, [lightboxOpen])
     const variantGroups = product.variantGroups || []
 
     // Compute effective price based on selected options' price modifiers
@@ -85,25 +141,141 @@ const ProductDetails = ({ product }) => {
     return (
         <div className="flex max-lg:flex-col gap-12">
             {/* Image gallery */}
-            <div className="flex max-sm:flex-col-reverse gap-3">
-                <div className="flex sm:flex-col gap-3">
-                    {product.images.map((image, index) => (
-                        <div key={index} onClick={() => setMainImage(image)}
-                            className="bg-slate-100 flex items-center justify-center size-16 rounded-lg cursor-pointer hover:ring-2 hover:ring-slate-300 transition">
-                            <Image src={image} className="max-h-12 w-auto" alt="" width={48} height={48} />
-                        </div>
+            <div className="flex flex-col sm:flex-row gap-4 w-full max-w-xl lg:max-w-none lg:w-auto">
+                <div className="flex flex-row sm:flex-col gap-2 overflow-x-auto sm:overflow-visible pb-1 sm:pb-0 shrink-0 order-2 sm:order-1">
+                    {images.map((image, index) => (
+                        <button
+                            key={index}
+                            type="button"
+                            onClick={() => goThumb(index)}
+                            className={`relative shrink-0 size-16 rounded-xl overflow-hidden bg-slate-100 border-2 transition ${
+                                index === Math.min(mainIdx, Math.max(0, images.length - 1))
+                                    ? 'border-slate-800 ring-2 ring-slate-800/20'
+                                    : 'border-transparent hover:border-slate-300'
+                            }`}
+                        >
+                            <Image src={image} alt="" fill className="object-cover" sizes="64px" />
+                        </button>
                     ))}
                 </div>
-                <div className="relative flex justify-center items-center h-80 sm:size-100 bg-slate-100 rounded-lg">
-                    <Image src={mainImage} alt={product.name} width={280} height={280} className="object-contain max-h-72" />
-                    {/* Abroad badge on main image */}
-                    {isAbroad && (
-                        <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
-                            ✈️ Shipped from Abroad
-                        </div>
+                <div className="relative flex-1 min-w-0 order-1 sm:order-2">
+                    <div
+                        className="relative w-full aspect-square max-w-lg mx-auto rounded-xl bg-slate-100 overflow-hidden border border-slate-100 shadow-sm touch-pan-y sm:cursor-zoom-in"
+                        onPointerDown={onMainPointerDown}
+                        onPointerUp={onMainPointerUp}
+                        onMouseEnter={() => setZoomHover(true)}
+                        onMouseLeave={() => setZoomHover(false)}
+                        onMouseMove={(e) => {
+                            const r = e.currentTarget.getBoundingClientRect()
+                            setZoomOrigin({
+                                x: ((e.clientX - r.left) / r.width) * 100,
+                                y: ((e.clientY - r.top) / r.height) * 100,
+                            })
+                        }}
+                        onClick={openZoom}
+                    >
+                        {mainImage ? (
+                            <>
+                                <Image
+                                    src={mainImage}
+                                    alt={product.name}
+                                    fill
+                                    priority
+                                    className={`z-0 object-contain transition-transform duration-150 ease-out ${zoomHover ? 'sm:scale-[1.65]' : 'scale-100'}`}
+                                    style={{ transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%` }}
+                                    sizes="(max-width: 1024px) 100vw, 480px"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); openZoom() }}
+                                    className="sm:hidden absolute bottom-3 right-3 z-20 flex items-center gap-1 rounded-full bg-white/95 px-3 py-1.5 text-xs font-medium text-slate-700 shadow-md border border-slate-200"
+                                >
+                                    <ZoomInIcon size={14} /> Zoom
+                                </button>
+                            </>
+                        ) : null}
+                        {isAbroad && (
+                            <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow pointer-events-none">
+                                ✈️ Shipped from Abroad
+                            </div>
+                        )}
+                        {images.length > 1 && (
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); setMainIdx((i) => (i - 1 + images.length) % images.length) }}
+                                    className="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/95 p-2 shadow border border-slate-200 text-slate-700 hover:bg-white"
+                                    aria-label="Previous image"
+                                >
+                                    <ChevronLeftIcon size={18} />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); setMainIdx((i) => (i + 1) % images.length) }}
+                                    className="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/95 p-2 shadow border border-slate-200 text-slate-700 hover:bg-white"
+                                    aria-label="Next image"
+                                >
+                                    <ChevronRightIcon size={18} />
+                                </button>
+                            </>
+                        )}
+                    </div>
+                    {images.length > 1 && (
+                        <p className="text-center text-[11px] text-slate-400 mt-2 sm:hidden">Swipe on the image to see more</p>
                     )}
                 </div>
             </div>
+
+            {lightboxOpen && mainImage ? (
+                <div
+                    className="fixed inset-0 z-[300] flex items-center justify-center bg-black/92 p-4"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Product image full size"
+                    onClick={() => setLightboxOpen(false)}
+                >
+                    <button
+                        type="button"
+                        className="absolute top-4 right-4 z-10 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
+                        onClick={(e) => { e.stopPropagation(); setLightboxOpen(false) }}
+                        aria-label="Close"
+                    >
+                        <XIcon size={22} />
+                    </button>
+                    {images.length > 1 && (
+                        <>
+                            <button
+                                type="button"
+                                className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/15 p-3 text-white hover:bg-white/25"
+                                onClick={(e) => { e.stopPropagation(); setMainIdx((i) => (i - 1 + images.length) % images.length) }}
+                                aria-label="Previous"
+                            >
+                                <ChevronLeftIcon size={28} />
+                            </button>
+                            <button
+                                type="button"
+                                className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/15 p-3 text-white hover:bg-white/25"
+                                onClick={(e) => { e.stopPropagation(); setMainIdx((i) => (i + 1) % images.length) }}
+                                aria-label="Next"
+                            >
+                                <ChevronRightIcon size={28} />
+                            </button>
+                        </>
+                    )}
+                    <div
+                        className="relative w-full h-full max-h-[90vh] max-w-[min(100vw,1200px)]"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <Image
+                            src={mainImage}
+                            alt={product.name}
+                            fill
+                            className="object-contain"
+                            sizes="100vw"
+                        />
+                    </div>
+                </div>
+            ) : null}
 
             {/* Product info */}
             <div className="flex-1">
