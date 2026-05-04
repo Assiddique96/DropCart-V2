@@ -64,8 +64,9 @@ export default function NotificationBell() {
 
   // Close on outside click
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !(ref.current as HTMLElement).contains(e.target as Node)) {
+    const handler = (e) => {
+      const el = ref.current;
+      if (el && !el.contains(e.target)) {
         setOpen(false);
       }
     };
@@ -83,7 +84,7 @@ export default function NotificationBell() {
     setOpen(false);
   };
 
-  const formatTime = (iso: string) => {
+  const formatTime = (iso) => {
     const diff = Date.now() - new Date(iso).getTime();
     const mins = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
