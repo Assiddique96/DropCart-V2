@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "Cookies Policy — DropCart",
+  title: "Cookies Policy — Shpinx",
   description:
-    "Cookies Policy describing how DropCart uses cookies and similar technologies.",
+    "Cookies Policy describing how Shpinx uses cookies and similar technologies.",
 };
 
 export default function CookiesPolicyPage() {
