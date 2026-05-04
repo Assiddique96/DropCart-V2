@@ -53,8 +53,8 @@ const manufacturers = {
     'Pet Supplies': ['Purina', 'Pedigree', 'Whiskas', 'Royal Canin', 'Hill\'s', 'Iams', 'Eukanuba', 'Blue Buffalo', 'Science Diet', 'Taste of the Wild', 'Acana', 'Orijen', 'Petco', 'PetSmart', 'Chewy', 'Others'],
     'Office Supplies': ['Staples', 'Office Depot', 'OfficeMax', 'Amazon Basics', 'HP', 'Dell', 'Lenovo', 'Apple', 'Microsoft', 'Adobe', 'Google', 'Canon', 'Epson', 'Brother', 'Sharp', 'Others'],
     'Industrial & Scientific': ['3M', 'Honeywell', 'DuPont', 'Dow Chemical', 'BASF', 'Siemens', 'General Electric', 'Philips', 'Bosch', 'Makita', 'DeWalt', 'Milwaukee', 'Ridgid', 'Snap-on', 'Others'],
-    'Smartphones': ['Samsung', 'Apple', 'Sony', 'LG', 'Huawei', 'Xiaomi', 'OnePlus', 'Google', 'Microsoft', 'Dell', 'HP', 'Lenovo', 'Asus', 'Acer', 'Nokia', 'Motorola', 'Oppo', 'Vivo', 'Realme', 'Others']
-    'Computers': ['Hp', 'MacBook', 'Smamsung', 'Lenovo', 'Sony', 'Dell', 'ASUS', 'Others'] 
+    'Smartphones': ['Samsung', 'Apple', 'Sony', 'LG', 'Huawei', 'Xiaomi', 'OnePlus', 'Google', 'Microsoft', 'Dell', 'HP', 'Lenovo', 'Asus', 'Acer', 'Nokia', 'Motorola', 'Oppo', 'Vivo', 'Realme', 'Others'],
+    'Computers': ['Hp', 'MacBook', 'Smamsung', 'Lenovo', 'Sony', 'Dell', 'ASUS', 'Others'],
     'Others': ['Generic', 'Unknown', 'Various', 'Others']
 }
 const MAX_IMAGES = 8
