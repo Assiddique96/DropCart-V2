@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "Privacy Policy — DropCart",
+  title: "Privacy Policy — Shpinx",
   description:
-    "Privacy Policy explaining how DropCart collects, uses, and protects your personal information.",
+    "Privacy Policy explaining how Shpinx collects, uses, and protects your personal information.",
 };
 
 export default function PrivacyPolicyPage() {
