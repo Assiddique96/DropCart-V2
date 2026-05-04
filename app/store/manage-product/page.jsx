@@ -8,7 +8,25 @@ import axios from "axios"
 import { PencilIcon, Trash2Icon, XIcon, CheckIcon, CopyIcon, UploadIcon, DownloadIcon } from "lucide-react"
 import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
-const categories = ['Electronics', 'Clothing', 'Home & Kitchen', 'Beauty & Health', 'Toys & Games', 'Sports & Outdoors', 'Books & Media', 'Food & Drink', 'Hobbies & Crafts', 'Others']
+const categories = ['Electronics', 'Clothing', 'Home & Garden', 'Beauty & Health', 'Toys & Games', 'Sports & Outdoors', 'Books & Media', 'Food & Beverage', 'Hobbies & Crafts', 'Automotive', 'Baby & Kids', 'Pet Supplies', 'Office Supplies', 'Industrial & Scientific', 'Others']
+
+const manufacturers = {
+    'Electronics': ['Samsung', 'Apple', 'Sony', 'LG', 'Huawei', 'Xiaomi', 'OnePlus', 'Google', 'Microsoft', 'Dell', 'HP', 'Lenovo', 'Asus', 'Acer', 'Nokia', 'Motorola', 'Oppo', 'Vivo', 'Realme', 'Others'],
+    'Clothing': ['Nike', 'Adidas', 'Puma', 'Levi\'s', 'H&M', 'Zara', 'Uniqlo', 'Gucci', 'Louis Vuitton', 'Chanel', 'Prada', 'Versace', 'Armani', 'Tommy Hilfiger', 'Ralph Lauren', 'Calvin Klein', 'Gap', 'Old Navy', 'Banana Republic', 'Others'],
+    'Home & Garden': ['IKEA', 'Home Depot', 'Lowe\'s', 'Wayfair', 'Crate & Barrel', 'Williams Sonoma', 'Bed Bath & Beyond', 'Pottery Barn', 'West Elm', 'CB2', 'Anthropologie', 'Restoration Hardware', 'Hobby Lobby', 'Michaels', 'Joann', 'Others'],
+    'Beauty & Health': ['L\'Oréal', 'Estée Lauder', 'Maybelline', 'Revlon', 'MAC', 'NARS', 'Clinique', 'The Body Shop', 'Bath & Body Works', 'Victoria\'s Secret', 'Sephora', 'Ulta', 'Avon', 'Mary Kay', 'Neutrogena', 'Cetaphil', 'Olay', 'Nivea', 'Dove', 'Others'],
+    'Toys & Games': ['LEGO', 'Mattel', 'Hasbro', 'Fisher-Price', 'Nintendo', 'Sony PlayStation', 'Microsoft Xbox', 'Disney', 'Marvel', 'DC Comics', 'Pokémon', 'Barbie', 'Hot Wheels', 'Transformers', 'Others'],
+    'Sports & Outdoors': ['Nike', 'Adidas', 'Puma', 'Under Armour', 'Reebok', 'New Balance', 'The North Face', 'Patagonia', 'Columbia', 'REI', 'Decathlon', 'Dick\'s Sporting Goods', 'Academy Sports', 'Bass Pro Shops', 'Cabela\'s', 'Others'],
+    'Books & Media': ['Penguin Random House', 'HarperCollins', 'Simon & Schuster', 'Hachette', 'Macmillan', 'Scholastic', 'Disney', 'Warner Bros', 'Universal', 'Sony Pictures', 'Netflix', 'Amazon Prime', 'HBO', 'Others'],
+    'Food & Beverage': ['Nestlé', 'PepsiCo', 'Coca-Cola', 'Unilever', 'Procter & Gamble', 'Kraft Heinz', 'Mondelez', 'Mars', 'Ferrero', 'Lindt', 'Starbucks', 'McDonald\'s', 'KFC', 'Subway', 'Domino\'s', 'Others'],
+    'Hobbies & Crafts': ['Michaels', 'Hobby Lobby', 'Joann', 'Dick Blick', 'Ben Franklin', 'LEGO', 'Copic', 'Prismacolor', 'Faber-Castell', 'Staedtler', 'Pentel', 'Sharpie', 'Crayola', 'Others'],
+    'Automotive': ['Toyota', 'Honda', 'Ford', 'Chevrolet', 'BMW', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'Nissan', 'Hyundai', 'Kia', 'Tesla', 'General Motors', 'Fiat', 'Renault', 'Peugeot', 'Others'],
+    'Baby & Kids': ['Pampers', 'Huggies', 'Johnson & Johnson', 'Gerber', 'Enfamil', 'Similac', 'Fisher-Price', 'LeapFrog', 'VTech', 'Disney', 'Nickelodeon', 'Cartoon Network', 'Sesame Street', 'Mattel', 'Hasbro', 'Others'],
+    'Pet Supplies': ['Purina', 'Pedigree', 'Whiskas', 'Royal Canin', 'Hill\'s', 'Iams', 'Eukanuba', 'Blue Buffalo', 'Science Diet', 'Taste of the Wild', 'Acana', 'Orijen', 'Petco', 'PetSmart', 'Chewy', 'Others'],
+    'Office Supplies': ['Staples', 'Office Depot', 'OfficeMax', 'Amazon Basics', 'HP', 'Dell', 'Lenovo', 'Apple', 'Microsoft', 'Adobe', 'Google', 'Canon', 'Epson', 'Brother', 'Sharp', 'Others'],
+    'Industrial & Scientific': ['3M', 'Honeywell', 'DuPont', 'Dow Chemical', 'BASF', 'Siemens', 'General Electric', 'Philips', 'Bosch', 'Makita', 'DeWalt', 'Milwaukee', 'Ridgid', 'Snap-on', 'Others'],
+    'Others': ['Generic', 'Unknown', 'Various', 'Others']
+}
 
 export default function StoreManageProducts() {
     const { getToken } = useAuth()
@@ -69,9 +87,9 @@ export default function StoreManageProducts() {
     }
 
     const downloadCSVTemplate = () => {
-        const header = "name,description,mrp,price,category,quantity,sku,tags,image_url,origin,accept_cod"
-        const example = "Sample T-Shirt,A comfortable cotton t-shirt,5000,3500,Clothing,10,TSH-001,fashion|clothing,https://example.com/image.jpg,LOCAL,true"
-        const example2 = "Imported Sneakers,Premium sneakers from abroad,25000,19000,Clothing,5,SNK-001,shoes|imported,https://example.com/sneaker.jpg,ABROAD,"
+        const header = "name,description,mrp,price,category,quantity,sku,tags,image_url,origin,accept_cod,manufacturer"
+        const example = "Sample T-Shirt,A comfortable cotton t-shirt,5000,3500,Clothing,10,TSH-001,fashion|clothing,https://example.com/image.jpg,LOCAL,true,Nike"
+        const example2 = "Imported Sneakers,Premium sneakers from abroad,25000,19000,Clothing,5,SNK-001,shoes|imported,https://example.com/sneaker.jpg,ABROAD,,Adidas"
         const blob = new Blob([header + "\n" + example + "\n" + example2], { type: "text/csv" })
         const url = URL.createObjectURL(blob)
         const a = document.createElement("a"); a.href = url; a.download = "dropcart-import-template.csv"; a.click()
@@ -111,6 +129,7 @@ export default function StoreManageProducts() {
             mrp: product.mrp,
             price: product.price,
             category: product.category,
+            manufacturer: product.manufacturer ?? '',
             quantity: product.quantity ?? 0,
             sku: product.sku ?? '',
             tags: Array.isArray(product.tags) ? product.tags.join(', ') : '',
@@ -146,6 +165,7 @@ export default function StoreManageProducts() {
             formData.append("mrp", editForm.mrp)
             formData.append("price", editForm.price)
             formData.append("category", editForm.category)
+            if (editForm.manufacturer) formData.append("manufacturer", editForm.manufacturer)
             formData.append("quantity", editForm.quantity)
             if (editForm.sku) formData.append("sku", editForm.sku)
             if (editForm.tags) formData.append("tags", editForm.tags)
@@ -278,9 +298,18 @@ export default function StoreManageProducts() {
                                                     <label className="flex flex-col gap-1 text-xs">
                                                         Category
                                                         <select value={editForm.category}
-                                                            onChange={e => setEditForm({ ...editForm, category: e.target.value })}
+                                                            onChange={e => setEditForm({ ...editForm, category: e.target.value, manufacturer: "" })}
                                                             className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
                                                             {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                                                        </select>
+                                                    </label>
+                                                    <label className="flex flex-col gap-1 text-xs">
+                                                        Manufacturer
+                                                        <select value={editForm.manufacturer ?? ''}
+                                                            onChange={e => setEditForm({ ...editForm, manufacturer: e.target.value })}
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
+                                                            <option value="">Select manufacturer</option>
+                                                            {editForm.category && manufacturers[editForm.category]?.map(m => <option key={m} value={m}>{m}</option>)}
                                                         </select>
                                                     </label>
                                                     <label className="flex flex-col gap-1 text-xs">

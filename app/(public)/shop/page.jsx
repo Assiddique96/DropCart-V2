@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useSelector } from "react-redux"
 import { SlidersHorizontalIcon, XIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
-const CATEGORIES = ['Electronics', 'Clothing', 'Smartphones', 'Solars', 'Accessories', 'Laptops', 'Home & Kitchen', 'Beauty & Health', 'Toys & Games', 'Sports & Outdoors', 'Books & Media', 'Food & Drink', 'Hobbies & Crafts', 'Others']
+const CATEGORIES = ['Electronics', 'Clothing', 'Smartphones', 'Solars', 'Accessories', 'Laptops', 'Home & Garden', 'Beauty & Health', 'Toys & Games', 'Sports & Outdoors', 'Books & Media', 'Food & Beverage', 'Hobbies & Crafts', 'Automotive', 'Baby & Kids', 'Pet Supplies', 'Office Supplies', 'Industrial & Scientific', 'Others']
 const SORT_OPTIONS = [
     { value: 'newest', label: 'Newest First' },
     { value: 'price_asc', label: 'Price: Low to High' },
@@ -97,6 +97,16 @@ function ShopContent() {
         category, minPrice, maxPrice, minRating > 0, inStockOnly
     ].filter(Boolean).length
 
+    const groupedPaginatedProducts = useMemo(() => {
+        const groups = {}
+        paginated.forEach(product => {
+            const group = CATEGORIES.includes(product.category) ? product.category : 'Others'
+            if (!groups[group]) groups[group] = []
+            groups[group].push(product)
+        })
+        return Object.entries(groups).sort(([a], [b]) => (CATEGORIES.indexOf(a) - CATEGORIES.indexOf(b)))
+    }, [paginated])
+
     const clearFilters = () => {
         setCategory(''); setMinPrice(''); setMaxPrice(''); setMinRating(0); setInStockOnly(false); setSearch('')
     }
@@ -106,8 +116,26 @@ function ShopContent() {
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-wrap items-center justify-between gap-4 my-6">
                     <div>
-                        <h1 className="text-2xl text-slate-700 font-medium">All Products</h1>
-                        <p className="text-xs text-slate-400 mt-0.5">{filtered.length} product{filtered.length !== 1 ? 's' : ''} found</p>
+                        <h1 className="text-3xl text-slate-800 font-semibold">All Products</h1>
+                        <p className="text-sm text-slate-500 mt-1 max-w-xl">Discover top-rated products from verified sellers. Use filters to refine results by price, category, rating, and availability.</p>
+                        <p className="text-xs text-slate-400 mt-2">{filtered.length} product{filtered.length !== 1 ? 's' : ''} found</p>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                            <button
+                                onClick={() => setCategory('')}
+                                className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${category === '' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                            >
+                                All
+                            </button>
+                            {CATEGORIES.map(c => (
+                                <button
+                                    key={c}
+                                    onClick={() => setCategory(c)}
+                                    className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${category === c ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                >
+                                    {c}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-3 flex-wrap">
@@ -222,8 +250,21 @@ function ShopContent() {
                         )}
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 xl:gap-10">
-                        {paginated.map(product => <ProductCard key={product.id} product={product} />)}
+                    <div className="space-y-10">
+                        {groupedPaginatedProducts.map(([group, products]) => (
+                            <section key={group} className="">
+                                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
+                                    <div>
+                                        <h2 className="text-lg font-semibold text-slate-800">{group}</h2>
+                                        <p className="text-xs text-slate-500 mt-1">{products.length} product{products.length !== 1 ? 's' : ''} in this category.</p>
+                                    </div>
+                                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">Category showcase</span>
+                                </div>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 xl:gap-10">
+                                    {products.map(product => <ProductCard key={product.id} product={product} />)}
+                                </div>
+                            </section>
+                        ))}
                     </div>
                 )}
 

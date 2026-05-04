@@ -9,10 +9,52 @@ import { XIcon, PlusIcon, SparklesIcon, UploadIcon, ImageIcon, TypeIcon, Chevron
 import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
 const categories = [
-    'Electronics', 'Clothing', 'Home & Kitchen', 'Beauty & Health',
+    'Electronics', 'Clothing', 'Home & Garden', 'Beauty & Health',
     'Toys & Games', 'Sports & Outdoors', 'Books & Media',
-    'Food & Drink', 'Hobbies & Crafts', 'Others'
+    'Food & Beverage', 'Hobbies & Crafts', 'Automotive',
+    'Baby & Kids', 'Pet Supplies', 'Office Supplies', 'Industrial & Scientific', 'Others'
 ]
+
+const countries = [
+    'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua and Barbuda', 'Argentina', 'Armenia', 'Australia', 'Austria',
+    'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bhutan',
+    'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Brunei', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cabo Verde', 'Cambodia',
+    'Cameroon', 'Canada', 'Central African Republic', 'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo', 'Costa Rica',
+    'Croatia', 'Cuba', 'Cyprus', 'Czech Republic', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic', 'Ecuador', 'Egypt',
+    'El Salvador', 'Equatorial Guinea', 'Eritrea', 'Estonia', 'Eswatini', 'Ethiopia', 'Fiji', 'Finland', 'France', 'Gabon',
+    'Gambia', 'Georgia', 'Germany', 'Ghana', 'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana',
+    'Haiti', 'Honduras', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq', 'Ireland', 'Israel',
+    'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati', 'Kuwait', 'Kyrgyzstan', 'Laos',
+    'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Madagascar', 'Malawi',
+    'Malaysia', 'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Mauritania', 'Mauritius', 'Mexico', 'Micronesia', 'Moldova',
+    'Monaco', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique', 'Myanmar', 'Namibia', 'Nauru', 'Nepal', 'Netherlands',
+    'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'North Korea', 'North Macedonia', 'Norway', 'Oman', 'Pakistan', 'Palau',
+    'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal', 'Qatar', 'Romania', 'Russia',
+    'Rwanda', 'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Vincent and the Grenadines', 'Samoa', 'San Marino', 'Sao Tome and Principe', 'Saudi Arabia', 'Senegal', 'Serbia',
+    'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands', 'Somalia', 'South Africa', 'South Korea', 'South Sudan',
+    'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Sweden', 'Switzerland', 'Syria', 'Taiwan', 'Tajikistan', 'Tanzania',
+    'Thailand', 'Timor-Leste', 'Togo', 'Tonga', 'Trinidad and Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Tuvalu', 'Uganda',
+    'Ukraine', 'United Arab Emirates', 'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan', 'Vanuatu', 'Vatican City', 'Venezuela', 'Vietnam',
+    'Yemen', 'Zambia', 'Zimbabwe'
+]
+
+const manufacturers = {
+    'Electronics': ['Samsung', 'Apple', 'Sony', 'LG', 'Huawei', 'Xiaomi', 'OnePlus', 'Google', 'Microsoft', 'Dell', 'HP', 'Lenovo', 'Asus', 'Acer', 'Nokia', 'Motorola', 'Oppo', 'Vivo', 'Realme', 'Others'],
+    'Clothing': ['Nike', 'Adidas', 'Puma', 'Levi\'s', 'H&M', 'Zara', 'Uniqlo', 'Gucci', 'Louis Vuitton', 'Chanel', 'Prada', 'Versace', 'Armani', 'Tommy Hilfiger', 'Ralph Lauren', 'Calvin Klein', 'Gap', 'Old Navy', 'Banana Republic', 'Others'],
+    'Home & Garden': ['IKEA', 'Home Depot', 'Lowe\'s', 'Wayfair', 'Crate & Barrel', 'Williams Sonoma', 'Bed Bath & Beyond', 'Pottery Barn', 'West Elm', 'CB2', 'Anthropologie', 'Restoration Hardware', 'Hobby Lobby', 'Michaels', 'Joann', 'Others'],
+    'Beauty & Health': ['L\'Oréal', 'Estée Lauder', 'Maybelline', 'Revlon', 'MAC', 'NARS', 'Clinique', 'The Body Shop', 'Bath & Body Works', 'Victoria\'s Secret', 'Sephora', 'Ulta', 'Avon', 'Mary Kay', 'Neutrogena', 'Cetaphil', 'Olay', 'Nivea', 'Dove', 'Others'],
+    'Toys & Games': ['LEGO', 'Mattel', 'Hasbro', 'Fisher-Price', 'Nintendo', 'Sony PlayStation', 'Microsoft Xbox', 'Disney', 'Marvel', 'DC Comics', 'Pokémon', 'Barbie', 'Hot Wheels', 'Transformers', 'Others'],
+    'Sports & Outdoors': ['Nike', 'Adidas', 'Puma', 'Under Armour', 'Reebok', 'New Balance', 'The North Face', 'Patagonia', 'Columbia', 'REI', 'Decathlon', 'Dick\'s Sporting Goods', 'Academy Sports', 'Bass Pro Shops', 'Cabela\'s', 'Others'],
+    'Books & Media': ['Penguin Random House', 'HarperCollins', 'Simon & Schuster', 'Hachette', 'Macmillan', 'Scholastic', 'Disney', 'Warner Bros', 'Universal', 'Sony Pictures', 'Netflix', 'Amazon Prime', 'HBO', 'Others'],
+    'Food & Beverage': ['Nestlé', 'PepsiCo', 'Coca-Cola', 'Unilever', 'Procter & Gamble', 'Kraft Heinz', 'Mondelez', 'Mars', 'Ferrero', 'Lindt', 'Starbucks', 'McDonald\'s', 'KFC', 'Subway', 'Domino\'s', 'Others'],
+    'Hobbies & Crafts': ['Michaels', 'Hobby Lobby', 'Joann', 'Dick Blick', 'Ben Franklin', 'LEGO', 'Copic', 'Prismacolor', 'Faber-Castell', 'Staedtler', 'Pentel', 'Sharpie', 'Crayola', 'Others'],
+    'Automotive': ['Toyota', 'Honda', 'Ford', 'Chevrolet', 'BMW', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'Nissan', 'Hyundai', 'Kia', 'Tesla', 'General Motors', 'Fiat', 'Renault', 'Peugeot', 'Others'],
+    'Baby & Kids': ['Pampers', 'Huggies', 'Johnson & Johnson', 'Gerber', 'Enfamil', 'Similac', 'Fisher-Price', 'LeapFrog', 'VTech', 'Disney', 'Nickelodeon', 'Cartoon Network', 'Sesame Street', 'Mattel', 'Hasbro', 'Others'],
+    'Pet Supplies': ['Purina', 'Pedigree', 'Whiskas', 'Royal Canin', 'Hill\'s', 'Iams', 'Eukanuba', 'Blue Buffalo', 'Science Diet', 'Taste of the Wild', 'Acana', 'Orijen', 'Petco', 'PetSmart', 'Chewy', 'Others'],
+    'Office Supplies': ['Staples', 'Office Depot', 'OfficeMax', 'Amazon Basics', 'HP', 'Dell', 'Lenovo', 'Apple', 'Microsoft', 'Adobe', 'Google', 'Canon', 'Epson', 'Brother', 'Sharp', 'Others'],
+    'Industrial & Scientific': ['3M', 'Honeywell', 'DuPont', 'Dow Chemical', 'BASF', 'Siemens', 'General Electric', 'Philips', 'Bosch', 'Makita', 'DeWalt', 'Milwaukee', 'Ridgid', 'Snap-on', 'Others'],
+    'Others': ['Generic', 'Unknown', 'Various', 'Others']
+}
 const MAX_IMAGES = 8
 
 export default function StoreAddProduct() {
@@ -25,7 +67,7 @@ export default function StoreAddProduct() {
 
     const [productInfo, setProductInfo] = useState({
         name: "", description: "", mrp: "", price: "",
-        category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "",
+        category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", manufacturer: "",
         acceptCod: true,
     })
 
@@ -165,7 +207,7 @@ export default function StoreAddProduct() {
             }
 
             // Reset form
-            setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", acceptCod: true })
+            setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", manufacturer: "", acceptCod: true })
             setImages([]); setAiUsed(false); setVariantGroups([]); setNewOptionInputs({})
         } catch (error) {
             toast.error(error.response?.data?.error || error.message)
@@ -247,15 +289,24 @@ export default function StoreAddProduct() {
                 </div>
             </div>
 
-            {/* Category + SKU */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            {/* Category + Manufacturer + SKU */}
+            <div className="grid grid-cols-3 gap-3 mb-4">
                 <div>
                     <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Category *</label>
                     <select name="category" value={productInfo.category}
-                        onChange={e => setProductInfo(p => ({ ...p, category: e.target.value }))} required
+                        onChange={e => setProductInfo(p => ({ ...p, category: e.target.value, manufacturer: "" }))} required
                         className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm">
                         <option value="">Select category</option>
                         {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                </div>
+                <div>
+                    <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Manufacturer</label>
+                    <select name="manufacturer" value={productInfo.manufacturer}
+                        onChange={onChange}
+                        className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm">
+                        <option value="">Select manufacturer</option>
+                        {productInfo.category && manufacturers[productInfo.category]?.map(m => <option key={m} value={m}>{m}</option>)}
                     </select>
                 </div>
                 <div>
@@ -268,14 +319,15 @@ export default function StoreAddProduct() {
 
             <div className="mb-4">
                 <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">MADE IN ...</label>
-                <input
-                    type="text"
+                <select
                     name="madeIn"
                     value={productInfo.madeIn}
                     onChange={onChange}
-                    placeholder="e.g. Nigeria, China, Germany"
                     className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm"
-                />
+                >
+                    <option value="">Select country</option>
+                    {countries.map(country => <option key={country} value={country}>{country}</option>)}
+                </select>
             </div>
 
             {/* Schedule publish */}

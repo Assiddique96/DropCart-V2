@@ -54,6 +54,7 @@ export async function POST(request) {
       origin:      formData.get("origin"),
       acceptCod:   formData.get("acceptCod"),
       madeIn:      formData.get("madeIn"),
+      manufacturer: formData.get("manufacturer"),
     });
 
     if (errors.length > 0) return NextResponse.json({ error: errors.join(" ") }, { status: 400 });
@@ -147,6 +148,7 @@ export async function PATCH(request) {
       origin:      formData.get("origin")      ?? existing.origin,
       acceptCod:   acceptCodSource,
       madeIn:      formData.get("madeIn")      ?? existing.madeIn,
+      manufacturer: formData.get("manufacturer") ?? existing.manufacturer,
     });
 
     if (errors.length > 0) return NextResponse.json({ error: errors.join(" ") }, { status: 400 });

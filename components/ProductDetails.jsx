@@ -139,91 +139,45 @@ const ProductDetails = ({ product }) => {
     const eta = isAbroad ? '20 – 25 days' : '7 – 10 days';
 
     return (
-        <div className="flex max-lg:flex-col gap-12">
+        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
             {/* Image gallery */}
-            <div className="flex flex-col sm:flex-row gap-4 w-full max-w-xl lg:max-w-none lg:w-auto">
-                <div className="flex flex-row sm:flex-col gap-2 overflow-x-auto sm:overflow-visible pb-1 sm:pb-0 shrink-0 order-2 sm:order-1">
-                    {images.map((image, index) => (
-                        <button
-                            key={index}
-                            type="button"
-                            onClick={() => goThumb(index)}
-                            className={`relative shrink-0 size-16 rounded-xl overflow-hidden bg-slate-100 border-2 transition ${
-                                index === Math.min(mainIdx, Math.max(0, images.length - 1))
-                                    ? 'border-slate-800 ring-2 ring-slate-800/20'
-                                    : 'border-transparent hover:border-slate-300'
-                            }`}
-                        >
-                            <Image src={image} alt="" fill className="object-cover" sizes="64px" />
-                        </button>
-                    ))}
-                </div>
-                <div className="relative flex-1 min-w-0 order-1 sm:order-2">
-                    <div
-                        className="relative w-full aspect-square max-w-lg mx-auto rounded-xl bg-slate-100 overflow-hidden border border-slate-100 shadow-sm touch-pan-y sm:cursor-zoom-in"
-                        onPointerDown={onMainPointerDown}
-                        onPointerUp={onMainPointerUp}
-                        onMouseEnter={() => setZoomHover(true)}
-                        onMouseLeave={() => setZoomHover(false)}
-                        onMouseMove={(e) => {
-                            const r = e.currentTarget.getBoundingClientRect()
-                            setZoomOrigin({
-                                x: ((e.clientX - r.left) / r.width) * 100,
-                                y: ((e.clientY - r.top) / r.height) * 100,
-                            })
-                        }}
-                        onClick={openZoom}
-                    >
-                        {mainImage ? (
-                            <>
-                                <Image
-                                    src={mainImage}
-                                    alt={product.name}
-                                    fill
-                                    priority
-                                    className={`z-0 object-contain transition-transform duration-150 ease-out ${zoomHover ? 'sm:scale-[1.65]' : 'scale-100'}`}
-                                    style={{ transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%` }}
-                                    sizes="(max-width: 1024px) 100vw, 480px"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={(e) => { e.stopPropagation(); openZoom() }}
-                                    className="sm:hidden absolute bottom-3 right-3 z-20 flex items-center gap-1 rounded-full bg-white/95 px-3 py-1.5 text-xs font-medium text-slate-700 shadow-md border border-slate-200"
-                                >
-                                    <ZoomInIcon size={14} /> Zoom
-                                </button>
-                            </>
-                        ) : null}
-                        {isAbroad && (
-                            <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow pointer-events-none">
-                                ✈️ Shipped from Abroad
-                            </div>
-                        )}
-                        {images.length > 1 && (
-                            <>
-                                <button
-                                    type="button"
-                                    onClick={(e) => { e.stopPropagation(); setMainIdx((i) => (i - 1 + images.length) % images.length) }}
-                                    className="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/95 p-2 shadow border border-slate-200 text-slate-700 hover:bg-white"
-                                    aria-label="Previous image"
-                                >
-                                    <ChevronLeftIcon size={18} />
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={(e) => { e.stopPropagation(); setMainIdx((i) => (i + 1) % images.length) }}
-                                    className="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/95 p-2 shadow border border-slate-200 text-slate-700 hover:bg-white"
-                                    aria-label="Next image"
-                                >
-                                    <ChevronRightIcon size={18} />
-                                </button>
-                            </>
-                        )}
-                    </div>
-                    {images.length > 1 && (
-                        <p className="text-center text-[11px] text-slate-400 mt-2 sm:hidden">Swipe on the image to see more</p>
+            <div className="grid gap-4">
+                <div className="relative aspect-[4/5] w-full rounded-[2rem] overflow-hidden border border-slate-200 bg-slate-100">
+                    {mainImage && (
+                        <Image
+                            src={mainImage}
+                            alt={product.name}
+                            fill
+                            priority
+                            className="object-contain"
+                            sizes="(max-width: 1024px) 100vw, 480px"
+                        />
+                    )}
+                    {isAbroad && (
+                        <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow pointer-events-none">
+                            ✈️ Shipped from Abroad
+                        </div>
                     )}
                 </div>
+
+                {images.length > 1 && (
+                    <div className="grid grid-cols-2 gap-3">
+                        {images.map((image, index) => (
+                            <button
+                                key={index}
+                                type="button"
+                                onClick={() => goThumb(index)}
+                                className={`relative aspect-square rounded-3xl overflow-hidden border transition ${
+                                    index === Math.min(mainIdx, Math.max(0, images.length - 1))
+                                        ? 'border-slate-800 shadow-lg'
+                                        : 'border-slate-200 hover:border-slate-400'
+                                }`}
+                            >
+                                <Image src={image} alt={`Product image ${index + 1}`} fill className="object-cover" sizes="(max-width: 768px) 50vw, 240px" />
+                            </button>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {lightboxOpen && mainImage ? (
@@ -279,33 +233,60 @@ const ProductDetails = ({ product }) => {
 
             {/* Product info */}
             <div className="flex-1">
-                <h1 className="text-3xl font-semibold text-slate-800">{product.name}</h1>
+                <div className="space-y-4">
+                    <div>
+                        <h1 className="text-3xl font-semibold text-slate-800">{product.name}</h1>
+                        <p className="mt-3 text-sm text-slate-500 max-w-2xl">{product.description?.slice(0, 130)}{product.description?.length > 130 ? '...' : ''}</p>
+                    </div>
 
-                {/* Ratings */}
-                <div className="flex items-center mt-2 gap-2">
-                    {Array(5).fill('').map((_, i) => (
-                        <StarIcon key={i} size={14} className="text-transparent mt-0.5"
-                            fill={avgRating >= i + 1 ? "#00C950" : "#D1D5DB"} />
-                    ))}
-                    <p className="text-sm text-slate-500">{product.rating?.length || 0} Reviews</p>
-                </div>
+                    <div className="flex flex-wrap gap-2">
+                        <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{product.category}</span>
+                        {product.manufacturer && (
+                            <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{product.manufacturer}</span>
+                        )}
+                        {product.madeIn && (
+                            <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Made in {product.madeIn}</span>
+                        )}
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${product.inStock ? 'border border-green-200 bg-green-50 text-green-700' : 'border border-rose-200 bg-rose-50 text-rose-700'}`}>
+                            {product.inStock ? 'In stock' : 'Out of stock'}
+                        </span>
+                        <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                            {isAbroad ? 'International' : 'Local'} ship
+                        </span>
+                        {acceptsCod && !isAbroad && (
+                            <span className="rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+                                COD available
+                            </span>
+                        )}
+                    </div>
 
-                {/* Price */}
-                <div className="flex items-center my-5 gap-3">
-                    <p className="text-2xl font-bold text-slate-800">{currency}{effectivePrice.toLocaleString()}</p>
-                    {product.mrp > product.price && (
-                        <p className="text-lg text-slate-400 line-through">{currency}{product.mrp.toLocaleString()}</p>
-                    )}
-                    {product.mrp > product.price && (
-                        <span className="text-xs font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                            Save {((product.mrp - product.price) / product.mrp * 100).toFixed(0)}%
-                        </span>
-                    )}
-                    {priceModifierTotal !== 0 && (
-                        <span className="text-xs text-slate-400">
-                            (base {currency}{product.price.toLocaleString()} {priceModifierTotal > 0 ? "+" : ""}{priceModifierTotal.toLocaleString()})
-                        </span>
-                    )}
+                    {/* Ratings */}
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1">
+                            {Array(5).fill('').map((_, i) => (
+                                <StarIcon key={i} size={14} className="text-transparent" fill={avgRating >= i + 1 ? "#00C950" : "#D1D5DB"} />
+                            ))}
+                        </div>
+                        <p className="text-sm text-slate-500">{product.rating?.length || 0} review{(product.rating?.length || 0) !== 1 ? 's' : ''}</p>
+                    </div>
+
+                    {/* Price */}
+                    <div className="flex flex-wrap items-center gap-3">
+                        <p className="text-3xl font-semibold text-slate-900">{currency}{effectivePrice.toLocaleString()}</p>
+                        {product.mrp > product.price && (
+                            <p className="text-lg text-slate-400 line-through">{currency}{product.mrp.toLocaleString()}</p>
+                        )}
+                        {product.mrp > product.price && (
+                            <span className="text-xs font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                                Save {((product.mrp - product.price) / product.mrp * 100).toFixed(0)}%
+                            </span>
+                        )}
+                        {priceModifierTotal !== 0 && (
+                            <span className="text-xs text-slate-500">
+                                Base price {currency}{product.price.toLocaleString()} {priceModifierTotal > 0 ? '+' : ''}{priceModifierTotal.toLocaleString()}
+                            </span>
+                        )}
+                    </div>
                 </div>
 
                 {/* Variant selectors */}
@@ -391,6 +372,11 @@ const ProductDetails = ({ product }) => {
                     {product.madeIn && (
                         <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
                             MADE IN {String(product.madeIn).toUpperCase()}
+                        </p>
+                    )}
+                    {product.manufacturer && (
+                        <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                            BY {String(product.manufacturer).toUpperCase()}
                         </p>
                     )}
 

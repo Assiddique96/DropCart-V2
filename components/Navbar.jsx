@@ -4,7 +4,7 @@ import {
     ChevronDownIcon, MonitorIcon, ShirtIcon, HomeIcon,
     SparklesIcon, ToyBrickIcon, DumbbellIcon, BookOpenIcon,
     UtensilsIcon, PaletteIcon, GridIcon, PlaneIcon, MenuIcon, XIcon,
-    StoreIcon, ShieldCheckIcon
+    StoreIcon, ShieldCheckIcon, CarIcon, BabyIcon, BriefcaseIcon, WrenchIcon
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,13 +18,18 @@ import ThemeToggle from "./ThemeToggle";
 const CATEGORIES = [
     { name: "Electronics",        icon: MonitorIcon,    color: "text-blue-500",   bg: "bg-blue-50",   desc: "Phones, laptops, gadgets" },
     { name: "Clothing",           icon: ShirtIcon,      color: "text-pink-500",   bg: "bg-pink-50",   desc: "Fashion & apparel" },
-    { name: "Home & Kitchen",     icon: HomeIcon,       color: "text-orange-500", bg: "bg-orange-50", desc: "Furniture & appliances" },
+    { name: "Home & Garden",      icon: HomeIcon,       color: "text-orange-500", bg: "bg-orange-50", desc: "Furniture & appliances" },
     { name: "Beauty & Health",    icon: SparklesIcon,   color: "text-purple-500", bg: "bg-purple-50", desc: "Skincare & wellness" },
     { name: "Toys & Games",       icon: ToyBrickIcon,   color: "text-yellow-500", bg: "bg-yellow-50", desc: "Kids & family" },
     { name: "Sports & Outdoors",  icon: DumbbellIcon,   color: "text-green-500",  bg: "bg-green-50",  desc: "Fitness & outdoor" },
     { name: "Books & Media",      icon: BookOpenIcon,   color: "text-slate-500",  bg: "bg-slate-50",  desc: "Books, music, movies" },
-    { name: "Food & Drink",       icon: UtensilsIcon,   color: "text-red-500",    bg: "bg-red-50",    desc: "Groceries & beverages" },
+    { name: "Food & Beverage",    icon: UtensilsIcon,   color: "text-red-500",    bg: "bg-red-50",    desc: "Groceries & beverages" },
     { name: "Hobbies & Crafts",   icon: PaletteIcon,    color: "text-teal-500",   bg: "bg-teal-50",   desc: "Art & DIY" },
+    { name: "Automotive",         icon: CarIcon,        color: "text-cyan-500",   bg: "bg-cyan-50",   desc: "Car parts & accessories" },
+    { name: "Baby & Kids",        icon: BabyIcon,       color: "text-rose-500",   bg: "bg-rose-50",   desc: "Baby products & toys" },
+    { name: "Pet Supplies",       icon: HeartIcon,      color: "text-emerald-500",bg: "bg-emerald-50", desc: "Pet food & accessories" },
+    { name: "Office Supplies",    icon: BriefcaseIcon,  color: "text-violet-500", bg: "bg-violet-50", desc: "Office & stationery" },
+    { name: "Industrial & Scientific", icon: WrenchIcon, color: "text-stone-500", bg: "bg-stone-50",  desc: "Tools & equipment" },
     { name: "Others",             icon: GridIcon,       color: "text-indigo-500", bg: "bg-indigo-50", desc: "Everything else" },
 ]
 

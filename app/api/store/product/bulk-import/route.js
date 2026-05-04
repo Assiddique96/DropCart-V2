@@ -19,13 +19,14 @@ import { sanitizeString, sanitizeNumber } from "@/lib/sanitize";
  */
 
 const REQUIRED_COLS  = ["name", "description", "mrp", "price", "category"];
-const OPTIONAL_COLS  = ["quantity", "sku", "tags", "image_url", "origin", "accept_cod"];
+const OPTIONAL_COLS  = ["quantity", "sku", "tags", "image_url", "origin", "accept_cod", "manufacturer"];
 const MAX_ROWS       = 200;
 
 const VALID_CATEGORIES = [
-  "Electronics", "Clothing", "Home & Kitchen", "Beauty & Health",
-  "Toys & Games", "Sports & Outdoors", "Books & Media", "Food & Drink",
-  "Hobbies & Crafts", "Others",
+  "Electronics", "Clothing", "Home & Garden", "Beauty & Health",
+  "Toys & Games", "Sports & Outdoors", "Books & Media", "Food & Beverage",
+  "Hobbies & Crafts", "Automotive", "Baby & Kids", "Pet Supplies",
+  "Office Supplies", "Industrial & Scientific", "Others",
 ];
 
 function parseCSV(text) {

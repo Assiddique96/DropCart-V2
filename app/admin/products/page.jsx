@@ -8,7 +8,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { SearchIcon, Trash2Icon, XIcon, ExternalLinkIcon } from "lucide-react"
 
-const CATEGORIES = ['Electronics','Clothing','Home & Kitchen','Beauty & Health','Toys & Games','Sports & Outdoors','Books & Media','Food & Drink','Hobbies & Crafts','Others']
+const CATEGORIES = ['Electronics','Clothing','Home & Garden','Beauty & Health','Toys & Games','Sports & Outdoors','Books & Media','Food & Beverage','Hobbies & Crafts','Automotive','Baby & Kids','Pet Supplies','Office Supplies','Industrial & Scientific','Others']
 
 export default function AdminProducts() {
     const { getToken } = useAuth()
