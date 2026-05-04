@@ -13,12 +13,32 @@
 }
 
 @layer base {
-    body {
-        @apply bg-white text-slate-700 dark:bg-slate-950 dark:text-slate-300;
+    :root {
+        color-scheme: light;
     }
+
+    .dark {
+        color-scheme: dark;
+    }
+
+    body {
+        @apply bg-white text-slate-900 dark:bg-slate-950 dark:text-white;
+    }
+
     button {
         cursor: pointer;
     }
+
+    a {
+        @apply text-slate-900 dark:text-white;
+    }
+
+    input,
+    textarea,
+    select {
+        @apply text-slate-900 dark:text-white;
+    }
+
     .dark input::placeholder,
     .dark textarea::placeholder {
         color: rgb(148 163 184) !important;
