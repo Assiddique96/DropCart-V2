@@ -11,8 +11,8 @@ import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 const categories = [
     'Electronics', 'Clothing', 'Home & Garden', 'Beauty & Health',
     'Toys & Games', 'Sports & Outdoors', 'Books & Media',
-    'Food & Beverage', 'Hobbies & Crafts', 'Automotive',
-    'Baby & Kids', 'Pet Supplies', 'Office Supplies', 'Industrial & Scientific', 'Others'
+    'Food & Beverage', 'Hobbies & Crafts', 'Automotive', "Shoes", "Slippers", "Hoodies", "Solar", "Batteries", "Headphones", "earpods",
+    'Baby & Kids', 'Pet Supplies', 'Office Supplies', 'Industrial & Scientific', "Smartphones", "Computers", 'Others'
 ]
 
 const countries = [
