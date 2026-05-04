@@ -59,7 +59,7 @@ export default function ProductCardImageSwipe({ productId, images, name, childre
                         src={src}
                         alt={name}
                         fill
-                        sizes="(max-width: 240px) 45vw, 240px"
+                        sizes="(max-width: 90px) 45vw, 80px"
                         className="object-contain transition duration-300 group-hover:scale-105"
                     />
                 ) : null}
