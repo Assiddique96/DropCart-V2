@@ -13,8 +13,8 @@ const OurSpecs = () => {
                     ourSpecsData.map((spec, index) => {
                         return (
                             <div className='relative h-44 px-8 flex flex-col items-center justify-center w-full text-center border rounded-lg group' style={{ backgroundColor: spec.accent + 10, borderColor: spec.accent + 30 }} key={index}>
-                                <h3 className='text-slate-400 font-medium'>{spec.title}</h3>
-                                <p className='text-sm text-slate-300 mt-3'>{spec.description}</p>
+                                <h3 className='text-slate-500 font-medium'>{spec.title}</h3>
+                                <p className='text-sm text-slate-500 mt-3'>{spec.description}</p>
                                 <div className='absolute -top-5 text-white size-10 flex items-center justify-center rounded-md group-hover:scale-105 transition' style={{ backgroundColor: spec.accent }}>
                                     <spec.icon size={20} />
                                 </div>
