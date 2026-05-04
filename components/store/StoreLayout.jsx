@@ -50,14 +50,6 @@ const StoreLayout = ({ children }) => {
             user={user}
             badgeLabel="Seller"
             topbarSubtitle={storeInfo?.name ? `Active store: ${storeInfo.name}` : "Manage your store, products, orders & payouts"}
-            rightSlot={
-                <Link
-                    href="/"
-                    className="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-950/40 transition"
-                >
-                    Home <ArrowUpRightIcon size={14} />
-                </Link>
-            }
             navItems={[
                 { name: 'Dashboard',       href: '/store',                icon: HomeIcon },
                 { name: 'Add Product',     href: '/store/add-product',    icon: SquarePlusIcon },
