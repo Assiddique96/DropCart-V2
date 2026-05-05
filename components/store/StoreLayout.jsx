@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import Loading from "../Loading"
 import Link from "next/link"
-import { ArrowRightIcon, CircleDollarSignIcon, HomeIcon, LayoutListIcon, SquarePenIcon, SquarePlusIcon, StoreIcon, UserCircleIcon } from "lucide-react"
+import { ArrowRightIcon, ArrowUpRightIcon, CircleDollarSignIcon, HomeIcon, LayoutListIcon, SquarePenIcon, SquarePlusIcon, StoreIcon, UserCircleIcon } from "lucide-react"
 import { useAuth, useUser } from "@clerk/nextjs"
 import axios from "axios"
 import { ACTIVE_STORE_KEY, getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
@@ -50,6 +50,16 @@ const StoreLayout = ({ children }) => {
             user={user}
             badgeLabel="Seller"
             topbarSubtitle={storeInfo?.name ? `Active store: ${storeInfo.name}` : "Manage your store, products, orders & payouts"}
+            rightSlot={
+                <Link
+                    href="/"
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-950/40 transition"
+                >
+                    <HomeIcon size={14} className="sm:hidden" />
+                    <span className="hidden sm:inline">Home</span>
+                    <ArrowUpRightIcon size={14} className="hidden sm:inline" />
+                </Link>
+            }
             navItems={[
                 { name: 'Dashboard',       href: '/store',                icon: HomeIcon },
                 { name: 'Add Product',     href: '/store/add-product',    icon: SquarePlusIcon },

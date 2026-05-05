@@ -68,6 +68,7 @@ export default function StoreAddProduct() {
     const [productInfo, setProductInfo] = useState({
         name: "", description: "", mrp: "", price: "",
         category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", manufacturer: "",
+        material: "", guaranteePeriod: "",
         acceptCod: true,
     })
 
@@ -207,7 +208,7 @@ export default function StoreAddProduct() {
             }
 
             // Reset form
-            setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", manufacturer: "", acceptCod: true })
+            setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", manufacturer: "", material: "", guaranteePeriod: "", acceptCod: true })
             setImages([]); setAiUsed(false); setVariantGroups([]); setNewOptionInputs({})
         } catch (error) {
             toast.error(error.response?.data?.error || error.message)
@@ -313,6 +314,21 @@ export default function StoreAddProduct() {
                     <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">SKU / Barcode</label>
                     <input type="text" name="sku" value={productInfo.sku} onChange={onChange}
                         placeholder="e.g. ABC-001"
+                        className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 mb-4">
+                <div>
+                    <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Material</label>
+                    <input type="text" name="material" value={productInfo.material} onChange={onChange}
+                        placeholder="e.g. Cotton, Stainless Steel"
+                        className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
+                </div>
+                <div>
+                    <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Guarantee Period</label>
+                    <input type="text" name="guaranteePeriod" value={productInfo.guaranteePeriod} onChange={onChange}
+                        placeholder="e.g. 1 year, 6 months"
                         className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
                 </div>
             </div>

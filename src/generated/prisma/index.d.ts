@@ -4902,6 +4902,8 @@ export namespace Prisma {
     origin: $Enums.ProductOrigin | null
     madeIn: string | null
     manufacturer: string | null
+    material: string | null
+    guaranteePeriod: string | null
     acceptCod: boolean | null
     isDigital: boolean | null
     downloadUrl: string | null
@@ -4924,6 +4926,8 @@ export namespace Prisma {
     origin: $Enums.ProductOrigin | null
     madeIn: string | null
     manufacturer: string | null
+    material: string | null
+    guaranteePeriod: string | null
     acceptCod: boolean | null
     isDigital: boolean | null
     downloadUrl: string | null
@@ -4948,6 +4952,8 @@ export namespace Prisma {
     origin: number
     madeIn: number
     manufacturer: number
+    material: number
+    guaranteePeriod: number
     acceptCod: number
     isDigital: number
     downloadUrl: number
@@ -4984,6 +4990,8 @@ export namespace Prisma {
     origin?: true
     madeIn?: true
     manufacturer?: true
+    material?: true
+    guaranteePeriod?: true
     acceptCod?: true
     isDigital?: true
     downloadUrl?: true
@@ -5006,6 +5014,8 @@ export namespace Prisma {
     origin?: true
     madeIn?: true
     manufacturer?: true
+    material?: true
+    guaranteePeriod?: true
     acceptCod?: true
     isDigital?: true
     downloadUrl?: true
@@ -5030,6 +5040,8 @@ export namespace Prisma {
     origin?: true
     madeIn?: true
     manufacturer?: true
+    material?: true
+    guaranteePeriod?: true
     acceptCod?: true
     isDigital?: true
     downloadUrl?: true
@@ -5141,6 +5153,8 @@ export namespace Prisma {
     origin: $Enums.ProductOrigin
     madeIn: string | null
     manufacturer: string | null
+    material: string | null
+    guaranteePeriod: string | null
     acceptCod: boolean
     isDigital: boolean
     downloadUrl: string | null
@@ -5184,6 +5198,8 @@ export namespace Prisma {
     origin?: boolean
     madeIn?: boolean
     manufacturer?: boolean
+    material?: boolean
+    guaranteePeriod?: boolean
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: boolean
@@ -5213,6 +5229,8 @@ export namespace Prisma {
     origin?: boolean
     madeIn?: boolean
     manufacturer?: boolean
+    material?: boolean
+    guaranteePeriod?: boolean
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: boolean
@@ -5238,6 +5256,8 @@ export namespace Prisma {
     origin?: boolean
     madeIn?: boolean
     manufacturer?: boolean
+    material?: boolean
+    guaranteePeriod?: boolean
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: boolean
@@ -5263,6 +5283,8 @@ export namespace Prisma {
     origin?: boolean
     madeIn?: boolean
     manufacturer?: boolean
+    material?: boolean
+    guaranteePeriod?: boolean
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: boolean
@@ -5271,7 +5293,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mrp" | "price" | "images" | "category" | "inStock" | "quantity" | "sku" | "tags" | "scheduledAt" | "origin" | "madeIn" | "manufacturer" | "acceptCod" | "isDigital" | "downloadUrl" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mrp" | "price" | "images" | "category" | "inStock" | "quantity" | "sku" | "tags" | "scheduledAt" | "origin" | "madeIn" | "manufacturer" | "material" | "guaranteePeriod" | "acceptCod" | "isDigital" | "downloadUrl" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     store?: boolean | StoreDefaultArgs<ExtArgs>
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
@@ -5310,6 +5332,8 @@ export namespace Prisma {
       origin: $Enums.ProductOrigin
       madeIn: string | null
       manufacturer: string | null
+      material: string | null
+      guaranteePeriod: string | null
       /**
        * LOCAL only: seller may disable COD. Always false in DB for ABROAD (enforced in API).
        */
@@ -5761,6 +5785,8 @@ export namespace Prisma {
     readonly origin: FieldRef<"Product", 'ProductOrigin'>
     readonly madeIn: FieldRef<"Product", 'String'>
     readonly manufacturer: FieldRef<"Product", 'String'>
+    readonly material: FieldRef<"Product", 'String'>
+    readonly guaranteePeriod: FieldRef<"Product", 'String'>
     readonly acceptCod: FieldRef<"Product", 'Boolean'>
     readonly isDigital: FieldRef<"Product", 'Boolean'>
     readonly downloadUrl: FieldRef<"Product", 'String'>
@@ -20328,6 +20354,8 @@ export namespace Prisma {
     origin: 'origin',
     madeIn: 'madeIn',
     manufacturer: 'manufacturer',
+    material: 'material',
+    guaranteePeriod: 'guaranteePeriod',
     acceptCod: 'acceptCod',
     isDigital: 'isDigital',
     downloadUrl: 'downloadUrl',
@@ -20941,6 +20969,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFilter<"Product"> | $Enums.ProductOrigin
     madeIn?: StringNullableFilter<"Product"> | string | null
     manufacturer?: StringNullableFilter<"Product"> | string | null
+    material?: StringNullableFilter<"Product"> | string | null
+    guaranteePeriod?: StringNullableFilter<"Product"> | string | null
     acceptCod?: BoolFilter<"Product"> | boolean
     isDigital?: BoolFilter<"Product"> | boolean
     downloadUrl?: StringNullableFilter<"Product"> | string | null
@@ -20969,6 +20999,8 @@ export namespace Prisma {
     origin?: SortOrder
     madeIn?: SortOrderInput | SortOrder
     manufacturer?: SortOrderInput | SortOrder
+    material?: SortOrderInput | SortOrder
+    guaranteePeriod?: SortOrderInput | SortOrder
     acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrderInput | SortOrder
@@ -21000,6 +21032,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFilter<"Product"> | $Enums.ProductOrigin
     madeIn?: StringNullableFilter<"Product"> | string | null
     manufacturer?: StringNullableFilter<"Product"> | string | null
+    material?: StringNullableFilter<"Product"> | string | null
+    guaranteePeriod?: StringNullableFilter<"Product"> | string | null
     acceptCod?: BoolFilter<"Product"> | boolean
     isDigital?: BoolFilter<"Product"> | boolean
     downloadUrl?: StringNullableFilter<"Product"> | string | null
@@ -21028,6 +21062,8 @@ export namespace Prisma {
     origin?: SortOrder
     madeIn?: SortOrderInput | SortOrder
     manufacturer?: SortOrderInput | SortOrder
+    material?: SortOrderInput | SortOrder
+    guaranteePeriod?: SortOrderInput | SortOrder
     acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrderInput | SortOrder
@@ -21060,6 +21096,8 @@ export namespace Prisma {
     origin?: EnumProductOriginWithAggregatesFilter<"Product"> | $Enums.ProductOrigin
     madeIn?: StringNullableWithAggregatesFilter<"Product"> | string | null
     manufacturer?: StringNullableWithAggregatesFilter<"Product"> | string | null
+    material?: StringNullableWithAggregatesFilter<"Product"> | string | null
+    guaranteePeriod?: StringNullableWithAggregatesFilter<"Product"> | string | null
     acceptCod?: BoolWithAggregatesFilter<"Product"> | boolean
     isDigital?: BoolWithAggregatesFilter<"Product"> | boolean
     downloadUrl?: StringNullableWithAggregatesFilter<"Product"> | string | null
@@ -22288,6 +22326,8 @@ export namespace Prisma {
     origin?: $Enums.ProductOrigin
     madeIn?: string | null
     manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
@@ -22315,6 +22355,8 @@ export namespace Prisma {
     origin?: $Enums.ProductOrigin
     madeIn?: string | null
     manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
@@ -22342,6 +22384,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22369,6 +22413,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22396,6 +22442,8 @@ export namespace Prisma {
     origin?: $Enums.ProductOrigin
     madeIn?: string | null
     manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
@@ -22420,6 +22468,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22443,6 +22493,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23951,6 +24003,8 @@ export namespace Prisma {
     origin?: SortOrder
     madeIn?: SortOrder
     manufacturer?: SortOrder
+    material?: SortOrder
+    guaranteePeriod?: SortOrder
     acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrder
@@ -23979,6 +24033,8 @@ export namespace Prisma {
     origin?: SortOrder
     madeIn?: SortOrder
     manufacturer?: SortOrder
+    material?: SortOrder
+    guaranteePeriod?: SortOrder
     acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrder
@@ -24001,6 +24057,8 @@ export namespace Prisma {
     origin?: SortOrder
     madeIn?: SortOrder
     manufacturer?: SortOrder
+    material?: SortOrder
+    guaranteePeriod?: SortOrder
     acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrder
@@ -27112,6 +27170,8 @@ export namespace Prisma {
     origin?: $Enums.ProductOrigin
     madeIn?: string | null
     manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
@@ -27138,6 +27198,8 @@ export namespace Prisma {
     origin?: $Enums.ProductOrigin
     madeIn?: string | null
     manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
@@ -27212,6 +27274,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27238,6 +27302,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27784,6 +27850,8 @@ export namespace Prisma {
     origin?: $Enums.ProductOrigin
     madeIn?: string | null
     manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
@@ -27810,6 +27878,8 @@ export namespace Prisma {
     origin?: $Enums.ProductOrigin
     madeIn?: string | null
     manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
@@ -27899,6 +27969,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27925,6 +27997,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28074,6 +28148,8 @@ export namespace Prisma {
     origin?: $Enums.ProductOrigin
     madeIn?: string | null
     manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
@@ -28100,6 +28176,8 @@ export namespace Prisma {
     origin?: $Enums.ProductOrigin
     madeIn?: string | null
     manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
@@ -28183,6 +28261,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28209,6 +28289,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28521,6 +28603,8 @@ export namespace Prisma {
     origin?: $Enums.ProductOrigin
     madeIn?: string | null
     manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
@@ -28547,6 +28631,8 @@ export namespace Prisma {
     origin?: $Enums.ProductOrigin
     madeIn?: string | null
     manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
@@ -28751,6 +28837,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFilter<"Product"> | $Enums.ProductOrigin
     madeIn?: StringNullableFilter<"Product"> | string | null
     manufacturer?: StringNullableFilter<"Product"> | string | null
+    material?: StringNullableFilter<"Product"> | string | null
+    guaranteePeriod?: StringNullableFilter<"Product"> | string | null
     acceptCod?: BoolFilter<"Product"> | boolean
     isDigital?: BoolFilter<"Product"> | boolean
     downloadUrl?: StringNullableFilter<"Product"> | string | null
@@ -29648,6 +29736,8 @@ export namespace Prisma {
     origin?: $Enums.ProductOrigin
     madeIn?: string | null
     manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
@@ -29711,6 +29801,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29737,6 +29829,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29763,6 +29857,8 @@ export namespace Prisma {
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null

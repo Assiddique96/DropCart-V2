@@ -159,6 +159,8 @@ exports.Prisma.ProductScalarFieldEnum = {
   origin: 'origin',
   madeIn: 'madeIn',
   manufacturer: 'manufacturer',
+  material: 'material',
+  guaranteePeriod: 'guaranteePeriod',
   acceptCod: 'acceptCod',
   isDigital: 'isDigital',
   downloadUrl: 'downloadUrl',

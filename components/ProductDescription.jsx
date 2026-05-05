@@ -120,8 +120,16 @@ export default function ProductDescription({ product }) {
                             <p className="mt-2 font-semibold text-slate-900">{product.manufacturer || 'Not specified'}</p>
                         </div>
                         <div className="rounded-3xl border border-slate-200 bg-white p-4">
+                            <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Material</p>
+                            <p className="mt-2 font-semibold text-slate-900">{product.material || 'Not specified'}</p>
+                        </div>
+                        <div className="rounded-3xl border border-slate-200 bg-white p-4">
                             <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Origin</p>
                             <p className="mt-2 font-semibold text-slate-900">{product.madeIn || 'Unknown'}</p>
+                        </div>
+                        <div className="rounded-3xl border border-slate-200 bg-white p-4">
+                            <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Guarantee</p>
+                            <p className="mt-2 font-semibold text-slate-900">{product.guaranteePeriod || 'Not specified'}</p>
                         </div>
                         <div className="rounded-3xl border border-slate-200 bg-white p-4">
                             <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Shipping</p>
@@ -165,8 +173,16 @@ export default function ProductDescription({ product }) {
                                     <p className="mt-2 font-semibold text-slate-900">{product.manufacturer || 'Not specified'}</p>
                                 </div>
                                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                                    <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Material</p>
+                                    <p className="mt-2 font-semibold text-slate-900">{product.material || 'Not specified'}</p>
+                                </div>
+                                <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
                                     <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Origin</p>
                                     <p className="mt-2 font-semibold text-slate-900">{product.madeIn || 'Unknown'}</p>
+                                </div>
+                                <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                                    <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Guarantee</p>
+                                    <p className="mt-2 font-semibold text-slate-900">{product.guaranteePeriod || 'Not specified'}</p>
                                 </div>
                                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
                                     <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Shipping</p>

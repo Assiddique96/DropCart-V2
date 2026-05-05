@@ -48,9 +48,11 @@ const AdminLayout = ({ children }) => {
             rightSlot={
                 <Link
                     href="/"
-                    className="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-950/40 transition"
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-950/40 transition"
                 >
-                    Home <ArrowUpRightIcon size={14} />
+                    <HomeIcon size={14} className="sm:hidden" />
+                    <span className="hidden sm:inline">Home</span>
+                    <ArrowUpRightIcon size={14} className="hidden sm:inline" />
                 </Link>
             }
             navItems={[
@@ -61,6 +63,7 @@ const AdminLayout = ({ children }) => {
                 { name: 'Store Applications', href: '/admin/approve',   icon: ShieldCheckIcon },
                 { name: 'Users',         href: '/admin/users',     icon: UsersIcon },
                 { name: 'Products',      href: '/admin/products',  icon: ShoppingBasketIcon },
+                { name: 'Site Content',  href: '/admin/content',   icon: Images },
                 { name: 'Coupons',       href: '/admin/coupons',   icon: TicketPercentIcon },
                 { name: 'Payouts',       href: '/admin/payouts',   icon: CircleDollarSignIcon },
                 { name: 'Refunds',       href: '/admin/refunds',   icon: RotateCcwIcon },

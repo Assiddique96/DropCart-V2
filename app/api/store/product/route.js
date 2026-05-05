@@ -51,10 +51,12 @@ export async function POST(request) {
       sku:         formData.get("sku"),
       tags:        formData.get("tags"),
       scheduledAt: formData.get("scheduledAt"),
-      origin:      formData.get("origin"),
-      acceptCod:   formData.get("acceptCod"),
-      madeIn:      formData.get("madeIn"),
-      manufacturer: formData.get("manufacturer"),
+      origin:         formData.get("origin"),
+      acceptCod:      formData.get("acceptCod"),
+      madeIn:         formData.get("madeIn"),
+      manufacturer:   formData.get("manufacturer"),
+      material:       formData.get("material"),
+      guaranteePeriod: formData.get("guaranteePeriod"),
     });
 
     if (errors.length > 0) return NextResponse.json({ error: errors.join(" ") }, { status: 400 });
@@ -146,9 +148,11 @@ export async function PATCH(request) {
       tags:        formData.get("tags")        ?? existing.tags.join(","),
       scheduledAt: formData.get("scheduledAt") ?? existing.scheduledAt,
       origin:      formData.get("origin")      ?? existing.origin,
-      acceptCod:   acceptCodSource,
-      madeIn:      formData.get("madeIn")      ?? existing.madeIn,
-      manufacturer: formData.get("manufacturer") ?? existing.manufacturer,
+      acceptCod:       acceptCodSource,
+      madeIn:          formData.get("madeIn")       ?? existing.madeIn,
+      manufacturer:    formData.get("manufacturer") ?? existing.manufacturer,
+      material:        formData.get("material")     ?? existing.material,
+      guaranteePeriod: formData.get("guaranteePeriod") ?? existing.guaranteePeriod,
     });
 
     if (errors.length > 0) return NextResponse.json({ error: errors.join(" ") }, { status: 400 });

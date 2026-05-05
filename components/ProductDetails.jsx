@@ -244,8 +244,14 @@ const ProductDetails = ({ product }) => {
                         {product.manufacturer && (
                             <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{product.manufacturer}</span>
                         )}
+                        {product.material && (
+                            <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Material: {product.material}</span>
+                        )}
                         {product.madeIn && (
                             <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Made in {product.madeIn}</span>
+                        )}
+                        {product.guaranteePeriod && (
+                            <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Guarantee: {product.guaranteePeriod}</span>
                         )}
                         <span className={`rounded-full px-3 py-1 text-xs font-semibold ${product.inStock ? 'border border-green-200 bg-green-50 text-green-700' : 'border border-rose-200 bg-rose-50 text-rose-700'}`}>
                             {product.inStock ? 'In stock' : 'Out of stock'}

@@ -19,7 +19,7 @@ import { sanitizeString, sanitizeNumber } from "@/lib/sanitize";
  */
 
 const REQUIRED_COLS  = ["name", "description", "mrp", "price", "category"];
-const OPTIONAL_COLS  = ["quantity", "sku", "tags", "image_url", "origin", "accept_cod", "manufacturer"];
+const OPTIONAL_COLS  = ["quantity", "sku", "tags", "image_url", "origin", "accept_cod", "manufacturer", "material", "guarantee_period"];
 const MAX_ROWS       = 200;
 
 const VALID_CATEGORIES = [
@@ -113,6 +113,9 @@ export async function POST(request) {
         ? row.tags.split("|").map(t => sanitizeString(t.trim(), 50)).filter(Boolean).slice(0, 10)
         : [];
 
+      const material = row.material ? sanitizeString(row.material, 100) : null;
+      const guaranteePeriod = row.guarantee_period ? sanitizeString(row.guarantee_period, 80) : null;
+
       // image_url: must be https if provided
       let images = [];
       if (row.image_url) {
@@ -136,6 +139,8 @@ export async function POST(request) {
           images,
           origin,
           acceptCod,
+          material,
+          guaranteePeriod,
           inStock: quantity > 0,
           storeId,
         });

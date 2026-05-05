@@ -87,9 +87,9 @@ export default function StoreManageProducts() {
     }
 
     const downloadCSVTemplate = () => {
-        const header = "name,description,mrp,price,category,quantity,sku,tags,image_url,origin,accept_cod,manufacturer"
-        const example = "Sample T-Shirt,A comfortable cotton t-shirt,5000,3500,Clothing,10,TSH-001,fashion|clothing,https://example.com/image.jpg,LOCAL,true,Nike"
-        const example2 = "Imported Sneakers,Premium sneakers from abroad,25000,19000,Clothing,5,SNK-001,shoes|imported,https://example.com/sneaker.jpg,ABROAD,,Adidas"
+        const header = "name,description,mrp,price,category,quantity,sku,tags,image_url,origin,accept_cod,manufacturer,material,guarantee_period"
+        const example = "Sample T-Shirt,A comfortable cotton t-shirt,5000,3500,Clothing,10,TSH-001,fashion|clothing,https://example.com/image.jpg,LOCAL,true,Nike,Cotton,1 year"
+        const example2 = "Imported Sneakers,Premium sneakers from abroad,25000,19000,Clothing,5,SNK-001,shoes|imported,https://example.com/sneaker.jpg,ABROAD,,Adidas,Leather,6 months"
         const blob = new Blob([header + "\n" + example + "\n" + example2], { type: "text/csv" })
         const url = URL.createObjectURL(blob)
         const a = document.createElement("a"); a.href = url; a.download = "dropcart-import-template.csv"; a.click()
@@ -130,6 +130,8 @@ export default function StoreManageProducts() {
             price: product.price,
             category: product.category,
             manufacturer: product.manufacturer ?? '',
+            material: product.material ?? '',
+            guaranteePeriod: product.guaranteePeriod ?? '',
             quantity: product.quantity ?? 0,
             sku: product.sku ?? '',
             tags: Array.isArray(product.tags) ? product.tags.join(', ') : '',
@@ -165,11 +167,13 @@ export default function StoreManageProducts() {
             formData.append("mrp", editForm.mrp)
             formData.append("price", editForm.price)
             formData.append("category", editForm.category)
-            if (editForm.manufacturer) formData.append("manufacturer", editForm.manufacturer)
+            formData.append("manufacturer", editForm.manufacturer || "")
+            formData.append("material", editForm.material || "")
+            formData.append("guaranteePeriod", editForm.guaranteePeriod || "")
             formData.append("quantity", editForm.quantity)
-            if (editForm.sku) formData.append("sku", editForm.sku)
-            if (editForm.tags) formData.append("tags", editForm.tags)
-            if (editForm.scheduledAt) formData.append("scheduledAt", editForm.scheduledAt)
+            formData.append("sku", editForm.sku || "")
+            formData.append("tags", editForm.tags || "")
+            formData.append("scheduledAt", editForm.scheduledAt || "")
             formData.append("origin", editForm.origin || "LOCAL")
             formData.append("acceptCod", editForm.origin === "LOCAL" ? (editForm.acceptCod ? "true" : "false") : "false")
             formData.append("existingImages", JSON.stringify(editImageUrls))
@@ -311,6 +315,20 @@ export default function StoreManageProducts() {
                                                             <option value="">Select manufacturer</option>
                                                             {editForm.category && manufacturers[editForm.category]?.map(m => <option key={m} value={m}>{m}</option>)}
                                                         </select>
+                                                    </label>
+                                                    <label className="flex flex-col gap-1 text-xs">
+                                                        Material
+                                                        <input type="text" value={editForm.material ?? ''}
+                                                            onChange={e => setEditForm({ ...editForm, material: e.target.value })}
+                                                            placeholder="e.g. Cotton, Steel"
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                                    </label>
+                                                    <label className="flex flex-col gap-1 text-xs">
+                                                        Guarantee Period
+                                                        <input type="text" value={editForm.guaranteePeriod ?? ''}
+                                                            onChange={e => setEditForm({ ...editForm, guaranteePeriod: e.target.value })}
+                                                            placeholder="e.g. 1 year"
+                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
                                                     </label>
                                                     <label className="flex flex-col gap-1 text-xs">
                                                         MRP ({currency})

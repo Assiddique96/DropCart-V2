@@ -61,12 +61,14 @@ model Product {
     sku          String?
     tags         String[]       @default([])
     scheduledAt  DateTime?
-    origin       ProductOrigin  @default(LOCAL)
-    madeIn       String?
-    manufacturer String?
+    origin          ProductOrigin  @default(LOCAL)
+    madeIn          String?
+    manufacturer    String?
+    material        String?
+    guaranteePeriod String?
     /// LOCAL only: seller may disable COD. Always false in DB for ABROAD (enforced in API).
-    acceptCod    Boolean        @default(true)
-    isDigital    Boolean        @default(false)   // true = downloadable product
+    acceptCod       Boolean        @default(true)
+    isDigital       Boolean        @default(false)   // true = downloadable product
     downloadUrl  String?        // secure URL for digital file (set after order paid)
     storeId      String
     createdAt    DateTime       @default(now())
