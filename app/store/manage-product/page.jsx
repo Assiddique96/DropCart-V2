@@ -231,222 +231,223 @@ export default function StoreManageProducts() {
             {products.length === 0 ? (
                 <p className="text-slate-400">No products yet. Add your first product.</p>
             ) : (
-                <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <table className="w-full text-left text-sm">
-                        <thead className="bg-slate-50 dark:bg-slate-900 text-gray-700 uppercase tracking-wider text-xs">
-                            <tr>
-                                <th className="px-4 py-3">Product</th>
-                                <th className="px-4 py-3 hidden md:table-cell">Category</th>
-                                <th className="px-4 py-3 hidden md:table-cell">MRP</th>
-                                <th className="px-4 py-3">Price</th>
-                                <th className="px-4 py-3">Qty</th>
-                                <th className="px-4 py-3">Stock</th>
-                                <th className="px-4 py-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200">
-                            {products.map((product) => (
-                                <Fragment key={product.id}>
-                                    <tr key={product.id} className="hover:bg-slate-50 transition-colors">
-                                        <td className="px-4 py-3">
-                                            <div className="flex gap-3 items-center">
-                                                <Image width={44} height={44} className="rounded border border-slate-100 dark:border-slate-800 object-cover" src={product.images[0]} alt="" />
-                                                <span className="font-medium text-slate-800 dark:text-slate-100 max-w-[140px] truncate">{product.name}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-3 hidden md:table-cell text-slate-400 text-xs">{product.category}</td>
-                                        <td className="px-4 py-3 hidden md:table-cell line-through text-slate-400">{currency}{product.mrp.toLocaleString()}</td>
-                                        <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-100">{currency}{product.price.toLocaleString()}</td>
-                                        <td className="px-4 py-3">
-                                            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${product.quantity > 0 ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
-                                                {product.quantity ?? 0}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <label className="relative inline-flex items-center cursor-pointer gap-2">
-                                                <input type="checkbox" className="sr-only peer"
-                                                    onChange={() => toast.promise(toggleStock(product.id), { loading: "Updating..." })}
-                                                    checked={product.inStock} />
-                                                <div className="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-green-500 transition-colors duration-200"></div>
-                                                <span className="dot absolute left-1 top-1 w-3 h-3 bg-white dark:bg-slate-900 rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-4"></span>
-                                            </label>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <div className="flex gap-2">
-                                                <button onClick={() => openEdit(product)}
-                                                    className="p-1.5 rounded hover:bg-blue-50 text-blue-500 transition" title="Edit product">
-                                                    <PencilIcon size={15} />
-                                                </button>
-                                                <button onClick={() => cloneProduct(product.id)} disabled={cloning === product.id}
-                                                    className="p-1.5 rounded hover:bg-green-50 text-green-500 transition disabled:opacity-40" title="Clone product">
-                                                    <CopyIcon size={15} />
-                                                </button>
-                                                <button onClick={() => setConfirmDeleteId(product.id)}
-                                                    className="p-1.5 rounded hover:bg-red-50 text-red-400 transition" title="Delete product">
-                                                    <Trash2Icon size={15} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                    {products.map((product) => (
+                        <div key={product.id} className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+                            <div className="flex gap-4">
+                                <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-950">
+                                    <Image src={product.images[0]} alt={product.name} fill className="object-cover" sizes="112px" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <p className="truncate text-base font-semibold text-slate-900 dark:text-slate-100">{product.name}</p>
+                                            <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">{product.category}</p>
+                                        </div>
+                                        <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${product.inStock ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}>
+                                            {product.inStock ? 'In stock' : 'Out of stock'}
+                                        </span>
+                                    </div>
+                                    <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-500 dark:text-slate-300">
+                                        {product.description || 'No product description available.'}
+                                    </p>
+                                </div>
+                            </div>
 
-                                    {editingProduct === product.id && (
-                                        <tr key={`edit-${product.id}`} className="bg-blue-50/30">
-                                            <td colSpan={7} className="px-4 py-5">
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        Name
-                                                        <input type="text" value={editForm.name}
-                                                            onChange={e => setEditForm({ ...editForm, name: e.target.value })}
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                                    </label>
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        Category
-                                                        <select value={editForm.category}
-                                                            onChange={e => setEditForm({ ...editForm, category: e.target.value, manufacturer: "" })}
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
-                                                            {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                                                        </select>
-                                                    </label>
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        Manufacturer
-                                                        <select value={editForm.manufacturer ?? ''}
-                                                            onChange={e => setEditForm({ ...editForm, manufacturer: e.target.value })}
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
-                                                            <option value="">Select manufacturer</option>
-                                                            {editForm.category && manufacturers[editForm.category]?.map(m => <option key={m} value={m}>{m}</option>)}
-                                                        </select>
-                                                    </label>
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        Material
-                                                        <input type="text" value={editForm.material ?? ''}
-                                                            onChange={e => setEditForm({ ...editForm, material: e.target.value })}
-                                                            placeholder="e.g. Cotton, Steel"
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                                    </label>
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        Guarantee Period
-                                                        <input type="text" value={editForm.guaranteePeriod ?? ''}
-                                                            onChange={e => setEditForm({ ...editForm, guaranteePeriod: e.target.value })}
-                                                            placeholder="e.g. 1 year"
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                                    </label>
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        MRP ({currency})
-                                                        <input type="number" value={editForm.mrp}
-                                                            onChange={e => setEditForm({ ...editForm, mrp: e.target.value })}
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                                    </label>
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        Offer Price ({currency})
-                                                        <input type="number" value={editForm.price}
-                                                            onChange={e => setEditForm({ ...editForm, price: e.target.value })}
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                                    </label>
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        Quantity in Stock
-                                                        <input type="number" min="0" value={editForm.quantity}
-                                                            onChange={e => setEditForm({ ...editForm, quantity: e.target.value })}
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                                    </label>
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        Shipping Origin
-                                                        <select value={editForm.origin ?? 'LOCAL'}
-                                                            onChange={(e) => {
-                                                                const v = e.target.value
-                                                                setEditForm((f) => ({
-                                                                    ...f,
-                                                                    origin: v,
-                                                                    acceptCod: v === 'LOCAL' ? (f.origin === 'ABROAD' ? true : f.acceptCod !== false) : false,
-                                                                }))
-                                                            }}
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
-                                                            <option value="LOCAL">🏠 Local Product</option>
-                                                            <option value="ABROAD">✈️ Shipped from Abroad</option>
-                                                        </select>
-                                                    </label>
-                                                    {editForm.origin === 'LOCAL' && (
-                                                        <label className="flex flex-col gap-1 text-xs sm:col-span-2">
-                                                            <span className="flex items-center gap-2 cursor-pointer select-none">
-                                                                <input type="checkbox" checked={!!editForm.acceptCod}
-                                                                    onChange={e => setEditForm({ ...editForm, acceptCod: e.target.checked })}
-                                                                    className="accent-green-600" />
-                                                                Accept Cash on Delivery (COD) for this product
-                                                            </span>
-                                                            <span className="text-slate-400 font-normal pl-6">If unchecked, buyers must pay online.</span>
-                                                        </label>
-                                                    )}
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        SKU
-                                                        <input type="text" value={editForm.sku ?? ''}
-                                                            onChange={e => setEditForm({ ...editForm, sku: e.target.value })}
-                                                            placeholder="e.g. ABC-001"
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                                    </label>
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        Tags (comma-separated)
-                                                        <input type="text" value={editForm.tags ?? ''}
-                                                            onChange={e => setEditForm({ ...editForm, tags: e.target.value })}
-                                                            placeholder="e.g. fashion, summer"
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                                    </label>
-                                                    <label className="flex flex-col gap-1 text-xs">
-                                                        Scheduled Publish
-                                                        <input type="datetime-local" value={editForm.scheduledAt ?? ''}
-                                                            onChange={e => setEditForm({ ...editForm, scheduledAt: e.target.value })}
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                                    </label>
-                                                    <div className="flex flex-col gap-2 text-xs sm:col-span-2 lg:col-span-3">
-                                                        <span className="font-medium text-slate-600 dark:text-slate-300">Product images (max 8)</span>
-                                                        <p className="text-slate-400 text-[11px]">Remove photos with ×. Add more below — new uploads are appended until the limit.</p>
-                                                        <div className="flex flex-wrap gap-2">
-                                                            {editImageUrls.map((url) => (
-                                                                <div key={url} className="relative h-16 w-16 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 group/img">
-                                                                    <Image src={url} alt="" fill className="object-cover" sizes="64px" />
-                                                                    <button
-                                                                        type="button"
-                                                                        title="Remove image"
-                                                                        onClick={() => setEditImageUrls((prev) => prev.filter((u) => u !== url))}
-                                                                        className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover/img:opacity-100 transition text-white text-xs font-semibold"
-                                                                    >
-                                                                        ×
-                                                                    </button>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                        <label className="flex flex-col gap-1 cursor-pointer">
-                                                            <span className="text-slate-500">Add images</span>
-                                                            <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif"
-                                                                onChange={(e) => setNewImages(Array.from(e.target.files || []))}
-                                                                className="text-xs border border-slate-200 dark:border-slate-700 rounded p-1.5 bg-white dark:bg-slate-900 file:mr-2" />
-                                                            {newImages.length > 0 && (
-                                                                <span className="text-blue-500">{newImages.length} new file(s) will upload on save</span>
-                                                            )}
-                                                        </label>
+                            <div className="mt-4 grid gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                <div className="grid grid-cols-2 gap-3">
+                                    <span className="font-medium text-slate-700 dark:text-slate-100">Price</span>
+                                    <span className="text-right font-semibold text-slate-900 dark:text-slate-100">{currency}{product.price.toLocaleString()}</span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <span className="font-medium text-slate-700 dark:text-slate-100">MRP</span>
+                                    <span className="text-right text-slate-500 line-through dark:text-slate-400">{currency}{product.mrp.toLocaleString()}</span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <span className="font-medium text-slate-700 dark:text-slate-100">Qty</span>
+                                    <span className="text-right">{product.quantity ?? 0}</span>
+                                </div>
+                                {product.sku && (
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <span className="font-medium text-slate-700 dark:text-slate-100">SKU</span>
+                                        <span className="text-right text-slate-500 dark:text-slate-400">{product.sku}</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="mt-4 flex flex-wrap gap-2">
+                                <button onClick={() => openEdit(product)}
+                                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                    <PencilIcon size={15} /> Edit
+                                </button>
+                                <button onClick={() => cloneProduct(product.id)} disabled={cloning === product.id}
+                                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50 transition disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-emerald-400">
+                                    <CopyIcon size={15} /> Clone
+                                </button>
+                                <button onClick={() => setConfirmDeleteId(product.id)}
+                                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-rose-500 hover:bg-rose-50 transition dark:border-slate-700 dark:bg-slate-900 dark:text-rose-400">
+                                    <Trash2Icon size={15} /> Delete
+                                </button>
+                                <button onClick={() => toast.promise(toggleStock(product.id), { loading: 'Updating...' })}
+                                    className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition ${product.inStock ? 'border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-300' : 'border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200'}`}>
+                                    {product.inStock ? 'Disable stock' : 'Enable stock'}
+                                </button>
+                            </div>
+
+                            {editingProduct === product.id && (
+                                <div className="mt-5 rounded-3xl border border-blue-100 bg-blue-50/80 p-4 dark:border-blue-800 dark:bg-blue-950/30">
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                        <label className="flex flex-col gap-1 text-xs">
+                                            Name
+                                            <input type="text" value={editForm.name}
+                                                onChange={e => setEditForm({ ...editForm, name: e.target.value })}
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                        </label>
+                                        <label className="flex flex-col gap-1 text-xs">
+                                            Category
+                                            <select value={editForm.category}
+                                                onChange={e => setEditForm({ ...editForm, category: e.target.value, manufacturer: "" })}
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
+                                                {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                                            </select>
+                                        </label>
+                                        <label className="flex flex-col gap-1 text-xs">
+                                            Manufacturer
+                                            <select value={editForm.manufacturer ?? ''}
+                                                onChange={e => setEditForm({ ...editForm, manufacturer: e.target.value })}
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
+                                                <option value="">Select manufacturer</option>
+                                                {editForm.category && manufacturers[editForm.category]?.map(m => <option key={m} value={m}>{m}</option>)}
+                                            </select>
+                                        </label>
+                                        <label className="flex flex-col gap-1 text-xs">
+                                            Material
+                                            <input type="text" value={editForm.material ?? ''}
+                                                onChange={e => setEditForm({ ...editForm, material: e.target.value })}
+                                                placeholder="e.g. Cotton, Steel"
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                        </label>
+                                        <label className="flex flex-col gap-1 text-xs">
+                                            Guarantee Period
+                                            <input type="text" value={editForm.guaranteePeriod ?? ''}
+                                                onChange={e => setEditForm({ ...editForm, guaranteePeriod: e.target.value })}
+                                                placeholder="e.g. 1 year"
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                        </label>
+                                        <label className="flex flex-col gap-1 text-xs">
+                                            MRP ({currency})
+                                            <input type="number" value={editForm.mrp}
+                                                onChange={e => setEditForm({ ...editForm, mrp: e.target.value })}
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                        </label>
+                                        <label className="flex flex-col gap-1 text-xs">
+                                            Offer Price ({currency})
+                                            <input type="number" value={editForm.price}
+                                                onChange={e => setEditForm({ ...editForm, price: e.target.value })}
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                        </label>
+                                        <label className="flex flex-col gap-1 text-xs">
+                                            Quantity in Stock
+                                            <input type="number" min="0" value={editForm.quantity}
+                                                onChange={e => setEditForm({ ...editForm, quantity: e.target.value })}
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                        </label>
+                                        <label className="flex flex-col gap-1 text-xs">
+                                            Shipping Origin
+                                            <select value={editForm.origin ?? 'LOCAL'}
+                                                onChange={(e) => {
+                                                    const v = e.target.value
+                                                    setEditForm((f) => ({
+                                                        ...f,
+                                                        origin: v,
+                                                        acceptCod: v === 'LOCAL' ? (f.origin === 'ABROAD' ? true : f.acceptCod !== false) : false,
+                                                    }))
+                                                }}
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
+                                                <option value="LOCAL">🏠 Local Product</option>
+                                                <option value="ABROAD">✈️ Shipped from Abroad</option>
+                                            </select>
+                                        </label>
+                                        {editForm.origin === 'LOCAL' && (
+                                            <label className="flex flex-col gap-1 text-xs sm:col-span-2">
+                                                <span className="flex items-center gap-2 cursor-pointer select-none">
+                                                    <input type="checkbox" checked={!!editForm.acceptCod}
+                                                        onChange={e => setEditForm({ ...editForm, acceptCod: e.target.checked })}
+                                                        className="accent-green-600" />
+                                                    Accept Cash on Delivery (COD) for this product
+                                                </span>
+                                                <span className="text-slate-400 font-normal pl-6">If unchecked, buyers must pay online.</span>
+                                            </label>
+                                        )}
+                                        <label className="flex flex-col gap-1 text-xs">
+                                            SKU
+                                            <input type="text" value={editForm.sku ?? ''}
+                                                onChange={e => setEditForm({ ...editForm, sku: e.target.value })}
+                                                placeholder="e.g. ABC-001"
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                        </label>
+                                        <label className="flex flex-col gap-1 text-xs">
+                                            Tags (comma-separated)
+                                            <input type="text" value={editForm.tags ?? ''}
+                                                onChange={e => setEditForm({ ...editForm, tags: e.target.value })}
+                                                placeholder="e.g. fashion, summer"
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                        </label>
+                                        <label className="flex flex-col gap-1 text-xs">
+                                            Scheduled Publish
+                                            <input type="datetime-local" value={editForm.scheduledAt ?? ''}
+                                                onChange={e => setEditForm({ ...editForm, scheduledAt: e.target.value })}
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                        </label>
+                                        <div className="flex flex-col gap-2 text-xs sm:col-span-2 lg:col-span-3">
+                                            <span className="font-medium text-slate-600 dark:text-slate-300">Product images (max 8)</span>
+                                            <p className="text-slate-400 text-[11px]">Remove photos with ×. Add more below — new uploads are appended until the limit.</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {editImageUrls.map((url) => (
+                                                    <div key={url} className="relative h-16 w-16 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 group/img">
+                                                        <Image src={url} alt="" fill className="object-cover" sizes="64px" />
+                                                        <button
+                                                            type="button"
+                                                            title="Remove image"
+                                                            onClick={() => setEditImageUrls((prev) => prev.filter((u) => u !== url))}
+                                                            className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover/img:opacity-100 transition text-white text-xs font-semibold"
+                                                        >
+                                                            ×
+                                                        </button>
                                                     </div>
-                                                    <label className="flex flex-col gap-1 text-xs sm:col-span-2 lg:col-span-3">
-                                                        Description
-                                                        <textarea value={editForm.description} rows={3}
-                                                            onChange={e => setEditForm({ ...editForm, description: e.target.value })}
-                                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm resize-none bg-white dark:bg-slate-900" />
-                                                    </label>
-                                                </div>
-                                                <div className="flex gap-3 mt-4">
-                                                    <button onClick={() => saveEdit(product.id)} disabled={saving}
-                                                        className="flex items-center gap-1.5 bg-slate-800 text-white px-4 py-1.5 rounded hover:bg-slate-900 transition text-sm disabled:opacity-50">
-                                                        <CheckIcon size={14} /> {saving ? "Saving..." : "Save Changes"}
-                                                    </button>
-                                                    <button onClick={cancelEdit}
-                                                        className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-1.5 rounded hover:bg-slate-200 transition text-sm">
-                                                        <XIcon size={14} /> Cancel
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )}
-                                </Fragment>
-                            ))}
-                        </tbody>
-                    </table>
+                                                ))}
+                                            </div>
+                                            <label className="flex flex-col gap-1 cursor-pointer">
+                                                <span className="text-slate-500">Add images</span>
+                                                <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif"
+                                                    onChange={(e) => setNewImages(Array.from(e.target.files || []))}
+                                                    className="text-xs border border-slate-200 dark:border-slate-700 rounded p-1.5 bg-white dark:bg-slate-900 file:mr-2" />
+                                                {newImages.length > 0 && (
+                                                    <span className="text-blue-500">{newImages.length} new file(s) will upload on save</span>
+                                                )}
+                                            </label>
+                                        </div>
+                                        <label className="flex flex-col gap-1 text-xs sm:col-span-2 lg:col-span-3">
+                                            Description
+                                            <textarea value={editForm.description} rows={3}
+                                                onChange={e => setEditForm({ ...editForm, description: e.target.value })}
+                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm resize-none bg-white dark:bg-slate-900" />
+                                        </label>
+                                    </div>
+                                    <div className="mt-4 flex flex-wrap gap-3">
+                                        <button onClick={() => saveEdit(product.id)} disabled={saving}
+                                            className="inline-flex items-center gap-1.5 bg-slate-800 text-white px-4 py-2 rounded-full hover:bg-slate-900 transition text-sm disabled:opacity-50">
+                                            <CheckIcon size={14} /> {saving ? 'Saving...' : 'Save Changes'}
+                                        </button>
+                                        <button onClick={cancelEdit}
+                                            className="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-full hover:bg-slate-200 transition text-sm">
+                                            <XIcon size={14} /> Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
             )}
 
