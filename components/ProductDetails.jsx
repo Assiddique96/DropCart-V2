@@ -142,14 +142,14 @@ const ProductDetails = ({ product }) => {
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
             {/* Image gallery */}
             <div className="grid gap-4">
-                <div className="relative aspect-[4/5] w-full rounded-[2rem] overflow-hidden border border-slate-200 bg-slate-100">
+                <div className="relative aspect-square w-full rounded-xl overflow-hidden border border-slate-200 bg-slate-100 cursor-pointer" onClick={openZoom}>
                     {mainImage && (
                         <Image
                             src={mainImage}
                             alt={product.name}
                             fill
                             priority
-                            className="object-contain"
+                            className="object-cover"
                             sizes="(max-width: 1024px) 100vw, 480px"
                         />
                     )}
@@ -161,19 +161,19 @@ const ProductDetails = ({ product }) => {
                 </div>
 
                 {images.length > 1 && (
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-4 gap-2">
                         {images.map((image, index) => (
                             <button
                                 key={index}
                                 type="button"
                                 onClick={() => goThumb(index)}
-                                className={`relative aspect-square rounded-3xl overflow-hidden border transition ${
+                                className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
                                     index === Math.min(mainIdx, Math.max(0, images.length - 1))
-                                        ? 'border-slate-800 shadow-lg'
+                                        ? 'border-blue-500 shadow-md ring-2 ring-blue-100'
                                         : 'border-slate-200 hover:border-slate-400'
                                 }`}
                             >
-                                <Image src={image} alt={`Product image ${index + 1}`} fill className="object-cover" sizes="(max-width: 768px) 50vw, 240px" />
+                                <Image src={image} alt={`Product image ${index + 1}`} fill className="object-cover" sizes="(max-width: 768px) 25vw, 120px" />
                             </button>
                         ))}
                     </div>
