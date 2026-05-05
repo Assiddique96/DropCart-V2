@@ -66,6 +66,7 @@ export default function StoreAddProduct() {
     const [aiUsed, setAiUsed] = useState(false)
     const [tagInput, setTagInput] = useState("")
     const fileInputRef = useRef()
+    const descriptionRef = useRef(null)
 
     const [productInfo, setProductInfo] = useState({
         name: "", description: "", mrp: "", price: "",
@@ -73,6 +74,17 @@ export default function StoreAddProduct() {
         material: "", guaranteePeriod: "",
         acceptCod: true,
     })
+
+    const execCommand = (command, value = null) => {
+        document.execCommand(command, false, value)
+        const html = descriptionRef.current?.innerHTML || ""
+        setProductInfo(p => ({ ...p, description: html }))
+    }
+
+    const onDescriptionInput = () => {
+        const html = descriptionRef.current?.innerHTML || ""
+        setProductInfo(p => ({ ...p, description: html }))
+    }
 
     // Variant builder state — fully customizable groups
     const [variantGroups, setVariantGroups] = useState([])
@@ -264,10 +276,23 @@ export default function StoreAddProduct() {
 
             {/* Description */}
             <div className="mb-4">
-                <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Description *</label>
-                <textarea name="description" value={productInfo.description} onChange={onChange}
-                    placeholder="Describe your product" rows={4} required
-                    className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm resize-none focus:border-slate-400 transition" />
+                <label className="text-xs text-slate-500 dark:text-slate-300 mb-2 block">Description *</label>
+                <div className="rounded-xl border border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-700 p-2">
+                    <div className="mb-2 flex flex-wrap gap-2 text-slate-600 dark:text-slate-300">
+                        <button type="button" onMouseDown={(e) => { e.preventDefault(); execCommand('bold') }} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-semibold hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800">B</button>
+                        <button type="button" onMouseDown={(e) => { e.preventDefault(); execCommand('italic') }} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-semibold hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800">I</button>
+                        <button type="button" onMouseDown={(e) => { e.preventDefault(); execCommand('underline') }} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-semibold hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800">U</button>
+                        <button type="button" onMouseDown={(e) => { e.preventDefault(); execCommand('insertUnorderedList') }} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-semibold hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800">• List</button>
+                        <button type="button" onMouseDown={(e) => { e.preventDefault(); execCommand('insertOrderedList') }} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-semibold hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800">1. List</button>
+                    </div>
+                    <div
+                        ref={descriptionRef}
+                        contentEditable
+                        onInput={onDescriptionInput}
+                        dangerouslySetInnerHTML={{ __html: productInfo.description || "" }}
+                        className="min-h-[140px] w-full rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-900 outline-none transition focus-within:border-slate-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    />
+                </div>
             </div>
 
             {/* Prices + Qty */}

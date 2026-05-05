@@ -141,8 +141,8 @@ const ProductDetails = ({ product }) => {
     return (
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
             {/* Image gallery */}
-            <div className="grid gap-4">
-                <div className="relative aspect-square w-full rounded-xl overflow-hidden border border-slate-200 bg-slate-100 cursor-pointer" onClick={openZoom}>
+            <div className="grid gap-4 max-w-[600px]">
+                <div className="relative aspect-[4/3] w-full max-h-[520px] rounded-xl overflow-hidden border border-slate-200 bg-slate-100 cursor-pointer" onClick={openZoom}>
                     {mainImage && (
                         <Image
                             src={mainImage}
@@ -150,7 +150,7 @@ const ProductDetails = ({ product }) => {
                             fill
                             priority
                             className="object-cover"
-                            sizes="(max-width: 1024px) 100vw, 480px"
+                            sizes="(max-width: 1024px) 100vw, 560px"
                         />
                     )}
                     {isAbroad && (
@@ -161,19 +161,19 @@ const ProductDetails = ({ product }) => {
                 </div>
 
                 {images.length > 1 && (
-                    <div className="grid grid-cols-4 gap-2">
+                    <div className="grid grid-cols-5 gap-2">
                         {images.map((image, index) => (
                             <button
                                 key={index}
                                 type="button"
                                 onClick={() => goThumb(index)}
-                                className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                                className={`relative h-16 overflow-hidden rounded-lg border-2 transition-all ${
                                     index === Math.min(mainIdx, Math.max(0, images.length - 1))
                                         ? 'border-blue-500 shadow-md ring-2 ring-blue-100'
                                         : 'border-slate-200 hover:border-slate-400'
                                 }`}
                             >
-                                <Image src={image} alt={`Product image ${index + 1}`} fill className="object-cover" sizes="(max-width: 768px) 25vw, 120px" />
+                                <Image src={image} alt={`Product image ${index + 1}`} fill className="object-cover" sizes="(max-width: 768px) 14vw, 80px" />
                             </button>
                         ))}
                     </div>
@@ -236,7 +236,6 @@ const ProductDetails = ({ product }) => {
                 <div className="space-y-4">
                     <div>
                         <h1 className="text-3xl font-semibold text-slate-800">{product.name}</h1>
-                        <p className="mt-3 text-sm text-slate-500 max-w-2xl">{product.description?.slice(0, 130)}{product.description?.length > 130 ? '...' : ''}</p>
                     </div>
 
                     <div className="flex flex-wrap gap-2">
@@ -274,6 +273,10 @@ const ProductDetails = ({ product }) => {
                             ))}
                         </div>
                         <p className="text-sm text-slate-500">{product.rating?.length || 0} review{(product.rating?.length || 0) !== 1 ? 's' : ''}</p>
+                    </div>
+
+                    <div className="mt-4 prose max-w-2xl text-slate-700 dark:text-slate-200">
+                        <div dangerouslySetInnerHTML={{ __html: product.description || "" }} />
                     </div>
 
                     {/* Price */}
