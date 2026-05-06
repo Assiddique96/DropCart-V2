@@ -52,7 +52,7 @@ export default function ContactPage() {
                 {
                   icon: MailIcon,
                   label: "Email",
-                  value: "support@dropcart.ng",
+                  value: "support@shpinx.ng",
                 },
                 {
                   icon: PhoneIcon,
