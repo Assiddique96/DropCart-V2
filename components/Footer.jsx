@@ -36,7 +36,7 @@ const Footer = () => {
             title: "CONTACT",
             links: [
                 { text: "+234-812-8762-374", path: '/', icon: MailIcon },
-                { text: "contact@dropcart.com", path: '/', icon: PhoneIcon },
+                { text: "contact@shpinx.com", path: '/', icon: PhoneIcon },
                 { text: "Abuja, Nigeria", path: '/', icon: MapPinIcon }
             ]
         }
