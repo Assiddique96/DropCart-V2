@@ -29,7 +29,7 @@ const Footer = () => {
                 { text: "Privacy Policy", path: '/privacy', icon: null },
                 { text: "Cookies Policy", path: '/cookies', icon: null },
                 { text: "Become Plus Member", path: '/pricing', icon: null },
-                { text: "Create Your Store", path: '/create-store', icon: null },
+                { text: "Sell on Shpinx", path: '/create-store', icon: null },
             ]
         },
         {
