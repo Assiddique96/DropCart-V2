@@ -138,7 +138,7 @@ const Navbar = () => {
                 <Show when={{ plan: 'plus' }}>
                 <p className="absolute text-xs font-semibold -top-1 -right-8 px-3 py-0.5 rounded-full text-white bg-indigo-500">Plus</p>
                 </Show>
-                </Link>"
+                </Link>
                     
                     {/* Desktop nav */}
                     <div className="hidden sm:flex items-center gap-4 xl:gap-6 text-slate-600 dark:text-slate-300 text-sm">
