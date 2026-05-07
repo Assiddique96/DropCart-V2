@@ -1,6 +1,6 @@
 import React from "react";
 
-const CartUploadLogo = (props) => {
+const ShpinxLogo = (props) => {
   return (
     <svg
       viewBox="0 0 120 120"
