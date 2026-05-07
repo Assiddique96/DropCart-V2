@@ -14,6 +14,7 @@ import { useAuth, useClerk, useUser, UserButton, Show } from "@clerk/nextjs";
 import NotificationBell from './NotificationBell';
 import axios from "axios";
 import ThemeToggle from "./ThemeToggle";
+import ShpinxLogo from "@/components/ShpinxLogo";
 
 const CATEGORIES = [
     { name: "Electronics",        icon: MonitorIcon,    color: "text-blue-500",   bg: "bg-blue-50",   desc: "Phones, laptops, gadgets" },
