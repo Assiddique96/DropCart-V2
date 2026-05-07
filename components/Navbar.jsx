@@ -132,14 +132,34 @@ const Navbar = () => {
             <div className="mx-6">
                 <div className="flex items-center justify-between max-w-7xl mx-auto py-4">
 
-                    {/* Logo */}
-                    <Link href="/" className="relative text-4xl font-semibold text-slate-400 shrink-0" onClick={() => setMobileOpen(false)}>
-                        <span className="text-gray-600">Shp</span>inx<span className="text-gray-600 text-5xl leading-0">.</span>
-                        <p className="absolute text-xs font-semibold -top-1 -right-8 px-3 py-0.5 rounded-full text-white bg-gray-500">.NG</p>
-                        <Show when={{ plan: 'plus' }}>
-                            <p className="absolute text-xs font-semibold -top-1 -right-8 px-3 py-0.5 rounded-full text-white bg-indigo-500">Plus</p>
-                        </Show>
-                    </Link>
+            {/* Logo */}
+            <Link
+              href="/"
+              className="relative flex items-center gap-2 text-4xl font-semibold text-slate-400 shrink-0"
+              onClick={() => setMobileOpen(false)}
+            >
+              {/* Cart icon */}
+              <ShpinxLogo className="w-8 h-8 md:w-9 md:h-9" />
+            
+              {/* Shpinx wordmark */}
+              <span className="relative">
+                <span className="text-gray-600">Shp</span>
+                inx
+                <span className="text-gray-600 text-5xl leading-none">.</span>
+            
+                {/* .NG badge */}
+                <p className="absolute text-xs font-semibold -top-1 -right-8 px-3 py-0.5 rounded-full text-white bg-gray-500">
+                  .NG
+                </p>
+            
+                {/* Plus badge (conditional) */}
+                <Show when={{ plan: "plus" }}>
+                  <p className="absolute text-xs font-semibold -top-1 -right-8 px-3 py-0.5 rounded-full text-white bg-indigo-500">
+                    Plus
+                  </p>
+                </Show>
+              </span>
+            </Link>
 
                     {/* Desktop nav */}
                     <div className="hidden sm:flex items-center gap-4 xl:gap-6 text-slate-600 dark:text-slate-300 text-sm">
