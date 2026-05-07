@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";:
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useAuth, useClerk, useUser, UserButton, Show } from "@clerk/nextjs";
 import NotificationBell from './NotificationBell';
