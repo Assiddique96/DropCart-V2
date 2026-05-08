@@ -6,7 +6,7 @@ import { isOrderConsideredPaid } from "@/lib/orderPayment";
 import logo from "@/assets/logo.png"; // adjust path/name to your actual logo asset
 
 /**
- * GET /api/orders/invoice?orderId=xxx
+ * GET /api/orders/invoice?orderId=xxx&tz=Africa/Lagos
  * Returns a full HTML invoice the browser can print or save as PDF.
  * Only the buyer or the seller of the order can access their respective invoices.
  */
@@ -19,6 +19,8 @@ export async function GET(request) {
 
     const { searchParams } = new URL(request.url);
     const orderId = searchParams.get("orderId");
+    const timeZone = searchParams.get("tz") || undefined; // buyer's IANA timezone
+
     if (!orderId) {
       return NextResponse.json({ error: "orderId is required" }, { status: 400 });
     }
@@ -42,7 +44,7 @@ export async function GET(request) {
             product: { select: { name: true, category: true } },
           },
         },
-        // coupon: true, // ❌ remove this – coupon is a scalar field, not a relation
+        // coupon: true, // coupon is scalar, not relation
       },
     });
 
@@ -68,6 +70,19 @@ export async function GET(request) {
     const issueDate = new Date(order.createdAt).toLocaleDateString("en-NG", {
       dateStyle: "long",
     });
+
+    // "Generated on" in buyer's timezone (if provided)
+    const now = new Date();
+    const generatedAt = timeZone
+      ? new Intl.DateTimeFormat("en-NG", {
+          dateStyle: "medium",
+          timeStyle: "short",
+          timeZone,
+        }).format(now)
+      : now.toLocaleString("en-NG", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        });
 
     const itemRows = order.orderItems
       .map(
@@ -454,7 +469,7 @@ export async function GET(request) {
     <footer class="footer">
       <p>Thank you for shopping with ${storeName}.</p>
       <p>For support: ${storeEmail}</p>
-      <p>Generated on ${new Date().toLocaleString()}</p>
+      <p>Generated on ${generatedAt}${timeZone ? ` (${timeZone})` : ""}</p>
       <p>Powered by Shpinx</p>
     </footer>
   </div>
