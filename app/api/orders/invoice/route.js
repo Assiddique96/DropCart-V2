@@ -6,7 +6,7 @@ import { isOrderConsideredPaid } from "@/lib/orderPayment";
 import logo from "@/assets/logo.png"; // adjust path/name to your actual logo asset
 
 /**
- * GET /api/orders/invoice?orderId=xxx&tz=Africa/Lagos
+ * GET /api/orders/invoice?orderId=xxx
  * Returns a full HTML invoice the browser can print or save as PDF.
  * Only the buyer or the seller of the order can access their respective invoices.
  */
@@ -19,8 +19,6 @@ export async function GET(request) {
 
     const { searchParams } = new URL(request.url);
     const orderId = searchParams.get("orderId");
-    const timeZone = searchParams.get("tz") || undefined; // buyer's IANA timezone
-
     if (!orderId) {
       return NextResponse.json({ error: "orderId is required" }, { status: 400 });
     }
@@ -71,19 +69,6 @@ export async function GET(request) {
       dateStyle: "long",
     });
 
-    // "Generated on" in buyer's timezone (if provided)
-    const now = new Date();
-    const generatedAt = timeZone
-      ? new Intl.DateTimeFormat("en-NG", {
-          dateStyle: "medium",
-          timeStyle: "short",
-          timeZone,
-        }).format(now)
-      : now.toLocaleString("en-NG", {
-          dateStyle: "medium",
-          timeStyle: "short",
-        });
-
     const itemRows = order.orderItems
       .map(
         (item) => `
@@ -110,7 +95,6 @@ export async function GET(request) {
     const storeAddress = order.store?.address || "";
 
     // Adjust these field names to match your actual schema:
-    // e.g. isCouponUsed: Boolean, couponCode: String?, couponDiscount: Int?
     const couponRow =
       order.isCouponUsed && order.couponCode
         ? `<tr>
@@ -118,6 +102,9 @@ export async function GET(request) {
              <td class="right">-${order.couponDiscount || 0}%</td>
            </tr>`
         : "";
+
+    // NEW: server-side UTC/ISO timestamp to convert in browser
+    const generatedAt = new Date().toISOString();
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -469,12 +456,34 @@ export async function GET(request) {
     <footer class="footer">
       <p>Thank you for shopping with ${storeName}.</p>
       <p>For support: ${storeEmail}</p>
-      <p>Generated on ${generatedAt}${timeZone ? ` (${timeZone})` : ""}</p>
+      <p id="generated-at" data-generated-at="${generatedAt}">
+        Generated on ${generatedAt}
+      </p>
       <p>Powered by Shpinx</p>
     </footer>
   </div>
 
   <script>
+    (function () {
+      try {
+        var el = document.getElementById('generated-at');
+        if (!el) return;
+        var iso = el.getAttribute('data-generated-at');
+        if (!iso) return;
+        var date = new Date(iso);
+        var formatted = date.toLocaleString(undefined, {
+          year: 'numeric',
+          month: 'short',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+        el.textContent = 'Generated on ' + formatted;
+      } catch (e) {
+        // leave ISO on error
+      }
+    })();
+
     window.addEventListener('load', () => {
       if (window.location.search.includes('print=1')) {
         window.print();
