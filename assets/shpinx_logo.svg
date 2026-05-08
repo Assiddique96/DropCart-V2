@@ -1,0 +1,7 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shopping bag icon with S shape -->
+  <rect width="40" height="40" rx="8" fill="#1e293b" opacity="0.05"/>
+  <path d="M12 14H28C29.1046 14 30 14.8954 30 16V32C30 33.1046 29.1046 34 28 34H12C10.8954 34 10 33.1046 10 32V16C10 14.8954 10.8954 14 12 14Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+  <path d="M14 14C14 11.2386 16.2386 9 19 9C21.7614 9 24 11.2386 24 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="20" cy="25" r="2.5" fill="currentColor"/>
+</svg>

@@ -1,4 +1,5 @@
 'use client'
+import Image from "next/image";
 import {
     PackageIcon, Search, ShoppingCart, HeartIcon,
     ChevronDownIcon, MonitorIcon, ShirtIcon, HomeIcon,
@@ -14,6 +15,7 @@ import { useAuth, useClerk, useUser, UserButton, Show } from "@clerk/nextjs";
 import NotificationBell from './NotificationBell';
 import axios from "axios";
 import ThemeToggle from "./ThemeToggle";
+import shpinxLogo from "@/assets/shpinx_logo.svg";
 
 const CATEGORIES = [
     { name: "Electronics",        icon: MonitorIcon,    color: "text-blue-500",   bg: "bg-blue-50",   desc: "Phones, laptops, gadgets" },
@@ -165,12 +167,21 @@ const Navbar = () => {
                 <div className="flex items-center justify-between max-w-7xl mx-auto py-4">
 
             {/* Logo */}
-                <Link href="/" className="relative text-4xl font-semibold text-slate-400 shrink-0" onClick={() => setMobileOpen(false)}>
-                <span className="text-gray-600">Shp</span>inx<span className="text-gray-600 text-5xl leading-0">.</span>
-                <p className="absolute text-xs font-semibold -top-1 -right-8 px-3 py-0.5 rounded-full text-white bg-gray-500">.NG</p>
-                <Show when={{ plan: 'plus' }}>
-                <p className="absolute text-xs font-semibold -top-1 -right-8 px-3 py-0.5 rounded-full text-white bg-indigo-500">Plus</p>
-                </Show>
+                <Link href="/" className="relative flex items-center gap-2 shrink-0" onClick={() => setMobileOpen(false)}>
+                    <Image 
+                        src={shpinxLogo} 
+                        alt="Shpinx" 
+                        width={32} 
+                        height={32}
+                        className="w-8 h-8 text-slate-700 dark:text-slate-200"
+                    />
+                    <span className="text-4xl font-semibold text-slate-400 hidden sm:inline">
+                        <span className="text-gray-600 dark:text-gray-400">Shp</span>inx<span className="text-gray-600 dark:text-gray-400 text-5xl leading-0">.</span>
+                    </span>
+                    <p className="absolute text-xs font-semibold -top-1 sm:-right-8 -right-6 px-3 py-0.5 rounded-full text-white bg-gray-500">.NG</p>
+                    <Show when={{ plan: 'plus' }}>
+                    <p className="absolute text-xs font-semibold -top-1 sm:-right-8 -right-6 px-3 py-0.5 rounded-full text-white bg-indigo-500">Plus</p>
+                    </Show>
                 </Link>
                     
                     {/* Desktop nav */}

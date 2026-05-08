@@ -1,7 +1,7 @@
 import prisma from "@/src/db";
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { auditLog } from "@/lib/auditLog";
+import { writeAuditLog, AUDIT_ACTIONS } from "@/lib/auditLog";
 
 export async function GET() {
   try {
@@ -133,8 +133,9 @@ export async function PUT(request) {
     }
 
     // Audit log
-    await auditLog({
+    await writeAuditLog({
       adminId: userId,
+      adminEmail: "",
       action: status === "APPROVED" ? "APPROVE_AD_REQUEST" : "REJECT_AD_REQUEST",
       targetType: "AdRequest",
       targetId: id,

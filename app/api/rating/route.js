@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 import { sanitizeString, sanitizeNumber } from "@/lib/sanitize";
 import imagekit from "@/configs/imageKit";
+import { looseLimiter } from "@/lib/rateLimit";
 
 // POST — submit a new rating (multipart/form-data to support image uploads)
 export async function POST(request) {
