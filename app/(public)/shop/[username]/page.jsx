@@ -1,99 +1,115 @@
-'use client'
-import ProductCard from "@/components/ProductCard"
-import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
-import { MailIcon, MapPinIcon } from "lucide-react"
-import Loading from "@/components/Loading"
-import Image from "next/image"
-import axios from "axios"
-import toast from "react-hot-toast"
-
+"use client";
+import ProductCard from "@/components/ProductCard";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { MailIcon, MapPinIcon } from "lucide-react";
+import Loading from "@/components/Loading";
+import Image from "next/image";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function StoreShop() {
+  const { username } = useParams();
+  const [products, setProducts] = useState([]);
+  const [storeInfo, setStoreInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    const { username } = useParams()
-    const [products, setProducts] = useState([])
-    const [storeInfo, setStoreInfo] = useState(null)
-    const [loading, setLoading] = useState(true)
-
-    const fetchStoreData = async () => {
-       setLoading(true)
-       try {
-        const {data} = await axios.get(`/api/store/data?username=${username}`)
-        setStoreInfo(data.store)
-        setProducts(data.store.Product) 
-       } catch (error) { 
-            toast.error(error.response?.data?.error || error.message)
-       }
-       setLoading(false)
+  const fetchStoreData = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`/api/store/data?username=${username}`);
+      setStoreInfo(data.store);
+      setProducts(data.store.Product);
+    } catch (error) {
+      toast.error(error.response?.data?.error || error.message);
     }
+    setLoading(false);
+  };
 
-    useEffect(() => {
-        fetchStoreData()
-    }, [username])
+  useEffect(() => {
+    fetchStoreData();
+  }, [username]);
 
-    return !loading ? (
-        <div className="min-h-[70vh] mx-6">
-
-            {/* Store card; banner is the card background when set */}
-            {storeInfo && (
-                <div
-                    className={`max-w-7xl mx-auto mt-6 relative overflow-hidden rounded-xl border border-slate-100 shadow-xs min-h-[200px] md:min-h-[220px] ${storeInfo.banner ? '' : 'bg-slate-50'}`}
-                >
-                    {storeInfo.banner ? (
-                        <>
-                            <Image
-                                src={storeInfo.banner}
-                                alt=""
-                                fill
-                                className="object-cover"
-                                sizes="(max-width: 1280px) 100vw, 1280px"
-                                priority
-                            />
-                            <div
-                                className="absolute inset-0 bg-gradient-to-br from-white/92 via-white/85 to-slate-50/78 backdrop-blur-[1px]"
-                                aria-hidden
-                            />
-                        </>
-                    ) : null}
-                    <div className="relative z-10 p-6 md:p-10 flex flex-col md:flex-row items-center gap-6">
-                        <Image
-                            src={storeInfo.logo}
-                            alt={storeInfo.name}
-                            className="size-32 sm:size-38 object-cover border-2 border-slate-100 rounded-md shadow-sm bg-white"
-                            width={200}
-                            height={200}
-                        />
-                        <div className="text-center md:text-left">
-                            <h1 className="text-3xl font-semibold text-slate-800">{storeInfo.name}</h1>
-                            <p className="text-sm text-slate-600 mt-2 max-w-lg">{storeInfo.description}</p>
-                            <div className="text-xs text-slate-500 mt-4 space-y-1"></div>
-                            <div className="space-y-2 text-sm text-slate-500">
-                                <div className="flex items-center justify-center md:justify-start">
-                                    <MapPinIcon className="w-4 h-4 text-gray-500 mr-2 shrink-0" />
-                                    <span>{storeInfo.address}</span>
-                                </div>
-                                <div className="flex items-center justify-center md:justify-start">
-                                    <MailIcon className="w-4 h-4 text-gray-500 mr-2 shrink-0" />
-                                    <span>{storeInfo.email}</span>
-                                </div>
-                                <div className="flex items-center justify-center md:justify-start">
-                                    <span className="text-xs uppercase tracking-wide font-medium text-slate-600">ADDED ON:</span>
-                                    <span className="ml-2">{new Date(storeInfo.createdAt).toLocaleDateString()}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  return !loading ? (
+    <div className="min-h-[70vh] mx-6 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100">
+      {/* Store card; banner is the card background when set */}
+      {storeInfo && (
+        <div
+          className={`max-w-7xl mx-auto mt-6 relative overflow-hidden rounded-xl border border-slate-100 dark:border-slate-800 shadow-xs min-h-[200px] md:min-h-[220px] ${
+            storeInfo.banner ? "" : "bg-slate-50 dark:bg-slate-900"
+          }`}
+        >
+          {storeInfo.banner ? (
+            <>
+              <Image
+                src={storeInfo.banner}
+                alt=""
+                fill
+                className="object-cover"
+                sizes="(max-width: 1280px) 100vw, 1280px"
+                priority
+              />
+              <div
+                className="absolute inset-0 bg-gradient-to-br from-white/92 via-white/85 to-slate-50/78 dark:from-slate-950/95 dark:via-slate-950/85 dark:to-slate-900/80 backdrop-blur-[1px]"
+                aria-hidden
+              />
+            </>
+          ) : null}
+          <div className="relative z-10 p-6 md:p-10 flex flex-col md:flex-row items-center gap-6">
+            <Image
+              src={storeInfo.logo}
+              alt={storeInfo.name}
+              className="size-32 sm:size-38 object-cover border-2 border-slate-100 dark:border-slate-700 rounded-md shadow-sm bg-white dark:bg-slate-900"
+              width={200}
+              height={200}
+            />
+            <div className="text-center md:text-left">
+              <h1 className="text-3xl font-semibold text-slate-800 dark:text-slate-50">
+                {storeInfo.name}
+              </h1>
+              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 max-w-lg">
+                {storeInfo.description}
+              </p>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-4 space-y-1" />
+              <div className="space-y-2 text-sm text-slate-500 dark:text-slate-300">
+                <div className="flex items-center justify-center md:justify-start">
+                  <MapPinIcon className="w-4 h-4 text-gray-500 dark:text-gray-400 mr-2 shrink-0" />
+                  <span>{storeInfo.address}</span>
                 </div>
-            )}
-
-            {/* Products */}
-            <div className="max-w-7xl mx-auto mb-40">
-                <h1 className="text-2xl mt-12">Shop <span className="text-slate-800 font-medium">Products</span></h1>
-                <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 xl:gap-10">
-                    {products.map((product) => <ProductCard key={product.id} product={product} />)}
+                <div className="flex items-center justify-center md:justify-start">
+                  <MailIcon className="w-4 h-4 text-gray-500 dark:text-gray-400 mr-2 shrink-0" />
+                  <span>{storeInfo.email}</span>
                 </div>
+                <div className="flex items-center justify-center md:justify-start">
+                  <span className="text-xs uppercase tracking-wide font-medium text-slate-600 dark:text-slate-400">
+                    ADDED ON:
+                  </span>
+                  <span className="ml-2">
+                    {new Date(storeInfo.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
-    ) : <Loading />
+      )}
+
+      {/* Products */}
+      <div className="max-w-7xl mx-auto mb-40">
+        <h1 className="text-2xl mt-12">
+          Shop{" "}
+          <span className="text-slate-800 dark:text-slate-50 font-medium">
+            Products
+          </span>
+        </h1>
+        <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 xl:gap-10">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </div>
+    </div>
+  ) : (
+    <Loading />
+  );
 }

@@ -7,12 +7,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addRecentlyViewed } from "@/lib/features/recentlyViewed/recentlyViewedSlice";
-import {
-  FacebookIcon,
-  TwitterIcon,
-  LinkIcon,
-  CheckIcon,
-} from "lucide-react";
+import { FacebookIcon, TwitterIcon, LinkIcon, CheckIcon } from "lucide-react";
 import axios from "axios";
 import Link from "next/link";
 
@@ -36,9 +31,7 @@ export default function Product() {
 
       try {
         const { data } = await axios.get("/api/products");
-        const apiProduct = data.products?.find(
-          (p) => p.id === productId
-        );
+        const apiProduct = data.products?.find((p) => p.id === productId);
         if (apiProduct) {
           setProduct(apiProduct);
           dispatch(addRecentlyViewed(productId));
@@ -63,29 +56,29 @@ export default function Product() {
   const shareOnFacebook = () => {
     window.open(
       `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-        shareUrl
+        shareUrl,
       )}`,
       "_blank",
-      "width=600,height=400"
+      "width=600,height=400",
     );
   };
 
   const shareOnTwitter = () => {
     window.open(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-        shareText
+        shareText,
       )}&url=${encodeURIComponent(shareUrl)}`,
       "_blank",
-      "width=600,height=400"
+      "width=600,height=400",
     );
   };
 
   const shareOnWhatsApp = () => {
     window.open(
       `https://wa.me/?text=${encodeURIComponent(
-        shareText + " " + shareUrl
+        shareText + " " + shareUrl,
       )}`,
-      "_blank"
+      "_blank",
     );
   };
 
@@ -107,7 +100,7 @@ export default function Product() {
   };
 
   return (
-    <div className="mx-6">
+    <div className="mx-6 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100">
       <div className="mx-auto max-w-7xl">
         {loading ? (
           <div className="flex min-h-[400px] items-center justify-center">
@@ -162,10 +155,7 @@ export default function Product() {
                 className="flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs text-slate-600 transition hover:border-slate-400 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-500"
               >
                 {copied ? (
-                  <CheckIcon
-                    size={13}
-                    className="text-green-500"
-                  />
+                  <CheckIcon size={13} className="text-green-500" />
                 ) : (
                   <LinkIcon size={13} />
                 )}

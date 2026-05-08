@@ -29,14 +29,14 @@ const Footer = () => {
                 { text: "Privacy Policy", path: '/privacy', icon: null },
                 { text: "Cookies Policy", path: '/cookies', icon: null },
                 { text: "Become Plus Member", path: '/pricing', icon: null },
-                { text: "Create Your Store", path: '/create-store', icon: null },
+                { text: "Sell on Shpinx", path: '/create-store', icon: null },
             ]
         },
         {
             title: "CONTACT",
             links: [
                 { text: "+234-812-8762-374", path: '/', icon: MailIcon },
-                { text: "contact@dropcart.com", path: '/', icon: PhoneIcon },
+                { text: "contact@shpinx.com", path: '/', icon: PhoneIcon },
                 { text: "Abuja, Nigeria", path: '/', icon: MapPinIcon }
             ]
         }

@@ -18,7 +18,9 @@ import toast from "react-hot-toast";
 
 const StarRow = ({ count, total, label }) => (
   <div className="flex items-center gap-2 text-xs">
-    <span className="w-3 text-slate-400 dark:text-slate-500">{label}★</span>
+    <span className="w-3 text-slate-400 dark:text-slate-500">
+      {label}★
+    </span>
     <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
       <div
         className="h-full bg-green-400 rounded-full transition-all"
@@ -40,7 +42,7 @@ const StarDisplay = ({ value, size = 16 }) => (
           key={i}
           size={size}
           className="text-transparent"
-          fill={value >= i + 1 ? "#00C950" : "#4B5563"} // slightly brighter gray on dark bg
+          fill={value >= i + 1 ? "#00C950" : "#4B5563"}
         />
       ))}
   </div>
@@ -76,10 +78,10 @@ export default function ProductDescription({ product }) {
       const { data } = await axios.patch(
         "/api/rating",
         { ratingId, rating: editForm.rating, review: editForm.review },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       setLocalRatings((prev) =>
-        prev.map((r) => (r.id === ratingId ? { ...r, ...data.rating } : r))
+        prev.map((r) => (r.id === ratingId ? { ...r, ...data.rating } : r)),
       );
       setEditingId(null);
       toast.success("Review updated.");
@@ -110,14 +112,14 @@ export default function ProductDescription({ product }) {
       const { data } = await axios.post(
         "/api/store/review-response",
         { ratingId, response: responseText },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       setLocalRatings((prev) =>
         prev.map((r) =>
           r.id === ratingId
             ? { ...r, sellerResponse: data.rating.sellerResponse }
-            : r
-        )
+            : r,
+        ),
       );
       setRespondingId(null);
       setResponseText("");
@@ -131,13 +133,16 @@ export default function ProductDescription({ product }) {
   const deleteResponse = async (ratingId) => {
     try {
       const token = await getToken();
-      await axios.delete(`/api/store/review-response?ratingId=${ratingId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `/api/store/review-response?ratingId=${ratingId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       setLocalRatings((prev) =>
         prev.map((r) =>
-          r.id === ratingId ? { ...r, sellerResponse: null } : r
-        )
+          r.id === ratingId ? { ...r, sellerResponse: null } : r,
+        ),
       );
       toast.success("Response removed.");
     } catch (e) {
@@ -163,30 +168,45 @@ export default function ProductDescription({ product }) {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 xl:w-[360px]">
-            <div className="rounded-3xl border border-slate-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Category</p>
-              <p className="mt-2 font-semibold text-slate-900">{product.category || 'Others'}</p>
-            </div>
-            <div className="rounded-3xl border border-slate-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Manufacturer</p>
-              <p className="mt-2 font-semibold text-slate-900">{product.manufacturer || 'Not specified'}</p>
-            </div>
-            <div className="rounded-3xl border border-slate-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Material</p>
-              <p className="mt-2 font-semibold text-slate-900">{product.material || 'Not specified'}</p>
-            </div>
-            <div className="rounded-3xl border border-slate-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Origin</p>
-              <p className="mt-2 font-semibold text-slate-900">{product.madeIn || 'Unknown'}</p>
-            </div>
-            <div className="rounded-3xl border border-slate-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Guarantee</p>
-              <p className="mt-2 font-semibold text-slate-900">{product.guaranteePeriod || 'Not specified'}</p>
-            </div>
-            <div className="rounded-3xl border border-slate-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Shipping</p>
-              <p className="mt-2 font-semibold text-slate-900">{product.origin === 'ABROAD' ? 'International' : 'Local'}</p>
-            </div>
+            {[
+              {
+                label: "Category",
+                value: product.category || "Others",
+              },
+              {
+                label: "Manufacturer",
+                value: product.manufacturer || "Not specified",
+              },
+              {
+                label: "Material",
+                value: product.material || "Not specified",
+              },
+              {
+                label: "Origin",
+                value: product.madeIn || "Unknown",
+              },
+              {
+                label: "Guarantee",
+                value: product.guaranteePeriod || "Not specified",
+              },
+              {
+                label: "Shipping",
+                value:
+                  product.origin === "ABROAD" ? "International" : "Local",
+              },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4"
+              >
+                <p className="text-xs uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-semibold text-slate-900 dark:text-white">
+                  {item.value}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -341,7 +361,7 @@ export default function ProductDescription({ product }) {
                                   />
                                   <span className="text-xs text-slate-400 dark:text-slate-500">
                                     {new Date(
-                                      item.createdAt
+                                      item.createdAt,
                                     ).toLocaleDateString()}
                                   </span>
                                 </div>
@@ -458,7 +478,7 @@ export default function ProductDescription({ product }) {
                                             className="h-20 w-full rounded-2xl border border-slate-200 dark:border-slate-700 object-cover"
                                           />
                                         </a>
-                                      )
+                                      ),
                                     )}
                                   </div>
                                 )}
@@ -469,8 +489,8 @@ export default function ProductDescription({ product }) {
                               <div className="mt-5 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 p-4">
                                 <div className="mb-2 flex items-center justify-between gap-3">
                                   <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-                                    <MessageSquareIcon size={12} />{" "}
-                                    Seller Response
+                                    <MessageSquareIcon size={12} /> Seller
+                                    Response
                                   </p>
                                   {product.store?.userId ===
                                     user?.id && (
@@ -478,10 +498,10 @@ export default function ProductDescription({ product }) {
                                       <button
                                         onClick={() => {
                                           setRespondingId(
-                                            item.id
+                                            item.id,
                                           );
                                           setResponseText(
-                                            item.sellerResponse
+                                            item.sellerResponse,
                                           );
                                         }}
                                         className="hover:text-blue-500 transition"
@@ -490,7 +510,9 @@ export default function ProductDescription({ product }) {
                                       </button>
                                       <button
                                         onClick={() =>
-                                          deleteResponse(item.id)
+                                          deleteResponse(
+                                            item.id,
+                                          )
                                         }
                                         className="hover:text-red-500 transition"
                                       >
@@ -515,8 +537,8 @@ export default function ProductDescription({ product }) {
                                   }}
                                   className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 transition"
                                 >
-                                  <MessageSquareIcon size={14} /> Reply
-                                  to review
+                                  <MessageSquareIcon size={14} /> Reply to
+                                  review
                                 </button>
                               )}
 
