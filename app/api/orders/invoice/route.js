@@ -42,7 +42,7 @@ export async function GET(request) {
             product: { select: { name: true, category: true } },
           },
         },
-        coupon: true,
+        // coupon: true, // ❌ remove this – coupon is a scalar field, not a relation
       },
     });
 
@@ -94,11 +94,13 @@ export async function GET(request) {
     const storeEmail = order.store?.email || "support@shpinx.ng";
     const storeAddress = order.store?.address || "";
 
+    // Adjust these field names to match your actual schema:
+    // e.g. isCouponUsed: Boolean, couponCode: String?, couponDiscount: Int?
     const couponRow =
-      order.isCouponUsed && order.coupon
+      order.isCouponUsed && order.couponCode
         ? `<tr>
-             <td>Discount (${order.coupon.code})</td>
-             <td class="right">-${order.coupon.discount || 0}%</td>
+             <td>Discount (${order.couponCode})</td>
+             <td class="right">-${order.couponDiscount || 0}%</td>
            </tr>`
         : "";
 
