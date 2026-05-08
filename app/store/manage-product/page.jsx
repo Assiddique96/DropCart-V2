@@ -44,7 +44,24 @@ export default function StoreManageProducts() {
     const [deletingId, setDeletingId] = useState(null)
     const [confirmDeleteId, setConfirmDeleteId] = useState(null)
     const [requestingAd, setRequestingAd] = useState(null)
+    const [cloning, setCloning] = useState(null)
+    const [importing, setImporting] = useState(false)
+    const csvRef = useRef()
 
+    const cloneProduct = async (productId) => {
+        setCloning(productId)
+        try {
+            const token = await getToken()
+            const { data } = await axios.post("/api/store/product/clone", { productId }, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            toast.success("Product cloned successfully.")
+            setProducts(prev => [data.product, ...prev])
+        } catch (error) {
+            toast.error(error.response?.data?.error || error.message)
+        }
+        setCloning(null)
+    }
     const requestAd = async (productId) => {
         setRequestingAd(productId)
         try {
