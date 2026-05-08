@@ -10,7 +10,7 @@ import logo from "@/assets/logo.png"; // adjust path/name to your actual logo as
  * Returns a full HTML invoice the browser can print or save as PDF.
  * Only the buyer or the seller of the order can access their respective invoices.
  */
-export async function GET(request: Request) {
+export async function GET(request) {
   try {
     const { userId } = getAuth(request);
     if (!userId) {
@@ -89,7 +89,7 @@ export async function GET(request: Request) {
       )
       .join("");
 
-    const storeLogo = order.store?.logo || (logo as unknown as string);
+    const storeLogo = order.store?.logo || logo;
     const storeName = order.store?.name || "Shpinx";
     const storeEmail = order.store?.email || "support@shpinx.ng";
     const storeAddress = order.store?.address || "";
@@ -382,7 +382,9 @@ export async function GET(request: Request) {
         <p class="party-name">${order.user?.name || "Customer"}</p>
         <p>${order.user?.email || ""}</p>
         <p>${order.address?.street || ""}</p>
-        <p>${[order.address?.city, order.address?.state, order.address?.zip].filter(Boolean).join(", ")}</p>
+        <p>${[order.address?.city, order.address?.state, order.address?.zip]
+          .filter(Boolean)
+          .join(", ")}</p>
         <p>${order.address?.country || ""}</p>
         <p>${order.address?.phone || ""}</p>
       </div>
@@ -470,7 +472,7 @@ export async function GET(request: Request) {
         "Content-Disposition": `inline; filename="${invoiceNum}.html"`,
       },
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Invoice error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
