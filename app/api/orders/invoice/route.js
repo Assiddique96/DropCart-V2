@@ -125,7 +125,7 @@ export async function GET(request) {
     </div>
     <div class="party">
       <h4>From</h4>
-      <p><strong>${order.store?.name || "DropCart"}</strong></p>
+      <p><strong>${order.store?.name || "Shpinx"}</strong></p>
       <p>${order.store?.email || ""}</p>
       <p>${order.store?.address || ""}</p>
     </div>
@@ -155,7 +155,7 @@ export async function GET(request) {
 
   <hr class="divider" />
   <div class="footer">
-    <p>Thank you for shopping with DropCart. For support: support@dropcart.ng</p>
+    <p>Thank you for shopping with Shpinx. For support: support@shpinx.ng</p>
     <p style="margin-top:4px">Order ID: ${order.id} &nbsp;|&nbsp; Generated ${new Date().toLocaleString()}</p>
   </div>
 
