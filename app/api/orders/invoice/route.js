@@ -95,6 +95,7 @@ export async function GET(request) {
     const storeAddress = order.store?.address || "";
 
     // Adjust these field names to match your actual schema:
+    // e.g. isCouponUsed: Boolean, couponCode: String?, couponDiscount: Int?
     const couponRow =
       order.isCouponUsed && order.couponCode
         ? `<tr>
@@ -102,9 +103,6 @@ export async function GET(request) {
              <td class="right">-${order.couponDiscount || 0}%</td>
            </tr>`
         : "";
-
-    // NEW: server-side UTC/ISO timestamp to convert in browser
-    const generatedAt = new Date().toISOString();
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -456,35 +454,27 @@ export async function GET(request) {
     <footer class="footer">
       <p>Thank you for shopping with ${storeName}.</p>
       <p>For support: ${storeEmail}</p>
-      <p id="generated-at" data-generated-at="${generatedAt}">
-        Generated on ${generatedAt}
+      <p>
+        Generated on
+        <span id="generated-at" data-created-at="${order.createdAt.toISOString()}"></span>
       </p>
       <p>Powered by Shpinx</p>
     </footer>
   </div>
 
   <script>
-    (function () {
-      try {
-        var el = document.getElementById('generated-at');
-        if (!el) return;
-        var iso = el.getAttribute('data-generated-at');
-        if (!iso) return;
-        var date = new Date(iso);
-        var formatted = date.toLocaleString(undefined, {
-          year: 'numeric',
-          month: 'short',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-        el.textContent = 'Generated on ' + formatted;
-      } catch (e) {
-        // leave ISO on error
-      }
-    })();
-
     window.addEventListener('load', () => {
+      // Convert stored UTC createdAt to buyer's local timezone
+      const el = document.getElementById('generated-at');
+      if (el && el.dataset.createdAt) {
+        const utcDate = new Date(el.dataset.createdAt);
+        const formatted = new Intl.DateTimeFormat(undefined, {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+        }).format(utcDate);
+        el.textContent = formatted;
+      }
+
       if (window.location.search.includes('print=1')) {
         window.print();
       }
