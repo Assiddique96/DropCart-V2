@@ -44,35 +44,45 @@ export async function POST(request) {
     // Delegate to the appropriate payment provider
     let redirectUrl;
 
-    if (order.paymentMethod === "STRIPE") {
-      const res = await fetch(`${origin}/api/stripe`, {
+    if (order.paymentMethod === "LEMONSQUEEZY") {
+      const res = await fetch(`${origin}/api/lemonsqueezy`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: request.headers.get("Authorization") || "" },
         body: JSON.stringify({ orderIds }),
       });
       const data = await res.json();
-      if (!data.session?.url) throw new Error(data.error || "Failed to create Stripe session");
-      redirectUrl = data.session.url;
+      if (!data.checkoutUrl) throw new Error(data.error || "Failed to create Lemon Squeezy checkout");
+      redirectUrl = data.checkoutUrl;
 
-    } else if (order.paymentMethod === "PAYSTACK") {
-      const res = await fetch(`${origin}/api/paystack`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: request.headers.get("Authorization") || "" },
-        body: JSON.stringify({ orderIds }),
-      });
-      const data = await res.json();
-      if (!data.authorization_url) throw new Error(data.error || "Failed to create Paystack session");
-      redirectUrl = data.authorization_url;
+    // } else if (order.paymentMethod === "STRIPE") {
+    //   const res = await fetch(`${origin}/api/stripe`, {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json", Authorization: request.headers.get("Authorization") || "" },
+    //     body: JSON.stringify({ orderIds }),
+    //   });
+    //   const data = await res.json();
+    //   if (!data.session?.url) throw new Error(data.error || "Failed to create Stripe session");
+    //   redirectUrl = data.session.url;
 
-    } else if (order.paymentMethod === "FLUTTERWAVE") {
-      const res = await fetch(`${origin}/api/flutterwave`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: request.headers.get("Authorization") || "" },
-        body: JSON.stringify({ orderIds }),
-      });
-      const data = await res.json();
-      if (!data.payment_link) throw new Error(data.error || "Failed to create Flutterwave session");
-      redirectUrl = data.payment_link;
+    // } else if (order.paymentMethod === "PAYSTACK") {
+    //   const res = await fetch(`${origin}/api/paystack`, {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json", Authorization: request.headers.get("Authorization") || "" },
+    //     body: JSON.stringify({ orderIds }),
+    //   });
+    //   const data = await res.json();
+    //   if (!data.authorization_url) throw new Error(data.error || "Failed to create Paystack session");
+    //   redirectUrl = data.authorization_url;
+
+    // } else if (order.paymentMethod === "FLUTTERWAVE") {
+    //   const res = await fetch(`${origin}/api/flutterwave`, {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json", Authorization: request.headers.get("Authorization") || "" },
+    //     body: JSON.stringify({ orderIds }),
+    //   });
+    //   const data = await res.json();
+    //   if (!data.payment_link) throw new Error(data.error || "Failed to create Flutterwave session");
+    //   redirectUrl = data.payment_link;
     }
 
     return NextResponse.json({ redirectUrl });

@@ -107,12 +107,10 @@ export type Payout = $Result.DefaultSelection<Prisma.$PayoutPayload>
  */
 export type PlatformConfig = $Result.DefaultSelection<Prisma.$PlatformConfigPayload>
 /**
- * Model AuditLog
- * *
- *  * Audit log — immutable record of admin actions.
- *  * Written on every significant admin operation.
+ * Model AdRequest
+ * 
  */
-export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
+export type AdRequest = $Result.DefaultSelection<Prisma.$AdRequestPayload>
 
 /**
  * Enums
@@ -147,6 +145,7 @@ export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
 export const PaymentMethod: {
   COD: 'COD',
+  LEMONSQUEEZY: 'LEMONSQUEEZY',
   STRIPE: 'STRIPE',
   PAYSTACK: 'PAYSTACK',
   FLUTTERWAVE: 'FLUTTERWAVE'
@@ -180,6 +179,15 @@ export const DiscountType: {
 
 export type DiscountType = (typeof DiscountType)[keyof typeof DiscountType]
 
+
+export const AdRequestStatus: {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+export type AdRequestStatus = (typeof AdRequestStatus)[keyof typeof AdRequestStatus]
+
 }
 
 export type ProductOrigin = $Enums.ProductOrigin
@@ -209,6 +217,10 @@ export const RefundStatus: typeof $Enums.RefundStatus
 export type DiscountType = $Enums.DiscountType
 
 export const DiscountType: typeof $Enums.DiscountType
+
+export type AdRequestStatus = $Enums.AdRequestStatus
+
+export const AdRequestStatus: typeof $Enums.AdRequestStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -472,14 +484,14 @@ export class PrismaClient<
   get platformConfig(): Prisma.PlatformConfigDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.auditLog`: Exposes CRUD operations for the **AuditLog** model.
+   * `prisma.adRequest`: Exposes CRUD operations for the **AdRequest** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more AuditLogs
-    * const auditLogs = await prisma.auditLog.findMany()
+    * // Fetch zero or more AdRequests
+    * const adRequests = await prisma.adRequest.findMany()
     * ```
     */
-  get auditLog(): Prisma.AuditLogDelegate<ExtArgs, ClientOptions>;
+  get adRequest(): Prisma.AdRequestDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -928,7 +940,7 @@ export namespace Prisma {
     Store: 'Store',
     Payout: 'Payout',
     PlatformConfig: 'PlatformConfig',
-    AuditLog: 'AuditLog'
+    AdRequest: 'AdRequest'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -944,7 +956,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "notification" | "product" | "productVariantGroup" | "productVariantOption" | "order" | "orderItem" | "refund" | "rating" | "address" | "coupon" | "store" | "payout" | "platformConfig" | "auditLog"
+      modelProps: "user" | "notification" | "product" | "productVariantGroup" | "productVariantOption" | "order" | "orderItem" | "refund" | "rating" | "address" | "coupon" | "store" | "payout" | "platformConfig" | "adRequest"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1984,77 +1996,77 @@ export namespace Prisma {
           }
         }
       }
-      AuditLog: {
-        payload: Prisma.$AuditLogPayload<ExtArgs>
-        fields: Prisma.AuditLogFieldRefs
+      AdRequest: {
+        payload: Prisma.$AdRequestPayload<ExtArgs>
+        fields: Prisma.AdRequestFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.AuditLogFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload> | null
+            args: Prisma.AdRequestFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdRequestPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.AuditLogFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+            args: Prisma.AdRequestFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdRequestPayload>
           }
           findFirst: {
-            args: Prisma.AuditLogFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload> | null
+            args: Prisma.AdRequestFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdRequestPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.AuditLogFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+            args: Prisma.AdRequestFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdRequestPayload>
           }
           findMany: {
-            args: Prisma.AuditLogFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>[]
+            args: Prisma.AdRequestFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdRequestPayload>[]
           }
           create: {
-            args: Prisma.AuditLogCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+            args: Prisma.AdRequestCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdRequestPayload>
           }
           createMany: {
-            args: Prisma.AuditLogCreateManyArgs<ExtArgs>
+            args: Prisma.AdRequestCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.AuditLogCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>[]
+            args: Prisma.AdRequestCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdRequestPayload>[]
           }
           delete: {
-            args: Prisma.AuditLogDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+            args: Prisma.AdRequestDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdRequestPayload>
           }
           update: {
-            args: Prisma.AuditLogUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+            args: Prisma.AdRequestUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdRequestPayload>
           }
           deleteMany: {
-            args: Prisma.AuditLogDeleteManyArgs<ExtArgs>
+            args: Prisma.AdRequestDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.AuditLogUpdateManyArgs<ExtArgs>
+            args: Prisma.AdRequestUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.AuditLogUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>[]
+            args: Prisma.AdRequestUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdRequestPayload>[]
           }
           upsert: {
-            args: Prisma.AuditLogUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+            args: Prisma.AdRequestUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdRequestPayload>
           }
           aggregate: {
-            args: Prisma.AuditLogAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateAuditLog>
+            args: Prisma.AdRequestAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdRequest>
           }
           groupBy: {
-            args: Prisma.AuditLogGroupByArgs<ExtArgs>
-            result: $Utils.Optional<AuditLogGroupByOutputType>[]
+            args: Prisma.AdRequestGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdRequestGroupByOutputType>[]
           }
           count: {
-            args: Prisma.AuditLogCountArgs<ExtArgs>
-            result: $Utils.Optional<AuditLogCountAggregateOutputType> | number
+            args: Prisma.AdRequestCountArgs<ExtArgs>
+            result: $Utils.Optional<AdRequestCountAggregateOutputType> | number
           }
         }
       }
@@ -2180,7 +2192,7 @@ export namespace Prisma {
     store?: StoreOmit
     payout?: PayoutOmit
     platformConfig?: PlatformConfigOmit
-    auditLog?: AuditLogOmit
+    adRequest?: AdRequestOmit
   }
 
   /* Types for Logging */
@@ -2331,12 +2343,14 @@ export namespace Prisma {
     orderItems: number
     rating: number
     variantGroups: number
+    adRequests: number
   }
 
   export type ProductCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orderItems?: boolean | ProductCountOutputTypeCountOrderItemsArgs
     rating?: boolean | ProductCountOutputTypeCountRatingArgs
     variantGroups?: boolean | ProductCountOutputTypeCountVariantGroupsArgs
+    adRequests?: boolean | ProductCountOutputTypeCountAdRequestsArgs
   }
 
   // Custom InputTypes
@@ -2369,6 +2383,13 @@ export namespace Prisma {
    */
   export type ProductCountOutputTypeCountVariantGroupsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProductVariantGroupWhereInput
+  }
+
+  /**
+   * ProductCountOutputType without action
+   */
+  export type ProductCountOutputTypeCountAdRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdRequestWhereInput
   }
 
 
@@ -2474,6 +2495,7 @@ export namespace Prisma {
     Order: number
     Payout: number
     Coupon: number
+    adRequests: number
   }
 
   export type StoreCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2481,6 +2503,7 @@ export namespace Prisma {
     Order?: boolean | StoreCountOutputTypeCountOrderArgs
     Payout?: boolean | StoreCountOutputTypeCountPayoutArgs
     Coupon?: boolean | StoreCountOutputTypeCountCouponArgs
+    adRequests?: boolean | StoreCountOutputTypeCountAdRequestsArgs
   }
 
   // Custom InputTypes
@@ -2520,6 +2543,13 @@ export namespace Prisma {
    */
   export type StoreCountOutputTypeCountCouponArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CouponWhereInput
+  }
+
+  /**
+   * StoreCountOutputType without action
+   */
+  export type StoreCountOutputTypeCountAdRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdRequestWhereInput
   }
 
 
@@ -5210,6 +5240,7 @@ export namespace Prisma {
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
     rating?: boolean | Product$ratingArgs<ExtArgs>
     variantGroups?: boolean | Product$variantGroupsArgs<ExtArgs>
+    adRequests?: boolean | Product$adRequestsArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
@@ -5299,6 +5330,7 @@ export namespace Prisma {
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
     rating?: boolean | Product$ratingArgs<ExtArgs>
     variantGroups?: boolean | Product$variantGroupsArgs<ExtArgs>
+    adRequests?: boolean | Product$adRequestsArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProductIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5315,6 +5347,7 @@ export namespace Prisma {
       orderItems: Prisma.$OrderItemPayload<ExtArgs>[]
       rating: Prisma.$RatingPayload<ExtArgs>[]
       variantGroups: Prisma.$ProductVariantGroupPayload<ExtArgs>[]
+      adRequests: Prisma.$AdRequestPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5741,6 +5774,7 @@ export namespace Prisma {
     orderItems<T extends Product$orderItemsArgs<ExtArgs> = {}>(args?: Subset<T, Product$orderItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rating<T extends Product$ratingArgs<ExtArgs> = {}>(args?: Subset<T, Product$ratingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RatingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     variantGroups<T extends Product$variantGroupsArgs<ExtArgs> = {}>(args?: Subset<T, Product$variantGroupsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductVariantGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    adRequests<T extends Product$adRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Product$adRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6263,6 +6297,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ProductVariantGroupScalarFieldEnum | ProductVariantGroupScalarFieldEnum[]
+  }
+
+  /**
+   * Product.adRequests
+   */
+  export type Product$adRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdRequest
+     */
+    select?: AdRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdRequest
+     */
+    omit?: AdRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdRequestInclude<ExtArgs> | null
+    where?: AdRequestWhereInput
+    orderBy?: AdRequestOrderByWithRelationInput | AdRequestOrderByWithRelationInput[]
+    cursor?: AdRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AdRequestScalarFieldEnum | AdRequestScalarFieldEnum[]
   }
 
   /**
@@ -16045,6 +16103,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     Payout?: boolean | Store$PayoutArgs<ExtArgs>
     Coupon?: boolean | Store$CouponArgs<ExtArgs>
+    adRequests?: boolean | Store$adRequestsArgs<ExtArgs>
     _count?: boolean | StoreCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["store"]>
 
@@ -16147,6 +16206,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     Payout?: boolean | Store$PayoutArgs<ExtArgs>
     Coupon?: boolean | Store$CouponArgs<ExtArgs>
+    adRequests?: boolean | Store$adRequestsArgs<ExtArgs>
     _count?: boolean | StoreCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StoreIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16164,6 +16224,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
       Payout: Prisma.$PayoutPayload<ExtArgs>[]
       Coupon: Prisma.$CouponPayload<ExtArgs>[]
+      adRequests: Prisma.$AdRequestPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -16592,6 +16653,7 @@ export namespace Prisma {
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     Payout<T extends Store$PayoutArgs<ExtArgs> = {}>(args?: Subset<T, Store$PayoutArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Coupon<T extends Store$CouponArgs<ExtArgs> = {}>(args?: Subset<T, Store$CouponArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    adRequests<T extends Store$adRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Store$adRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17142,6 +17204,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CouponScalarFieldEnum | CouponScalarFieldEnum[]
+  }
+
+  /**
+   * Store.adRequests
+   */
+  export type Store$adRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdRequest
+     */
+    select?: AdRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdRequest
+     */
+    omit?: AdRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdRequestInclude<ExtArgs> | null
+    where?: AdRequestWhereInput
+    orderBy?: AdRequestOrderByWithRelationInput | AdRequestOrderByWithRelationInput[]
+    cursor?: AdRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AdRequestScalarFieldEnum | AdRequestScalarFieldEnum[]
   }
 
   /**
@@ -19261,368 +19347,405 @@ export namespace Prisma {
 
 
   /**
-   * Model AuditLog
+   * Model AdRequest
    */
 
-  export type AggregateAuditLog = {
-    _count: AuditLogCountAggregateOutputType | null
-    _min: AuditLogMinAggregateOutputType | null
-    _max: AuditLogMaxAggregateOutputType | null
+  export type AggregateAdRequest = {
+    _count: AdRequestCountAggregateOutputType | null
+    _min: AdRequestMinAggregateOutputType | null
+    _max: AdRequestMaxAggregateOutputType | null
   }
 
-  export type AuditLogMinAggregateOutputType = {
+  export type AdRequestMinAggregateOutputType = {
     id: string | null
-    adminId: string | null
-    adminEmail: string | null
-    action: string | null
-    targetType: string | null
-    targetId: string | null
+    productId: string | null
+    storeId: string | null
+    status: $Enums.AdRequestStatus | null
+    requestedAt: Date | null
+    approvedAt: Date | null
+    adminNote: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
-  export type AuditLogMaxAggregateOutputType = {
+  export type AdRequestMaxAggregateOutputType = {
     id: string | null
-    adminId: string | null
-    adminEmail: string | null
-    action: string | null
-    targetType: string | null
-    targetId: string | null
+    productId: string | null
+    storeId: string | null
+    status: $Enums.AdRequestStatus | null
+    requestedAt: Date | null
+    approvedAt: Date | null
+    adminNote: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
-  export type AuditLogCountAggregateOutputType = {
+  export type AdRequestCountAggregateOutputType = {
     id: number
-    adminId: number
-    adminEmail: number
-    action: number
-    targetType: number
-    targetId: number
-    details: number
+    productId: number
+    storeId: number
+    status: number
+    requestedAt: number
+    approvedAt: number
+    adminNote: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
 
-  export type AuditLogMinAggregateInputType = {
+  export type AdRequestMinAggregateInputType = {
     id?: true
-    adminId?: true
-    adminEmail?: true
-    action?: true
-    targetType?: true
-    targetId?: true
+    productId?: true
+    storeId?: true
+    status?: true
+    requestedAt?: true
+    approvedAt?: true
+    adminNote?: true
     createdAt?: true
+    updatedAt?: true
   }
 
-  export type AuditLogMaxAggregateInputType = {
+  export type AdRequestMaxAggregateInputType = {
     id?: true
-    adminId?: true
-    adminEmail?: true
-    action?: true
-    targetType?: true
-    targetId?: true
+    productId?: true
+    storeId?: true
+    status?: true
+    requestedAt?: true
+    approvedAt?: true
+    adminNote?: true
     createdAt?: true
+    updatedAt?: true
   }
 
-  export type AuditLogCountAggregateInputType = {
+  export type AdRequestCountAggregateInputType = {
     id?: true
-    adminId?: true
-    adminEmail?: true
-    action?: true
-    targetType?: true
-    targetId?: true
-    details?: true
+    productId?: true
+    storeId?: true
+    status?: true
+    requestedAt?: true
+    approvedAt?: true
+    adminNote?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
-  export type AuditLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which AuditLog to aggregate.
+     * Filter which AdRequest to aggregate.
      */
-    where?: AuditLogWhereInput
+    where?: AdRequestWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of AuditLogs to fetch.
+     * Determine the order of AdRequests to fetch.
      */
-    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    orderBy?: AdRequestOrderByWithRelationInput | AdRequestOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: AuditLogWhereUniqueInput
+    cursor?: AdRequestWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` AuditLogs from the position of the cursor.
+     * Take `±n` AdRequests from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` AuditLogs.
+     * Skip the first `n` AdRequests.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned AuditLogs
+     * Count returned AdRequests
     **/
-    _count?: true | AuditLogCountAggregateInputType
+    _count?: true | AdRequestCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: AuditLogMinAggregateInputType
+    _min?: AdRequestMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: AuditLogMaxAggregateInputType
+    _max?: AdRequestMaxAggregateInputType
   }
 
-  export type GetAuditLogAggregateType<T extends AuditLogAggregateArgs> = {
-        [P in keyof T & keyof AggregateAuditLog]: P extends '_count' | 'count'
+  export type GetAdRequestAggregateType<T extends AdRequestAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdRequest]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateAuditLog[P]>
-      : GetScalarType<T[P], AggregateAuditLog[P]>
+        : GetScalarType<T[P], AggregateAdRequest[P]>
+      : GetScalarType<T[P], AggregateAdRequest[P]>
   }
 
 
 
 
-  export type AuditLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AuditLogWhereInput
-    orderBy?: AuditLogOrderByWithAggregationInput | AuditLogOrderByWithAggregationInput[]
-    by: AuditLogScalarFieldEnum[] | AuditLogScalarFieldEnum
-    having?: AuditLogScalarWhereWithAggregatesInput
+  export type AdRequestGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdRequestWhereInput
+    orderBy?: AdRequestOrderByWithAggregationInput | AdRequestOrderByWithAggregationInput[]
+    by: AdRequestScalarFieldEnum[] | AdRequestScalarFieldEnum
+    having?: AdRequestScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: AuditLogCountAggregateInputType | true
-    _min?: AuditLogMinAggregateInputType
-    _max?: AuditLogMaxAggregateInputType
+    _count?: AdRequestCountAggregateInputType | true
+    _min?: AdRequestMinAggregateInputType
+    _max?: AdRequestMaxAggregateInputType
   }
 
-  export type AuditLogGroupByOutputType = {
+  export type AdRequestGroupByOutputType = {
     id: string
-    adminId: string
-    adminEmail: string
-    action: string
-    targetType: string
-    targetId: string
-    details: JsonValue | null
+    productId: string
+    storeId: string
+    status: $Enums.AdRequestStatus
+    requestedAt: Date
+    approvedAt: Date | null
+    adminNote: string | null
     createdAt: Date
-    _count: AuditLogCountAggregateOutputType | null
-    _min: AuditLogMinAggregateOutputType | null
-    _max: AuditLogMaxAggregateOutputType | null
+    updatedAt: Date
+    _count: AdRequestCountAggregateOutputType | null
+    _min: AdRequestMinAggregateOutputType | null
+    _max: AdRequestMaxAggregateOutputType | null
   }
 
-  type GetAuditLogGroupByPayload<T extends AuditLogGroupByArgs> = Prisma.PrismaPromise<
+  type GetAdRequestGroupByPayload<T extends AdRequestGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<AuditLogGroupByOutputType, T['by']> &
+      PickEnumerable<AdRequestGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof AuditLogGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof AdRequestGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], AuditLogGroupByOutputType[P]>
-            : GetScalarType<T[P], AuditLogGroupByOutputType[P]>
+              : GetScalarType<T[P], AdRequestGroupByOutputType[P]>
+            : GetScalarType<T[P], AdRequestGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type AuditLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type AdRequestSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    adminId?: boolean
-    adminEmail?: boolean
-    action?: boolean
-    targetType?: boolean
-    targetId?: boolean
-    details?: boolean
+    productId?: boolean
+    storeId?: boolean
+    status?: boolean
+    requestedAt?: boolean
+    approvedAt?: boolean
+    adminNote?: boolean
     createdAt?: boolean
-  }, ExtArgs["result"]["auditLog"]>
+    updatedAt?: boolean
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["adRequest"]>
 
-  export type AuditLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type AdRequestSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    adminId?: boolean
-    adminEmail?: boolean
-    action?: boolean
-    targetType?: boolean
-    targetId?: boolean
-    details?: boolean
+    productId?: boolean
+    storeId?: boolean
+    status?: boolean
+    requestedAt?: boolean
+    approvedAt?: boolean
+    adminNote?: boolean
     createdAt?: boolean
-  }, ExtArgs["result"]["auditLog"]>
+    updatedAt?: boolean
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["adRequest"]>
 
-  export type AuditLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type AdRequestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    adminId?: boolean
-    adminEmail?: boolean
-    action?: boolean
-    targetType?: boolean
-    targetId?: boolean
-    details?: boolean
+    productId?: boolean
+    storeId?: boolean
+    status?: boolean
+    requestedAt?: boolean
+    approvedAt?: boolean
+    adminNote?: boolean
     createdAt?: boolean
-  }, ExtArgs["result"]["auditLog"]>
+    updatedAt?: boolean
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["adRequest"]>
 
-  export type AuditLogSelectScalar = {
+  export type AdRequestSelectScalar = {
     id?: boolean
-    adminId?: boolean
-    adminEmail?: boolean
-    action?: boolean
-    targetType?: boolean
-    targetId?: boolean
-    details?: boolean
+    productId?: boolean
+    storeId?: boolean
+    status?: boolean
+    requestedAt?: boolean
+    approvedAt?: boolean
+    adminNote?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type AuditLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "adminId" | "adminEmail" | "action" | "targetType" | "targetId" | "details" | "createdAt", ExtArgs["result"]["auditLog"]>
+  export type AdRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "storeId" | "status" | "requestedAt" | "approvedAt" | "adminNote" | "createdAt" | "updatedAt", ExtArgs["result"]["adRequest"]>
+  export type AdRequestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }
+  export type AdRequestIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }
+  export type AdRequestIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }
 
-  export type $AuditLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "AuditLog"
-    objects: {}
+  export type $AdRequestPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AdRequest"
+    objects: {
+      product: Prisma.$ProductPayload<ExtArgs>
+      store: Prisma.$StorePayload<ExtArgs>
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      adminId: string
-      adminEmail: string
-      action: string
-      targetType: string
-      targetId: string
-      details: Prisma.JsonValue | null
+      productId: string
+      storeId: string
+      status: $Enums.AdRequestStatus
+      requestedAt: Date
+      approvedAt: Date | null
+      adminNote: string | null
       createdAt: Date
-    }, ExtArgs["result"]["auditLog"]>
+      updatedAt: Date
+    }, ExtArgs["result"]["adRequest"]>
     composites: {}
   }
 
-  type AuditLogGetPayload<S extends boolean | null | undefined | AuditLogDefaultArgs> = $Result.GetResult<Prisma.$AuditLogPayload, S>
+  type AdRequestGetPayload<S extends boolean | null | undefined | AdRequestDefaultArgs> = $Result.GetResult<Prisma.$AdRequestPayload, S>
 
-  type AuditLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<AuditLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: AuditLogCountAggregateInputType | true
+  type AdRequestCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdRequestFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdRequestCountAggregateInputType | true
     }
 
-  export interface AuditLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AuditLog'], meta: { name: 'AuditLog' } }
+  export interface AdRequestDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AdRequest'], meta: { name: 'AdRequest' } }
     /**
-     * Find zero or one AuditLog that matches the filter.
-     * @param {AuditLogFindUniqueArgs} args - Arguments to find a AuditLog
+     * Find zero or one AdRequest that matches the filter.
+     * @param {AdRequestFindUniqueArgs} args - Arguments to find a AdRequest
      * @example
-     * // Get one AuditLog
-     * const auditLog = await prisma.auditLog.findUnique({
+     * // Get one AdRequest
+     * const adRequest = await prisma.adRequest.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends AuditLogFindUniqueArgs>(args: SelectSubset<T, AuditLogFindUniqueArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends AdRequestFindUniqueArgs>(args: SelectSubset<T, AdRequestFindUniqueArgs<ExtArgs>>): Prisma__AdRequestClient<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one AuditLog that matches the filter or throw an error with `error.code='P2025'`
+     * Find one AdRequest that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {AuditLogFindUniqueOrThrowArgs} args - Arguments to find a AuditLog
+     * @param {AdRequestFindUniqueOrThrowArgs} args - Arguments to find a AdRequest
      * @example
-     * // Get one AuditLog
-     * const auditLog = await prisma.auditLog.findUniqueOrThrow({
+     * // Get one AdRequest
+     * const adRequest = await prisma.adRequest.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends AuditLogFindUniqueOrThrowArgs>(args: SelectSubset<T, AuditLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends AdRequestFindUniqueOrThrowArgs>(args: SelectSubset<T, AdRequestFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdRequestClient<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first AuditLog that matches the filter.
+     * Find the first AdRequest that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AuditLogFindFirstArgs} args - Arguments to find a AuditLog
+     * @param {AdRequestFindFirstArgs} args - Arguments to find a AdRequest
      * @example
-     * // Get one AuditLog
-     * const auditLog = await prisma.auditLog.findFirst({
+     * // Get one AdRequest
+     * const adRequest = await prisma.adRequest.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends AuditLogFindFirstArgs>(args?: SelectSubset<T, AuditLogFindFirstArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends AdRequestFindFirstArgs>(args?: SelectSubset<T, AdRequestFindFirstArgs<ExtArgs>>): Prisma__AdRequestClient<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first AuditLog that matches the filter or
+     * Find the first AdRequest that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AuditLogFindFirstOrThrowArgs} args - Arguments to find a AuditLog
+     * @param {AdRequestFindFirstOrThrowArgs} args - Arguments to find a AdRequest
      * @example
-     * // Get one AuditLog
-     * const auditLog = await prisma.auditLog.findFirstOrThrow({
+     * // Get one AdRequest
+     * const adRequest = await prisma.adRequest.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends AuditLogFindFirstOrThrowArgs>(args?: SelectSubset<T, AuditLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends AdRequestFindFirstOrThrowArgs>(args?: SelectSubset<T, AdRequestFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdRequestClient<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more AuditLogs that matches the filter.
+     * Find zero or more AdRequests that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AuditLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {AdRequestFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all AuditLogs
-     * const auditLogs = await prisma.auditLog.findMany()
+     * // Get all AdRequests
+     * const adRequests = await prisma.adRequest.findMany()
      * 
-     * // Get first 10 AuditLogs
-     * const auditLogs = await prisma.auditLog.findMany({ take: 10 })
+     * // Get first 10 AdRequests
+     * const adRequests = await prisma.adRequest.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const auditLogWithIdOnly = await prisma.auditLog.findMany({ select: { id: true } })
+     * const adRequestWithIdOnly = await prisma.adRequest.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends AuditLogFindManyArgs>(args?: SelectSubset<T, AuditLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends AdRequestFindManyArgs>(args?: SelectSubset<T, AdRequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a AuditLog.
-     * @param {AuditLogCreateArgs} args - Arguments to create a AuditLog.
+     * Create a AdRequest.
+     * @param {AdRequestCreateArgs} args - Arguments to create a AdRequest.
      * @example
-     * // Create one AuditLog
-     * const AuditLog = await prisma.auditLog.create({
+     * // Create one AdRequest
+     * const AdRequest = await prisma.adRequest.create({
      *   data: {
-     *     // ... data to create a AuditLog
+     *     // ... data to create a AdRequest
      *   }
      * })
      * 
      */
-    create<T extends AuditLogCreateArgs>(args: SelectSubset<T, AuditLogCreateArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends AdRequestCreateArgs>(args: SelectSubset<T, AdRequestCreateArgs<ExtArgs>>): Prisma__AdRequestClient<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many AuditLogs.
-     * @param {AuditLogCreateManyArgs} args - Arguments to create many AuditLogs.
+     * Create many AdRequests.
+     * @param {AdRequestCreateManyArgs} args - Arguments to create many AdRequests.
      * @example
-     * // Create many AuditLogs
-     * const auditLog = await prisma.auditLog.createMany({
+     * // Create many AdRequests
+     * const adRequest = await prisma.adRequest.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends AuditLogCreateManyArgs>(args?: SelectSubset<T, AuditLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends AdRequestCreateManyArgs>(args?: SelectSubset<T, AdRequestCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many AuditLogs and returns the data saved in the database.
-     * @param {AuditLogCreateManyAndReturnArgs} args - Arguments to create many AuditLogs.
+     * Create many AdRequests and returns the data saved in the database.
+     * @param {AdRequestCreateManyAndReturnArgs} args - Arguments to create many AdRequests.
      * @example
-     * // Create many AuditLogs
-     * const auditLog = await prisma.auditLog.createManyAndReturn({
+     * // Create many AdRequests
+     * const adRequest = await prisma.adRequest.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many AuditLogs and only return the `id`
-     * const auditLogWithIdOnly = await prisma.auditLog.createManyAndReturn({
+     * // Create many AdRequests and only return the `id`
+     * const adRequestWithIdOnly = await prisma.adRequest.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -19632,28 +19755,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends AuditLogCreateManyAndReturnArgs>(args?: SelectSubset<T, AuditLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends AdRequestCreateManyAndReturnArgs>(args?: SelectSubset<T, AdRequestCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a AuditLog.
-     * @param {AuditLogDeleteArgs} args - Arguments to delete one AuditLog.
+     * Delete a AdRequest.
+     * @param {AdRequestDeleteArgs} args - Arguments to delete one AdRequest.
      * @example
-     * // Delete one AuditLog
-     * const AuditLog = await prisma.auditLog.delete({
+     * // Delete one AdRequest
+     * const AdRequest = await prisma.adRequest.delete({
      *   where: {
-     *     // ... filter to delete one AuditLog
+     *     // ... filter to delete one AdRequest
      *   }
      * })
      * 
      */
-    delete<T extends AuditLogDeleteArgs>(args: SelectSubset<T, AuditLogDeleteArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends AdRequestDeleteArgs>(args: SelectSubset<T, AdRequestDeleteArgs<ExtArgs>>): Prisma__AdRequestClient<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one AuditLog.
-     * @param {AuditLogUpdateArgs} args - Arguments to update one AuditLog.
+     * Update one AdRequest.
+     * @param {AdRequestUpdateArgs} args - Arguments to update one AdRequest.
      * @example
-     * // Update one AuditLog
-     * const auditLog = await prisma.auditLog.update({
+     * // Update one AdRequest
+     * const adRequest = await prisma.adRequest.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -19663,30 +19786,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends AuditLogUpdateArgs>(args: SelectSubset<T, AuditLogUpdateArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends AdRequestUpdateArgs>(args: SelectSubset<T, AdRequestUpdateArgs<ExtArgs>>): Prisma__AdRequestClient<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more AuditLogs.
-     * @param {AuditLogDeleteManyArgs} args - Arguments to filter AuditLogs to delete.
+     * Delete zero or more AdRequests.
+     * @param {AdRequestDeleteManyArgs} args - Arguments to filter AdRequests to delete.
      * @example
-     * // Delete a few AuditLogs
-     * const { count } = await prisma.auditLog.deleteMany({
+     * // Delete a few AdRequests
+     * const { count } = await prisma.adRequest.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends AuditLogDeleteManyArgs>(args?: SelectSubset<T, AuditLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends AdRequestDeleteManyArgs>(args?: SelectSubset<T, AdRequestDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more AuditLogs.
+     * Update zero or more AdRequests.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AuditLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {AdRequestUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many AuditLogs
-     * const auditLog = await prisma.auditLog.updateMany({
+     * // Update many AdRequests
+     * const adRequest = await prisma.adRequest.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -19696,14 +19819,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends AuditLogUpdateManyArgs>(args: SelectSubset<T, AuditLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends AdRequestUpdateManyArgs>(args: SelectSubset<T, AdRequestUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more AuditLogs and returns the data updated in the database.
-     * @param {AuditLogUpdateManyAndReturnArgs} args - Arguments to update many AuditLogs.
+     * Update zero or more AdRequests and returns the data updated in the database.
+     * @param {AdRequestUpdateManyAndReturnArgs} args - Arguments to update many AdRequests.
      * @example
-     * // Update many AuditLogs
-     * const auditLog = await prisma.auditLog.updateManyAndReturn({
+     * // Update many AdRequests
+     * const adRequest = await prisma.adRequest.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -19712,8 +19835,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more AuditLogs and only return the `id`
-     * const auditLogWithIdOnly = await prisma.auditLog.updateManyAndReturn({
+     * // Update zero or more AdRequests and only return the `id`
+     * const adRequestWithIdOnly = await prisma.adRequest.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -19726,56 +19849,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends AuditLogUpdateManyAndReturnArgs>(args: SelectSubset<T, AuditLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends AdRequestUpdateManyAndReturnArgs>(args: SelectSubset<T, AdRequestUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one AuditLog.
-     * @param {AuditLogUpsertArgs} args - Arguments to update or create a AuditLog.
+     * Create or update one AdRequest.
+     * @param {AdRequestUpsertArgs} args - Arguments to update or create a AdRequest.
      * @example
-     * // Update or create a AuditLog
-     * const auditLog = await prisma.auditLog.upsert({
+     * // Update or create a AdRequest
+     * const adRequest = await prisma.adRequest.upsert({
      *   create: {
-     *     // ... data to create a AuditLog
+     *     // ... data to create a AdRequest
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the AuditLog we want to update
+     *     // ... the filter for the AdRequest we want to update
      *   }
      * })
      */
-    upsert<T extends AuditLogUpsertArgs>(args: SelectSubset<T, AuditLogUpsertArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends AdRequestUpsertArgs>(args: SelectSubset<T, AdRequestUpsertArgs<ExtArgs>>): Prisma__AdRequestClient<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of AuditLogs.
+     * Count the number of AdRequests.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AuditLogCountArgs} args - Arguments to filter AuditLogs to count.
+     * @param {AdRequestCountArgs} args - Arguments to filter AdRequests to count.
      * @example
-     * // Count the number of AuditLogs
-     * const count = await prisma.auditLog.count({
+     * // Count the number of AdRequests
+     * const count = await prisma.adRequest.count({
      *   where: {
-     *     // ... the filter for the AuditLogs we want to count
+     *     // ... the filter for the AdRequests we want to count
      *   }
      * })
     **/
-    count<T extends AuditLogCountArgs>(
-      args?: Subset<T, AuditLogCountArgs>,
+    count<T extends AdRequestCountArgs>(
+      args?: Subset<T, AdRequestCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], AuditLogCountAggregateOutputType>
+          : GetScalarType<T['select'], AdRequestCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a AuditLog.
+     * Allows you to perform aggregations operations on a AdRequest.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AuditLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {AdRequestAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -19795,13 +19918,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends AuditLogAggregateArgs>(args: Subset<T, AuditLogAggregateArgs>): Prisma.PrismaPromise<GetAuditLogAggregateType<T>>
+    aggregate<T extends AdRequestAggregateArgs>(args: Subset<T, AdRequestAggregateArgs>): Prisma.PrismaPromise<GetAdRequestAggregateType<T>>
 
     /**
-     * Group by AuditLog.
+     * Group by AdRequest.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AuditLogGroupByArgs} args - Group by arguments.
+     * @param {AdRequestGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -19816,14 +19939,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends AuditLogGroupByArgs,
+      T extends AdRequestGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: AuditLogGroupByArgs['orderBy'] }
-        : { orderBy?: AuditLogGroupByArgs['orderBy'] },
+        ? { orderBy: AdRequestGroupByArgs['orderBy'] }
+        : { orderBy?: AdRequestGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -19872,21 +19995,23 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, AuditLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAuditLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, AdRequestGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdRequestGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the AuditLog model
+   * Fields of the AdRequest model
    */
-  readonly fields: AuditLogFieldRefs;
+  readonly fields: AdRequestFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for AuditLog.
+   * The delegate class that acts as a "Promise-like" for AdRequest.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__AuditLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__AdRequestClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    store<T extends StoreDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StoreDefaultArgs<ExtArgs>>): Prisma__StoreClient<$Result.GetResult<Prisma.$StorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -19913,385 +20038,434 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the AuditLog model
+   * Fields of the AdRequest model
    */
-  interface AuditLogFieldRefs {
-    readonly id: FieldRef<"AuditLog", 'String'>
-    readonly adminId: FieldRef<"AuditLog", 'String'>
-    readonly adminEmail: FieldRef<"AuditLog", 'String'>
-    readonly action: FieldRef<"AuditLog", 'String'>
-    readonly targetType: FieldRef<"AuditLog", 'String'>
-    readonly targetId: FieldRef<"AuditLog", 'String'>
-    readonly details: FieldRef<"AuditLog", 'Json'>
-    readonly createdAt: FieldRef<"AuditLog", 'DateTime'>
+  interface AdRequestFieldRefs {
+    readonly id: FieldRef<"AdRequest", 'String'>
+    readonly productId: FieldRef<"AdRequest", 'String'>
+    readonly storeId: FieldRef<"AdRequest", 'String'>
+    readonly status: FieldRef<"AdRequest", 'AdRequestStatus'>
+    readonly requestedAt: FieldRef<"AdRequest", 'DateTime'>
+    readonly approvedAt: FieldRef<"AdRequest", 'DateTime'>
+    readonly adminNote: FieldRef<"AdRequest", 'String'>
+    readonly createdAt: FieldRef<"AdRequest", 'DateTime'>
+    readonly updatedAt: FieldRef<"AdRequest", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * AuditLog findUnique
+   * AdRequest findUnique
    */
-  export type AuditLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AuditLog
+     * Select specific fields to fetch from the AdRequest
      */
-    select?: AuditLogSelect<ExtArgs> | null
+    select?: AdRequestSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AuditLog
+     * Omit specific fields from the AdRequest
      */
-    omit?: AuditLogOmit<ExtArgs> | null
+    omit?: AdRequestOmit<ExtArgs> | null
     /**
-     * Filter, which AuditLog to fetch.
+     * Choose, which related nodes to fetch as well
      */
-    where: AuditLogWhereUniqueInput
+    include?: AdRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which AdRequest to fetch.
+     */
+    where: AdRequestWhereUniqueInput
   }
 
   /**
-   * AuditLog findUniqueOrThrow
+   * AdRequest findUniqueOrThrow
    */
-  export type AuditLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AuditLog
+     * Select specific fields to fetch from the AdRequest
      */
-    select?: AuditLogSelect<ExtArgs> | null
+    select?: AdRequestSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AuditLog
+     * Omit specific fields from the AdRequest
      */
-    omit?: AuditLogOmit<ExtArgs> | null
+    omit?: AdRequestOmit<ExtArgs> | null
     /**
-     * Filter, which AuditLog to fetch.
+     * Choose, which related nodes to fetch as well
      */
-    where: AuditLogWhereUniqueInput
+    include?: AdRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which AdRequest to fetch.
+     */
+    where: AdRequestWhereUniqueInput
   }
 
   /**
-   * AuditLog findFirst
+   * AdRequest findFirst
    */
-  export type AuditLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AuditLog
+     * Select specific fields to fetch from the AdRequest
      */
-    select?: AuditLogSelect<ExtArgs> | null
+    select?: AdRequestSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AuditLog
+     * Omit specific fields from the AdRequest
      */
-    omit?: AuditLogOmit<ExtArgs> | null
+    omit?: AdRequestOmit<ExtArgs> | null
     /**
-     * Filter, which AuditLog to fetch.
+     * Choose, which related nodes to fetch as well
      */
-    where?: AuditLogWhereInput
+    include?: AdRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which AdRequest to fetch.
+     */
+    where?: AdRequestWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of AuditLogs to fetch.
+     * Determine the order of AdRequests to fetch.
      */
-    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    orderBy?: AdRequestOrderByWithRelationInput | AdRequestOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for AuditLogs.
+     * Sets the position for searching for AdRequests.
      */
-    cursor?: AuditLogWhereUniqueInput
+    cursor?: AdRequestWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` AuditLogs from the position of the cursor.
+     * Take `±n` AdRequests from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` AuditLogs.
+     * Skip the first `n` AdRequests.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of AuditLogs.
+     * Filter by unique combinations of AdRequests.
      */
-    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+    distinct?: AdRequestScalarFieldEnum | AdRequestScalarFieldEnum[]
   }
 
   /**
-   * AuditLog findFirstOrThrow
+   * AdRequest findFirstOrThrow
    */
-  export type AuditLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AuditLog
+     * Select specific fields to fetch from the AdRequest
      */
-    select?: AuditLogSelect<ExtArgs> | null
+    select?: AdRequestSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AuditLog
+     * Omit specific fields from the AdRequest
      */
-    omit?: AuditLogOmit<ExtArgs> | null
+    omit?: AdRequestOmit<ExtArgs> | null
     /**
-     * Filter, which AuditLog to fetch.
+     * Choose, which related nodes to fetch as well
      */
-    where?: AuditLogWhereInput
+    include?: AdRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which AdRequest to fetch.
+     */
+    where?: AdRequestWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of AuditLogs to fetch.
+     * Determine the order of AdRequests to fetch.
      */
-    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    orderBy?: AdRequestOrderByWithRelationInput | AdRequestOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for AuditLogs.
+     * Sets the position for searching for AdRequests.
      */
-    cursor?: AuditLogWhereUniqueInput
+    cursor?: AdRequestWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` AuditLogs from the position of the cursor.
+     * Take `±n` AdRequests from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` AuditLogs.
+     * Skip the first `n` AdRequests.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of AuditLogs.
+     * Filter by unique combinations of AdRequests.
      */
-    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+    distinct?: AdRequestScalarFieldEnum | AdRequestScalarFieldEnum[]
   }
 
   /**
-   * AuditLog findMany
+   * AdRequest findMany
    */
-  export type AuditLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AuditLog
+     * Select specific fields to fetch from the AdRequest
      */
-    select?: AuditLogSelect<ExtArgs> | null
+    select?: AdRequestSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AuditLog
+     * Omit specific fields from the AdRequest
      */
-    omit?: AuditLogOmit<ExtArgs> | null
+    omit?: AdRequestOmit<ExtArgs> | null
     /**
-     * Filter, which AuditLogs to fetch.
+     * Choose, which related nodes to fetch as well
      */
-    where?: AuditLogWhereInput
+    include?: AdRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which AdRequests to fetch.
+     */
+    where?: AdRequestWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of AuditLogs to fetch.
+     * Determine the order of AdRequests to fetch.
      */
-    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    orderBy?: AdRequestOrderByWithRelationInput | AdRequestOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing AuditLogs.
+     * Sets the position for listing AdRequests.
      */
-    cursor?: AuditLogWhereUniqueInput
+    cursor?: AdRequestWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` AuditLogs from the position of the cursor.
+     * Take `±n` AdRequests from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` AuditLogs.
+     * Skip the first `n` AdRequests.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of AuditLogs.
+     * Filter by unique combinations of AdRequests.
      */
-    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+    distinct?: AdRequestScalarFieldEnum | AdRequestScalarFieldEnum[]
   }
 
   /**
-   * AuditLog create
+   * AdRequest create
    */
-  export type AuditLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AuditLog
+     * Select specific fields to fetch from the AdRequest
      */
-    select?: AuditLogSelect<ExtArgs> | null
+    select?: AdRequestSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AuditLog
+     * Omit specific fields from the AdRequest
      */
-    omit?: AuditLogOmit<ExtArgs> | null
+    omit?: AdRequestOmit<ExtArgs> | null
     /**
-     * The data needed to create a AuditLog.
+     * Choose, which related nodes to fetch as well
      */
-    data: XOR<AuditLogCreateInput, AuditLogUncheckedCreateInput>
+    include?: AdRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AdRequest.
+     */
+    data: XOR<AdRequestCreateInput, AdRequestUncheckedCreateInput>
   }
 
   /**
-   * AuditLog createMany
+   * AdRequest createMany
    */
-  export type AuditLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many AuditLogs.
+     * The data used to create many AdRequests.
      */
-    data: AuditLogCreateManyInput | AuditLogCreateManyInput[]
+    data: AdRequestCreateManyInput | AdRequestCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * AuditLog createManyAndReturn
+   * AdRequest createManyAndReturn
    */
-  export type AuditLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AuditLog
+     * Select specific fields to fetch from the AdRequest
      */
-    select?: AuditLogSelectCreateManyAndReturn<ExtArgs> | null
+    select?: AdRequestSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the AuditLog
+     * Omit specific fields from the AdRequest
      */
-    omit?: AuditLogOmit<ExtArgs> | null
+    omit?: AdRequestOmit<ExtArgs> | null
     /**
-     * The data used to create many AuditLogs.
+     * The data used to create many AdRequests.
      */
-    data: AuditLogCreateManyInput | AuditLogCreateManyInput[]
+    data: AdRequestCreateManyInput | AdRequestCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdRequestIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * AuditLog update
+   * AdRequest update
    */
-  export type AuditLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AuditLog
+     * Select specific fields to fetch from the AdRequest
      */
-    select?: AuditLogSelect<ExtArgs> | null
+    select?: AdRequestSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AuditLog
+     * Omit specific fields from the AdRequest
      */
-    omit?: AuditLogOmit<ExtArgs> | null
+    omit?: AdRequestOmit<ExtArgs> | null
     /**
-     * The data needed to update a AuditLog.
+     * Choose, which related nodes to fetch as well
      */
-    data: XOR<AuditLogUpdateInput, AuditLogUncheckedUpdateInput>
+    include?: AdRequestInclude<ExtArgs> | null
     /**
-     * Choose, which AuditLog to update.
+     * The data needed to update a AdRequest.
      */
-    where: AuditLogWhereUniqueInput
+    data: XOR<AdRequestUpdateInput, AdRequestUncheckedUpdateInput>
+    /**
+     * Choose, which AdRequest to update.
+     */
+    where: AdRequestWhereUniqueInput
   }
 
   /**
-   * AuditLog updateMany
+   * AdRequest updateMany
    */
-  export type AuditLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update AuditLogs.
+     * The data used to update AdRequests.
      */
-    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyInput>
+    data: XOR<AdRequestUpdateManyMutationInput, AdRequestUncheckedUpdateManyInput>
     /**
-     * Filter which AuditLogs to update
+     * Filter which AdRequests to update
      */
-    where?: AuditLogWhereInput
+    where?: AdRequestWhereInput
     /**
-     * Limit how many AuditLogs to update.
+     * Limit how many AdRequests to update.
      */
     limit?: number
   }
 
   /**
-   * AuditLog updateManyAndReturn
+   * AdRequest updateManyAndReturn
    */
-  export type AuditLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AuditLog
+     * Select specific fields to fetch from the AdRequest
      */
-    select?: AuditLogSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: AdRequestSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the AuditLog
+     * Omit specific fields from the AdRequest
      */
-    omit?: AuditLogOmit<ExtArgs> | null
+    omit?: AdRequestOmit<ExtArgs> | null
     /**
-     * The data used to update AuditLogs.
+     * The data used to update AdRequests.
      */
-    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyInput>
+    data: XOR<AdRequestUpdateManyMutationInput, AdRequestUncheckedUpdateManyInput>
     /**
-     * Filter which AuditLogs to update
+     * Filter which AdRequests to update
      */
-    where?: AuditLogWhereInput
+    where?: AdRequestWhereInput
     /**
-     * Limit how many AuditLogs to update.
+     * Limit how many AdRequests to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdRequestIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AdRequest upsert
+   */
+  export type AdRequestUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdRequest
+     */
+    select?: AdRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdRequest
+     */
+    omit?: AdRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdRequestInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AdRequest to update in case it exists.
+     */
+    where: AdRequestWhereUniqueInput
+    /**
+     * In case the AdRequest found by the `where` argument doesn't exist, create a new AdRequest with this data.
+     */
+    create: XOR<AdRequestCreateInput, AdRequestUncheckedCreateInput>
+    /**
+     * In case the AdRequest was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdRequestUpdateInput, AdRequestUncheckedUpdateInput>
+  }
+
+  /**
+   * AdRequest delete
+   */
+  export type AdRequestDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdRequest
+     */
+    select?: AdRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdRequest
+     */
+    omit?: AdRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdRequestInclude<ExtArgs> | null
+    /**
+     * Filter which AdRequest to delete.
+     */
+    where: AdRequestWhereUniqueInput
+  }
+
+  /**
+   * AdRequest deleteMany
+   */
+  export type AdRequestDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdRequests to delete
+     */
+    where?: AdRequestWhereInput
+    /**
+     * Limit how many AdRequests to delete.
      */
     limit?: number
   }
 
   /**
-   * AuditLog upsert
+   * AdRequest without action
    */
-  export type AuditLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AdRequestDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AuditLog
+     * Select specific fields to fetch from the AdRequest
      */
-    select?: AuditLogSelect<ExtArgs> | null
+    select?: AdRequestSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AuditLog
+     * Omit specific fields from the AdRequest
      */
-    omit?: AuditLogOmit<ExtArgs> | null
+    omit?: AdRequestOmit<ExtArgs> | null
     /**
-     * The filter to search for the AuditLog to update in case it exists.
+     * Choose, which related nodes to fetch as well
      */
-    where: AuditLogWhereUniqueInput
-    /**
-     * In case the AuditLog found by the `where` argument doesn't exist, create a new AuditLog with this data.
-     */
-    create: XOR<AuditLogCreateInput, AuditLogUncheckedCreateInput>
-    /**
-     * In case the AuditLog was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<AuditLogUpdateInput, AuditLogUncheckedUpdateInput>
-  }
-
-  /**
-   * AuditLog delete
-   */
-  export type AuditLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AuditLog
-     */
-    select?: AuditLogSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AuditLog
-     */
-    omit?: AuditLogOmit<ExtArgs> | null
-    /**
-     * Filter which AuditLog to delete.
-     */
-    where: AuditLogWhereUniqueInput
-  }
-
-  /**
-   * AuditLog deleteMany
-   */
-  export type AuditLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which AuditLogs to delete
-     */
-    where?: AuditLogWhereInput
-    /**
-     * Limit how many AuditLogs to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * AuditLog without action
-   */
-  export type AuditLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AuditLog
-     */
-    select?: AuditLogSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AuditLog
-     */
-    omit?: AuditLogOmit<ExtArgs> | null
+    include?: AdRequestInclude<ExtArgs> | null
   }
 
 
@@ -20548,18 +20722,19 @@ export namespace Prisma {
   export type PlatformConfigScalarFieldEnum = (typeof PlatformConfigScalarFieldEnum)[keyof typeof PlatformConfigScalarFieldEnum]
 
 
-  export const AuditLogScalarFieldEnum: {
+  export const AdRequestScalarFieldEnum: {
     id: 'id',
-    adminId: 'adminId',
-    adminEmail: 'adminEmail',
-    action: 'action',
-    targetType: 'targetType',
-    targetId: 'targetId',
-    details: 'details',
-    createdAt: 'createdAt'
+    productId: 'productId',
+    storeId: 'storeId',
+    status: 'status',
+    requestedAt: 'requestedAt',
+    approvedAt: 'approvedAt',
+    adminNote: 'adminNote',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
-  export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+  export type AdRequestScalarFieldEnum = (typeof AdRequestScalarFieldEnum)[keyof typeof AdRequestScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -20575,14 +20750,6 @@ export namespace Prisma {
   };
 
   export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
-
-
-  export const NullableJsonNullValueInput: {
-    DbNull: typeof DbNull,
-    JsonNull: typeof JsonNull
-  };
-
-  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const QueryMode: {
@@ -20788,6 +20955,20 @@ export namespace Prisma {
    */
   export type ListEnumPayoutStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayoutStatus[]'>
     
+
+
+  /**
+   * Reference to a field of type 'AdRequestStatus'
+   */
+  export type EnumAdRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdRequestStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AdRequestStatus[]'
+   */
+  export type ListEnumAdRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdRequestStatus[]'>
+    
   /**
    * Deep Input Types
    */
@@ -20981,6 +21162,7 @@ export namespace Prisma {
     orderItems?: OrderItemListRelationFilter
     rating?: RatingListRelationFilter
     variantGroups?: ProductVariantGroupListRelationFilter
+    adRequests?: AdRequestListRelationFilter
   }
 
   export type ProductOrderByWithRelationInput = {
@@ -21011,6 +21193,7 @@ export namespace Prisma {
     orderItems?: OrderItemOrderByRelationAggregateInput
     rating?: RatingOrderByRelationAggregateInput
     variantGroups?: ProductVariantGroupOrderByRelationAggregateInput
+    adRequests?: AdRequestOrderByRelationAggregateInput
   }
 
   export type ProductWhereUniqueInput = Prisma.AtLeast<{
@@ -21044,6 +21227,7 @@ export namespace Prisma {
     orderItems?: OrderItemListRelationFilter
     rating?: RatingListRelationFilter
     variantGroups?: ProductVariantGroupListRelationFilter
+    adRequests?: AdRequestListRelationFilter
   }, "id">
 
   export type ProductOrderByWithAggregationInput = {
@@ -21813,6 +21997,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     Payout?: PayoutListRelationFilter
     Coupon?: CouponListRelationFilter
+    adRequests?: AdRequestListRelationFilter
   }
 
   export type StoreOrderByWithRelationInput = {
@@ -21848,6 +22033,7 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     Payout?: PayoutOrderByRelationAggregateInput
     Coupon?: CouponOrderByRelationAggregateInput
+    adRequests?: AdRequestOrderByRelationAggregateInput
   }
 
   export type StoreWhereUniqueInput = Prisma.AtLeast<{
@@ -21886,6 +22072,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     Payout?: PayoutListRelationFilter
     Coupon?: CouponListRelationFilter
+    adRequests?: AdRequestListRelationFilter
   }, "id" | "username">
 
   export type StoreOrderByWithAggregationInput = {
@@ -22063,71 +22250,82 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"PlatformConfig"> | Date | string
   }
 
-  export type AuditLogWhereInput = {
-    AND?: AuditLogWhereInput | AuditLogWhereInput[]
-    OR?: AuditLogWhereInput[]
-    NOT?: AuditLogWhereInput | AuditLogWhereInput[]
-    id?: StringFilter<"AuditLog"> | string
-    adminId?: StringFilter<"AuditLog"> | string
-    adminEmail?: StringFilter<"AuditLog"> | string
-    action?: StringFilter<"AuditLog"> | string
-    targetType?: StringFilter<"AuditLog"> | string
-    targetId?: StringFilter<"AuditLog"> | string
-    details?: JsonNullableFilter<"AuditLog">
-    createdAt?: DateTimeFilter<"AuditLog"> | Date | string
+  export type AdRequestWhereInput = {
+    AND?: AdRequestWhereInput | AdRequestWhereInput[]
+    OR?: AdRequestWhereInput[]
+    NOT?: AdRequestWhereInput | AdRequestWhereInput[]
+    id?: StringFilter<"AdRequest"> | string
+    productId?: StringFilter<"AdRequest"> | string
+    storeId?: StringFilter<"AdRequest"> | string
+    status?: EnumAdRequestStatusFilter<"AdRequest"> | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFilter<"AdRequest"> | Date | string
+    approvedAt?: DateTimeNullableFilter<"AdRequest"> | Date | string | null
+    adminNote?: StringNullableFilter<"AdRequest"> | string | null
+    createdAt?: DateTimeFilter<"AdRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"AdRequest"> | Date | string
+    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+    store?: XOR<StoreScalarRelationFilter, StoreWhereInput>
   }
 
-  export type AuditLogOrderByWithRelationInput = {
+  export type AdRequestOrderByWithRelationInput = {
     id?: SortOrder
-    adminId?: SortOrder
-    adminEmail?: SortOrder
-    action?: SortOrder
-    targetType?: SortOrder
-    targetId?: SortOrder
-    details?: SortOrderInput | SortOrder
+    productId?: SortOrder
+    storeId?: SortOrder
+    status?: SortOrder
+    requestedAt?: SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    adminNote?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    product?: ProductOrderByWithRelationInput
+    store?: StoreOrderByWithRelationInput
   }
 
-  export type AuditLogWhereUniqueInput = Prisma.AtLeast<{
+  export type AdRequestWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: AuditLogWhereInput | AuditLogWhereInput[]
-    OR?: AuditLogWhereInput[]
-    NOT?: AuditLogWhereInput | AuditLogWhereInput[]
-    adminId?: StringFilter<"AuditLog"> | string
-    adminEmail?: StringFilter<"AuditLog"> | string
-    action?: StringFilter<"AuditLog"> | string
-    targetType?: StringFilter<"AuditLog"> | string
-    targetId?: StringFilter<"AuditLog"> | string
-    details?: JsonNullableFilter<"AuditLog">
-    createdAt?: DateTimeFilter<"AuditLog"> | Date | string
+    AND?: AdRequestWhereInput | AdRequestWhereInput[]
+    OR?: AdRequestWhereInput[]
+    NOT?: AdRequestWhereInput | AdRequestWhereInput[]
+    productId?: StringFilter<"AdRequest"> | string
+    storeId?: StringFilter<"AdRequest"> | string
+    status?: EnumAdRequestStatusFilter<"AdRequest"> | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFilter<"AdRequest"> | Date | string
+    approvedAt?: DateTimeNullableFilter<"AdRequest"> | Date | string | null
+    adminNote?: StringNullableFilter<"AdRequest"> | string | null
+    createdAt?: DateTimeFilter<"AdRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"AdRequest"> | Date | string
+    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+    store?: XOR<StoreScalarRelationFilter, StoreWhereInput>
   }, "id">
 
-  export type AuditLogOrderByWithAggregationInput = {
+  export type AdRequestOrderByWithAggregationInput = {
     id?: SortOrder
-    adminId?: SortOrder
-    adminEmail?: SortOrder
-    action?: SortOrder
-    targetType?: SortOrder
-    targetId?: SortOrder
-    details?: SortOrderInput | SortOrder
+    productId?: SortOrder
+    storeId?: SortOrder
+    status?: SortOrder
+    requestedAt?: SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    adminNote?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    _count?: AuditLogCountOrderByAggregateInput
-    _max?: AuditLogMaxOrderByAggregateInput
-    _min?: AuditLogMinOrderByAggregateInput
+    updatedAt?: SortOrder
+    _count?: AdRequestCountOrderByAggregateInput
+    _max?: AdRequestMaxOrderByAggregateInput
+    _min?: AdRequestMinOrderByAggregateInput
   }
 
-  export type AuditLogScalarWhereWithAggregatesInput = {
-    AND?: AuditLogScalarWhereWithAggregatesInput | AuditLogScalarWhereWithAggregatesInput[]
-    OR?: AuditLogScalarWhereWithAggregatesInput[]
-    NOT?: AuditLogScalarWhereWithAggregatesInput | AuditLogScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"AuditLog"> | string
-    adminId?: StringWithAggregatesFilter<"AuditLog"> | string
-    adminEmail?: StringWithAggregatesFilter<"AuditLog"> | string
-    action?: StringWithAggregatesFilter<"AuditLog"> | string
-    targetType?: StringWithAggregatesFilter<"AuditLog"> | string
-    targetId?: StringWithAggregatesFilter<"AuditLog"> | string
-    details?: JsonNullableWithAggregatesFilter<"AuditLog">
-    createdAt?: DateTimeWithAggregatesFilter<"AuditLog"> | Date | string
+  export type AdRequestScalarWhereWithAggregatesInput = {
+    AND?: AdRequestScalarWhereWithAggregatesInput | AdRequestScalarWhereWithAggregatesInput[]
+    OR?: AdRequestScalarWhereWithAggregatesInput[]
+    NOT?: AdRequestScalarWhereWithAggregatesInput | AdRequestScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AdRequest"> | string
+    productId?: StringWithAggregatesFilter<"AdRequest"> | string
+    storeId?: StringWithAggregatesFilter<"AdRequest"> | string
+    status?: EnumAdRequestStatusWithAggregatesFilter<"AdRequest"> | $Enums.AdRequestStatus
+    requestedAt?: DateTimeWithAggregatesFilter<"AdRequest"> | Date | string
+    approvedAt?: DateTimeNullableWithAggregatesFilter<"AdRequest"> | Date | string | null
+    adminNote?: StringNullableWithAggregatesFilter<"AdRequest"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AdRequest"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AdRequest"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -22337,6 +22535,7 @@ export namespace Prisma {
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
     rating?: RatingCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupCreateNestedManyWithoutProductInput
+    adRequests?: AdRequestCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateInput = {
@@ -22366,6 +22565,7 @@ export namespace Prisma {
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     rating?: RatingUncheckedCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupUncheckedCreateNestedManyWithoutProductInput
+    adRequests?: AdRequestUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductUpdateInput = {
@@ -22395,6 +22595,7 @@ export namespace Prisma {
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
     rating?: RatingUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUpdateManyWithoutProductNestedInput
+    adRequests?: AdRequestUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateInput = {
@@ -22424,6 +22625,7 @@ export namespace Prisma {
     orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     rating?: RatingUncheckedUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUncheckedUpdateManyWithoutProductNestedInput
+    adRequests?: AdRequestUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductCreateManyInput = {
@@ -23253,6 +23455,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutStoresInput
     Payout?: PayoutCreateNestedManyWithoutStoreInput
     Coupon?: CouponCreateNestedManyWithoutStoreInput
+    adRequests?: AdRequestCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateInput = {
@@ -23287,6 +23490,7 @@ export namespace Prisma {
     Order?: OrderUncheckedCreateNestedManyWithoutStoreInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutStoreInput
     Coupon?: CouponUncheckedCreateNestedManyWithoutStoreInput
+    adRequests?: AdRequestUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUpdateInput = {
@@ -23321,6 +23525,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutStoresNestedInput
     Payout?: PayoutUpdateManyWithoutStoreNestedInput
     Coupon?: CouponUpdateManyWithoutStoreNestedInput
+    adRequests?: AdRequestUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateInput = {
@@ -23355,6 +23560,7 @@ export namespace Prisma {
     Order?: OrderUncheckedUpdateManyWithoutStoreNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutStoreNestedInput
     Coupon?: CouponUncheckedUpdateManyWithoutStoreNestedInput
+    adRequests?: AdRequestUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreCreateManyInput = {
@@ -23557,81 +23763,86 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type AuditLogCreateInput = {
+  export type AdRequestCreateInput = {
     id?: string
-    adminId: string
-    adminEmail: string
-    action: string
-    targetType: string
-    targetId: string
-    details?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.AdRequestStatus
+    requestedAt?: Date | string
+    approvedAt?: Date | string | null
+    adminNote?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    product: ProductCreateNestedOneWithoutAdRequestsInput
+    store: StoreCreateNestedOneWithoutAdRequestsInput
   }
 
-  export type AuditLogUncheckedCreateInput = {
+  export type AdRequestUncheckedCreateInput = {
     id?: string
-    adminId: string
-    adminEmail: string
-    action: string
-    targetType: string
-    targetId: string
-    details?: NullableJsonNullValueInput | InputJsonValue
+    productId: string
+    storeId: string
+    status?: $Enums.AdRequestStatus
+    requestedAt?: Date | string
+    approvedAt?: Date | string | null
+    adminNote?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type AuditLogUpdateInput = {
+  export type AdRequestUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    adminId?: StringFieldUpdateOperationsInput | string
-    adminEmail?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    targetType?: StringFieldUpdateOperationsInput | string
-    targetId?: StringFieldUpdateOperationsInput | string
-    details?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    product?: ProductUpdateOneRequiredWithoutAdRequestsNestedInput
+    store?: StoreUpdateOneRequiredWithoutAdRequestsNestedInput
   }
 
-  export type AuditLogUncheckedUpdateInput = {
+  export type AdRequestUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    adminId?: StringFieldUpdateOperationsInput | string
-    adminEmail?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    targetType?: StringFieldUpdateOperationsInput | string
-    targetId?: StringFieldUpdateOperationsInput | string
-    details?: NullableJsonNullValueInput | InputJsonValue
+    productId?: StringFieldUpdateOperationsInput | string
+    storeId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type AuditLogCreateManyInput = {
+  export type AdRequestCreateManyInput = {
     id?: string
-    adminId: string
-    adminEmail: string
-    action: string
-    targetType: string
-    targetId: string
-    details?: NullableJsonNullValueInput | InputJsonValue
+    productId: string
+    storeId: string
+    status?: $Enums.AdRequestStatus
+    requestedAt?: Date | string
+    approvedAt?: Date | string | null
+    adminNote?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type AuditLogUpdateManyMutationInput = {
+  export type AdRequestUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    adminId?: StringFieldUpdateOperationsInput | string
-    adminEmail?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    targetType?: StringFieldUpdateOperationsInput | string
-    targetId?: StringFieldUpdateOperationsInput | string
-    details?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type AuditLogUncheckedUpdateManyInput = {
+  export type AdRequestUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    adminId?: StringFieldUpdateOperationsInput | string
-    adminEmail?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    targetType?: StringFieldUpdateOperationsInput | string
-    targetId?: StringFieldUpdateOperationsInput | string
-    details?: NullableJsonNullValueInput | InputJsonValue
+    productId?: StringFieldUpdateOperationsInput | string
+    storeId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -23979,11 +24190,21 @@ export namespace Prisma {
     none?: ProductVariantGroupWhereInput
   }
 
+  export type AdRequestListRelationFilter = {
+    every?: AdRequestWhereInput
+    some?: AdRequestWhereInput
+    none?: AdRequestWhereInput
+  }
+
   export type OrderItemOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type ProductVariantGroupOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AdRequestOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -24886,85 +25107,58 @@ export namespace Prisma {
     value?: SortOrder
     updatedAt?: SortOrder
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  export type EnumAdRequestStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AdRequestStatus | EnumAdRequestStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AdRequestStatus[] | ListEnumAdRequestStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AdRequestStatus[] | ListEnumAdRequestStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAdRequestStatusFilter<$PrismaModel> | $Enums.AdRequestStatus
   }
 
-  export type AuditLogCountOrderByAggregateInput = {
+  export type AdRequestCountOrderByAggregateInput = {
     id?: SortOrder
-    adminId?: SortOrder
-    adminEmail?: SortOrder
-    action?: SortOrder
-    targetType?: SortOrder
-    targetId?: SortOrder
-    details?: SortOrder
+    productId?: SortOrder
+    storeId?: SortOrder
+    status?: SortOrder
+    requestedAt?: SortOrder
+    approvedAt?: SortOrder
+    adminNote?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
-  export type AuditLogMaxOrderByAggregateInput = {
+  export type AdRequestMaxOrderByAggregateInput = {
     id?: SortOrder
-    adminId?: SortOrder
-    adminEmail?: SortOrder
-    action?: SortOrder
-    targetType?: SortOrder
-    targetId?: SortOrder
+    productId?: SortOrder
+    storeId?: SortOrder
+    status?: SortOrder
+    requestedAt?: SortOrder
+    approvedAt?: SortOrder
+    adminNote?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
-  export type AuditLogMinOrderByAggregateInput = {
+  export type AdRequestMinOrderByAggregateInput = {
     id?: SortOrder
-    adminId?: SortOrder
-    adminEmail?: SortOrder
-    action?: SortOrder
-    targetType?: SortOrder
-    targetId?: SortOrder
+    productId?: SortOrder
+    storeId?: SortOrder
+    status?: SortOrder
+    requestedAt?: SortOrder
+    approvedAt?: SortOrder
+    adminNote?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
+  export type EnumAdRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AdRequestStatus | EnumAdRequestStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AdRequestStatus[] | ListEnumAdRequestStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AdRequestStatus[] | ListEnumAdRequestStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAdRequestStatusWithAggregatesFilter<$PrismaModel> | $Enums.AdRequestStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAdRequestStatusFilter<$PrismaModel>
+    _max?: NestedEnumAdRequestStatusFilter<$PrismaModel>
   }
 
   export type RatingCreateNestedManyWithoutUserInput = {
@@ -25242,6 +25436,13 @@ export namespace Prisma {
     connect?: ProductVariantGroupWhereUniqueInput | ProductVariantGroupWhereUniqueInput[]
   }
 
+  export type AdRequestCreateNestedManyWithoutProductInput = {
+    create?: XOR<AdRequestCreateWithoutProductInput, AdRequestUncheckedCreateWithoutProductInput> | AdRequestCreateWithoutProductInput[] | AdRequestUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: AdRequestCreateOrConnectWithoutProductInput | AdRequestCreateOrConnectWithoutProductInput[]
+    createMany?: AdRequestCreateManyProductInputEnvelope
+    connect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+  }
+
   export type OrderItemUncheckedCreateNestedManyWithoutProductInput = {
     create?: XOR<OrderItemCreateWithoutProductInput, OrderItemUncheckedCreateWithoutProductInput> | OrderItemCreateWithoutProductInput[] | OrderItemUncheckedCreateWithoutProductInput[]
     connectOrCreate?: OrderItemCreateOrConnectWithoutProductInput | OrderItemCreateOrConnectWithoutProductInput[]
@@ -25261,6 +25462,13 @@ export namespace Prisma {
     connectOrCreate?: ProductVariantGroupCreateOrConnectWithoutProductInput | ProductVariantGroupCreateOrConnectWithoutProductInput[]
     createMany?: ProductVariantGroupCreateManyProductInputEnvelope
     connect?: ProductVariantGroupWhereUniqueInput | ProductVariantGroupWhereUniqueInput[]
+  }
+
+  export type AdRequestUncheckedCreateNestedManyWithoutProductInput = {
+    create?: XOR<AdRequestCreateWithoutProductInput, AdRequestUncheckedCreateWithoutProductInput> | AdRequestCreateWithoutProductInput[] | AdRequestUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: AdRequestCreateOrConnectWithoutProductInput | AdRequestCreateOrConnectWithoutProductInput[]
+    createMany?: AdRequestCreateManyProductInputEnvelope
+    connect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -25347,6 +25555,20 @@ export namespace Prisma {
     deleteMany?: ProductVariantGroupScalarWhereInput | ProductVariantGroupScalarWhereInput[]
   }
 
+  export type AdRequestUpdateManyWithoutProductNestedInput = {
+    create?: XOR<AdRequestCreateWithoutProductInput, AdRequestUncheckedCreateWithoutProductInput> | AdRequestCreateWithoutProductInput[] | AdRequestUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: AdRequestCreateOrConnectWithoutProductInput | AdRequestCreateOrConnectWithoutProductInput[]
+    upsert?: AdRequestUpsertWithWhereUniqueWithoutProductInput | AdRequestUpsertWithWhereUniqueWithoutProductInput[]
+    createMany?: AdRequestCreateManyProductInputEnvelope
+    set?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    disconnect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    delete?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    connect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    update?: AdRequestUpdateWithWhereUniqueWithoutProductInput | AdRequestUpdateWithWhereUniqueWithoutProductInput[]
+    updateMany?: AdRequestUpdateManyWithWhereWithoutProductInput | AdRequestUpdateManyWithWhereWithoutProductInput[]
+    deleteMany?: AdRequestScalarWhereInput | AdRequestScalarWhereInput[]
+  }
+
   export type OrderItemUncheckedUpdateManyWithoutProductNestedInput = {
     create?: XOR<OrderItemCreateWithoutProductInput, OrderItemUncheckedCreateWithoutProductInput> | OrderItemCreateWithoutProductInput[] | OrderItemUncheckedCreateWithoutProductInput[]
     connectOrCreate?: OrderItemCreateOrConnectWithoutProductInput | OrderItemCreateOrConnectWithoutProductInput[]
@@ -25387,6 +25609,20 @@ export namespace Prisma {
     update?: ProductVariantGroupUpdateWithWhereUniqueWithoutProductInput | ProductVariantGroupUpdateWithWhereUniqueWithoutProductInput[]
     updateMany?: ProductVariantGroupUpdateManyWithWhereWithoutProductInput | ProductVariantGroupUpdateManyWithWhereWithoutProductInput[]
     deleteMany?: ProductVariantGroupScalarWhereInput | ProductVariantGroupScalarWhereInput[]
+  }
+
+  export type AdRequestUncheckedUpdateManyWithoutProductNestedInput = {
+    create?: XOR<AdRequestCreateWithoutProductInput, AdRequestUncheckedCreateWithoutProductInput> | AdRequestCreateWithoutProductInput[] | AdRequestUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: AdRequestCreateOrConnectWithoutProductInput | AdRequestCreateOrConnectWithoutProductInput[]
+    upsert?: AdRequestUpsertWithWhereUniqueWithoutProductInput | AdRequestUpsertWithWhereUniqueWithoutProductInput[]
+    createMany?: AdRequestCreateManyProductInputEnvelope
+    set?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    disconnect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    delete?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    connect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    update?: AdRequestUpdateWithWhereUniqueWithoutProductInput | AdRequestUpdateWithWhereUniqueWithoutProductInput[]
+    updateMany?: AdRequestUpdateManyWithWhereWithoutProductInput | AdRequestUpdateManyWithWhereWithoutProductInput[]
+    deleteMany?: AdRequestScalarWhereInput | AdRequestScalarWhereInput[]
   }
 
   export type ProductCreateNestedOneWithoutVariantGroupsInput = {
@@ -25796,6 +26032,13 @@ export namespace Prisma {
     connect?: CouponWhereUniqueInput | CouponWhereUniqueInput[]
   }
 
+  export type AdRequestCreateNestedManyWithoutStoreInput = {
+    create?: XOR<AdRequestCreateWithoutStoreInput, AdRequestUncheckedCreateWithoutStoreInput> | AdRequestCreateWithoutStoreInput[] | AdRequestUncheckedCreateWithoutStoreInput[]
+    connectOrCreate?: AdRequestCreateOrConnectWithoutStoreInput | AdRequestCreateOrConnectWithoutStoreInput[]
+    createMany?: AdRequestCreateManyStoreInputEnvelope
+    connect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+  }
+
   export type ProductUncheckedCreateNestedManyWithoutStoreInput = {
     create?: XOR<ProductCreateWithoutStoreInput, ProductUncheckedCreateWithoutStoreInput> | ProductCreateWithoutStoreInput[] | ProductUncheckedCreateWithoutStoreInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutStoreInput | ProductCreateOrConnectWithoutStoreInput[]
@@ -25822,6 +26065,13 @@ export namespace Prisma {
     connectOrCreate?: CouponCreateOrConnectWithoutStoreInput | CouponCreateOrConnectWithoutStoreInput[]
     createMany?: CouponCreateManyStoreInputEnvelope
     connect?: CouponWhereUniqueInput | CouponWhereUniqueInput[]
+  }
+
+  export type AdRequestUncheckedCreateNestedManyWithoutStoreInput = {
+    create?: XOR<AdRequestCreateWithoutStoreInput, AdRequestUncheckedCreateWithoutStoreInput> | AdRequestCreateWithoutStoreInput[] | AdRequestUncheckedCreateWithoutStoreInput[]
+    connectOrCreate?: AdRequestCreateOrConnectWithoutStoreInput | AdRequestCreateOrConnectWithoutStoreInput[]
+    createMany?: AdRequestCreateManyStoreInputEnvelope
+    connect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
   }
 
   export type ProductUpdateManyWithoutStoreNestedInput = {
@@ -25888,6 +26138,20 @@ export namespace Prisma {
     deleteMany?: CouponScalarWhereInput | CouponScalarWhereInput[]
   }
 
+  export type AdRequestUpdateManyWithoutStoreNestedInput = {
+    create?: XOR<AdRequestCreateWithoutStoreInput, AdRequestUncheckedCreateWithoutStoreInput> | AdRequestCreateWithoutStoreInput[] | AdRequestUncheckedCreateWithoutStoreInput[]
+    connectOrCreate?: AdRequestCreateOrConnectWithoutStoreInput | AdRequestCreateOrConnectWithoutStoreInput[]
+    upsert?: AdRequestUpsertWithWhereUniqueWithoutStoreInput | AdRequestUpsertWithWhereUniqueWithoutStoreInput[]
+    createMany?: AdRequestCreateManyStoreInputEnvelope
+    set?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    disconnect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    delete?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    connect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    update?: AdRequestUpdateWithWhereUniqueWithoutStoreInput | AdRequestUpdateWithWhereUniqueWithoutStoreInput[]
+    updateMany?: AdRequestUpdateManyWithWhereWithoutStoreInput | AdRequestUpdateManyWithWhereWithoutStoreInput[]
+    deleteMany?: AdRequestScalarWhereInput | AdRequestScalarWhereInput[]
+  }
+
   export type ProductUncheckedUpdateManyWithoutStoreNestedInput = {
     create?: XOR<ProductCreateWithoutStoreInput, ProductUncheckedCreateWithoutStoreInput> | ProductCreateWithoutStoreInput[] | ProductUncheckedCreateWithoutStoreInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutStoreInput | ProductCreateOrConnectWithoutStoreInput[]
@@ -25944,6 +26208,20 @@ export namespace Prisma {
     deleteMany?: CouponScalarWhereInput | CouponScalarWhereInput[]
   }
 
+  export type AdRequestUncheckedUpdateManyWithoutStoreNestedInput = {
+    create?: XOR<AdRequestCreateWithoutStoreInput, AdRequestUncheckedCreateWithoutStoreInput> | AdRequestCreateWithoutStoreInput[] | AdRequestUncheckedCreateWithoutStoreInput[]
+    connectOrCreate?: AdRequestCreateOrConnectWithoutStoreInput | AdRequestCreateOrConnectWithoutStoreInput[]
+    upsert?: AdRequestUpsertWithWhereUniqueWithoutStoreInput | AdRequestUpsertWithWhereUniqueWithoutStoreInput[]
+    createMany?: AdRequestCreateManyStoreInputEnvelope
+    set?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    disconnect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    delete?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    connect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+    update?: AdRequestUpdateWithWhereUniqueWithoutStoreInput | AdRequestUpdateWithWhereUniqueWithoutStoreInput[]
+    updateMany?: AdRequestUpdateManyWithWhereWithoutStoreInput | AdRequestUpdateManyWithWhereWithoutStoreInput[]
+    deleteMany?: AdRequestScalarWhereInput | AdRequestScalarWhereInput[]
+  }
+
   export type StoreCreateNestedOneWithoutPayoutInput = {
     create?: XOR<StoreCreateWithoutPayoutInput, StoreUncheckedCreateWithoutPayoutInput>
     connectOrCreate?: StoreCreateOrConnectWithoutPayoutInput
@@ -25960,6 +26238,38 @@ export namespace Prisma {
     upsert?: StoreUpsertWithoutPayoutInput
     connect?: StoreWhereUniqueInput
     update?: XOR<XOR<StoreUpdateToOneWithWhereWithoutPayoutInput, StoreUpdateWithoutPayoutInput>, StoreUncheckedUpdateWithoutPayoutInput>
+  }
+
+  export type ProductCreateNestedOneWithoutAdRequestsInput = {
+    create?: XOR<ProductCreateWithoutAdRequestsInput, ProductUncheckedCreateWithoutAdRequestsInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutAdRequestsInput
+    connect?: ProductWhereUniqueInput
+  }
+
+  export type StoreCreateNestedOneWithoutAdRequestsInput = {
+    create?: XOR<StoreCreateWithoutAdRequestsInput, StoreUncheckedCreateWithoutAdRequestsInput>
+    connectOrCreate?: StoreCreateOrConnectWithoutAdRequestsInput
+    connect?: StoreWhereUniqueInput
+  }
+
+  export type EnumAdRequestStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AdRequestStatus
+  }
+
+  export type ProductUpdateOneRequiredWithoutAdRequestsNestedInput = {
+    create?: XOR<ProductCreateWithoutAdRequestsInput, ProductUncheckedCreateWithoutAdRequestsInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutAdRequestsInput
+    upsert?: ProductUpsertWithoutAdRequestsInput
+    connect?: ProductWhereUniqueInput
+    update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutAdRequestsInput, ProductUpdateWithoutAdRequestsInput>, ProductUncheckedUpdateWithoutAdRequestsInput>
+  }
+
+  export type StoreUpdateOneRequiredWithoutAdRequestsNestedInput = {
+    create?: XOR<StoreCreateWithoutAdRequestsInput, StoreUncheckedCreateWithoutAdRequestsInput>
+    connectOrCreate?: StoreCreateOrConnectWithoutAdRequestsInput
+    upsert?: StoreUpsertWithoutAdRequestsInput
+    connect?: StoreWhereUniqueInput
+    update?: XOR<XOR<StoreUpdateToOneWithWhereWithoutAdRequestsInput, StoreUpdateWithoutAdRequestsInput>, StoreUncheckedUpdateWithoutAdRequestsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -26336,28 +26646,22 @@ export namespace Prisma {
     _min?: NestedEnumPayoutStatusFilter<$PrismaModel>
     _max?: NestedEnumPayoutStatusFilter<$PrismaModel>
   }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
 
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  export type NestedEnumAdRequestStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AdRequestStatus | EnumAdRequestStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AdRequestStatus[] | ListEnumAdRequestStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AdRequestStatus[] | ListEnumAdRequestStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAdRequestStatusFilter<$PrismaModel> | $Enums.AdRequestStatus
+  }
+
+  export type NestedEnumAdRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AdRequestStatus | EnumAdRequestStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AdRequestStatus[] | ListEnumAdRequestStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AdRequestStatus[] | ListEnumAdRequestStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAdRequestStatusWithAggregatesFilter<$PrismaModel> | $Enums.AdRequestStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAdRequestStatusFilter<$PrismaModel>
+    _max?: NestedEnumAdRequestStatusFilter<$PrismaModel>
   }
 
   export type RatingCreateWithoutUserInput = {
@@ -26463,6 +26767,7 @@ export namespace Prisma {
     Order?: OrderCreateNestedManyWithoutStoreInput
     Payout?: PayoutCreateNestedManyWithoutStoreInput
     Coupon?: CouponCreateNestedManyWithoutStoreInput
+    adRequests?: AdRequestCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutUserInput = {
@@ -26496,6 +26801,7 @@ export namespace Prisma {
     Order?: OrderUncheckedCreateNestedManyWithoutStoreInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutStoreInput
     Coupon?: CouponUncheckedCreateNestedManyWithoutStoreInput
+    adRequests?: AdRequestUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutUserInput = {
@@ -26874,6 +27180,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutStoresInput
     Payout?: PayoutCreateNestedManyWithoutStoreInput
     Coupon?: CouponCreateNestedManyWithoutStoreInput
+    adRequests?: AdRequestCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutProductInput = {
@@ -26907,6 +27214,7 @@ export namespace Prisma {
     Order?: OrderUncheckedCreateNestedManyWithoutStoreInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutStoreInput
     Coupon?: CouponUncheckedCreateNestedManyWithoutStoreInput
+    adRequests?: AdRequestUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutProductInput = {
@@ -27004,6 +27312,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AdRequestCreateWithoutProductInput = {
+    id?: string
+    status?: $Enums.AdRequestStatus
+    requestedAt?: Date | string
+    approvedAt?: Date | string | null
+    adminNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    store: StoreCreateNestedOneWithoutAdRequestsInput
+  }
+
+  export type AdRequestUncheckedCreateWithoutProductInput = {
+    id?: string
+    storeId: string
+    status?: $Enums.AdRequestStatus
+    requestedAt?: Date | string
+    approvedAt?: Date | string | null
+    adminNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AdRequestCreateOrConnectWithoutProductInput = {
+    where: AdRequestWhereUniqueInput
+    create: XOR<AdRequestCreateWithoutProductInput, AdRequestUncheckedCreateWithoutProductInput>
+  }
+
+  export type AdRequestCreateManyProductInputEnvelope = {
+    data: AdRequestCreateManyProductInput | AdRequestCreateManyProductInput[]
+    skipDuplicates?: boolean
+  }
+
   export type StoreUpsertWithoutProductInput = {
     update: XOR<StoreUpdateWithoutProductInput, StoreUncheckedUpdateWithoutProductInput>
     create: XOR<StoreCreateWithoutProductInput, StoreUncheckedCreateWithoutProductInput>
@@ -27046,6 +27386,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutStoresNestedInput
     Payout?: PayoutUpdateManyWithoutStoreNestedInput
     Coupon?: CouponUpdateManyWithoutStoreNestedInput
+    adRequests?: AdRequestUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutProductInput = {
@@ -27079,6 +27420,7 @@ export namespace Prisma {
     Order?: OrderUncheckedUpdateManyWithoutStoreNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutStoreNestedInput
     Coupon?: CouponUncheckedUpdateManyWithoutStoreNestedInput
+    adRequests?: AdRequestUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type OrderItemUpsertWithWhereUniqueWithoutProductInput = {
@@ -27154,6 +27496,37 @@ export namespace Prisma {
     position?: IntFilter<"ProductVariantGroup"> | number
   }
 
+  export type AdRequestUpsertWithWhereUniqueWithoutProductInput = {
+    where: AdRequestWhereUniqueInput
+    update: XOR<AdRequestUpdateWithoutProductInput, AdRequestUncheckedUpdateWithoutProductInput>
+    create: XOR<AdRequestCreateWithoutProductInput, AdRequestUncheckedCreateWithoutProductInput>
+  }
+
+  export type AdRequestUpdateWithWhereUniqueWithoutProductInput = {
+    where: AdRequestWhereUniqueInput
+    data: XOR<AdRequestUpdateWithoutProductInput, AdRequestUncheckedUpdateWithoutProductInput>
+  }
+
+  export type AdRequestUpdateManyWithWhereWithoutProductInput = {
+    where: AdRequestScalarWhereInput
+    data: XOR<AdRequestUpdateManyMutationInput, AdRequestUncheckedUpdateManyWithoutProductInput>
+  }
+
+  export type AdRequestScalarWhereInput = {
+    AND?: AdRequestScalarWhereInput | AdRequestScalarWhereInput[]
+    OR?: AdRequestScalarWhereInput[]
+    NOT?: AdRequestScalarWhereInput | AdRequestScalarWhereInput[]
+    id?: StringFilter<"AdRequest"> | string
+    productId?: StringFilter<"AdRequest"> | string
+    storeId?: StringFilter<"AdRequest"> | string
+    status?: EnumAdRequestStatusFilter<"AdRequest"> | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFilter<"AdRequest"> | Date | string
+    approvedAt?: DateTimeNullableFilter<"AdRequest"> | Date | string | null
+    adminNote?: StringNullableFilter<"AdRequest"> | string | null
+    createdAt?: DateTimeFilter<"AdRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"AdRequest"> | Date | string
+  }
+
   export type ProductCreateWithoutVariantGroupsInput = {
     id?: string
     name: string
@@ -27180,6 +27553,7 @@ export namespace Prisma {
     store: StoreCreateNestedOneWithoutProductInput
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
     rating?: RatingCreateNestedManyWithoutProductInput
+    adRequests?: AdRequestCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutVariantGroupsInput = {
@@ -27208,6 +27582,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     rating?: RatingUncheckedCreateNestedManyWithoutProductInput
+    adRequests?: AdRequestUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutVariantGroupsInput = {
@@ -27284,6 +27659,7 @@ export namespace Prisma {
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
     rating?: RatingUpdateManyWithoutProductNestedInput
+    adRequests?: AdRequestUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutVariantGroupsInput = {
@@ -27312,6 +27688,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     rating?: RatingUncheckedUpdateManyWithoutProductNestedInput
+    adRequests?: AdRequestUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductVariantOptionUpsertWithWhereUniqueWithoutGroupInput = {
@@ -27491,6 +27868,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutStoresInput
     Payout?: PayoutCreateNestedManyWithoutStoreInput
     Coupon?: CouponCreateNestedManyWithoutStoreInput
+    adRequests?: AdRequestCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutOrderInput = {
@@ -27524,6 +27902,7 @@ export namespace Prisma {
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutStoreInput
     Coupon?: CouponUncheckedCreateNestedManyWithoutStoreInput
+    adRequests?: AdRequestUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutOrderInput = {
@@ -27688,6 +28067,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutStoresNestedInput
     Payout?: PayoutUpdateManyWithoutStoreNestedInput
     Coupon?: CouponUpdateManyWithoutStoreNestedInput
+    adRequests?: AdRequestUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutOrderInput = {
@@ -27721,6 +28101,7 @@ export namespace Prisma {
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutStoreNestedInput
     Coupon?: CouponUncheckedUpdateManyWithoutStoreNestedInput
+    adRequests?: AdRequestUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type AddressUpsertWithoutOrderInput = {
@@ -27860,6 +28241,7 @@ export namespace Prisma {
     store: StoreCreateNestedOneWithoutProductInput
     rating?: RatingCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupCreateNestedManyWithoutProductInput
+    adRequests?: AdRequestCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutOrderItemsInput = {
@@ -27888,6 +28270,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     rating?: RatingUncheckedCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupUncheckedCreateNestedManyWithoutProductInput
+    adRequests?: AdRequestUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutOrderItemsInput = {
@@ -27979,6 +28362,7 @@ export namespace Prisma {
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
     rating?: RatingUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUpdateManyWithoutProductNestedInput
+    adRequests?: AdRequestUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutOrderItemsInput = {
@@ -28007,6 +28391,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     rating?: RatingUncheckedUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUncheckedUpdateManyWithoutProductNestedInput
+    adRequests?: AdRequestUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type OrderCreateWithoutRefundInput = {
@@ -28158,6 +28543,7 @@ export namespace Prisma {
     store: StoreCreateNestedOneWithoutProductInput
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupCreateNestedManyWithoutProductInput
+    adRequests?: AdRequestCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutRatingInput = {
@@ -28186,6 +28572,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupUncheckedCreateNestedManyWithoutProductInput
+    adRequests?: AdRequestUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutRatingInput = {
@@ -28271,6 +28658,7 @@ export namespace Prisma {
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUpdateManyWithoutProductNestedInput
+    adRequests?: AdRequestUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutRatingInput = {
@@ -28299,6 +28687,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUncheckedUpdateManyWithoutProductNestedInput
+    adRequests?: AdRequestUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type OrderCreateWithoutAddressInput = {
@@ -28470,6 +28859,7 @@ export namespace Prisma {
     Order?: OrderCreateNestedManyWithoutStoreInput
     user: UserCreateNestedOneWithoutStoresInput
     Payout?: PayoutCreateNestedManyWithoutStoreInput
+    adRequests?: AdRequestCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutCouponInput = {
@@ -28503,6 +28893,7 @@ export namespace Prisma {
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
     Order?: OrderUncheckedCreateNestedManyWithoutStoreInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutStoreInput
+    adRequests?: AdRequestUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutCouponInput = {
@@ -28552,6 +28943,7 @@ export namespace Prisma {
     Order?: OrderUpdateManyWithoutStoreNestedInput
     user?: UserUpdateOneRequiredWithoutStoresNestedInput
     Payout?: PayoutUpdateManyWithoutStoreNestedInput
+    adRequests?: AdRequestUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutCouponInput = {
@@ -28585,6 +28977,7 @@ export namespace Prisma {
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
     Order?: OrderUncheckedUpdateManyWithoutStoreNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutStoreNestedInput
+    adRequests?: AdRequestUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type ProductCreateWithoutStoreInput = {
@@ -28613,6 +29006,7 @@ export namespace Prisma {
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
     rating?: RatingCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupCreateNestedManyWithoutProductInput
+    adRequests?: AdRequestCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutStoreInput = {
@@ -28641,6 +29035,7 @@ export namespace Prisma {
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     rating?: RatingUncheckedCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupUncheckedCreateNestedManyWithoutProductInput
+    adRequests?: AdRequestUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutStoreInput = {
@@ -28799,6 +29194,38 @@ export namespace Prisma {
 
   export type CouponCreateManyStoreInputEnvelope = {
     data: CouponCreateManyStoreInput | CouponCreateManyStoreInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AdRequestCreateWithoutStoreInput = {
+    id?: string
+    status?: $Enums.AdRequestStatus
+    requestedAt?: Date | string
+    approvedAt?: Date | string | null
+    adminNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    product: ProductCreateNestedOneWithoutAdRequestsInput
+  }
+
+  export type AdRequestUncheckedCreateWithoutStoreInput = {
+    id?: string
+    productId: string
+    status?: $Enums.AdRequestStatus
+    requestedAt?: Date | string
+    approvedAt?: Date | string | null
+    adminNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AdRequestCreateOrConnectWithoutStoreInput = {
+    where: AdRequestWhereUniqueInput
+    create: XOR<AdRequestCreateWithoutStoreInput, AdRequestUncheckedCreateWithoutStoreInput>
+  }
+
+  export type AdRequestCreateManyStoreInputEnvelope = {
+    data: AdRequestCreateManyStoreInput | AdRequestCreateManyStoreInput[]
     skipDuplicates?: boolean
   }
 
@@ -28968,6 +29395,22 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Coupon"> | Date | string
   }
 
+  export type AdRequestUpsertWithWhereUniqueWithoutStoreInput = {
+    where: AdRequestWhereUniqueInput
+    update: XOR<AdRequestUpdateWithoutStoreInput, AdRequestUncheckedUpdateWithoutStoreInput>
+    create: XOR<AdRequestCreateWithoutStoreInput, AdRequestUncheckedCreateWithoutStoreInput>
+  }
+
+  export type AdRequestUpdateWithWhereUniqueWithoutStoreInput = {
+    where: AdRequestWhereUniqueInput
+    data: XOR<AdRequestUpdateWithoutStoreInput, AdRequestUncheckedUpdateWithoutStoreInput>
+  }
+
+  export type AdRequestUpdateManyWithWhereWithoutStoreInput = {
+    where: AdRequestScalarWhereInput
+    data: XOR<AdRequestUpdateManyMutationInput, AdRequestUncheckedUpdateManyWithoutStoreInput>
+  }
+
   export type StoreCreateWithoutPayoutInput = {
     id?: string
     name: string
@@ -28999,6 +29442,7 @@ export namespace Prisma {
     Order?: OrderCreateNestedManyWithoutStoreInput
     user: UserCreateNestedOneWithoutStoresInput
     Coupon?: CouponCreateNestedManyWithoutStoreInput
+    adRequests?: AdRequestCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutPayoutInput = {
@@ -29032,6 +29476,7 @@ export namespace Prisma {
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
     Order?: OrderUncheckedCreateNestedManyWithoutStoreInput
     Coupon?: CouponUncheckedCreateNestedManyWithoutStoreInput
+    adRequests?: AdRequestUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutPayoutInput = {
@@ -29081,6 +29526,7 @@ export namespace Prisma {
     Order?: OrderUpdateManyWithoutStoreNestedInput
     user?: UserUpdateOneRequiredWithoutStoresNestedInput
     Coupon?: CouponUpdateManyWithoutStoreNestedInput
+    adRequests?: AdRequestUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutPayoutInput = {
@@ -29113,6 +29559,291 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
     Order?: OrderUncheckedUpdateManyWithoutStoreNestedInput
+    Coupon?: CouponUncheckedUpdateManyWithoutStoreNestedInput
+    adRequests?: AdRequestUncheckedUpdateManyWithoutStoreNestedInput
+  }
+
+  export type ProductCreateWithoutAdRequestsInput = {
+    id?: string
+    name: string
+    description: string
+    mrp: number
+    price: number
+    images?: ProductCreateimagesInput | string[]
+    category: string
+    inStock?: boolean
+    quantity?: number
+    sku?: string | null
+    tags?: ProductCreatetagsInput | string[]
+    scheduledAt?: Date | string | null
+    origin?: $Enums.ProductOrigin
+    madeIn?: string | null
+    manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
+    acceptCod?: boolean
+    isDigital?: boolean
+    downloadUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    store: StoreCreateNestedOneWithoutProductInput
+    orderItems?: OrderItemCreateNestedManyWithoutProductInput
+    rating?: RatingCreateNestedManyWithoutProductInput
+    variantGroups?: ProductVariantGroupCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductUncheckedCreateWithoutAdRequestsInput = {
+    id?: string
+    name: string
+    description: string
+    mrp: number
+    price: number
+    images?: ProductCreateimagesInput | string[]
+    category: string
+    inStock?: boolean
+    quantity?: number
+    sku?: string | null
+    tags?: ProductCreatetagsInput | string[]
+    scheduledAt?: Date | string | null
+    origin?: $Enums.ProductOrigin
+    madeIn?: string | null
+    manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
+    acceptCod?: boolean
+    isDigital?: boolean
+    downloadUrl?: string | null
+    storeId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
+    rating?: RatingUncheckedCreateNestedManyWithoutProductInput
+    variantGroups?: ProductVariantGroupUncheckedCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductCreateOrConnectWithoutAdRequestsInput = {
+    where: ProductWhereUniqueInput
+    create: XOR<ProductCreateWithoutAdRequestsInput, ProductUncheckedCreateWithoutAdRequestsInput>
+  }
+
+  export type StoreCreateWithoutAdRequestsInput = {
+    id?: string
+    name: string
+    description: string
+    username: string
+    address?: string
+    street?: string | null
+    city?: string | null
+    state?: string | null
+    zip?: string | null
+    country?: string
+    status?: string
+    isActive?: boolean
+    logo: string
+    banner?: string | null
+    email: string
+    contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    Product?: ProductCreateNestedManyWithoutStoreInput
+    Order?: OrderCreateNestedManyWithoutStoreInput
+    user: UserCreateNestedOneWithoutStoresInput
+    Payout?: PayoutCreateNestedManyWithoutStoreInput
+    Coupon?: CouponCreateNestedManyWithoutStoreInput
+  }
+
+  export type StoreUncheckedCreateWithoutAdRequestsInput = {
+    id?: string
+    userId: string
+    name: string
+    description: string
+    username: string
+    address?: string
+    street?: string | null
+    city?: string | null
+    state?: string | null
+    zip?: string | null
+    country?: string
+    status?: string
+    isActive?: boolean
+    logo: string
+    banner?: string | null
+    email: string
+    contact: string
+    cacNumber?: string | null
+    verificationDocumentType?: string | null
+    verificationDocumentNumber?: string | null
+    verificationDocumentUrl?: string | null
+    facialVerificationUrl?: string | null
+    payoutBankName?: string | null
+    payoutAccountName?: string | null
+    payoutAccountNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
+    Order?: OrderUncheckedCreateNestedManyWithoutStoreInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutStoreInput
+    Coupon?: CouponUncheckedCreateNestedManyWithoutStoreInput
+  }
+
+  export type StoreCreateOrConnectWithoutAdRequestsInput = {
+    where: StoreWhereUniqueInput
+    create: XOR<StoreCreateWithoutAdRequestsInput, StoreUncheckedCreateWithoutAdRequestsInput>
+  }
+
+  export type ProductUpsertWithoutAdRequestsInput = {
+    update: XOR<ProductUpdateWithoutAdRequestsInput, ProductUncheckedUpdateWithoutAdRequestsInput>
+    create: XOR<ProductCreateWithoutAdRequestsInput, ProductUncheckedCreateWithoutAdRequestsInput>
+    where?: ProductWhereInput
+  }
+
+  export type ProductUpdateToOneWithWhereWithoutAdRequestsInput = {
+    where?: ProductWhereInput
+    data: XOR<ProductUpdateWithoutAdRequestsInput, ProductUncheckedUpdateWithoutAdRequestsInput>
+  }
+
+  export type ProductUpdateWithoutAdRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    mrp?: FloatFieldUpdateOperationsInput | number
+    price?: FloatFieldUpdateOperationsInput | number
+    images?: ProductUpdateimagesInput | string[]
+    category?: StringFieldUpdateOperationsInput | string
+    inStock?: BoolFieldUpdateOperationsInput | boolean
+    quantity?: IntFieldUpdateOperationsInput | number
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: ProductUpdatetagsInput | string[]
+    scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    madeIn?: NullableStringFieldUpdateOperationsInput | string | null
+    manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
+    isDigital?: BoolFieldUpdateOperationsInput | boolean
+    downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    store?: StoreUpdateOneRequiredWithoutProductNestedInput
+    orderItems?: OrderItemUpdateManyWithoutProductNestedInput
+    rating?: RatingUpdateManyWithoutProductNestedInput
+    variantGroups?: ProductVariantGroupUpdateManyWithoutProductNestedInput
+  }
+
+  export type ProductUncheckedUpdateWithoutAdRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    mrp?: FloatFieldUpdateOperationsInput | number
+    price?: FloatFieldUpdateOperationsInput | number
+    images?: ProductUpdateimagesInput | string[]
+    category?: StringFieldUpdateOperationsInput | string
+    inStock?: BoolFieldUpdateOperationsInput | boolean
+    quantity?: IntFieldUpdateOperationsInput | number
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: ProductUpdatetagsInput | string[]
+    scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    madeIn?: NullableStringFieldUpdateOperationsInput | string | null
+    manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
+    isDigital?: BoolFieldUpdateOperationsInput | boolean
+    downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    storeId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
+    rating?: RatingUncheckedUpdateManyWithoutProductNestedInput
+    variantGroups?: ProductVariantGroupUncheckedUpdateManyWithoutProductNestedInput
+  }
+
+  export type StoreUpsertWithoutAdRequestsInput = {
+    update: XOR<StoreUpdateWithoutAdRequestsInput, StoreUncheckedUpdateWithoutAdRequestsInput>
+    create: XOR<StoreCreateWithoutAdRequestsInput, StoreUncheckedCreateWithoutAdRequestsInput>
+    where?: StoreWhereInput
+  }
+
+  export type StoreUpdateToOneWithWhereWithoutAdRequestsInput = {
+    where?: StoreWhereInput
+    data: XOR<StoreUpdateWithoutAdRequestsInput, StoreUncheckedUpdateWithoutAdRequestsInput>
+  }
+
+  export type StoreUpdateWithoutAdRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    street?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    zip?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    logo?: StringFieldUpdateOperationsInput | string
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Product?: ProductUpdateManyWithoutStoreNestedInput
+    Order?: OrderUpdateManyWithoutStoreNestedInput
+    user?: UserUpdateOneRequiredWithoutStoresNestedInput
+    Payout?: PayoutUpdateManyWithoutStoreNestedInput
+    Coupon?: CouponUpdateManyWithoutStoreNestedInput
+  }
+
+  export type StoreUncheckedUpdateWithoutAdRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    street?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    zip?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    logo?: StringFieldUpdateOperationsInput | string
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    contact?: StringFieldUpdateOperationsInput | string
+    cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facialVerificationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
+    Order?: OrderUncheckedUpdateManyWithoutStoreNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutStoreNestedInput
     Coupon?: CouponUncheckedUpdateManyWithoutStoreNestedInput
   }
 
@@ -29305,6 +30036,7 @@ export namespace Prisma {
     Order?: OrderUpdateManyWithoutStoreNestedInput
     Payout?: PayoutUpdateManyWithoutStoreNestedInput
     Coupon?: CouponUpdateManyWithoutStoreNestedInput
+    adRequests?: AdRequestUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutUserInput = {
@@ -29338,6 +30070,7 @@ export namespace Prisma {
     Order?: OrderUncheckedUpdateManyWithoutStoreNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutStoreNestedInput
     Coupon?: CouponUncheckedUpdateManyWithoutStoreNestedInput
+    adRequests?: AdRequestUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateManyWithoutUserInput = {
@@ -29483,6 +30216,17 @@ export namespace Prisma {
     position?: number
   }
 
+  export type AdRequestCreateManyProductInput = {
+    id?: string
+    storeId: string
+    status?: $Enums.AdRequestStatus
+    requestedAt?: Date | string
+    approvedAt?: Date | string | null
+    adminNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type OrderItemUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -29570,6 +30314,39 @@ export namespace Prisma {
     type?: EnumVariantGroupTypeFieldUpdateOperationsInput | $Enums.VariantGroupType
     required?: BoolFieldUpdateOperationsInput | boolean
     position?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type AdRequestUpdateWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    store?: StoreUpdateOneRequiredWithoutAdRequestsNestedInput
+  }
+
+  export type AdRequestUncheckedUpdateWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storeId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdRequestUncheckedUpdateManyWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storeId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProductVariantOptionCreateManyGroupInput = {
@@ -29785,6 +30562,17 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type AdRequestCreateManyStoreInput = {
+    id?: string
+    productId: string
+    status?: $Enums.AdRequestStatus
+    requestedAt?: Date | string
+    approvedAt?: Date | string | null
+    adminNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ProductUpdateWithoutStoreInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -29811,6 +30599,7 @@ export namespace Prisma {
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
     rating?: RatingUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUpdateManyWithoutProductNestedInput
+    adRequests?: AdRequestUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutStoreInput = {
@@ -29839,6 +30628,7 @@ export namespace Prisma {
     orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     rating?: RatingUncheckedUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUncheckedUpdateManyWithoutProductNestedInput
+    adRequests?: AdRequestUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateManyWithoutStoreInput = {
@@ -29988,6 +30778,39 @@ export namespace Prisma {
     usageCount?: IntFieldUpdateOperationsInput | number
     minOrderValue?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdRequestUpdateWithoutStoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    product?: ProductUpdateOneRequiredWithoutAdRequestsNestedInput
+  }
+
+  export type AdRequestUncheckedUpdateWithoutStoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdRequestUncheckedUpdateManyWithoutStoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

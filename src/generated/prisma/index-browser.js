@@ -317,15 +317,16 @@ exports.Prisma.PlatformConfigScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.AuditLogScalarFieldEnum = {
+exports.Prisma.AdRequestScalarFieldEnum = {
   id: 'id',
-  adminId: 'adminId',
-  adminEmail: 'adminEmail',
-  action: 'action',
-  targetType: 'targetType',
-  targetId: 'targetId',
-  details: 'details',
-  createdAt: 'createdAt'
+  productId: 'productId',
+  storeId: 'storeId',
+  status: 'status',
+  requestedAt: 'requestedAt',
+  approvedAt: 'approvedAt',
+  adminNote: 'adminNote',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -334,11 +335,6 @@ exports.Prisma.SortOrder = {
 };
 
 exports.Prisma.JsonNullValueInput = {
-  JsonNull: Prisma.JsonNull
-};
-
-exports.Prisma.NullableJsonNullValueInput = {
-  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
@@ -377,6 +373,7 @@ exports.OrderStatus = exports.$Enums.OrderStatus = {
 
 exports.PaymentMethod = exports.$Enums.PaymentMethod = {
   COD: 'COD',
+  LEMONSQUEEZY: 'LEMONSQUEEZY',
   STRIPE: 'STRIPE',
   PAYSTACK: 'PAYSTACK',
   FLUTTERWAVE: 'FLUTTERWAVE'
@@ -399,6 +396,12 @@ exports.PayoutStatus = exports.$Enums.PayoutStatus = {
   PAID: 'PAID'
 };
 
+exports.AdRequestStatus = exports.$Enums.AdRequestStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Notification: 'Notification',
@@ -414,7 +417,7 @@ exports.Prisma.ModelName = {
   Store: 'Store',
   Payout: 'Payout',
   PlatformConfig: 'PlatformConfig',
-  AuditLog: 'AuditLog'
+  AdRequest: 'AdRequest'
 };
 
 /**

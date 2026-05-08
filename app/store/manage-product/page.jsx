@@ -43,22 +43,19 @@ export default function StoreManageProducts() {
     const [saving, setSaving] = useState(false)
     const [deletingId, setDeletingId] = useState(null)
     const [confirmDeleteId, setConfirmDeleteId] = useState(null)
-    const [cloning, setCloning] = useState(null)
-    const [importing, setImporting] = useState(false)
-    const csvRef = useRef()
+    const [requestingAd, setRequestingAd] = useState(null)
 
-    const cloneProduct = async (productId) => {
-        setCloning(productId)
+    const requestAd = async (productId) => {
+        setRequestingAd(productId)
         try {
-            const { data } = await axios.post("/api/store/product/clone", { productId }, {
+            await axios.post(`/api/products/${productId}/request-ad`, {}, {
                 headers: await getStoreAuthHeaders(getToken)
             })
-            toast.success("Product cloned successfully.")
-            setProducts(prev => [data.product, ...prev])
+            toast.success("Ad request submitted successfully!")
         } catch (error) {
             toast.error(error.response?.data?.error || error.message)
         }
-        setCloning(null)
+        setRequestingAd(null)
     }
 
     const handleCSVImport = async (e) => {
@@ -288,9 +285,9 @@ export default function StoreManageProducts() {
                                     className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-rose-500 hover:bg-rose-50 transition dark:border-slate-700 dark:bg-slate-900 dark:text-rose-400">
                                     <Trash2Icon size={15} /> Delete
                                 </button>
-                                <button onClick={() => toast.promise(toggleStock(product.id), { loading: 'Updating...' })}
-                                    className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition ${product.inStock ? 'border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-300' : 'border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200'}`}>
-                                    {product.inStock ? 'Disable stock' : 'Enable stock'}
+                                <button onClick={() => requestAd(product.id)} disabled={requestingAd === product.id}
+                                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 transition disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-blue-400">
+                                    {requestingAd === product.id ? "Requesting..." : "Request Ad"}
                                 </button>
                             </div>
 

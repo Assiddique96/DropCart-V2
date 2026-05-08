@@ -79,6 +79,7 @@ model Product {
   orderItems    OrderItem[]
   rating        Rating[]
   variantGroups ProductVariantGroup[]
+  adRequests    AdRequest[]
 }
 
 /**
@@ -144,6 +145,7 @@ enum OrderStatus {
 
 enum PaymentMethod {
   COD
+  LEMONSQUEEZY
   STRIPE
   PAYSTACK
   FLUTTERWAVE
@@ -317,11 +319,12 @@ model Store {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Product Product[]
-  Order   Order[]
-  user    User      @relation(fields: [userId], references: [id])
-  Payout  Payout[]
-  Coupon  Coupon[]
+  Product    Product[]
+  Order      Order[]
+  user       User        @relation(fields: [userId], references: [id])
+  Payout     Payout[]
+  Coupon     Coupon[]
+  adRequests AdRequest[]
 }
 
 // Payout tracking for sellers
@@ -353,17 +356,25 @@ model PlatformConfig {
   updatedAt DateTime @updatedAt
 }
 
-/**
- * Audit log — immutable record of admin actions.
- * Written on every significant admin operation.
- */
-model AuditLog {
-  id         String   @id @default(cuid())
-  adminId    String // Clerk user ID of the admin
-  adminEmail String
-  action     String // e.g. "BAN_USER", "APPROVE_STORE", "RECORD_PAYOUT"
-  targetType String // e.g. "User", "Store", "Order"
-  targetId   String // ID of the affected entity
-  details    Json? // optional metadata (before/after values etc.)
-  createdAt  DateTime @default(now())
+enum AdRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// Ad requests from sellers to feature products on home page
+model AdRequest {
+  id          String          @id @default(cuid())
+  productId   String
+  storeId     String
+  status      AdRequestStatus @default(PENDING)
+  requestedAt DateTime        @default(now())
+  approvedAt  DateTime?
+  adminNote   String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  // Relations
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  store   Store   @relation(fields: [storeId], references: [id], onDelete: Cascade)
 }

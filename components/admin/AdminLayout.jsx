@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import Loading from "../Loading"
 import Link from "next/link"
 import { ArrowRightIcon } from "lucide-react"
-import { CircleDollarSignIcon, HomeIcon, RotateCcwIcon, SettingsIcon, ShieldCheckIcon, ShoppingBasketIcon, StoreIcon, TicketPercentIcon, UsersIcon, PackageIcon, ArrowUpRightIcon, Images } from "lucide-react"
+import { CircleDollarSignIcon, HomeIcon, RotateCcwIcon, SettingsIcon, ShieldCheckIcon, ShoppingBasketIcon, StoreIcon, TicketPercentIcon, UsersIcon, PackageIcon, ArrowUpRightIcon, Images, Megaphone } from "lucide-react"
 import { useAuth, useUser } from "@clerk/nextjs"
 import axios from "axios"
 import DashboardShell from "@/components/dashboard/DashboardShell"
@@ -63,6 +63,7 @@ const AdminLayout = ({ children }) => {
                 { name: 'Store Applications', href: '/admin/approve',   icon: ShieldCheckIcon },
                 { name: 'Users',         href: '/admin/users',     icon: UsersIcon },
                 { name: 'Products',      href: '/admin/products',  icon: ShoppingBasketIcon },
+                { name: 'Ad Requests',   href: '/admin/ad-requests', icon: Megaphone },
                 { name: 'Site Content',  href: '/admin/content',   icon: Images },
                 { name: 'Coupons',       href: '/admin/coupons',   icon: TicketPercentIcon },
                 { name: 'Payouts',       href: '/admin/payouts',   icon: CircleDollarSignIcon },

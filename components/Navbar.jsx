@@ -4,7 +4,7 @@ import {
     ChevronDownIcon, MonitorIcon, ShirtIcon, HomeIcon,
     SparklesIcon, ToyBrickIcon, DumbbellIcon, BookOpenIcon,
     UtensilsIcon, PaletteIcon, GridIcon, PlaneIcon, MenuIcon, XIcon,
-    StoreIcon, ShieldCheckIcon, CarIcon, BabyIcon, BriefcaseIcon, WrenchIcon
+    StoreIcon, ShieldCheckIcon, CarIcon, BabyIcon, BriefcaseIcon, WrenchIcon, Camera
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -49,6 +49,7 @@ const Navbar = () => {
     const router = useRouter()
 
     const [search, setSearch] = useState('')
+    const [imageSearching, setImageSearching] = useState(false)
     const [megaOpen, setMegaOpen] = useState(false)
     const [mobileOpen, setMobileOpen] = useState(false)
     const [isAdmin, setIsAdmin] = useState(false)
@@ -113,6 +114,38 @@ const Navbar = () => {
         setMobileOpen(false)
     }
 
+    const handleImageSearch = async (e) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setImageSearching(true)
+        try {
+            // Convert image to base64
+            const reader = new FileReader()
+            reader.onload = async () => {
+                const base64 = reader.result.split(',')[1]
+
+                // Call OpenAI vision API
+                const response = await axios.post('/api/search-by-image', {
+                    image: base64,
+                    mimeType: file.type
+                })
+
+                const description = response.data.description
+                router.push(`/shop?search=${encodeURIComponent(description)}`)
+                setMegaOpen(false)
+                setMobileOpen(false)
+            }
+            reader.readAsDataURL(file)
+        } catch (error) {
+            console.error('Image search failed:', error)
+            // Fallback to regular search
+            router.push(`/shop?search=image`)
+        }
+        setImageSearching(false)
+        e.target.value = ''
+    }
+
     const goToCategory = (cat) => {
         router.push(`/shop?category=${encodeURIComponent(cat)}`)
         setMegaOpen(false)
@@ -171,6 +204,16 @@ const Navbar = () => {
                                 type="text" placeholder="Search products..."
                                 value={search} onChange={e => setSearch(e.target.value)} required
                             />
+                            <label className={`cursor-pointer ${imageSearching ? 'opacity-50' : ''}`}>
+                                <Camera size={15} className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition" />
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageSearch}
+                                    disabled={imageSearching}
+                                    className="hidden"
+                                />
+                            </label>
                         </form>
 
                         <div className="flex items-center gap-2 xl:gap-3">

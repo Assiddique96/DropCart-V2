@@ -12,9 +12,10 @@ import { cartBlocksCod } from '@/lib/codAvailability';
 
 const ALL_PAYMENT_METHODS = [
     { id: 'COD', label: 'Cash on Delivery', description: 'Pay when your order arrives' },
-    { id: 'STRIPE', label: 'Card (Stripe)', description: 'Visa, Mastercard, Amex' },
-    { id: 'PAYSTACK', label: 'Paystack', description: 'Cards, bank transfer, USSD' },
-    { id: 'FLUTTERWAVE', label: 'Flutterwave', description: 'Cards, mobile money, bank' },
+    { id: 'LEMONSQUEEZY', label: 'Lemon Squeezy', description: 'Checkout with Lemon Squeezy' },
+    // { id: 'STRIPE', label: 'Card (Stripe)', description: 'Visa, Mastercard, Amex' },
+    // { id: 'PAYSTACK', label: 'Paystack', description: 'Cards, bank transfer, USSD' },
+    // { id: 'FLUTTERWAVE', label: 'Flutterwave', description: 'Cards, mobile money, bank' },
 ]
 
 
@@ -42,7 +43,7 @@ const OrderSummary = ({ totalPrice, items }) => {
 
     useEffect(() => {
         if (codBlocked && paymentMethod === 'COD') {
-            setPaymentMethod('STRIPE');
+            setPaymentMethod('LEMONSQUEEZY');
         }
     }, [codBlocked, paymentMethod]);
     const { user } = useUser();
@@ -81,11 +82,13 @@ const OrderSummary = ({ totalPrice, items }) => {
 
     const redirectToPayment = async (orderIds, token) => {
         const endpointMap = {
-            STRIPE: { url: '/api/stripe', key: 'session', urlKey: 'url' },
-            PAYSTACK: { url: '/api/paystack', key: 'authorization_url', urlKey: null },
-            FLUTTERWAVE: { url: '/api/flutterwave', key: 'payment_link', urlKey: null },
+            LEMONSQUEEZY: { url: '/api/lemonsqueezy', key: 'checkoutUrl', urlKey: null },
+            // STRIPE: { url: '/api/stripe', key: 'session', urlKey: 'url' },
+            // PAYSTACK: { url: '/api/paystack', key: 'authorization_url', urlKey: null },
+            // FLUTTERWAVE: { url: '/api/flutterwave', key: 'payment_link', urlKey: null },
         };
         const ep = endpointMap[paymentMethod];
+        if (!ep) throw new Error('Unsupported payment method');
         const { data } = await axios.post(ep.url, { orderIds }, { headers: { Authorization: `Bearer ${token}` } });
         const redirectUrl = ep.urlKey ? data[ep.key]?.[ep.urlKey] : data[ep.key];
         if (!redirectUrl) throw new Error('Payment session URL not received');

@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import StoreProvider from "./StoreProvider";
 import ThemeProvider from "@/components/ThemeProvider";
 import CookieConsentToast from "@/components/CookieConsentToast";
+import MandatoryPoliciesToast from "@/components/MandatoryPoliciesToast";
 import "./globals.css";
 
 const outfit = Outfit({ subsets: ["latin"], weight: ["400", "500", "600"] });
@@ -40,6 +41,7 @@ export default function RootLayout({ children }) {
             <ThemeProvider>
               <Toaster />
               <CookieConsentToast />
+              <MandatoryPoliciesToast />
               {children}
             </ThemeProvider>
           </StoreProvider>
