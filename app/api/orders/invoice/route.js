@@ -455,6 +455,7 @@ export async function GET(request) {
       <p>Thank you for shopping with ${storeName}.</p>
       <p>For support: ${storeEmail}</p>
       <p>Generated on ${new Date().toLocaleString()}</p>
+      <p>Powered by Shpinx</p>
     </footer>
   </div>
 
