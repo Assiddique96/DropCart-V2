@@ -1,62 +1,106 @@
 import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
-import { formatCurrency, CURRENCY_SYMBOL } from "@/lib/currency";
+import { formatCurrency } from "@/lib/currency";
 import { isOrderConsideredPaid } from "@/lib/orderPayment";
-
+import logo from "@/assets/logo.png"; // adjust path/name to your actual logo asset
 
 /**
  * GET /api/orders/invoice?orderId=xxx
  * Returns a full HTML invoice the browser can print or save as PDF.
  * Only the buyer or the seller of the order can access their respective invoices.
  */
-export async function GET(request) {
+export async function GET(request: Request) {
   try {
     const { userId } = getAuth(request);
-    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const { searchParams } = new URL(request.url);
     const orderId = searchParams.get("orderId");
-    if (!orderId) return NextResponse.json({ error: "orderId is required" }, { status: 400 });
+    if (!orderId) {
+      return NextResponse.json({ error: "orderId is required" }, { status: 400 });
+    }
 
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: {
         user: { select: { name: true, email: true } },
         address: true,
-        store: { select: { name: true, email: true, address: true, logo: true } },
-        orderItems: { include: { product: { select: { name: true, category: true } } } },
+        store: {
+          select: {
+            name: true,
+            email: true,
+            address: true,
+            logo: true,
+            userId: true,
+          },
+        },
+        orderItems: {
+          include: {
+            product: { select: { name: true, category: true } },
+          },
+        },
+        coupon: true,
       },
     });
 
-    if (!order) return NextResponse.json({ error: "Order not found" }, { status: 404 });
+    if (!order) {
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
+    }
 
     // Allow buyer OR seller to download
-    const isBuyer  = order.userId === userId;
-    const isSeller = order.store?.userId === userId;
-    // Check seller via store relation
-    const store = await prisma.store.findUnique({ where: { id: order.storeId }, select: { userId: true } });
-    const isSellerUser = store?.userId === userId;
+    const isBuyer = order.userId === userId;
+    const isSellerUser = order.store?.userId === userId;
 
     if (!isBuyer && !isSellerUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     const paid = isOrderConsideredPaid(order);
-    const itemsSubtotal = order.orderItems.reduce((s, i) => s + i.price * i.quantity, 0);
-    const shippingFee   = order.total - itemsSubtotal;
-    const invoiceNum    = `INV-${order.id.slice(-8).toUpperCase()}`;
-    const issueDate     = new Date(order.createdAt).toLocaleDateString("en-NG", { dateStyle: "long" });
+    const itemsSubtotal = order.orderItems.reduce(
+      (s, i) => s + i.price * i.quantity,
+      0
+    );
+    const shippingFee = order.total - itemsSubtotal;
+    const invoiceNum = `INV-${order.id.slice(-8).toUpperCase()}`;
+    const issueDate = new Date(order.createdAt).toLocaleDateString("en-NG", {
+      dateStyle: "long",
+    });
 
-    const itemRows = order.orderItems.map(item => `
+    const itemRows = order.orderItems
+      .map(
+        (item) => `
       <tr>
-        <td>${item.product?.name || "Product"}</td>
-        <td class="center">${item.product?.category || "—"}</td>
+        <td>
+          <div class="item-name">${item.product?.name || "Product"}</div>
+          ${
+            item.product?.category
+              ? `<div class="item-meta">${item.product.category}</div>`
+              : ""
+          }
+        </td>
         <td class="right">${formatCurrency(item.price)}</td>
         <td class="center">${item.quantity}</td>
         <td class="right">${formatCurrency(item.price * item.quantity)}</td>
       </tr>
-    `).join("");
+    `
+      )
+      .join("");
+
+    const storeLogo = order.store?.logo || (logo as unknown as string);
+    const storeName = order.store?.name || "Shpinx";
+    const storeEmail = order.store?.email || "support@shpinx.ng";
+    const storeAddress = order.store?.address || "";
+
+    const couponRow =
+      order.isCouponUsed && order.coupon
+        ? `<tr>
+             <td>Discount (${order.coupon.code})</td>
+             <td class="right">-${order.coupon.discount || 0}%</td>
+           </tr>`
+        : "";
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -66,103 +110,355 @@ export async function GET(request) {
   <title>Invoice ${invoiceNum}</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #334155; font-size: 13px; line-height: 1.6; padding: 40px; background: #fff; }
-    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
-    .brand { font-size: 28px; font-weight: 700; color: #0f172a; letter-spacing: -1px; }
-    .brand span { color: #64748b; }
-    .invoice-meta { text-align: right; }
-    .invoice-meta h2 { font-size: 20px; color: #0f172a; margin-bottom: 4px; }
-    .invoice-meta p { color: #64748b; font-size: 12px; }
-    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-top: 6px; }
-    .badge.paid { background: #dcfce7; color: #166534; }
-    .badge.unpaid { background: #fef9c3; color: #854d0e; }
-    .divider { border: none; border-top: 1px solid #e2e8f0; margin: 24px 0; }
-    .parties { display: flex; gap: 40px; margin-bottom: 32px; }
-    .party h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; margin-bottom: 8px; }
-    .party p { color: #334155; font-size: 13px; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
-    thead { background: #f8fafc; }
-    th { padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; border-bottom: 2px solid #e2e8f0; }
-    td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; }
-    tr:last-child td { border-bottom: none; }
-    .center { text-align: center; }
-    .right { text-align: right; }
-    .totals { margin-left: auto; width: 260px; }
-    .totals table td { font-size: 13px; }
-    .totals .grand-total td { font-weight: 700; font-size: 15px; color: #0f172a; border-top: 2px solid #e2e8f0; padding-top: 12px; }
-    .footer { margin-top: 48px; text-align: center; color: #94a3b8; font-size: 11px; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #0f172a;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 40px;
+      background: #f8fafc;
+    }
+    .invoice-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 30px rgba(15,23,42,0.07);
+      padding: 32px 36px 40px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 20px;
+    }
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f9fafb;
+    }
+    .brand-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #0f172a;
+    }
+    .brand-sub {
+      font-size: 12px;
+      color: #64748b;
+    }
+    .invoice-meta {
+      text-align: right;
+      font-size: 12px;
+    }
+    .invoice-meta-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+    .invoice-meta p {
+      color: #64748b;
+      margin-bottom: 2px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .badge.paid {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+    .badge.unpaid {
+      background: #fef3c7;
+      color: #854d0e;
+      border: 1px solid #fde68a;
+    }
+    .parties {
+      display: flex;
+      justify-content: space-between;
+      gap: 40px;
+      margin: 24px 0 28px;
+      font-size: 13px;
+    }
+    .party {
+      flex: 1;
+    }
+    .party-header {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .party-name {
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 3px;
+    }
+    .party p {
+      color: #475569;
+      margin-bottom: 2px;
+    }
+    .party p:last-child {
+      margin-bottom: 0;
+    }
+    .invoice-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 40px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 24px;
+      font-size: 12px;
+    }
+    .summary-block {
+      flex: 1;
+    }
+    .summary-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+    .summary-value {
+      color: #0f172a;
+      font-weight: 500;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+    }
+    thead {
+      background: #f9fafb;
+    }
+    th {
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .center {
+      text-align: center;
+    }
+    .right {
+      text-align: right;
+    }
+    .item-name {
+      font-weight: 500;
+      color: #0f172a;
+    }
+    .item-meta {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    .totals {
+      margin-left: auto;
+      width: 260px;
+      font-size: 13px;
+    }
+    .totals table {
+      margin-bottom: 0;
+    }
+    .totals td {
+      border: none;
+      padding: 4px 0;
+    }
+    .totals-row-label {
+      color: #64748b;
+    }
+    .totals-row-value {
+      text-align: right;
+      color: #0f172a;
+    }
+    .grand-total-row td {
+      padding-top: 10px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .footer {
+      margin-top: 32px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 11px;
+    }
+    .footer p + p {
+      margin-top: 4px;
+    }
     @media print {
-      body { padding: 20px; }
-      @page { margin: 1cm; }
+      body {
+        padding: 0;
+        background: #ffffff;
+      }
+      .invoice-container {
+        box-shadow: none;
+        border-radius: 0;
+        border: none;
+      }
+      @page {
+        margin: 1.2cm;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div>
-      <div class="brand">Drop<span>Cart</span><span style="font-size:36px;line-height:0;color:#0f172a">.</span></div>
-      <p style="color:#64748b;margin-top:4px;font-size:12px">${order.store?.name || "DropCart Marketplace"}</p>
-    </div>
-    <div class="invoice-meta">
-      <h2>${invoiceNum}</h2>
-      <p>Issued: ${issueDate}</p>
-      <p>Payment: ${order.paymentMethod}</p>
-      <span class="badge ${paid ? 'paid' : 'unpaid'}">${paid ? 'PAID' : 'PAYMENT PENDING'}</span>
-    </div>
-  </div>
+  <div class="invoice-container">
+    <header class="header">
+      <div class="brand-block">
+        <div class="brand-logo">
+          <img src="${storeLogo}" alt="${storeName} Logo" />
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">${storeName}</div>
+          <div class="brand-sub">Order invoice</div>
+        </div>
+      </div>
+      <div class="invoice-meta">
+        <div class="invoice-meta-title">Invoice ${invoiceNum}</div>
+        <p>Order ID: ${order.id}</p>
+        <p>Issued: ${issueDate}</p>
+        <p>Payment method: ${order.paymentMethod}</p>
+        <span class="badge ${paid ? "paid" : "unpaid"}">
+          ${paid ? "Paid" : "Payment pending"}
+        </span>
+      </div>
+    </header>
 
-  <hr class="divider" />
+    <section class="parties">
+      <div class="party">
+        <div class="party-header">Billed to</div>
+        <p class="party-name">${order.user?.name || "Customer"}</p>
+        <p>${order.user?.email || ""}</p>
+        <p>${order.address?.street || ""}</p>
+        <p>${[order.address?.city, order.address?.state, order.address?.zip].filter(Boolean).join(", ")}</p>
+        <p>${order.address?.country || ""}</p>
+        <p>${order.address?.phone || ""}</p>
+      </div>
+      <div class="party">
+        <div class="party-header">Sold by</div>
+        <p class="party-name">${storeName}</p>
+        <p>${storeEmail}</p>
+        <p>${storeAddress}</p>
+      </div>
+    </section>
 
-  <div class="parties">
-    <div class="party">
-      <h4>Billed To</h4>
-      <p><strong>${order.user?.name || "Customer"}</strong></p>
-      <p>${order.user?.email || ""}</p>
-      <p>${order.address?.street || ""}</p>
-      <p>${[order.address?.city, order.address?.state, order.address?.zip].filter(Boolean).join(", ")}</p>
-      <p>${order.address?.country || ""}</p>
-      <p>${order.address?.phone || ""}</p>
-    </div>
-    <div class="party">
-      <h4>From</h4>
-      <p><strong>${order.store?.name || "Shpinx"}</strong></p>
-      <p>${order.store?.email || ""}</p>
-      <p>${order.store?.address || ""}</p>
-    </div>
-  </div>
+    <section class="invoice-summary">
+      <div class="summary-block">
+        <div class="summary-label">Order date</div>
+        <div class="summary-value">${issueDate}</div>
+      </div>
+      <div class="summary-block">
+        <div class="summary-label">Status</div>
+        <div class="summary-value">${paid ? "Paid" : "Pending payment"}</div>
+      </div>
+      <div class="summary-block">
+        <div class="summary-label">Total</div>
+        <div class="summary-value">${formatCurrency(order.total)}</div>
+      </div>
+    </section>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Item</th>
-        <th class="center">Category</th>
-        <th class="right">Unit Price</th>
-        <th class="center">Qty</th>
-        <th class="right">Total</th>
-      </tr>
-    </thead>
-    <tbody>${itemRows}</tbody>
-  </table>
+    <section>
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th class="right">Unit price</th>
+            <th class="center">Qty</th>
+            <th class="right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemRows}
+        </tbody>
+      </table>
+    </section>
 
-  <div class="totals">
-    <table>
-      <tr><td>Subtotal</td><td class="right">${formatCurrency(itemsSubtotal)}</td></tr>
-      ${shippingFee > 0.01 ? `<tr><td>Shipping</td><td class="right">${formatCurrency(shippingFee)}</td></tr>` : ""}
-      ${order.isCouponUsed ? `<tr><td>Coupon (${order.coupon?.code || ""})</td><td class="right">-${order.coupon?.discount || 0}%</td></tr>` : ""}
-      <tr class="grand-total"><td>Total</td><td class="right">${formatCurrency(order.total)}</td></tr>
-    </table>
-  </div>
+    <section class="totals">
+      <table>
+        <tr>
+          <td class="totals-row-label">Subtotal</td>
+          <td class="totals-row-value">${formatCurrency(itemsSubtotal)}</td>
+        </tr>
+        ${
+          shippingFee > 0.01
+            ? `<tr>
+                 <td class="totals-row-label">Shipping</td>
+                 <td class="totals-row-value">${formatCurrency(shippingFee)}</td>
+               </tr>`
+            : ""
+        }
+        ${couponRow}
+        <tr class="grand-total-row">
+          <td>Total</td>
+          <td class="totals-row-value">${formatCurrency(order.total)}</td>
+        </tr>
+      </table>
+    </section>
 
-  <hr class="divider" />
-  <div class="footer">
-    <p>Thank you for shopping with Shpinx. For support: support@shpinx.ng</p>
-    <p style="margin-top:4px">Order ID: ${order.id} &nbsp;|&nbsp; Generated ${new Date().toLocaleString()}</p>
+    <footer class="footer">
+      <p>Thank you for shopping with ${storeName}.</p>
+      <p>For support: ${storeEmail}</p>
+      <p>Generated on ${new Date().toLocaleString()}</p>
+    </footer>
   </div>
 
   <script>
-    // Auto-trigger print dialog when opened in a new tab
     window.addEventListener('load', () => {
-      if (window.location.search.includes('print=1')) window.print();
+      if (window.location.search.includes('print=1')) {
+        window.print();
+      }
     });
   </script>
 </body>
@@ -174,7 +470,7 @@ export async function GET(request) {
         "Content-Disposition": `inline; filename="${invoiceNum}.html"`,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Invoice error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
