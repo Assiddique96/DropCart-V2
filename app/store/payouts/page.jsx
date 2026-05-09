@@ -14,6 +14,7 @@ export default function SellerPayouts() {
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState({
         payouts: [],
+        store: null,
         totalDeliveredRevenue: 0,
         totalPaidOut: 0,
         totalRequested: 0,
@@ -106,6 +107,25 @@ export default function SellerPayouts() {
                         Available to request: {currency}{data.availableBalance.toLocaleString()}
                     </div>
                 </div>
+                {data.store && (
+                    <div className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950/70 p-4 mb-4">
+                        <p className="text-xs uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 mb-2">Payout account details</p>
+                        <div className="grid gap-3 text-sm text-slate-700 dark:text-slate-200">
+                            <div>
+                                <p className="text-xs text-slate-400">Bank</p>
+                                <p>{data.store.payoutBankName || 'Not configured'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-slate-400">Account name</p>
+                                <p>{data.store.payoutAccountName || 'Not configured'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-slate-400">Account number</p>
+                                <p>{data.store.payoutAccountNumber || 'Not configured'}</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_240px]">
                     <div className="grid gap-3">
                         <label className="text-xs font-medium text-slate-700 dark:text-slate-200">Amount</label>

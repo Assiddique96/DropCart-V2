@@ -25,6 +25,19 @@ export async function GET(request) {
     const totalDeliveredRevenue = deliveredOrders.reduce((acc, o) => acc + o.total, 0);
 
     // All payouts for this store
+    const store = await prisma.store.findUnique({
+      where: { id: storeId },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        payoutBankName: true,
+        payoutAccountName: true,
+        payoutAccountNumber: true,
+      },
+    });
+
     const payouts = await prisma.payout.findMany({
       where: { storeId },
       orderBy: { createdAt: "desc" },
@@ -43,6 +56,7 @@ export async function GET(request) {
 
     return NextResponse.json({
       payouts,
+      store,
       totalDeliveredRevenue: parseFloat(totalDeliveredRevenue.toFixed(2)),
       totalPaidOut: parseFloat(totalPaidOut.toFixed(2)),
       totalRequested: parseFloat(totalRequested.toFixed(2)),

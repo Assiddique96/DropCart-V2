@@ -16,6 +16,8 @@ export default function AdminPayouts() {
     const [submitting, setSubmitting] = useState(false)
     const [stores, setStores] = useState([])
 
+    const selectedStore = stores.find((s) => s.id === form.storeId)
+
     const fetchData = async () => {
         try {
             const token = await getToken()
@@ -71,6 +73,14 @@ export default function AdminPayouts() {
                                 <option value="">Select store...</option>
                                 {stores.map(s => <option key={s.id} value={s.id}>{s.name} ({s.username})</option>)}
                             </select>
+                            {selectedStore && (
+                                <div className="mt-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-3 text-xs text-slate-600 dark:text-slate-300">
+                                    <p className="font-semibold text-slate-700 dark:text-slate-200">{selectedStore.name} payout account</p>
+                                    <p className="mt-1">Bank: {selectedStore.payoutBankName || 'Not configured'}</p>
+                                    <p>Account name: {selectedStore.payoutAccountName || 'Not configured'}</p>
+                                    <p>Account number: {selectedStore.payoutAccountNumber || 'Not configured'}</p>
+                                </div>
+                            )}
                         </div>
                         <div>
                             <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Amount ({currency})</label>
@@ -109,7 +119,12 @@ export default function AdminPayouts() {
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200">
                         {payouts.map(p => (
                             <tr key={p.id} className="hover:bg-slate-50 transition-colors">
-                                <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-100">{p.store?.name}<span className="text-xs text-slate-400 ml-1">@{p.store?.username}</span></td>
+                                <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-100">
+                                    <div>{p.store?.name}<span className="text-xs text-slate-400 ml-1">@{p.store?.username}</span></div>
+                                    <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                                        {p.store?.payoutBankName ? `Bank: ${p.store?.payoutBankName}` : 'Bank not configured'} · {p.store?.payoutAccountName || 'Account name missing'}
+                                    </div>
+                                </td>
                                 <td className="px-4 py-3 font-semibold">{currency}{p.amount.toLocaleString()}</td>
                                 <td className="px-4 py-3">
                                     <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${p.status === 'PAID' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>

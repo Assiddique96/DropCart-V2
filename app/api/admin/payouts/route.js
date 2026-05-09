@@ -15,7 +15,19 @@ export async function GET(request) {
 
     const payouts = await prisma.payout.findMany({
       orderBy: { createdAt: "desc" },
-      include: { store: { select: { name: true, email: true, username: true } } },
+      include: {
+        store: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            email: true,
+            payoutBankName: true,
+            payoutAccountName: true,
+            payoutAccountNumber: true,
+          },
+        },
+      },
     });
 
     return NextResponse.json({ payouts });
