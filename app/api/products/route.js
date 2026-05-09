@@ -14,6 +14,9 @@ export async function GET() {
       },
 
       include: {
+        _count: {
+          select: { orderItems: true },
+        },
         store: {
           select: {
             isActive: true,

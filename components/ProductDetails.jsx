@@ -144,6 +144,19 @@ const ProductDetails = ({ product }) => {
   const productQuantity = cartSummary[productId] || 0;
   const isVariantProduct = variantGroups.length > 0;
 
+  const selectedVariantStock = variantGroups.length > 0
+    ? variantGroups.reduce((minQty, group) => {
+        const selected = selectedOptions[group.label];
+        if (!selected) return minQty;
+        const option = group.options?.find((o) => o.label === selected);
+        return option ? Math.min(minQty, option.quantity ?? minQty) : minQty;
+      }, Infinity)
+    : Infinity;
+  const availableStock = Number.isFinite(selectedVariantStock)
+    ? selectedVariantStock
+    : product.quantity ?? 0;
+  const isLowStock = availableStock > 0 && availableStock <= 5;
+
   const handleAddToCart = () => {
     if (!canAddToCart) {
       const missing = requiredGroups
@@ -328,6 +341,21 @@ const ProductDetails = ({ product }) => {
             >
               {product.inStock ? "In stock" : "Out of stock"}
             </span>
+            {product.inStock && (
+              <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
+                {availableStock} unit{availableStock === 1 ? "" : "s"} available
+              </span>
+            )}
+            {isLowStock && (
+              <span className="rounded-full border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-700 dark:bg-amber-900/20 dark:text-amber-300 px-3 py-1 text-xs font-semibold">
+                Low stock
+              </span>
+            )}
+            {typeof product._count?.orderItems === 'number' && (
+              <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
+                Sold {product._count.orderItems} {product._count.orderItems === 1 ? 'time' : 'times'}
+              </span>
+            )}
             <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
               {isAbroad ? "International" : "Local"} ship
             </span>

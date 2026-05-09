@@ -92,14 +92,77 @@ export async function POST(request) {
       }
     }
 
-    // Group orders by store using a map, tracking product origins
+    // Group orders by store using a map, tracking product origins and stock usage.
     const ordersByStore = new Map();
+    const productQuantityMap = new Map();
+    const productStockUsage = new Map();
+    const variantOptionQuantityMap = new Map();
+    const variantOptionStockUsage = new Map();
+
     for (const item of items) {
         const product = await prisma.product.findUnique({
             where: { id: item.productId },
-            select: { storeId: true, price: true, origin: true, acceptCod: true, variantGroups: { include: { options: true } } }
+            select: {
+                id: true,
+                storeId: true,
+                price: true,
+                origin: true,
+                acceptCod: true,
+                quantity: true,
+                inStock: true,
+                variantGroups: { include: { options: true } },
+            },
         });
+
         if (!product) continue;
+
+        if (!product.inStock || product.quantity < item.quantity) {
+            return NextResponse.json(
+                { error: `Only ${product.quantity ?? 0} item(s) are available for this product.` },
+                { status: 400 },
+            );
+        }
+
+        if (!productQuantityMap.has(product.id)) {
+            productQuantityMap.set(product.id, product.quantity);
+        }
+
+        const totalRequestedForProduct = (productStockUsage.get(product.id) || 0) + item.quantity;
+        if (totalRequestedForProduct > productQuantityMap.get(product.id)) {
+            return NextResponse.json(
+                { error: `Only ${product.quantity ?? 0} item(s) are available for this product.` },
+                { status: 400 },
+            );
+        }
+        productStockUsage.set(product.id, totalRequestedForProduct);
+
+        if (item.variants && Object.keys(item.variants).length > 0) {
+            for (const [groupLabel, selectedOptionLabel] of Object.entries(item.variants)) {
+                const group = product.variantGroups.find((g) => g.label === groupLabel);
+                if (!group) continue;
+                const option = group.options.find((o) => o.label === selectedOptionLabel);
+                if (!option || !option.inStock || option.quantity < item.quantity) {
+                    return NextResponse.json(
+                        { error: `Selected variant ${selectedOptionLabel} is not available in sufficient quantity.` },
+                        { status: 400 },
+                    );
+                }
+
+                if (!variantOptionQuantityMap.has(option.id)) {
+                    variantOptionQuantityMap.set(option.id, option.quantity);
+                }
+
+                const totalRequestedForOption = (variantOptionStockUsage.get(option.id) || 0) + item.quantity;
+                if (totalRequestedForOption > variantOptionQuantityMap.get(option.id)) {
+                    return NextResponse.json(
+                        { error: `Only ${option.quantity ?? 0} unit(s) of the selected variant ${selectedOptionLabel} are available.` },
+                        { status: 400 },
+                    );
+                }
+                variantOptionStockUsage.set(option.id, totalRequestedForOption);
+            }
+        }
+
         const storeId = product.storeId;
 
         // Calculate effective price with variant modifiers
@@ -133,21 +196,13 @@ export async function POST(request) {
         (item) => item.origin === "ABROAD" || (item.origin === "LOCAL" && item.acceptCod === false),
     );
 
-    if (paymentMethod === "COD" && codNotAllowed) {
-        return NextResponse.json(
-            {
-                error: hasAbroadItems
-                    ? "Cash on Delivery is not available for internationally shipped (Shipped from Abroad) products. Please choose an online payment method."
-                    : "Cash on Delivery is not available for one or more items in your cart. Please choose an online payment method or remove those items.",
-            },
-            { status: 400 },
-        );
-    }
-
-    // ── Fetch dynamic shipping config from DB ───────────────────────────
-    let shippingLocalFee  = 7000;   // local product shipping
-    let shippingAbroadFee = 15000;  // abroad product shipping
+    let orderIds = [];
+    let fullAmount = 0;
+    let isShippingFeeAdded = false;
+    let shippingLocalFee  = 7000;
+    let shippingAbroadFee = 15000;
     let shippingFreeAbove = 0;
+
     try {
       const configRows = await prisma.platformConfig.findMany({
         where: { key: { in: ["shipping_base_fee", "shipping_abroad_fee", "shipping_free_above"] } },
@@ -161,79 +216,117 @@ export async function POST(request) {
       // non-fatal — use defaults
     }
 
-    let orderIds = [];
-    let fullAmount = 0;
-    let isShippingFeeAdded = false;
-
-    // Create separate orders for each store
-    for (const [storeId, sellerItems] of ordersByStore.entries()) {
-        let total = sellerItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-
-        // apply coupon discount (percentage or fixed amount)
-        if (couponCode) {
-            if (coupon.discountType === 'FIXED') {
-                total = Math.max(0, total - coupon.discount);
-            } else {
-                total -= (total * coupon.discount) / 100;
-            }
-        }
-
-        // Shipping: use the most expensive origin fee in this store's items
-        // (abroad beats local — if any item is ABROAD the higher fee applies)
-        const storeHasAbroad = sellerItems.some(i => i.origin === 'ABROAD');
-        const applicableShippingFee = storeHasAbroad ? shippingAbroadFee : shippingLocalFee;
-
-        const qualifiesForFreeShipping = !storeHasAbroad && shippingFreeAbove > 0 && total >= shippingFreeAbove;
-
-        if (!isPlusMemeber && !isShippingFeeAdded && !qualifiesForFreeShipping) {
-            total += applicableShippingFee;
-            isShippingFeeAdded = true;
-        }
-
-        const normalizedSellerItems = Object.values(
-            sellerItems.reduce((acc, item) => {
-                const variantKey = item.variants && Object.keys(item.variants).length
-                    ? JSON.stringify(item.variants)
-                    : '';
-                const key = `${item.productId}::${variantKey}`;
-                if (!acc[key]) {
-                    acc[key] = {
-                        ...item,
-                        variants: item.variants || {},
-                    };
-                } else {
-                    acc[key].quantity += item.quantity;
-                }
-                return acc;
-            }, {}),
+    if (paymentMethod === "COD" && codNotAllowed) {
+        return NextResponse.json(
+            {
+                error: hasAbroadItems
+                    ? "Cash on Delivery is not available for internationally shipped (Shipped from Abroad) products. Please choose an online payment method."
+                    : "Cash on Delivery is not available for one or more items in your cart. Please choose an online payment method or remove those items.",
+            },
+            { status: 400 },
         );
+    }
 
-        total = parseFloat(total.toFixed(2));
-        fullAmount += total;
+    const createdOrders = [];
+    await prisma.$transaction(async (tx) => {
+        for (const [storeId, sellerItems] of ordersByStore.entries()) {
+            let total = sellerItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
-        const order = await prisma.order.create({
-            data: {
-                userId,
-                storeId,
-                addressId,
-                total: parseFloat((total).toFixed(2)),
-                paymentMethod,
-                notes,
-                isCouponUsed: couponCode ? true : false,
-                coupon: coupon ? coupon : {},
-                orderItems: {
-                    create: normalizedSellerItems.map(item => ({
-                        productId: item.productId,
-                        quantity: item.quantity,
-                        price: item.price,
-                        variants: item.variants || {}
-                    }))
+            // apply coupon discount (percentage or fixed amount)
+            if (couponCode) {
+                if (coupon.discountType === 'FIXED') {
+                    total = Math.max(0, total - coupon.discount);
+                } else {
+                    total -= (total * coupon.discount) / 100;
                 }
             }
-        });
-        orderIds.push(order.id);
 
-    }
+            // Shipping: use the most expensive origin fee in this store's items
+            // (abroad beats local — if any item is ABROAD the higher fee applies)
+            const storeHasAbroad = sellerItems.some(i => i.origin === 'ABROAD');
+            const applicableShippingFee = storeHasAbroad ? shippingAbroadFee : shippingLocalFee;
+
+            const qualifiesForFreeShipping = !storeHasAbroad && shippingFreeAbove > 0 && total >= shippingFreeAbove;
+
+            if (!isPlusMemeber && !isShippingFeeAdded && !qualifiesForFreeShipping) {
+                total += applicableShippingFee;
+                isShippingFeeAdded = true;
+            }
+
+            const normalizedSellerItems = Object.values(
+                sellerItems.reduce((acc, item) => {
+                    const variantKey = item.variants && Object.keys(item.variants).length
+                        ? JSON.stringify(item.variants)
+                        : '';
+                    const key = `${item.productId}::${variantKey}`;
+                    if (!acc[key]) {
+                        acc[key] = {
+                            ...item,
+                            variants: item.variants || {},
+                        };
+                    } else {
+                        acc[key].quantity += item.quantity;
+                    }
+                    return acc;
+                }, {}),
+            );
+
+            total = parseFloat(total.toFixed(2));
+            fullAmount += total;
+
+            const order = await tx.order.create({
+                data: {
+                    userId,
+                    storeId,
+                    addressId,
+                    total: parseFloat((total).toFixed(2)),
+                    paymentMethod,
+                    notes,
+                    isCouponUsed: couponCode ? true : false,
+                    coupon: coupon ? coupon : {},
+                    orderItems: {
+                        create: normalizedSellerItems.map(item => ({
+                            productId: item.productId,
+                            quantity: item.quantity,
+                            price: item.price,
+                            variants: item.variants || {}
+                        }))
+                    }
+                }
+            });
+            createdOrders.push(order);
+        }
+
+        for (const [productId, decrementQty] of productStockUsage.entries()) {
+            const currentQty = productQuantityMap.get(productId) ?? 0;
+            const updated = await tx.product.updateMany({
+                where: { id: productId, quantity: { gte: decrementQty } },
+                data: {
+                    quantity: { decrement: decrementQty },
+                    inStock: currentQty - decrementQty > 0,
+                },
+            });
+            if (updated.count === 0) {
+                throw new Error(`Unable to reserve stock for product ${productId}`);
+            }
+        }
+
+        for (const [optionId, decrementQty] of variantOptionStockUsage.entries()) {
+            const currentQty = variantOptionQuantityMap.get(optionId) ?? 0;
+            const updated = await tx.productVariantOption.updateMany({
+                where: { id: optionId, quantity: { gte: decrementQty } },
+                data: {
+                    quantity: { decrement: decrementQty },
+                    inStock: currentQty - decrementQty > 0,
+                },
+            });
+            if (updated.count === 0) {
+                throw new Error(`Unable to reserve stock for selected product variant`);
+            }
+        }
+    });
+
+    orderIds = createdOrders.map((order) => order.id);
 
     // clear user's cart and increment coupon usage
     await prisma.user.update({

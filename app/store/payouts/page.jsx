@@ -16,8 +16,13 @@ export default function SellerPayouts() {
         payouts: [],
         totalDeliveredRevenue: 0,
         totalPaidOut: 0,
+        totalRequested: 0,
+        availableBalance: 0,
         pendingBalance: 0,
     })
+    const [amount, setAmount] = useState('')
+    const [note, setNote] = useState('')
+    const [submitting, setSubmitting] = useState(false)
 
     const fetchPayouts = async () => {
         try {
@@ -32,6 +37,35 @@ export default function SellerPayouts() {
     }
 
     useEffect(() => { fetchPayouts() }, [])
+
+    const submitPayout = async () => {
+        if (!amount || Number(amount) <= 0) {
+            toast.error("Enter a valid payout amount.")
+            return
+        }
+
+        const requestedAmount = Number(amount)
+        if (requestedAmount > (data.availableBalance || 0)) {
+            toast.error("Requested amount exceeds available balance.")
+            return
+        }
+
+        setSubmitting(true)
+        try {
+            await axios.post(
+                "/api/store/payouts",
+                { amount: requestedAmount, note },
+                { headers: await getStoreAuthHeaders(getToken) }
+            )
+            toast.success("Payout request submitted.")
+            setAmount('')
+            setNote('')
+            await fetchPayouts()
+        } catch (error) {
+            toast.error(error.response?.data?.error || error.message)
+        }
+        setSubmitting(false)
+    }
 
     if (loading) return <Loading />
 
@@ -58,6 +92,55 @@ export default function SellerPayouts() {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            <div className="border border-slate-200 dark:border-slate-700 rounded-3xl bg-white dark:bg-slate-900/70 p-5 mb-8">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Request a payout</h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            Request payment from the platform admin for your available balance.
+                        </p>
+                    </div>
+                    <div className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300">
+                        Available to request: {currency}{data.availableBalance.toLocaleString()}
+                    </div>
+                </div>
+                <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_240px]">
+                    <div className="grid gap-3">
+                        <label className="text-xs font-medium text-slate-700 dark:text-slate-200">Amount</label>
+                        <input
+                            type="number"
+                            min="0.01"
+                            step="0.01"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                            placeholder="Enter payout amount"
+                        />
+                        <label className="text-xs font-medium text-slate-700 dark:text-slate-200">Note (optional)</label>
+                        <textarea
+                            value={note}
+                            onChange={(e) => setNote(e.target.value)}
+                            rows={3}
+                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                            placeholder="Add a note for admin"
+                        />
+                    </div>
+                    <div className="flex items-end">
+                        <button
+                            type="button"
+                            onClick={submitPayout}
+                            disabled={submitting || data.availableBalance <= 0}
+                            className="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            {submitting ? "Requesting..." : "Request payout"}
+                        </button>
+                    </div>
+                </div>
+                {data.availableBalance <= 0 && (
+                    <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">No available balance to request at this time.</p>
+                )}
             </div>
 
             {data.payouts.length === 0 ? (

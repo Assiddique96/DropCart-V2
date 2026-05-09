@@ -55,6 +55,8 @@ export default function Dashboard() {
           sub: `${currency}${data.paidEarnings.toLocaleString()} paid · ${currency}${data.pendingEarnings.toLocaleString()} pending`, href: '/store/payouts' },
         { title: 'Products',        value: `${data.inStockProducts} / ${data.totalProducts}`,  icon: ShoppingBasketIcon,   color: 'text-purple-600 bg-purple-50',
           sub: 'in stock / total', href: '/store/manage-product' },
+        { title: 'Low stock',       value: data.lowStockCount ?? 0,                          icon: PackageCheckIcon,    color: 'text-amber-600 bg-amber-50',
+          sub: 'Products needing restock', href: '/store/manage-product' },
         { title: 'Reviews',         value: data.totalReviews,                                  icon: StarIcon,            color: 'text-amber-600 bg-amber-50',
           sub: data.avgRating ? `Avg: ${data.avgRating} ★` : 'No reviews yet' },
     ]
@@ -119,8 +121,17 @@ export default function Dashboard() {
             </div>
 
             {/* Summary cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 {summaryCards.map((card, i) => <SummaryCard key={i} card={card} />)}
+            </div>
+            <div className="flex justify-end mb-8">
+                <button
+                    type="button"
+                    onClick={() => router.push('/store/payouts')}
+                    className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+                >
+                    Request payout
+                </button>
             </div>
 
             {/* Revenue chart */}
@@ -187,6 +198,29 @@ export default function Dashboard() {
                                         <p className="text-xs text-slate-400 dark:text-slate-400">{p.orderCount} orders · {p.totalQty} units</p>
                                     </div>
                                     <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 dark:text-slate-200 shrink-0">{currency}{p.price.toLocaleString()}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {data.lowStockProducts?.length > 0 && (
+                    <div className="border border-amber-200 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-950/20 rounded-xl p-5">
+                        <h2 className="text-sm font-semibold text-amber-700 dark:text-amber-200 mb-4">Low stock products</h2>
+                        <div className="space-y-3">
+                            {data.lowStockProducts.map((product) => (
+                                <div key={product.productId} className="flex items-center justify-between gap-3 rounded-xl bg-white/80 dark:bg-slate-900/70 p-3">
+                                    <div className="min-w-0">
+                                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-100 truncate">{product.name}</p>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400">Low stock ({product.quantity} left)</p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => router.push('/store/manage-product')}
+                                        className="text-xs text-amber-700 dark:text-amber-300 hover:text-amber-800"
+                                    >
+                                        Refill
+                                    </button>
                                 </div>
                             ))}
                         </div>

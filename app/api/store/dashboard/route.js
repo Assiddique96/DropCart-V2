@@ -90,6 +90,16 @@ export async function GET(request) {
       };
     });
 
+    const lowStockThreshold = 5;
+    const lowStockProducts = products
+      .filter(p => p.quantity <= lowStockThreshold)
+      .map(p => ({
+        productId: p.id,
+        name: p.name,
+        quantity: p.quantity,
+        orderCount: 0,
+      }));
+
     // Avg rating per product
     const avgRating = allRatings.length > 0
       ? (allRatings.reduce((s, r) => s + r.rating, 0) / allRatings.length).toFixed(1)
@@ -105,6 +115,8 @@ export async function GET(request) {
       inStockProducts: products.filter(p => p.inStock).length,
       totalReviews: allRatings.length,
       avgRating,
+      lowStockCount: lowStockProducts.length,
+      lowStockProducts,
 
       // Breakdowns
       statusBreakdown,

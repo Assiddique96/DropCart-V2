@@ -28,7 +28,7 @@ const Footer = () => {
                 { text: "Terms of Use", path: '/terms', icon: null },
                 { text: "Privacy Policy", path: '/privacy', icon: null },
                 { text: "Cookies Policy", path: '/cookies', icon: null },
-                { text: "Become Plus Member", path: '/pricing', icon: null },
+                //{ text: "Become Plus Member", path: '/pricing', icon: null },
                 { text: "Sell on Shpinx", path: '/create-store', icon: null },
             ]
         },

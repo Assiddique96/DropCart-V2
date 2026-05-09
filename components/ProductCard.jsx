@@ -93,20 +93,27 @@ const ProductCard = ({ product }) => {
           <p className="line-clamp-2 font-semibold text-slate-900 dark:text-white">
             {product.name}
           </p>
-          <div className="mt-2 flex items-center gap-1">
-            {Array(5)
-              .fill("")
-              .map((_, i) => (
-                <StarIcon
-                  key={i}
-                  size={13}
-                  className="text-transparent"
-                  fill={avgRating >= i + 1 ? "#00C950" : "#4B5563"}
-                />
-              ))}
-            {product.rating?.length > 0 && (
+          <div className="mt-2 flex flex-wrap items-center gap-1">
+            <div className="flex items-center gap-1">
+              {Array(5)
+                .fill("")
+                .map((_, i) => (
+                  <StarIcon
+                    key={i}
+                    size={13}
+                    className="text-transparent"
+                    fill={avgRating >= i + 1 ? "#00C950" : "#4B5563"}
+                  />
+                ))}
+              {product.rating?.length > 0 && (
+                <span className="text-xs text-slate-400 dark:text-slate-500">
+                  ({product.rating.length})
+                </span>
+              )}
+            </div>
+            {typeof product._count?.orderItems === 'number' && (
               <span className="text-xs text-slate-400 dark:text-slate-500">
-                ({product.rating.length})
+                Sold {product._count.orderItems}
               </span>
             )}
           </div>

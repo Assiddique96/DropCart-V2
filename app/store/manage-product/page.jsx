@@ -281,6 +281,18 @@ export default function StoreManageProducts() {
                                     <span className="font-medium text-slate-700 dark:text-slate-100">Qty</span>
                                     <span className="text-right">{product.quantity ?? 0}</span>
                                 </div>
+                                {typeof product._count?.orderItems === 'number' && (
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <span className="font-medium text-slate-700 dark:text-slate-100">Orders</span>
+                                        <span className="text-right">{product._count.orderItems}</span>
+                                    </div>
+                                )}
+                                {product.quantity !== undefined && product.quantity <= 5 && (
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <span className="font-medium text-slate-700 dark:text-slate-100">Stock alert</span>
+                                        <span className="text-right text-amber-700 dark:text-amber-300">Low stock ({product.quantity} left)</span>
+                                    </div>
+                                )}
                                 {product.sku && (
                                     <div className="grid grid-cols-2 gap-3">
                                         <span className="font-medium text-slate-700 dark:text-slate-100">SKU</span>

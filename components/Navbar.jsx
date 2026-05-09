@@ -40,7 +40,7 @@ const FEATURED_LINKS = [
     { label: "Best Sellers",      href: "/shop?sort=popular",             emoji: "🔥" },
     { label: "Shipped from Abroad", href: "/shop?origin=abroad",          emoji: "✈️" },
     { label: "Under ₦5,000",      href: "/shop?maxPrice=5000",            emoji: "💰" },
-    { label: "Deals & Coupons",   href: "/pricing",                       emoji: "🎟️" },
+    //{ label: "Deals & Coupons",   href: "/pricing",                       emoji: "🎟️" },
     { label: "Track Order",       href: "/track",                         emoji: "📦" },
 ]
 
@@ -198,7 +198,7 @@ const Navbar = () => {
                                 <ChevronDownIcon size={14} className={`transition-transform duration-200 ${megaOpen ? 'rotate-180' : ''}`} />
                             </button>
 
-                            <Link href="/pricing" className="hover:text-slate-900 dark:hover:text-white transition">Pricing</Link>
+                            {/* <Link href="/pricing" className="hover:text-slate-900 dark:hover:text-white transition">Pricing</Link> */}
                             <Link href="/contact" className="hover:text-slate-900 dark:hover:text-white transition">Contact</Link>
                             {isSeller && (
                                 <Link href="/store" className="hover:text-slate-900 dark:hover:text-white transition font-medium whitespace-nowrap">
