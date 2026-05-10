@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
-const KEY = "dropcart_policies_accepted_v1";
+const KEY = "shpinx_policies_accepted_v1";
 
 export default function MandatoryPoliciesToast() {
   const [ready, setReady] = useState(false);
@@ -21,7 +21,7 @@ export default function MandatoryPoliciesToast() {
           Terms of Use & Privacy Policy
         </h3>
         <p className="text-slate-700 dark:text-slate-200 mb-3">
-          By continuing to use DropCart, you agree to our{" "}
+          By continuing to use Shpinx, you agree to our{" "}
           <Link href="/terms" className="text-blue-600 dark:text-blue-400 underline" target="_blank">
             Terms of Use
           </Link>{" "}
