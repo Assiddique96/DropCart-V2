@@ -1,4 +1,3 @@
-import gs_logo from "./gs_logo.jpg"
 import upload_area from "./upload_area.svg"
 import hero_model_img from "./hero_model_img.png"
 import hero_product_img1 from "./hero_product_img1.png"
@@ -7,7 +6,7 @@ import { ClockFadingIcon, HeadsetIcon, SendIcon } from "lucide-react";
 
 export const assets = {
     upload_area, hero_model_img,
-    hero_product_img1, hero_product_img2, gs_logo,
+    hero_product_img1, hero_product_img2,
 }
 
 export const categories = ["Innoson Motors", "Nord Motors", "Nike", "Puma", "Apple", "Samsung", "Hp", "Starlink"];
