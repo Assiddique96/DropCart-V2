@@ -15,6 +15,6 @@ export const categories = ["Innoson Motors", "Nord Motors", "Nike", "Puma", "App
 
 export const ourSpecsData = [
     { title: "Logistics", description: "We partner with top Nigerian logistics providers to ensure fast, reliable shipping for SMEs nationwide sourcing gadgets globally.", icon: SendIcon, accent: '#05DF72' },
-    { title: "Best for SME's", description: "Shpinx offers flexible, SME-friendly pricing starting at low costs—perfect for Nigerian businesses sourcing gadgets from global manufacturers.", icon: ClockFadingIcon, accent: '#FF8904' },
+    { title: "Best for SME", description: "Shpinx offers flexible, SME-friendly pricing starting at low costs—perfect for Nigerian businesses sourcing gadgets from global manufacturers.", icon: ClockFadingIcon, accent: '#FF8904' },
     { title: "24/7 Customer Support", description: "We're here for you. Get expert help with our customer support.", icon: HeadsetIcon, accent: '#A684FF' }
 ]
