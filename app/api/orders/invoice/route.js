@@ -372,7 +372,7 @@ export async function GET(request) {
     .status-stamp {
       position: absolute;
       bottom: 24px;
-      left: 5px;
+      left: 15px;
       padding: 10px 18px;
       border-radius: 6px;
       border: 2px solid #1d4ed8;
