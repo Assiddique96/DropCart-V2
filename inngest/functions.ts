@@ -100,7 +100,7 @@ export const sendOrderConfirmationEmail = inngest.createFunction(
       const itemListHtml = items.map(i => `<li>${i.name} × ${i.quantity} — ${currency}${i.price}</li>`).join('');
 
       const { data, error } = await resend.emails.send({
-        from: 'Shpinx <support.shpinx.com>', // Replace with your verified domain
+        from: 'Shpinx <support@shpinx.com>', // Replace with your verified domain
         to: [userEmail],
         subject: 'Your Shpinx Order is Confirmed! 🎉',
         html: `
@@ -130,7 +130,7 @@ export const sendOrderShippedEmail = inngest.createFunction(
 
     await step.run('send-shipped-email', async () => {
       const { data, error } = await resend.emails.send({
-        from: 'Shpinx <support.shpinx.com>',
+        from: 'Shpinx <support@shpinx.com>',
         to: [userEmail],
         subject: 'Your Shpinx Order Has Shipped! 🚚',
         html: `
@@ -157,7 +157,7 @@ export const notifySellerNewOrder = inngest.createFunction(
 
     await step.run('send-seller-notification', async () => {
       const { data, error } = await resend.emails.send({
-        from: 'Shpinx Alerts <support.shpinx.com>',
+        from: 'Shpinx Alerts <system@shpinx.com>',
         to: [storeEmail],
         subject: 'New Order Received on Shpinx 🛍️',
         html: `
