@@ -371,7 +371,7 @@ export async function GET(request) {
     /* Shpinx PAID/UNPAID stamp */
     .status-stamp {
       position: absolute;
-      bottom: 30px;
+      bottom: 40px;
       left: 30px;
       padding: 10px 18px;
       border-radius: 6px;
