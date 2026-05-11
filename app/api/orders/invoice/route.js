@@ -330,6 +330,99 @@ export async function GET(request) {
       font-weight: 600;
       color: #0f172a;
     }
+
+    /* Business stamp styles */
+    .signature-stamp-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 32px;
+      gap: 32px;
+    }
+    .stamp-block {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+    .stamp-wrapper {
+      position: relative;
+      width: 90px;
+      height: 90px;
+    }
+    .stamp-circle-outer {
+      position: absolute;
+      inset: 4px;
+      border-radius: 999px;
+      border: 2px solid #0f172a;
+      opacity: 0.8;
+    }
+    .stamp-circle-inner {
+      position: absolute;
+      inset: 12px;
+      border-radius: 999px;
+      border: 1px solid #0f172a;
+      opacity: 0.8;
+    }
+    .stamp-text-top {
+      position: absolute;
+      top: 22px;
+      width: 100%;
+      text-align: center;
+      font-size: 8px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #0f172a;
+      white-space: nowrap;
+    }
+    .stamp-text-middle {
+      position: absolute;
+      top: 40px;
+      width: 100%;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #0f172a;
+      white-space: nowrap;
+    }
+    .stamp-text-bottom {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      font-size: 7px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #0f172a;
+      white-space: nowrap;
+    }
+    .signature-block {
+      text-align: right;
+      font-size: 11px;
+      color: #64748b;
+      flex: 1;
+    }
+    .signature-line {
+      border-bottom: 1px solid #0f172a;
+      width: 220px;
+      margin-left: auto;
+      margin-bottom: 6px;
+    }
+    .signature-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: #0f172a;
+    }
+    .signature-label {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #94a3b8;
+    }
+
     .footer {
       margin-top: 32px;
       text-align: center;
@@ -449,6 +542,27 @@ export async function GET(request) {
           <td class="totals-row-value">${formatCurrency(order.total)}</td>
         </tr>
       </table>
+    </section>
+
+    <!-- Business stamp + signature -->
+    <section class="signature-stamp-row">
+      <div class="stamp-block">
+        <div class="stamp-wrapper">
+          <div class="stamp-circle-outer"></div>
+          <div class="stamp-circle-inner"></div>
+          <div class="stamp-text-top">${storeName}</div>
+          <div class="stamp-text-middle">
+            ${paid ? "Paid" : "Issued"}
+          </div>
+          <div class="stamp-text-bottom">Digital · Ecommerce · Verified</div>
+        </div>
+        <div>Digital business stamp for internal validation.</div>
+      </div>
+      <div class="signature-block">
+        <div class="signature-line"></div>
+        <div class="signature-name">Authorized Representative</div>
+        <div class="signature-label">Authorized Signature</div>
+      </div>
     </section>
 
     <footer class="footer">
