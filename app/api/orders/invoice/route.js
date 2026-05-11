@@ -3,13 +3,8 @@ import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
 import { formatCurrency } from "@/lib/currency";
 import { isOrderConsideredPaid } from "@/lib/orderPayment";
-import logo from "@/assets/logo.png"; // adjust path/name to your actual logo asset
+import logo from "@/assets/logo.png";
 
-/**
- * GET /api/orders/invoice?orderId=xxx
- * Returns a full HTML invoice the browser can print or save as PDF.
- * Only the buyer or the seller of the order can access their respective invoices.
- */
 export async function GET(request) {
   try {
     const { userId } = getAuth(request);
@@ -42,7 +37,6 @@ export async function GET(request) {
             product: { select: { name: true, category: true } },
           },
         },
-        // coupon: true, // coupon is scalar, not relation
       },
     });
 
@@ -50,20 +44,53 @@ export async function GET(request) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    // Allow buyer OR seller to download
     const isBuyer = order.userId === userId;
     const isSellerUser = order.store?.userId === userId;
-
     if (!isBuyer && !isSellerUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     const paid = isOrderConsideredPaid(order);
+
     const itemsSubtotal = order.orderItems.reduce(
       (s, i) => s + i.price * i.quantity,
       0
     );
-    const shippingFee = order.total - itemsSubtotal;
+
+    // --- Shipping from checkout (preferred) ---
+    const shippingFeeFromCheckout =
+      typeof order.shippingFee === "number" ? order.shippingFee : 0;
+    const shippingMethod = order.shippingMethod || "Standard shipping";
+    const shippingFee =
+      shippingFeeFromCheckout || order.total - itemsSubtotal;
+
+    // --- VAT & TAX from checkout snapshot (with fallback) ---
+    const storedVatRate =
+      typeof order.vatRate === "number" ? order.vatRate : null;
+    const storedVatAmount =
+      typeof order.vatAmount === "number" ? order.vatAmount : null;
+
+    const storedTaxRate =
+      typeof order.taxRate === "number" ? order.taxRate : null;
+    const storedTaxAmount =
+      typeof order.taxAmount === "number" ? order.taxAmount : null;
+
+    const vatRate = storedVatRate ?? 0;
+    const taxRate = storedTaxRate ?? 0;
+
+    const taxableBase = order.subtotal ?? itemsSubtotal;
+
+    const vatAmount =
+      storedVatAmount ?? Math.round(taxableBase * vatRate);
+    const taxAmount =
+      storedTaxAmount ?? Math.round(taxableBase * taxRate);
+
+    const totalBeforeVatTax = taxableBase + shippingFee;
+    const totalWithVat =
+      typeof order.totalWithVat === "number"
+        ? order.totalWithVat
+        : totalBeforeVatTax + vatAmount + taxAmount;
+
     const invoiceNum = `INV-${order.id.slice(-8).toUpperCase()}`;
     const issueDate = new Date(order.createdAt).toLocaleDateString("en-NG", {
       dateStyle: "long",
@@ -94,13 +121,11 @@ export async function GET(request) {
     const storeEmail = order.store?.email || "support@shpinx.com";
     const storeAddress = order.store?.address || "";
 
-    // Adjust these field names to match your actual schema:
-    // e.g. isCouponUsed: Boolean, couponCode: String?, couponDiscount: Int?
     const couponRow =
       order.isCouponUsed && order.couponCode
         ? `<tr>
-             <td>Discount (${order.couponCode})</td>
-             <td class="right">-${order.couponDiscount || 0}%</td>
+             <td class="totals-row-label">Discount (${order.couponCode})</td>
+             <td class="totals-row-value">-${order.couponDiscount || 0}%</td>
            </tr>`
         : "";
 
@@ -120,9 +145,12 @@ export async function GET(request) {
       padding: 40px;
       background: #f8fafc;
     }
-    .invoice-container {
+    .invoice-wrapper {
+      position: relative;
       max-width: 800px;
       margin: 0 auto;
+    }
+    .invoice-container {
       background: #ffffff;
       border-radius: 12px;
       border: 1px solid #e2e8f0;
@@ -339,6 +367,45 @@ export async function GET(request) {
     .footer p + p {
       margin-top: 4px;
     }
+
+    /* Shpinx PAID/UNPAID stamp */
+    .status-stamp {
+      position: absolute;
+      bottom: 40px;
+      left: 30px;
+      padding: 10px 18px;
+      border-radius: 6px;
+      border: 2px solid #1d4ed8;
+      color: #1d4ed8;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: rgba(219, 234, 254, 0.9);
+      box-shadow: 0 0 0 1px rgba(30, 64, 175, 0.18);
+      display: inline-flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .status-stamp.paid {
+      border-color: #1d4ed8;
+      color: #1d4ed8;
+      background: rgba(219, 234, 254, 0.95);
+    }
+    .status-stamp.unpaid {
+      border-color: #0f172a;
+      color: #0f172a;
+      background: rgba(226, 232, 240, 0.95);
+    }
+    .status-stamp-main {
+      font-size: 13px;
+    }
+    .status-stamp-sub {
+      font-size: 9px;
+      text-transform: none;
+      letter-spacing: 0.08em;
+    }
+
     @media print {
       body {
         padding: 0;
@@ -356,115 +423,150 @@ export async function GET(request) {
   </style>
 </head>
 <body>
-  <div class="invoice-container">
-    <header class="header">
-      <div class="brand-block">
-        <div class="brand-logo">
-          <img src="${storeLogo}" alt="${storeName} Logo" />
+  <div class="invoice-wrapper">
+    <div class="invoice-container">
+      <header class="header">
+        <div class="brand-block">
+          <div class="brand-logo">
+            <img src="${storeLogo}" alt="${storeName} Logo" />
+          </div>
+          <div class="brand-text">
+            <div class="brand-name">${storeName}</div>
+            <div class="brand-sub">Order invoice</div>
+          </div>
         </div>
-        <div class="brand-text">
-          <div class="brand-name">${storeName}</div>
-          <div class="brand-sub">Order invoice</div>
+        <div class="invoice-meta">
+          <div class="invoice-meta-title">Invoice ${invoiceNum}</div>
+          <p>Order ID: ${order.id}</p>
+          <p>Issued: ${issueDate}</p>
+          <p>Payment method: ${order.paymentMethod}</p>
+          <span class="badge ${paid ? "paid" : "unpaid"}">
+            ${paid ? "Paid" : "Payment pending"}
+          </span>
         </div>
-      </div>
-      <div class="invoice-meta">
-        <div class="invoice-meta-title">Invoice ${invoiceNum}</div>
-        <p>Order ID: ${order.id}</p>
-        <p>Issued: ${issueDate}</p>
-        <p>Payment method: ${order.paymentMethod}</p>
-        <span class="badge ${paid ? "paid" : "unpaid"}">
-          ${paid ? "Paid" : "Payment pending"}
-        </span>
-      </div>
-    </header>
+      </header>
 
-    <section class="parties">
-      <div class="party">
-        <div class="party-header">Billed to</div>
-        <p class="party-name">${order.user?.name || "Customer"}</p>
-        <p>${order.user?.email || ""}</p>
-        <p>${order.address?.street || ""}</p>
-        <p>${[order.address?.city, order.address?.state, order.address?.zip]
-          .filter(Boolean)
-          .join(", ")}</p>
-        <p>${order.address?.country || ""}</p>
-        <p>${order.address?.phone || ""}</p>
-      </div>
-      <div class="party">
-        <div class="party-header">Sold by</div>
-        <p class="party-name">${storeName}</p>
-        <p>${storeEmail}</p>
-        <p>${storeAddress}</p>
-      </div>
-    </section>
+      <section class="parties">
+        <div class="party">
+          <div class="party-header">Billed to</div>
+          <p class="party-name">${order.user?.name || "Customer"}</p>
+          <p>${order.user?.email || ""}</p>
+          <p>${order.address?.street || ""}</p>
+          <p>${[order.address?.city, order.address?.state, order.address?.zip]
+            .filter(Boolean)
+            .join(", ")}</p>
+          <p>${order.address?.country || ""}</p>
+          <p>${order.address?.phone || ""}</p>
+        </div>
+        <div class="party">
+          <div class="party-header">Sold by</div>
+          <p class="party-name">${storeName}</p>
+          <p>${storeEmail}</p>
+          <p>${storeAddress}</p>
+        </div>
+      </section>
 
-    <section class="invoice-summary">
-      <div class="summary-block">
-        <div class="summary-label">Order date</div>
-        <div class="summary-value">${issueDate}</div>
-      </div>
-      <div class="summary-block">
-        <div class="summary-label">Status</div>
-        <div class="summary-value">${paid ? "Paid" : "Pending payment"}</div>
-      </div>
-      <div class="summary-block">
-        <div class="summary-label">Total</div>
-        <div class="summary-value">${formatCurrency(order.total)}</div>
-      </div>
-    </section>
+      <section class="invoice-summary">
+        <div class="summary-block">
+          <div class="summary-label">Order date</div>
+          <div class="summary-value">${issueDate}</div>
+        </div>
+        <div class="summary-block">
+          <div class="summary-label">Status</div>
+          <div class="summary-value">${paid ? "Paid" : "Pending payment"}</div>
+        </div>
+        <div class="summary-block">
+          <div class="summary-label">Total (incl. VAT)</div>
+          <div class="summary-value">${formatCurrency(totalWithVat)}</div>
+        </div>
+      </section>
 
-    <section>
-      <table>
-        <thead>
+      <section>
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th class="right">Unit price</th>
+              <th class="center">Qty</th>
+              <th class="right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemRows}
+          </tbody>
+        </table>
+      </section>
+
+      <section class="totals">
+        <table>
           <tr>
-            <th>Item</th>
-            <th class="right">Unit price</th>
-            <th class="center">Qty</th>
-            <th class="right">Total</th>
+            <td class="totals-row-label">Subtotal (tax base)</td>
+            <td class="totals-row-value">${formatCurrency(taxableBase)}</td>
           </tr>
-        </thead>
-        <tbody>
-          ${itemRows}
-        </tbody>
-      </table>
-    </section>
+          ${
+            shippingFee > 0.01
+              ? `<tr>
+                   <td class="totals-row-label">Shipping (${shippingMethod})</td>
+                   <td class="totals-row-value">${formatCurrency(shippingFee)}</td>
+                 </tr>`
+              : ""
+          }
+          <tr>
+            <td class="totals-row-label">Taxable amount</td>
+            <td class="totals-row-value">${formatCurrency(taxableBase)}</td>
+          </tr>
+          <tr>
+            <td class="totals-row-label">VAT rate</td>
+            <td class="totals-row-value">${(vatRate * 100).toFixed(2)}%</td>
+          </tr>
+          <tr>
+            <td class="totals-row-label">VAT amount</td>
+            <td class="totals-row-value">${formatCurrency(vatAmount)}</td>
+          </tr>
+          ${
+            taxRate > 0 || taxAmount > 0
+              ? `
+          <tr>
+            <td class="totals-row-label">Additional tax rate</td>
+            <td class="totals-row-value">${(taxRate * 100).toFixed(2)}%</td>
+          </tr>
+          <tr>
+            <td class="totals-row-label">Additional tax amount</td>
+            <td class="totals-row-value">${formatCurrency(taxAmount)}</td>
+          </tr>`
+              : ""
+          }
+          ${couponRow}
+          <tr class="grand-total-row">
+            <td>Total including VAT</td>
+            <td class="totals-row-value">${formatCurrency(totalWithVat)}</td>
+          </tr>
+        </table>
+      </section>
 
-    <section class="totals">
-      <table>
-        <tr>
-          <td class="totals-row-label">Subtotal</td>
-          <td class="totals-row-value">${formatCurrency(itemsSubtotal)}</td>
-        </tr>
-        ${
-          shippingFee > 0.01
-            ? `<tr>
-                 <td class="totals-row-label">Shipping</td>
-                 <td class="totals-row-value">${formatCurrency(shippingFee)}</td>
-               </tr>`
-            : ""
-        }
-        ${couponRow}
-        <tr class="grand-total-row">
-          <td>Total</td>
-          <td class="totals-row-value">${formatCurrency(order.total)}</td>
-        </tr>
-      </table>
-    </section>
+      <footer class="footer">
+        <p>Thank you for shopping with ${storeName}.</p>
+        <p>For support: ${storeEmail}</p>
+        <p>
+          Generated on
+          <span id="generated-at" data-created-at="${order.createdAt.toISOString()}"></span>
+        </p>
+        <p>Powered by Shpinx</p>
+      </footer>
+    </div>
 
-    <footer class="footer">
-      <p>Thank you for shopping with ${storeName}.</p>
-      <p>For support: ${storeEmail}</p>
-      <p>
-        Generated on
-        <span id="generated-at" data-created-at="${order.createdAt.toISOString()}"></span>
-      </p>
-      <p>Powered by Shpinx</p>
-    </footer>
+    <div class="status-stamp ${paid ? "paid" : "unpaid"}">
+      <div class="status-stamp-main">
+        ${paid ? "PAID" : "UNPAID"}
+      </div>
+      <div class="status-stamp-sub">
+        Shpinx · Global supply. Local success. 
+      </div>
+    </div>
   </div>
 
   <script>
     window.addEventListener('load', () => {
-      // Convert stored UTC createdAt to buyer's local timezone
       const el = document.getElementById('generated-at');
       if (el && el.dataset.createdAt) {
         const utcDate = new Date(el.dataset.createdAt);
@@ -474,7 +576,6 @@ export async function GET(request) {
         }).format(utcDate);
         el.textContent = formatted;
       }
-
       if (window.location.search.includes('print=1')) {
         window.print();
       }
