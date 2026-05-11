@@ -372,7 +372,7 @@ export async function GET(request) {
     .status-stamp {
       position: absolute;
       bottom: 24px;
-      left: 0;
+      left: 5px;
       padding: 10px 18px;
       border-radius: 6px;
       border: 2px solid #1d4ed8;
@@ -560,7 +560,7 @@ export async function GET(request) {
         ${paid ? "PAID" : "UNPAID"}
       </div>
       <div class="status-stamp-sub">
-        Shpinx · Smart commerce, simple life
+        Shpinx · Global supply. Local success. 
       </div>
     </div>
   </div>
