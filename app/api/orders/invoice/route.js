@@ -544,26 +544,31 @@ export async function GET(request) {
       </table>
     </section>
 
-    <!-- Business stamp + signature -->
-    <section class="signature-stamp-row">
-      <div class="stamp-block">
-        <div class="stamp-wrapper">
-          <div class="stamp-circle-outer"></div>
-          <div class="stamp-circle-inner"></div>
-          <div class="stamp-text-top">${storeName}</div>
-          <div class="stamp-text-middle">
-            ${paid ? "Paid" : "Issued"}
-          </div>
-          <div class="stamp-text-bottom">Digital · Ecommerce · Verified</div>
-        </div>
-        <div>Digital business stamp for internal validation.</div>
-      </div>
-      <div class="signature-block">
-        <div class="signature-line"></div>
-        <div class="signature-name">Authorized Representative</div>
-        <div class="signature-label">Authorized Signature</div>
-      </div>
-    </section>
+
+<section style={styles.bottomBar}>
+  <div style={styles.stampAndInfo}>
+    <BusinessStamp
+      accent={accent}
+      companyText="Shpinx"
+      statusText="Approved"
+      footerText="Global supply, Local success"
+      size={96}
+      ring="double"
+      opacity={0.85}
+      thickness={2}
+      shape="circle"
+    />
+    <div style={styles.stampLabel}>
+      Digital business stamp for internal validation.
+    </div>
+  </div>
+
+  <div style={styles.signatureBlock}>
+    <div style={styles.signatureLine(accent)} />
+    <div style={styles.signatureName}>Vincent Uzochi</div>
+    <div style={styles.signatureLabel}>Authorized Signature</div>
+  </div>
+</section>
 
     <footer class="footer">
       <p>Thank you for shopping with ${storeName}.</p>
