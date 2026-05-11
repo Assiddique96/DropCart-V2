@@ -2,11 +2,14 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { MailIcon, MapPinIcon, PhoneIcon, SendIcon } from "lucide-react";
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default function ContactPage() {
   const [form, setForm] = useState({
     name: "",
-    email: "",
+    email: "", 
     subject: "",
     message: "",
   });
@@ -52,7 +55,7 @@ export default function ContactPage() {
                 {
                   icon: MailIcon,
                   label: "Email",
-                  value: "support@shpinx.ng",
+                  value: "support@shpinx.com",
                 },
                 {
                   icon: PhoneIcon,

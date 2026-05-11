@@ -91,7 +91,7 @@ export async function GET(request) {
 
     const storeLogo = order.store?.logo || logo;
     const storeName = order.store?.name || "Shpinx";
-    const storeEmail = order.store?.email || "support@shpinx.ng";
+    const storeEmail = order.store?.email || "support@shpinx.com";
     const storeAddress = order.store?.address || "";
 
     // Adjust these field names to match your actual schema:

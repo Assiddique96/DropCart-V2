@@ -1,5 +1,8 @@
 import { inngest } from "./client";
 import {prisma} from "../src/db"
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Inngest Funtions to save user data to neon database
 
@@ -82,97 +85,93 @@ export const deleteExpiredCoupons = inngest.createFunction(
  * (Resend, SendGrid, Nodemailer, etc.). The event payload contains
  * everything needed to render a rich HTML email.
  */
+
+
+
+/**
+ * Send order confirmation email to buyer.
+ */
 export const sendOrderConfirmationEmail = inngest.createFunction(
-    { id: 'send-order-confirmation-email', triggers: [{ event: 'app/order.confirmed' }] },
-    async ({ event, step }) => {
-        const { orderId, userEmail, userName, orderTotal, currency, items } = event.data;
+  { id: 'send-order-confirmation-email', triggers: [{ event: 'app/order.confirmed' }] },
+  async ({ event, step }) => {
+    const { orderId, userEmail, userName, orderTotal, currency, items } = event.data;
 
-        await step.run('send-confirmation-email', async () => {
-            const itemList = items.map(i => `• ${i.name} × ${i.quantity} — ${currency}${i.price}`).join('\n')
+    await step.run('send-confirmation-email', async () => {
+      const itemListHtml = items.map(i => `<li>${i.name} × ${i.quantity} — ${currency}${i.price}</li>`).join('');
 
-            // ─── Replace this block with your email provider ──────────────
-            console.log(`
-[ORDER CONFIRMATION EMAIL]
-To: ${userEmail}
-Subject: Your DropCart Order is Confirmed! 🎉
+      const { data, error } = await resend.emails.send({
+        from: 'Shpinx <support.shpinx.com>', // Replace with your verified domain
+        to: [userEmail],
+        subject: 'Your Shpinx Order is Confirmed! 🎉',
+        html: `
+          <h1>Hi ${userName},</h1>
+          <p>Thank you for your order! Here's your summary:</p>
+          <ul>${itemListHtml}</ul>
+          <p><strong>Total: ${currency}${orderTotal}</strong></p>
+          <p>Order ID: ${orderId}</p>
+          <p>We'll notify you when your order ships.</p>
+          <p>— The Shpinx Team</p>
+        `,
+      });
 
-Hi ${userName},
-
-Thank you for your order! Here's your summary:
-
-${itemList}
-
-Total: ${currency}${orderTotal}
-Order ID: ${orderId}
-
-We'll notify you when your order ships.
-
-— The DropCart Team
-            `.trim())
-            // ──────────────────────────────────────────────────────────────
-        })
-    }
+      if (error) throw new Error(error.message);
+      return data;
+    });
+  }
 );
 
 /**
  * Send shipping notification email to buyer.
- * Triggered by: app/order.shipped
- * Data: { orderId, userEmail, userName, storeName }
  */
 export const sendOrderShippedEmail = inngest.createFunction(
-    { id: 'send-order-shipped-email', triggers: [{ event: 'app/order.shipped' }] },
-    async ({ event, step }) => {
-        const { orderId, userEmail, userName, storeName } = event.data;
+  { id: 'send-order-shipped-email', triggers: [{ event: 'app/order.shipped' }] },
+  async ({ event, step }) => {
+    const { orderId, userEmail, userName, storeName } = event.data;
 
-        await step.run('send-shipped-email', async () => {
-            // ─── Replace this block with your email provider ──────────────
-            console.log(`
-[SHIPPING NOTIFICATION EMAIL]
-To: ${userEmail}
-Subject: Your DropCart Order Has Shipped! 🚚
+    await step.run('send-shipped-email', async () => {
+      const { data, error } = await resend.emails.send({
+        from: 'Shpinx <support.shpinx.com>',
+        to: [userEmail],
+        subject: 'Your Shpinx Order Has Shipped! 🚚',
+        html: `
+          <p>Hi ${userName},</p>
+          <p>Great news — your order <strong>#${orderId}</strong> from ${storeName} has been shipped and is on its way to you.</p>
+          <p>Check your order status in My Orders on Shpinx.</p>
+          <p>— The Shpinx Team</p>
+        `,
+      });
 
-Hi ${userName},
-
-Great news — your order #${orderId} from ${storeName} has been shipped and is on its way to you.
-
-Check your order status in My Orders on DropCart.
-
-— The DropCart Team
-            `.trim())
-            // ──────────────────────────────────────────────────────────────
-        })
-    }
+      if (error) throw new Error(error.message);
+      return data;
+    });
+  }
 );
 
 /**
  * Notify seller of a new order.
- * Triggered by: app/order.new
- * Data: { storeEmail, storeName, orderId, orderTotal, currency }
  */
 export const notifySellerNewOrder = inngest.createFunction(
-    { id: 'notify-seller-new-order', triggers: [{ event: 'app/order.new' }] },
-    async ({ event, step }) => {
-        const { storeEmail, storeName, orderId, orderTotal, currency } = event.data;
+  { id: 'notify-seller-new-order', triggers: [{ event: 'app/order.new' }] },
+  async ({ event, step }) => {
+    const { storeEmail, storeName, orderId, orderTotal, currency } = event.data;
 
-        await step.run('send-seller-notification', async () => {
-            // ─── Replace this block with your email provider ──────────────
-            console.log(`
-[NEW ORDER NOTIFICATION — SELLER]
-To: ${storeEmail}
-Subject: New Order Received on DropCart 🛍️
+    await step.run('send-seller-notification', async () => {
+      const { data, error } = await resend.emails.send({
+        from: 'Shpinx Alerts <support.shpinx.com>',
+        to: [storeEmail],
+        subject: 'New Order Received on Shpinx 🛍️',
+        html: `
+          <p>Hi ${storeName},</p>
+          <p>You have a new order!</p>
+          <p><strong>Order ID:</strong> ${orderId}<br />
+          <strong>Order Total:</strong> ${currency}${orderTotal}</p>
+          <p>Log in to your seller dashboard to view and process this order.</p>
+          <p>— The Shpinx Team</p>
+        `,
+      });
 
-Hi ${storeName},
-
-You have a new order!
-
-Order ID: ${orderId}
-Order Total: ${currency}${orderTotal}
-
-Log in to your seller dashboard to view and process this order.
-
-— The DropCart Team
-            `.trim())
-            // ──────────────────────────────────────────────────────────────
-        })
-    }
-); 
+      if (error) throw new Error(error.message);
+      return data;
+    });
+  }
+);
