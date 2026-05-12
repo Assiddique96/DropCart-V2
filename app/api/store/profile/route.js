@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
+import { inngest } from "@/inngest/client";
 import authSeller from "@/middlewares/authSeller";
 import imagekit from "@/configs/imageKit";
 
@@ -98,6 +99,21 @@ export async function PATCH(request) {
       where: { id: storeId },
       data: updateData,
     });
+
+    try {
+      await inngest.send({
+        name: "app/store.updated",
+        data: {
+          storeId: updated.id,
+          storeName: updated.name,
+          storeEmail: updated.email,
+          storeUsername: updated.username,
+          status: updated.status,
+        },
+      });
+    } catch (eventError) {
+      console.error("Inngest app/store.updated error:", eventError);
+    }
 
     return NextResponse.json({ message: "Store profile updated successfully.", store: updated });
   } catch (error) {

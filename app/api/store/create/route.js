@@ -2,6 +2,7 @@ import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import imagekit from "@/configs/imageKit";
 import prisma from "src/db";
+import { inngest } from "@/inngest/client";
 import { sanitizeStoreInput, sanitizeString } from "@/lib/sanitize";
 
 // Ensure this is imported or defined!
@@ -111,7 +112,7 @@ export async function POST(request) {
 
     // 7. DB Operation
     try {
-      await prisma.store.create({
+      const createdStore = await prisma.store.create({
         data: {
           userId, // Now guaranteed to exist
           name: sanitized.name,
@@ -131,6 +132,21 @@ export async function POST(request) {
           payoutAccountNumber: sanitizeString(formData.get("payoutAccountNumber"), 30),
         },
       });
+
+      try {
+        await inngest.send({
+          name: "app/store.created",
+          data: {
+            storeId: createdStore.id,
+            storeName: createdStore.name,
+            storeEmail: createdStore.email,
+            storeUsername: createdStore.username,
+            status: createdStore.status,
+          },
+        });
+      } catch (eventError) {
+        console.error("Inngest app/store.created error:", eventError);
+      }
 
       return NextResponse.json({ message: "Applied, Awaiting approval" });
     } catch (dbError) {
