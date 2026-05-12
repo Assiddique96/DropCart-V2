@@ -80,14 +80,14 @@ export async function GET(request) {
       recentStores,
       madeInBreakdown: madeInGroups
         .map((g) => ({
-          madeIn: (g.madeIn || "Unknown").trim?.() ? g.madeIn.trim() : (g.madeIn || "Unknown"),
+          madeIn: g.madeIn ? g.madeIn.trim() : "Unknown",
           count: g._count?._all || 0,
         }))
         .filter((r) => r.count > 0)
         .sort((a, b) => b.count - a.count),
     });
   } catch (error) {
-    console.log(error);
-    return NextResponse.json({ error: error.code || error.message }, { status: 400 });
+    console.error("Admin dashboard error:", error);
+    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
   }
 }
