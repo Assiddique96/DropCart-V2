@@ -5,9 +5,13 @@ import {
   syncUserCreation,
   syncUserDeletion,
   syncUserUpdation,
+  sendWelcomeEmail,
   sendOrderConfirmationEmail,
   sendOrderShippedEmail,
   notifySellerNewOrder,
+  notifyAdminAndSellerStoreCreated,
+  notifyAdminAndSellerStoreUpdated
+
 } from "@/inngest/functions";
 
 export const { GET, POST, PUT } = serve({
@@ -16,9 +20,12 @@ export const { GET, POST, PUT } = serve({
     syncUserCreation,
     syncUserUpdation,
     syncUserDeletion,
+    sendWelcomeEmail,
     deleteExpiredCoupons,
     sendOrderConfirmationEmail,
     sendOrderShippedEmail,
     notifySellerNewOrder,
+    notifyAdminAndSellerStoreCreated,
+    notifyAdminAndSellerStoreUpdated
   ],
 });
