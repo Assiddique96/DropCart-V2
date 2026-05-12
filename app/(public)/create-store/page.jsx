@@ -40,7 +40,7 @@ export default function CreateStore() {
   const fetchSellerStatus = async () => {
     const token = await getToken();
     try {
-      const { data } = await axios.get("/app/api/store/create", {
+      const { data } = await axios.get("/api/store/create", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -117,7 +117,7 @@ export default function CreateStore() {
       formData.append("payoutAccountName", storeInfo.payoutAccountName);
       formData.append("payoutAccountNumber", storeInfo.payoutAccountNumber);
 
-      const { data } = await axios.post("/app/api/store/create", formData, {
+      const { data } = await axios.post("/api/store/create", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
