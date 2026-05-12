@@ -2,9 +2,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { MailIcon, MapPinIcon, PhoneIcon, SendIcon } from "lucide-react";
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import axios from "axios"; 
 
 export default function ContactPage() {
   const [form, setForm] = useState({
@@ -19,12 +17,21 @@ export default function ContactPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    // Simulate send — replace with your email API (Resend, etc.)
-    await new Promise((r) => setTimeout(r, 900));
-    setSubmitted(true);
-    setSubmitting(false);
-    toast.success("Message sent! We'll get back to you soon.");
+    
+    try {
+      // Calling our backend API route
+      await axios.post("/api/contact", form);
+      
+      setSubmitted(true);
+      toast.success("Message sent! We'll get back to you soon.");
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Failed to send message. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  
 
   return (
     <div className="min-h-[70vh] mx-4 mb-24 sm:mx-6">
