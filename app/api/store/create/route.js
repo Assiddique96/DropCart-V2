@@ -7,6 +7,35 @@ import { sanitizeStoreInput, sanitizeString } from "@/lib/sanitize";
 // Ensure this is imported or defined!
 // import { strictLimiter } from "@/lib/limiter"; 
 
+export async function GET(request) {
+  try {
+    const { userId } = getAuth(request);
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Fetch the user's stores to check status
+    const stores = await prisma.store.findMany({
+      where: { userId },
+      select: { status: true },
+    });
+
+    // If no stores, return undefined status
+    if (stores.length === 0) {
+      return NextResponse.json({ status: undefined });
+    }
+
+    // Return the first store's status (or you could return latest)
+    return NextResponse.json({ status: stores[0].status });
+  } catch (error) {
+    console.error("GET /api/store/create ERROR:", error);
+    return NextResponse.json(
+      { error: error.message || "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request) {
   try {
     // 1. Auth Guard: Crucial for your Prisma model
