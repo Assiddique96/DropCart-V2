@@ -110,7 +110,7 @@ export default function StoreManageProducts() {
         const example2 = "Imported Sneakers,Premium sneakers from abroad,25000,19000,Clothing,5,SNK-001,shoes|imported,https://example.com/sneaker.jpg,ABROAD,,Adidas,Leather,China,6 months"
         const blob = new Blob([header + "\n" + example + "\n" + example2], { type: "text/csv" })
         const url = URL.createObjectURL(blob)
-        const a = document.createElement("a"); a.href = url; a.download = "Shpinx-bulk-import-template.csv"; a.click()
+        const a = document.createElement("a"); a.href = url; a.download = "Shpinx-Bulk-Import-Template.csv"; a.click()
         URL.revokeObjectURL(url)
     }
 
