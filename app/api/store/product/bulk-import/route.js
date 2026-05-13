@@ -10,7 +10,7 @@ import { sanitizeString, sanitizeNumber } from "@/lib/sanitize";
  * Body: multipart/form-data with a single "csv" File field.
  *
  * Expected CSV columns (header row required):
- *   name, description, mrp, price, category, quantity, sku, tags, image_url
+ *   name, description, mrp, price, category, quantity, sku, tags, image_url, origin, accept_cod, manufacturer, material, made_in, guarantee_period
  *
  * - All rows are validated before any DB writes.
  * - image_url must be a valid https:// URL (no upload — seller provides CDN/hosted URLs).
@@ -19,14 +19,15 @@ import { sanitizeString, sanitizeNumber } from "@/lib/sanitize";
  */
 
 const REQUIRED_COLS  = ["name", "description", "mrp", "price", "category"];
-const OPTIONAL_COLS  = ["quantity", "sku", "tags", "image_url", "origin", "accept_cod", "manufacturer", "material", "guarantee_period"];
+const OPTIONAL_COLS  = ["quantity", "sku", "tags", "image_url", "origin", "accept_cod", "manufacturer", "material", "made_in", "guarantee_period"];
 const MAX_ROWS       = 200;
 
 const VALID_CATEGORIES = [
   "Electronics", "Clothing", "Home & Garden", "Beauty & Health",
   "Toys & Games", "Sports & Outdoors", "Books & Media", "Food & Beverage",
   "Hobbies & Crafts", "Automotive", "Baby & Kids", "Pet Supplies",
-  "Office Supplies", "Industrial & Scientific", "Others",
+  "Office Supplies", "Industrial & Scientific", "Accessories", "Smartphones",
+  "Laptops", "Solars", "Others",
 ];
 
 function parseCSV(text) {
@@ -115,6 +116,8 @@ export async function POST(request) {
 
       const material = row.material ? sanitizeString(row.material, 100) : null;
       const guaranteePeriod = row.guarantee_period ? sanitizeString(row.guarantee_period, 80) : null;
+      const manufacturer = row.manufacturer ? sanitizeString(row.manufacturer, 100) : null;
+      const madeIn = row.made_in ? sanitizeString(row.made_in, 100) : null;
 
       // image_url: must be https if provided
       let images = [];
@@ -141,6 +144,8 @@ export async function POST(request) {
           acceptCod,
           material,
           guaranteePeriod,
+          manufacturer,
+          madeIn,
           inStock: quantity > 0,
           storeId,
         });

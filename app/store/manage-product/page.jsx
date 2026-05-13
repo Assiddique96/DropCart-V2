@@ -8,7 +8,7 @@ import axios from "axios"
 import { PencilIcon, Trash2Icon, XIcon, CheckIcon, CopyIcon, UploadIcon, DownloadIcon } from "lucide-react"
 import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
-const categories = ['Electronics', 'Clothing', 'Home & Garden', 'Beauty & Health', 'Toys & Games', 'Sports & Outdoors', 'Books & Media', 'Food & Beverage', 'Hobbies & Crafts', 'Automotive', 'Baby & Kids', 'Pet Supplies', 'Office Supplies', 'Industrial & Scientific', 'Others']
+const categories = ['Electronics', 'Clothing', 'Home & Garden', 'Beauty & Health', 'Toys & Games', 'Sports & Outdoors', 'Books & Media', 'Food & Beverage', 'Hobbies & Crafts', 'Automotive', 'Baby & Kids', 'Pet Supplies', 'Office Supplies', 'Industrial & Scientific', 'Accessories', 'Smartphones', 'Laptops', 'Solars', 'Others']
 
 const manufacturers = {
     'Electronics': ['Samsung', 'Apple', 'Sony', 'LG', 'Huawei', 'Xiaomi', 'OnePlus', 'Google', 'Microsoft', 'Dell', 'HP', 'Lenovo', 'Asus', 'Acer', 'Nokia', 'Motorola', 'Oppo', 'Vivo', 'Realme', 'Others'],
@@ -25,6 +25,10 @@ const manufacturers = {
     'Pet Supplies': ['Purina', 'Pedigree', 'Whiskas', 'Royal Canin', 'Hill\'s', 'Iams', 'Eukanuba', 'Blue Buffalo', 'Science Diet', 'Taste of the Wild', 'Acana', 'Orijen', 'Petco', 'PetSmart', 'Chewy', 'Others'],
     'Office Supplies': ['Staples', 'Office Depot', 'OfficeMax', 'Amazon Basics', 'HP', 'Dell', 'Lenovo', 'Apple', 'Microsoft', 'Adobe', 'Google', 'Canon', 'Epson', 'Brother', 'Sharp', 'Others'],
     'Industrial & Scientific': ['3M', 'Honeywell', 'DuPont', 'Dow Chemical', 'BASF', 'Siemens', 'General Electric', 'Philips', 'Bosch', 'Makita', 'DeWalt', 'Milwaukee', 'Ridgid', 'Snap-on', 'Others'],
+    'Accessories': ['Samsung', 'Apple', 'Sony', 'LG', 'Huawei', 'Xiaomi', 'OnePlus', 'Google', 'Microsoft', 'Dell', 'HP', 'Lenovo', 'Asus', 'Acer', 'Nokia', 'Motorola', 'Oppo', 'Vivo', 'Realme', 'Others'],
+    'Smartphones': ['Samsung', 'Apple', 'Sony', 'LG', 'Huawei', 'Xiaomi', 'OnePlus', 'Google', 'Microsoft', 'Dell', 'HP', 'Lenovo', 'Asus', 'Acer', 'Nokia', 'Motorola', 'Oppo', 'Vivo', 'Realme', 'Others'],
+    'Laptops': ['Hp', 'Apple', 'Samsung', 'Lenovo', 'Sony', 'Dell', 'ASUS', 'Acer', 'Toshiba', 'Others'],
+    'Solars': ['JA Solar', 'Trina Solar', 'Canadian Solar', 'Hanwha Q Cells', 'Jinko Solar', 'LONGi Solar', 'Risen Energy', 'Sunnova', 'Sunrun', 'Vivint Solar', 'Others'],
     'Others': ['Generic', 'Unknown', 'Various', 'Others']
 }
 
@@ -101,9 +105,9 @@ export default function StoreManageProducts() {
     }
 
     const downloadCSVTemplate = () => {
-        const header = "name,description,mrp,price,category,quantity,sku,tags,image_url,origin,accept_cod,manufacturer,material,guarantee_period"
-        const example = "Sample T-Shirt,A comfortable cotton t-shirt,5000,3500,Clothing,10,TSH-001,fashion|clothing,https://example.com/image.jpg,LOCAL,true,Nike,Cotton,1 year"
-        const example2 = "Imported Sneakers,Premium sneakers from abroad,25000,19000,Clothing,5,SNK-001,shoes|imported,https://example.com/sneaker.jpg,ABROAD,,Adidas,Leather,6 months"
+        const header = "name,description,mrp,price,category,quantity,sku,tags,image_url,origin,accept_cod,manufacturer,material,made_in,guarantee_period"
+        const example = "Sample T-Shirt,A comfortable cotton t-shirt,5000,3500,Clothing,10,TSH-001,fashion|clothing,https://example.com/image.jpg,LOCAL,true,Nike,Cotton,Nigeria,1 year"
+        const example2 = "Imported Sneakers,Premium sneakers from abroad,25000,19000,Clothing,5,SNK-001,shoes|imported,https://example.com/sneaker.jpg,ABROAD,,Adidas,Leather,China,6 months"
         const blob = new Blob([header + "\n" + example + "\n" + example2], { type: "text/csv" })
         const url = URL.createObjectURL(blob)
         const a = document.createElement("a"); a.href = url; a.download = "dropcart-import-template.csv"; a.click()
@@ -128,6 +132,18 @@ export default function StoreManageProducts() {
                 headers: await getStoreAuthHeaders(getToken)
             })
             setProducts(products.map(p => p.id === productId ? { ...p, inStock: !p.inStock } : p))
+            toast.success(data.message)
+        } catch (error) {
+            toast.error(error.response?.data?.error || error.message)
+        }
+    }
+
+    const toggleCod = async (productId) => {
+        try {
+            const { data } = await axios.post("/api/store/cod-toggle", { productId }, {
+                headers: await getStoreAuthHeaders(getToken)
+            })
+            setProducts(products.map(p => p.id === productId ? { ...p, acceptCod: !p.acceptCod } : p))
             toast.success(data.message)
         } catch (error) {
             toast.error(error.response?.data?.error || error.message)
@@ -302,6 +318,24 @@ export default function StoreManageProducts() {
                             </div>
 
                             <div className="mt-4 flex flex-wrap gap-2">
+                                <button onClick={() => toggleStock(product.id)}
+                                    className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition ${
+                                        product.inStock 
+                                            ? 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-300' 
+                                            : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300'
+                                    }`}>
+                                    {product.inStock ? 'Mark Out of Stock' : 'Mark In Stock'}
+                                </button>
+                                {product.origin === 'LOCAL' && (
+                                    <button onClick={() => toggleCod(product.id)}
+                                        className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition ${
+                                            product.acceptCod 
+                                                ? 'border-green-200 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-800 dark:bg-green-950/30 dark:text-green-300' 
+                                                : 'border-red-200 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300'
+                                        }`}>
+                                        {product.acceptCod ? 'COD Enabled' : 'COD Disabled'}
+                                    </button>
+                                )}
                                 <button onClick={() => openEdit(product)}
                                     className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
                                     <PencilIcon size={15} /> Edit
