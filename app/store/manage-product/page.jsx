@@ -56,6 +56,315 @@ export default function StoreManageProducts() {
     const [importing, setImporting] = useState(false)
     const csvRef = useRef()
 
+    const parsePrice = (value) => {
+        const price = parseFloat(value)
+        return Number.isFinite(price) ? price : 0
+    }
+
+    const computeVariantPriceModifier = (optionPrice, basePrice) => {
+        const price = parsePrice(optionPrice)
+        const base = parsePrice(basePrice)
+        return Number.isFinite(price) && Number.isFinite(base) ? price - base : 0
+    }
+
+    const currentEditingProduct = products.find((product) => product.id === editingProduct)
+
+    const renderEditForm = (product) => (
+        <div className="rounded-3xl border border-blue-100 bg-blue-50/80 p-4 dark:border-blue-800 dark:bg-blue-950/30">
+            <div className="flex items-center justify-between gap-3 mb-4">
+                <div>
+                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Edit product</h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Update details, images and variant groups.</p>
+                </div>
+                <button type="button" onClick={cancelEdit}
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                    <XIcon size={14} /> Close
+                </button>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <label className="flex flex-col gap-1 text-xs">
+                    Name
+                    <input type="text" value={editForm.name}
+                        onChange={e => setEditForm({ ...editForm, name: e.target.value })}
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                </label>
+                <label className="flex flex-col gap-1 text-xs">
+                    Category
+                    <select value={editForm.category}
+                        onChange={e => setEditForm({ ...editForm, category: e.target.value, manufacturer: "" })}
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
+                        {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                </label>
+                <label className="flex flex-col gap-1 text-xs">
+                    Manufacturer
+                    <select value={editForm.manufacturer ?? ''}
+                        onChange={e => setEditForm({ ...editForm, manufacturer: e.target.value })}
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
+                        <option value="">Select manufacturer</option>
+                        {editForm.category && manufacturers[editForm.category]?.map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                </label>
+                <label className="flex flex-col gap-1 text-xs">
+                    Material
+                    <input type="text" value={editForm.material ?? ''}
+                        onChange={e => setEditForm({ ...editForm, material: e.target.value })}
+                        placeholder="e.g. Cotton, Steel"
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                </label>
+                <label className="flex flex-col gap-1 text-xs">
+                    Guarantee Period
+                    <input type="text" value={editForm.guaranteePeriod ?? ''}
+                        onChange={e => setEditForm({ ...editForm, guaranteePeriod: e.target.value })}
+                        placeholder="e.g. 1 year"
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                </label>
+                <label className="flex flex-col gap-1 text-xs">
+                    MRP ({currency})
+                    <input type="number" value={editForm.mrp}
+                        onChange={e => setEditForm({ ...editForm, mrp: e.target.value })}
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                </label>
+                <label className="flex flex-col gap-1 text-xs">
+                    Offer Price ({currency})
+                    <input type="number" value={editForm.price}
+                        onChange={e => setEditForm({ ...editForm, price: e.target.value })}
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                </label>
+                <label className="flex flex-col gap-1 text-xs">
+                    Quantity in Stock
+                    <input type="number" min="0" value={editForm.quantity}
+                        onChange={e => setEditForm({ ...editForm, quantity: e.target.value })}
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                </label>
+                <label className="flex flex-col gap-1 text-xs">
+                    Shipping Origin
+                    <select value={editForm.origin ?? 'LOCAL'}
+                        onChange={(e) => {
+                            const v = e.target.value
+                            setEditForm((f) => ({
+                                ...f,
+                                origin: v,
+                                acceptCod: v === 'LOCAL' ? (f.origin === 'ABROAD' ? true : f.acceptCod !== false) : false,
+                            }))
+                        }}
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
+                        <option value="LOCAL">🏠 Local Product</option>
+                        <option value="ABROAD">✈️ Shipped from Abroad</option>
+                    </select>
+                </label>
+                {editForm.origin === 'LOCAL' && (
+                    <label className="flex flex-col gap-1 text-xs sm:col-span-2">
+                        <span className="flex items-center gap-2 cursor-pointer select-none">
+                            <input type="checkbox" checked={!!editForm.acceptCod}
+                                onChange={e => setEditForm({ ...editForm, acceptCod: e.target.checked })}
+                                className="accent-green-600" />
+                            Accept Cash on Delivery (COD) for this product
+                        </span>
+                        <span className="text-slate-400 font-normal pl-6">If unchecked, buyers must pay online.</span>
+                    </label>
+                )}
+                <label className="flex flex-col gap-1 text-xs">
+                    SKU
+                    <input type="text" value={editForm.sku ?? ''}
+                        onChange={e => setEditForm({ ...editForm, sku: e.target.value })}
+                        placeholder="e.g. ABC-001"
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                </label>
+                <label className="flex flex-col gap-1 text-xs">
+                    Tags (comma-separated)
+                    <input type="text" value={editForm.tags ?? ''}
+                        onChange={e => setEditForm({ ...editForm, tags: e.target.value })}
+                        placeholder="e.g. fashion, summer"
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                </label>
+                <label className="flex flex-col gap-1 text-xs">
+                    Scheduled Publish
+                    <input type="datetime-local" value={editForm.scheduledAt ?? ''}
+                        onChange={e => setEditForm({ ...editForm, scheduledAt: e.target.value })}
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                </label>
+                <div className="flex flex-col gap-2 text-xs sm:col-span-2 lg:col-span-3">
+                    <span className="font-medium text-slate-600 dark:text-slate-300">Product images (max 8)</span>
+                    <p className="text-slate-400 text-[11px]">Remove photos with ×. Add more below — new uploads are appended until the limit.</p>
+                    <div className="flex flex-wrap gap-2">
+                        {editImageUrls.map((url) => (
+                            <div key={url} className="relative h-16 w-16 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 group/img">
+                                <Image src={url} alt="" fill className="object-cover" sizes="64px" />
+                                <button
+                                    type="button"
+                                    title="Remove image"
+                                    onClick={() => setEditImageUrls((prev) => prev.filter((u) => u !== url))}
+                                    className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover/img:opacity-100 transition text-white text-xs font-semibold"
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <label className="flex flex-col gap-1 cursor-pointer">
+                        <span className="text-slate-500">Add images</span>
+                        <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif"
+                            onChange={(e) => setNewImages(Array.from(e.target.files || []))}
+                            className="text-xs border border-slate-200 dark:border-slate-700 rounded p-1.5 bg-white dark:bg-slate-900 file:mr-2" />
+                        {newImages.length > 0 && (
+                            <span className="text-blue-500">{newImages.length} new file(s) will upload on save</span>
+                        )}
+                    </label>
+                </div>
+
+                <div className="sm:col-span-2 lg:col-span-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950">
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <div className="grid gap-2 sm:grid-cols-2 w-full min-w-0">
+                            <input value={newVariantGroupLabel}
+                                onChange={e => setNewVariantGroupLabel(e.target.value)}
+                                placeholder="New variant group label"
+                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                            <select value={newVariantGroupType}
+                                onChange={e => setNewVariantGroupType(e.target.value)}
+                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none">
+                                <option value="TEXT">Text</option>
+                                <option value="IMAGE">Image</option>
+                            </select>
+                        </div>
+                        <button type="button" onClick={addVariantGroup}
+                            className="inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900 transition">
+                            <PlusIcon size={14} /> Add Group
+                        </button>
+                    </div>
+
+                    {variantGroups.length > 0 ? variantGroups.map((group, gIdx) => (
+                        <div key={gIdx} className="mb-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                                <div className="flex flex-wrap gap-2 w-full min-w-0">
+                                    <input value={group.label}
+                                        onChange={e => setVariantGroups(prev => prev.map((item, i) => i === gIdx ? { ...item, label: e.target.value } : item))}
+                                        className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-2 text-sm outline-none"
+                                        placeholder="Group label" />
+                                    <select value={group.type}
+                                        onChange={e => setVariantGroups(prev => prev.map((item, i) => i === gIdx ? { ...item, type: e.target.value } : item))}
+                                        className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-2 text-sm outline-none">
+                                        <option value="TEXT">Text</option>
+                                        <option value="IMAGE">Image</option>
+                                    </select>
+                                    <label className="flex items-center gap-2 text-xs text-slate-500">
+                                        <input type="checkbox" checked={group.required}
+                                            onChange={e => setVariantGroups(prev => prev.map((item, i) => i === gIdx ? { ...item, required: e.target.checked } : item))}
+                                            className="accent-slate-700" />
+                                        Required
+                                    </label>
+                                </div>
+                                <button type="button" onClick={() => removeVariantGroup(gIdx)}
+                                    className="text-red-500 text-xs hover:text-red-700 transition">Remove group</button>
+                            </div>
+
+                            <div className="mt-4 space-y-3">
+                                {group.options.length > 0 ? (
+                                    <div className="grid gap-3">
+                                        {group.options.map((option, oIdx) => (
+                                            <div key={oIdx} className="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-950">
+                                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Option {oIdx + 1}</span>
+                                                    <button type="button" onClick={() => removeVariantOption(gIdx, oIdx)}
+                                                        className="text-rose-500 text-xs hover:text-rose-700 transition">Remove</button>
+                                                </div>
+                                                <div className="grid gap-2 sm:grid-cols-2 w-full min-w-0">
+                                                    <input value={option.label}
+                                                        onChange={e => updateVariantOption(gIdx, oIdx, 'label', e.target.value)}
+                                                        placeholder="Label"
+                                                        className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                    {group.type === 'IMAGE' && (
+                                                        <input value={option.image}
+                                                            onChange={e => updateVariantOption(gIdx, oIdx, 'image', e.target.value)}
+                                                            placeholder="Image URL"
+                                                            className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                    )}
+                                                    <input value={option.sku || ''}
+                                                        onChange={e => updateVariantOption(gIdx, oIdx, 'sku', e.target.value)}
+                                                        placeholder="SKU (optional)"
+                                                        className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                    <div className="grid gap-2 sm:grid-cols-4 w-full min-w-0">
+                                                        <input value={option.mrp || ''}
+                                                            onChange={e => updateVariantOption(gIdx, oIdx, 'mrp', e.target.value)}
+                                                            placeholder="MRP"
+                                                            className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                        <input type="number" value={option.price || ''}
+                                                            onChange={e => updateVariantOption(gIdx, oIdx, 'price', e.target.value)}
+                                                            placeholder="Price"
+                                                            className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                        <input type="number" value={option.quantity}
+                                                            onChange={e => updateVariantOption(gIdx, oIdx, 'quantity', e.target.value)}
+                                                            placeholder="Qty"
+                                                            className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                        <label className="flex items-center gap-2 text-xs text-slate-500">
+                                                            <input type="checkbox" checked={option.inStock}
+                                                                onChange={e => updateVariantOption(gIdx, oIdx, 'inStock', e.target.checked)}
+                                                                className="accent-slate-700" />
+                                                            In stock
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-xs text-slate-500">No options added yet.</p>
+                                )}
+
+                                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 w-full min-w-0">
+                                    <input value={newVariantOptionInputs[gIdx]?.label || ''}
+                                        onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], label: e.target.value } }))}
+                                        placeholder="Label"
+                                        className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                    {group.type === 'IMAGE' && (
+                                        <input value={newVariantOptionInputs[gIdx]?.image || ''}
+                                            onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], image: e.target.value } }))}
+                                            placeholder="Image URL"
+                                            className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                    )}
+                                    <input value={newVariantOptionInputs[gIdx]?.mrp || ''}
+                                        onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], mrp: e.target.value } }))}
+                                        placeholder="MRP"
+                                        className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                    <input type="number" value={newVariantOptionInputs[gIdx]?.price || ''}
+                                        onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], price: e.target.value } }))}
+                                        placeholder="Price"
+                                        className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                    <input value={newVariantOptionInputs[gIdx]?.quantity || ''}
+                                        onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], quantity: e.target.value } }))}
+                                        placeholder="Quantity"
+                                        className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                </div>
+                                <button type="button" onClick={() => addVariantOption(gIdx)}
+                                    className="inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900 transition">
+                                    <PlusIcon size={14} /> Add Option
+                                </button>
+                            </div>
+                        </div>
+                    )) : (
+                        <p className="text-xs text-slate-500">No product variant groups configured for this item.</p>
+                    )}
+                </div>
+                <label className="flex flex-col gap-1 text-xs sm:col-span-2 lg:col-span-3">
+                    Description
+                    <textarea value={editForm.description} rows={3}
+                        onChange={e => setEditForm({ ...editForm, description: e.target.value })}
+                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm resize-none bg-white dark:bg-slate-900" />
+                </label>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-3">
+                <button onClick={() => saveEdit(product.id)} disabled={saving}
+                    className="inline-flex items-center gap-1.5 bg-slate-800 text-white px-4 py-2 rounded-full hover:bg-slate-900 transition text-sm disabled:opacity-50">
+                    <CheckIcon size={14} /> {saving ? 'Saving...' : 'Save Changes'}
+                </button>
+                <button onClick={cancelEdit}
+                    className="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-full hover:bg-slate-200 transition text-sm">
+                    <XIcon size={14} /> Cancel
+                </button>
+            </div>
+        </div>
+    )
+
     const cloneProduct = async (productId) => {
         setCloning(productId)
         try {
@@ -159,16 +468,19 @@ export default function StoreManageProducts() {
         if (group.options.find(o => o.label.toLowerCase() === label.toLowerCase())) {
             return toast.error(`Option "${label}" already exists in ${group.label}.`)
         }
+        const price = parsePrice(input.price)
         const option = {
             label,
             image: input.image || "",
             sku: input.sku || "",
-            priceModifier: parseFloat(input.priceModifier) || 0,
+            mrp: input.mrp || "",
+            price: price || 0,
+            priceModifier: computeVariantPriceModifier(price, editForm.price),
             quantity: parseInt(input.quantity, 10) || 0,
             inStock: (parseInt(input.quantity, 10) || 0) > 0,
         }
         setVariantGroups(prev => prev.map((g, i) => i === groupIdx ? { ...g, options: [...g.options, option] } : g))
-        setNewVariantOptionInputs(prev => ({ ...prev, [groupIdx]: { label: "", image: "", sku: "", priceModifier: "", quantity: "" } }))
+        setNewVariantOptionInputs(prev => ({ ...prev, [groupIdx]: { label: "", image: "", sku: "", mrp: "", price: "", quantity: "" } }))
     }
 
     const removeVariantOption = (groupIdx, optionIdx) => {
@@ -178,7 +490,18 @@ export default function StoreManageProducts() {
     const updateVariantOption = (groupIdx, optionIdx, field, value) => {
         setVariantGroups(prev => prev.map((g, i) => i === groupIdx ? {
             ...g,
-            options: g.options.map((opt, j) => j === optionIdx ? { ...opt, [field]: value } : opt)
+            options: g.options.map((opt, j) => {
+                if (j !== optionIdx) return opt
+                if (field === 'price') {
+                    const price = parsePrice(value)
+                    return {
+                        ...opt,
+                        price,
+                        priceModifier: computeVariantPriceModifier(price, editForm.price),
+                    }
+                }
+                return { ...opt, [field]: value }
+            })
         } : g))
     }
 
@@ -225,6 +548,7 @@ export default function StoreManageProducts() {
             origin: product.origin ?? 'LOCAL',
             acceptCod: (product.origin ?? 'LOCAL') === 'ABROAD' ? false : product.acceptCod !== false,
         })
+        const basePrice = parsePrice(product.price)
         setVariantGroups(Array.isArray(product.variantGroups) ? product.variantGroups.map(group => ({
             label: group.label,
             type: group.type,
@@ -233,6 +557,8 @@ export default function StoreManageProducts() {
                 label: option.label,
                 image: option.image || "",
                 sku: option.sku || "",
+                mrp: option.mrp || "",
+                price: basePrice + (option.priceModifier ?? 0),
                 priceModifier: option.priceModifier ?? 0,
                 quantity: option.quantity ?? 0,
                 inStock: option.inStock,
@@ -444,284 +770,20 @@ export default function StoreManageProducts() {
                             </div>
 
                             {editingProduct === product.id && (
-                                <div className="mt-5 rounded-3xl border border-blue-100 bg-blue-50/80 p-4 dark:border-blue-800 dark:bg-blue-950/30">
-                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                        <label className="flex flex-col gap-1 text-xs">
-                                            Name
-                                            <input type="text" value={editForm.name}
-                                                onChange={e => setEditForm({ ...editForm, name: e.target.value })}
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                        </label>
-                                        <label className="flex flex-col gap-1 text-xs">
-                                            Category
-                                            <select value={editForm.category}
-                                                onChange={e => setEditForm({ ...editForm, category: e.target.value, manufacturer: "" })}
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
-                                                {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                                            </select>
-                                        </label>
-                                        <label className="flex flex-col gap-1 text-xs">
-                                            Manufacturer
-                                            <select value={editForm.manufacturer ?? ''}
-                                                onChange={e => setEditForm({ ...editForm, manufacturer: e.target.value })}
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
-                                                <option value="">Select manufacturer</option>
-                                                {editForm.category && manufacturers[editForm.category]?.map(m => <option key={m} value={m}>{m}</option>)}
-                                            </select>
-                                        </label>
-                                        <label className="flex flex-col gap-1 text-xs">
-                                            Material
-                                            <input type="text" value={editForm.material ?? ''}
-                                                onChange={e => setEditForm({ ...editForm, material: e.target.value })}
-                                                placeholder="e.g. Cotton, Steel"
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                        </label>
-                                        <label className="flex flex-col gap-1 text-xs">
-                                            Guarantee Period
-                                            <input type="text" value={editForm.guaranteePeriod ?? ''}
-                                                onChange={e => setEditForm({ ...editForm, guaranteePeriod: e.target.value })}
-                                                placeholder="e.g. 1 year"
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                        </label>
-                                        <label className="flex flex-col gap-1 text-xs">
-                                            MRP ({currency})
-                                            <input type="number" value={editForm.mrp}
-                                                onChange={e => setEditForm({ ...editForm, mrp: e.target.value })}
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                        </label>
-                                        <label className="flex flex-col gap-1 text-xs">
-                                            Offer Price ({currency})
-                                            <input type="number" value={editForm.price}
-                                                onChange={e => setEditForm({ ...editForm, price: e.target.value })}
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                        </label>
-                                        <label className="flex flex-col gap-1 text-xs">
-                                            Quantity in Stock
-                                            <input type="number" min="0" value={editForm.quantity}
-                                                onChange={e => setEditForm({ ...editForm, quantity: e.target.value })}
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                        </label>
-                                        <label className="flex flex-col gap-1 text-xs">
-                                            Shipping Origin
-                                            <select value={editForm.origin ?? 'LOCAL'}
-                                                onChange={(e) => {
-                                                    const v = e.target.value
-                                                    setEditForm((f) => ({
-                                                        ...f,
-                                                        origin: v,
-                                                        acceptCod: v === 'LOCAL' ? (f.origin === 'ABROAD' ? true : f.acceptCod !== false) : false,
-                                                    }))
-                                                }}
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
-                                                <option value="LOCAL">🏠 Local Product</option>
-                                                <option value="ABROAD">✈️ Shipped from Abroad</option>
-                                            </select>
-                                        </label>
-                                        {editForm.origin === 'LOCAL' && (
-                                            <label className="flex flex-col gap-1 text-xs sm:col-span-2">
-                                                <span className="flex items-center gap-2 cursor-pointer select-none">
-                                                    <input type="checkbox" checked={!!editForm.acceptCod}
-                                                        onChange={e => setEditForm({ ...editForm, acceptCod: e.target.checked })}
-                                                        className="accent-green-600" />
-                                                    Accept Cash on Delivery (COD) for this product
-                                                </span>
-                                                <span className="text-slate-400 font-normal pl-6">If unchecked, buyers must pay online.</span>
-                                            </label>
-                                        )}
-                                        <label className="flex flex-col gap-1 text-xs">
-                                            SKU
-                                            <input type="text" value={editForm.sku ?? ''}
-                                                onChange={e => setEditForm({ ...editForm, sku: e.target.value })}
-                                                placeholder="e.g. ABC-001"
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                        </label>
-                                        <label className="flex flex-col gap-1 text-xs">
-                                            Tags (comma-separated)
-                                            <input type="text" value={editForm.tags ?? ''}
-                                                onChange={e => setEditForm({ ...editForm, tags: e.target.value })}
-                                                placeholder="e.g. fashion, summer"
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                        </label>
-                                        <label className="flex flex-col gap-1 text-xs">
-                                            Scheduled Publish
-                                            <input type="datetime-local" value={editForm.scheduledAt ?? ''}
-                                                onChange={e => setEditForm({ ...editForm, scheduledAt: e.target.value })}
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
-                                        </label>
-                                        <div className="flex flex-col gap-2 text-xs sm:col-span-2 lg:col-span-3">
-                                            <span className="font-medium text-slate-600 dark:text-slate-300">Product images (max 8)</span>
-                                            <p className="text-slate-400 text-[11px]">Remove photos with ×. Add more below — new uploads are appended until the limit.</p>
-                                            <div className="flex flex-wrap gap-2">
-                                                {editImageUrls.map((url) => (
-                                                    <div key={url} className="relative h-16 w-16 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 group/img">
-                                                        <Image src={url} alt="" fill className="object-cover" sizes="64px" />
-                                                        <button
-                                                            type="button"
-                                                            title="Remove image"
-                                                            onClick={() => setEditImageUrls((prev) => prev.filter((u) => u !== url))}
-                                                            className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover/img:opacity-100 transition text-white text-xs font-semibold"
-                                                        >
-                                                            ×
-                                                        </button>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                            <label className="flex flex-col gap-1 cursor-pointer">
-                                                <span className="text-slate-500">Add images</span>
-                                                <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif"
-                                                    onChange={(e) => setNewImages(Array.from(e.target.files || []))}
-                                                    className="text-xs border border-slate-200 dark:border-slate-700 rounded p-1.5 bg-white dark:bg-slate-900 file:mr-2" />
-                                                {newImages.length > 0 && (
-                                                    <span className="text-blue-500">{newImages.length} new file(s) will upload on save</span>
-                                                )}
-                                            </label>
-                                        </div>
-
-                                        <div className="sm:col-span-2 lg:col-span-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950">
-                                            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                                                <div className="grid gap-2 sm:grid-cols-2 w-full min-w-0">
-                                                    <input value={newVariantGroupLabel}
-                                                        onChange={e => setNewVariantGroupLabel(e.target.value)}
-                                                        placeholder="New variant group label"
-                                                        className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
-                                                    <select value={newVariantGroupType}
-                                                        onChange={e => setNewVariantGroupType(e.target.value)}
-                                                        className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none">
-                                                        <option value="TEXT">Text</option>
-                                                        <option value="IMAGE">Image</option>
-                                                    </select>
-                                                </div>
-                                                <button type="button" onClick={addVariantGroup}
-                                                    className="inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900 transition">
-                                                    <PlusIcon size={14} /> Add Group
-                                                </button>
-                                            </div>
-
-                                            {variantGroups.length > 0 ? variantGroups.map((group, gIdx) => (
-                                                <div key={gIdx} className="mb-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
-                                                    <div className="flex flex-wrap items-center justify-between gap-3">
-                                                        <div className="flex flex-wrap gap-2 w-full min-w-0">
-                                                            <input value={group.label}
-                                                                onChange={e => setVariantGroups(prev => prev.map((item, i) => i === gIdx ? { ...item, label: e.target.value } : item))}
-                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-2 text-sm outline-none"
-                                                                placeholder="Group label" />
-                                                            <select value={group.type}
-                                                                onChange={e => setVariantGroups(prev => prev.map((item, i) => i === gIdx ? { ...item, type: e.target.value } : item))}
-                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-2 text-sm outline-none">
-                                                                <option value="TEXT">Text</option>
-                                                                <option value="IMAGE">Image</option>
-                                                            </select>
-                                                            <label className="flex items-center gap-2 text-xs text-slate-500">
-                                                                <input type="checkbox" checked={group.required}
-                                                                    onChange={e => setVariantGroups(prev => prev.map((item, i) => i === gIdx ? { ...item, required: e.target.checked } : item))}
-                                                                    className="accent-slate-700" />
-                                                                Required
-                                                            </label>
-                                                        </div>
-                                                        <button type="button" onClick={() => removeVariantGroup(gIdx)}
-                                                            className="text-red-500 text-xs hover:text-red-700 transition">Remove group</button>
-                                                    </div>
-
-                                                    <div className="mt-4 space-y-3">
-                                                        {group.options.length > 0 ? (
-                                                            <div className="grid gap-3">
-                                                                {group.options.map((option, oIdx) => (
-                                                                    <div key={oIdx} className="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-950">
-                                                                        <div className="flex flex-wrap items-center justify-between gap-2">
-                                                                            <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Option {oIdx + 1}</span>
-                                                                            <button type="button" onClick={() => removeVariantOption(gIdx, oIdx)}
-                                                                                className="text-rose-500 text-xs hover:text-rose-700 transition">Remove</button>
-                                                                        </div>
-                                                                        <div className="grid gap-2 sm:grid-cols-2 w-full min-w-0">
-                                                                            <input value={option.label}
-                                                                                onChange={e => updateVariantOption(gIdx, oIdx, 'label', e.target.value)}
-                                                                                placeholder="Label"
-                                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
-                                                                            {group.type === 'IMAGE' && (
-                                                                                <input value={option.image}
-                                                                                    onChange={e => updateVariantOption(gIdx, oIdx, 'image', e.target.value)}
-                                                                                    placeholder="Image URL"
-                                                                                    className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
-                                                                            )}
-                                                                            <input value={option.sku || ''}
-                                                                                onChange={e => updateVariantOption(gIdx, oIdx, 'sku', e.target.value)}
-                                                                                placeholder="SKU (optional)"
-                                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
-                                                                            <div className="grid gap-2 sm:grid-cols-3 w-full min-w-0">
-                                                                                <input type="number" value={option.priceModifier}
-                                                                                    onChange={e => updateVariantOption(gIdx, oIdx, 'priceModifier', e.target.value)}
-                                                                                    placeholder="Price +/−"
-                                                                                    className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
-                                                                                <input type="number" value={option.quantity}
-                                                                                    onChange={e => updateVariantOption(gIdx, oIdx, 'quantity', e.target.value)}
-                                                                                    placeholder="Qty"
-                                                                                    className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
-                                                                                <label className="flex items-center gap-2 text-xs text-slate-500">
-                                                                                    <input type="checkbox" checked={option.inStock}
-                                                                                        onChange={e => updateVariantOption(gIdx, oIdx, 'inStock', e.target.checked)}
-                                                                                        className="accent-slate-700" />
-                                                                                    In stock
-                                                                                </label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        ) : (
-                                                            <p className="text-xs text-slate-500">No options added yet.</p>
-                                                        )}
-
-                                                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 w-full min-w-0">
-                                                            <input value={newVariantOptionInputs[gIdx]?.label || ''}
-                                                                onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], label: e.target.value } }))}
-                                                                placeholder="Label"
-                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
-                                                            {group.type === 'IMAGE' && (
-                                                                <input value={newVariantOptionInputs[gIdx]?.image || ''}
-                                                                    onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], image: e.target.value } }))}
-                                                                    placeholder="Image URL"
-                                                                    className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
-                                                            )}
-                                                            <input value={newVariantOptionInputs[gIdx]?.priceModifier || ''}
-                                                                onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], priceModifier: e.target.value } }))}
-                                                                placeholder="Price +/−"
-                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
-                                                            <input value={newVariantOptionInputs[gIdx]?.quantity || ''}
-                                                                onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], quantity: e.target.value } }))}
-                                                                placeholder="Quantity"
-                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
-                                                        </div>
-                                                        <button type="button" onClick={() => addVariantOption(gIdx)}
-                                                            className="inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900 transition">
-                                                            <PlusIcon size={14} /> Add Option
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            )) : (
-                                                <p className="text-xs text-slate-500">No product variant groups configured for this item.</p>
-                                            )}
-                                        </div>
-                                        <label className="flex flex-col gap-1 text-xs sm:col-span-2 lg:col-span-3">
-                                            Description
-                                            <textarea value={editForm.description} rows={3}
-                                                onChange={e => setEditForm({ ...editForm, description: e.target.value })}
-                                                className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm resize-none bg-white dark:bg-slate-900" />
-                                        </label>
-                                    </div>
-                                    <div className="mt-4 flex flex-wrap gap-3">
-                                        <button onClick={() => saveEdit(product.id)} disabled={saving}
-                                            className="inline-flex items-center gap-1.5 bg-slate-800 text-white px-4 py-2 rounded-full hover:bg-slate-900 transition text-sm disabled:opacity-50">
-                                            <CheckIcon size={14} /> {saving ? 'Saving...' : 'Save Changes'}
-                                        </button>
-                                        <button onClick={cancelEdit}
-                                            className="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-full hover:bg-slate-200 transition text-sm">
-                                            <XIcon size={14} /> Cancel
-                                        </button>
-                                    </div>
+                                <div className="lg:hidden">
+                                    {renderEditForm(product)}
                                 </div>
                             )}
                         </div>
                     ))}
+                </div>
+            )}
+
+            {currentEditingProduct && (
+                <div className="hidden lg:flex fixed inset-0 z-50 items-center justify-center bg-black/40 p-6">
+                    <div className="max-w-6xl w-full max-h-[calc(100vh-4rem)] overflow-y-auto">
+                        {renderEditForm(currentEditingProduct)}
+                    </div>
                 </div>
             )}
 

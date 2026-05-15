@@ -91,10 +91,10 @@ export default function StoreAddProduct() {
 
     // Variant builder state — fully customizable groups
     const [variantGroups, setVariantGroups] = useState([])
-    // Each group: { label, type: "TEXT"|"IMAGE", required, options: [{ label, image, priceModifier, quantity }] }
+    // Each group: { label, type: "TEXT"|"IMAGE", required, options: [{ label, image, mrp, price, priceModifier, quantity }] }
     const [newGroupLabel, setNewGroupLabel] = useState("")
     const [newGroupType, setNewGroupType] = useState("TEXT")
-    const [newOptionInputs, setNewOptionInputs] = useState({}) // { [groupIdx]: { label, image, priceModifier, quantity } }
+    const [newOptionInputs, setNewOptionInputs] = useState({}) // { [groupIdx]: { label, image, mrp, price, quantity } }
 
     const onChange = (e) => setProductInfo(p => ({ ...p, [e.target.name]: e.target.value }))
 
@@ -138,16 +138,20 @@ export default function StoreAddProduct() {
         if (group.options.find(o => o.label.toLowerCase() === label.toLowerCase())) {
             return toast.error(`Option "${label}" already in ${group.label}.`)
         }
+        const basePrice = parseFloat(productInfo.price) || 0
+        const priceValue = parseFloat(input.price) || 0
         const newOption = {
             label,
             image: input.image || null,
-            priceModifier: parseFloat(input.priceModifier) || 0,
+            mrp: input.mrp || "",
+            price: priceValue || 0,
+            priceModifier: priceValue ? priceValue - basePrice : 0,
             quantity: parseInt(input.quantity) || 0,
         }
         setVariantGroups(prev => prev.map((g, i) =>
             i === groupIdx ? { ...g, options: [...g.options, newOption] } : g
         ))
-        setNewOptionInputs(prev => ({ ...prev, [groupIdx]: { label: "", image: "", priceModifier: "", quantity: "" } }))
+        setNewOptionInputs(prev => ({ ...prev, [groupIdx]: { label: "", image: "", mrp: "", price: "", quantity: "" } }))
     }
 
     const removeOptionFromGroup = (groupIdx, optIdx) => {
@@ -160,7 +164,15 @@ export default function StoreAddProduct() {
         setVariantGroups(prev => prev.map((g, i) =>
             i === groupIdx ? {
                 ...g,
-                options: g.options.map((o, j) => j === optIdx ? { ...o, [field]: value } : o)
+                options: g.options.map((o, j) => {
+                    if (j !== optIdx) return o
+                    if (field === 'price') {
+                        const priceValue = parseFloat(value) || 0
+                        const basePrice = parseFloat(productInfo.price) || 0
+                        return { ...o, price: priceValue, priceModifier: priceValue ? priceValue - basePrice : 0 }
+                    }
+                    return { ...o, [field]: value }
+                })
             } : g
         ))
     }
@@ -515,11 +527,17 @@ export default function StoreAddProduct() {
                                         )}
                                         <div>
                                             <p className="font-medium text-slate-700 dark:text-slate-200">{opt.label}</p>
-                                            {opt.priceModifier !== 0 && (
+                                            {(opt.price || opt.mrp) ? (
+                                                <p className="text-[10px] text-slate-500">
+                                                    {opt.mrp ? `MRP ${opt.mrp}` : ''}
+                                                    {opt.mrp && opt.price ? ' · ' : ''}
+                                                    {opt.price ? `Price ${opt.price}` : ''}
+                                                </p>
+                                            ) : opt.priceModifier !== 0 ? (
                                                 <p className="text-[10px] text-green-600">
                                                     {opt.priceModifier > 0 ? "+" : ""}{opt.priceModifier.toLocaleString()}
                                                 </p>
-                                            )}
+                                            ) : null}
                                         </div>
                                         <button type="button" onClick={() => removeOptionFromGroup(gIdx, oIdx)}
                                             className="ml-1 text-slate-300 hover:text-red-500 transition opacity-0 group-hover/opt:opacity-100">
@@ -555,18 +573,28 @@ export default function StoreAddProduct() {
                                 </div>
                             )}
 
-                            <div className="w-24">
-                                <label className="text-[10px] text-slate-400 mb-0.5 block">Price +/−</label>
+                            <div className="w-20">
+                                <label className="text-[10px] text-slate-400 mb-0.5 block">MRP</label>
                                 <input
                                     type="number"
-                                    value={newOptionInputs[gIdx]?.priceModifier || ""}
-                                    onChange={e => setNewOptionInputs(p => ({ ...p, [gIdx]: { ...p[gIdx], priceModifier: e.target.value } }))}
+                                    value={newOptionInputs[gIdx]?.mrp || ""}
+                                    onChange={e => setNewOptionInputs(p => ({ ...p, [gIdx]: { ...p[gIdx], mrp: e.target.value } }))}
+                                    placeholder="0"
+                                    className="w-full p-1.5 border border-slate-200 dark:border-slate-700 rounded text-xs outline-none bg-white dark:bg-slate-900" />
+                            </div>
+
+                            <div className="w-24">
+                                <label className="text-[10px] text-slate-400 mb-0.5 block">Price</label>
+                                <input
+                                    type="number"
+                                    value={newOptionInputs[gIdx]?.price || ""}
+                                    onChange={e => setNewOptionInputs(p => ({ ...p, [gIdx]: { ...p[gIdx], price: e.target.value } }))}
                                     placeholder="0"
                                     className="w-full p-1.5 border border-slate-200 dark:border-slate-700 rounded text-xs outline-none bg-white dark:bg-slate-900" />
                             </div>
 
                             <div className="w-20">
-                                <label className="text-[10px] text-slate-400 mb-0.5 block">Stock</label>
+                                <label className="text-[10px] text-slate-400 mb-0.5 block">Qty</label>
                                 <input
                                     type="number"
                                     value={newOptionInputs[gIdx]?.quantity || ""}
