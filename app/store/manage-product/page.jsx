@@ -579,14 +579,14 @@ export default function StoreManageProducts() {
 
                                         <div className="sm:col-span-2 lg:col-span-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950">
                                             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                                                <div className="grid gap-2 sm:grid-cols-2">
+                                                <div className="grid gap-2 sm:grid-cols-2 w-full min-w-0">
                                                     <input value={newVariantGroupLabel}
                                                         onChange={e => setNewVariantGroupLabel(e.target.value)}
                                                         placeholder="New variant group label"
-                                                        className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                        className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
                                                     <select value={newVariantGroupType}
                                                         onChange={e => setNewVariantGroupType(e.target.value)}
-                                                        className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none">
+                                                        className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none">
                                                         <option value="TEXT">Text</option>
                                                         <option value="IMAGE">Image</option>
                                                     </select>
@@ -600,14 +600,14 @@ export default function StoreManageProducts() {
                                             {variantGroups.length > 0 ? variantGroups.map((group, gIdx) => (
                                                 <div key={gIdx} className="mb-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
                                                     <div className="flex flex-wrap items-center justify-between gap-3">
-                                                        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                                                        <div className="flex flex-wrap gap-2 w-full min-w-0">
                                                             <input value={group.label}
                                                                 onChange={e => setVariantGroups(prev => prev.map((item, i) => i === gIdx ? { ...item, label: e.target.value } : item))}
-                                                                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-2 text-sm outline-none"
+                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-2 text-sm outline-none"
                                                                 placeholder="Group label" />
                                                             <select value={group.type}
                                                                 onChange={e => setVariantGroups(prev => prev.map((item, i) => i === gIdx ? { ...item, type: e.target.value } : item))}
-                                                                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-2 text-sm outline-none">
+                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-2 text-sm outline-none">
                                                                 <option value="TEXT">Text</option>
                                                                 <option value="IMAGE">Image</option>
                                                             </select>
@@ -632,30 +632,30 @@ export default function StoreManageProducts() {
                                                                             <button type="button" onClick={() => removeVariantOption(gIdx, oIdx)}
                                                                                 className="text-rose-500 text-xs hover:text-rose-700 transition">Remove</button>
                                                                         </div>
-                                                                        <div className="grid gap-2 sm:grid-cols-2">
+                                                                        <div className="grid gap-2 sm:grid-cols-2 w-full min-w-0">
                                                                             <input value={option.label}
                                                                                 onChange={e => updateVariantOption(gIdx, oIdx, 'label', e.target.value)}
                                                                                 placeholder="Label"
-                                                                                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
                                                                             {group.type === 'IMAGE' && (
                                                                                 <input value={option.image}
                                                                                     onChange={e => updateVariantOption(gIdx, oIdx, 'image', e.target.value)}
                                                                                     placeholder="Image URL"
-                                                                                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                                                    className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
                                                                             )}
                                                                             <input value={option.sku || ''}
                                                                                 onChange={e => updateVariantOption(gIdx, oIdx, 'sku', e.target.value)}
                                                                                 placeholder="SKU (optional)"
-                                                                                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
-                                                                            <div className="grid gap-2 sm:grid-cols-3">
+                                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                                            <div className="grid gap-2 sm:grid-cols-3 w-full min-w-0">
                                                                                 <input type="number" value={option.priceModifier}
                                                                                     onChange={e => updateVariantOption(gIdx, oIdx, 'priceModifier', e.target.value)}
                                                                                     placeholder="Price +/−"
-                                                                                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                                                    className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
                                                                                 <input type="number" value={option.quantity}
                                                                                     onChange={e => updateVariantOption(gIdx, oIdx, 'quantity', e.target.value)}
                                                                                     placeholder="Qty"
-                                                                                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                                                    className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
                                                                                 <label className="flex items-center gap-2 text-xs text-slate-500">
                                                                                     <input type="checkbox" checked={option.inStock}
                                                                                         onChange={e => updateVariantOption(gIdx, oIdx, 'inStock', e.target.checked)}
@@ -671,25 +671,25 @@ export default function StoreManageProducts() {
                                                             <p className="text-xs text-slate-500">No options added yet.</p>
                                                         )}
 
-                                                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                                                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 w-full min-w-0">
                                                             <input value={newVariantOptionInputs[gIdx]?.label || ''}
                                                                 onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], label: e.target.value } }))}
                                                                 placeholder="Label"
-                                                                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
                                                             {group.type === 'IMAGE' && (
                                                                 <input value={newVariantOptionInputs[gIdx]?.image || ''}
                                                                     onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], image: e.target.value } }))}
                                                                     placeholder="Image URL"
-                                                                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                                    className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
                                                             )}
                                                             <input value={newVariantOptionInputs[gIdx]?.priceModifier || ''}
                                                                 onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], priceModifier: e.target.value } }))}
                                                                 placeholder="Price +/−"
-                                                                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
                                                             <input value={newVariantOptionInputs[gIdx]?.quantity || ''}
                                                                 onChange={e => setNewVariantOptionInputs(prev => ({ ...prev, [gIdx]: { ...prev[gIdx], quantity: e.target.value } }))}
                                                                 placeholder="Quantity"
-                                                                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
+                                                                className="w-full min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-sm outline-none" />
                                                         </div>
                                                         <button type="button" onClick={() => addVariantOption(gIdx)}
                                                             className="inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900 transition">
