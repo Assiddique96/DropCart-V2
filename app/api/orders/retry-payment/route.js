@@ -8,7 +8,7 @@ import prisma from "@/src/db";
  * Body: { orderId }
  *
  * For unpaid STRIPE/PAYSTACK/FLUTTERWAVE orders, creates a fresh payment session
- * and returns the redirect URL. The caller redirects the user there.
+ * and returns the redirect URL. The caller redirects the user there..
  *
  * COD orders cannot be retried this way — they don't need online payment.
  */
