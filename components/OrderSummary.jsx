@@ -19,7 +19,7 @@ const ALL_PAYMENT_METHODS = [
   { id: "COD", label: "Cash on Delivery", description: "Pay when your order arrives" },
   { id: "LEMONSQUEEZY", label: "(Card) Lemon Squeezy", description: "Checkout with Lemon Squeezy" },
   // { id: "STRIPE", label: "Card (Stripe)", description: "Visa, Mastercard, Amex" },
-  // { id: "PAYSTACK", label: "Paystack", description: "Cards, bank transfer, USSD" },
+  { id: "PAYSTACK", label: "Paystack", description: "Cards, bank transfer, USSD" },
   // { id: "FLUTTERWAVE", label: "Flutterwave", description: "Cards, mobile money, bank" },
 ];
 
@@ -102,7 +102,7 @@ const OrderSummary = ({ totalPrice, items }) => {
     const endpointMap = {
       LEMONSQUEEZY: { url: "/api/lemonsqueezy", key: "checkoutUrl", urlKey: null },
       // STRIPE: { url: "/api/stripe", key: "session", urlKey: "url" },
-      // PAYSTACK: { url: "/api/paystack", key: "authorization_url", urlKey: null },
+      PAYSTACK: { url: "/api/paystack", key: "authorization_url", urlKey: null },
       // FLUTTERWAVE: { url: "/api/flutterwave", key: "payment_link", urlKey: null },
     };
     const ep = endpointMap[paymentMethod];
