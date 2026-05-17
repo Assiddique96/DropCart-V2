@@ -304,7 +304,11 @@ model Store {
   email       String
   contact     String
 
-  // ─── Verification & compliance ───────────────────────────────────────────
+  // ─── Store Verification ──────────────────────────────────────────────────
+  verificationStatus         String  @default("unverified") // unverified | pending | verified | rejected
+  verificationRejectedReason String? // reason for rejection if rejected
+
+  // ─── Verification & compliance (filled during verification step) ────────
   cacNumber                  String? // CAC registration number
   verificationDocumentType   String? // "NIN" | "PASSPORT"
   verificationDocumentNumber String? // NIN number or passport number

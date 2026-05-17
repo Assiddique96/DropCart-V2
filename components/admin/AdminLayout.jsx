@@ -61,6 +61,7 @@ const AdminLayout = ({ children }) => {
                 { name: 'Orders',        href: '/admin/orders',    icon: PackageIcon },
                 { name: 'Stores',        href: '/admin/stores',    icon: StoreIcon },
                 { name: 'Store Applications', href: '/admin/approve',   icon: ShieldCheckIcon },
+                { name: 'Store Verification', href: '/admin/verify-stores', icon: ShieldCheckIcon },
                 { name: 'Users',         href: '/admin/users',     icon: UsersIcon },
                 { name: 'Products',      href: '/admin/products',  icon: ShoppingBasketIcon },
                 { name: 'Ad Requests',   href: '/admin/ad-requests', icon: Megaphone },

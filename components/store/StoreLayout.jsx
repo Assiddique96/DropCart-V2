@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import Loading from "../Loading"
 import Link from "next/link"
-import { ArrowRightIcon, ArrowUpRightIcon, CircleDollarSignIcon, HomeIcon, LayoutListIcon, SquarePenIcon, SquarePlusIcon, StoreIcon, UserCircleIcon } from "lucide-react"
+import { ArrowRightIcon, ArrowUpRightIcon, CircleDollarSignIcon, HomeIcon, LayoutListIcon, SquarePenIcon, SquarePlusIcon, StoreIcon, UserCircleIcon, ShieldCheckIcon } from "lucide-react"
 import { useAuth, useUser } from "@clerk/nextjs"
 import axios from "axios"
 import { ACTIVE_STORE_KEY, getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
@@ -67,6 +67,7 @@ const StoreLayout = ({ children }) => {
                 { name: 'Orders',          href: '/store/orders',         icon: LayoutListIcon },
                 { name: 'Payouts',         href: '/store/payouts',        icon: CircleDollarSignIcon },
                 { name: 'Store Profile',   href: '/store/profile',        icon: UserCircleIcon },
+                { name: 'Verify Store',    href: '/store/verify',         icon: ShieldCheckIcon },
                 { name: 'My Stores',       href: '/store/stores',         icon: StoreIcon },
             ]}
             sidebarHeader={

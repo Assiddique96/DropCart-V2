@@ -71,13 +71,10 @@ export async function POST(request) {
 
     // 4. File Existence Checks (Prevents .arrayBuffer() crashes)
     const image = formData.get("image");
-    const verificationDocumentImage = formData.get("verificationDocumentImage");
-    const facialVerificationImage = formData.get("facialVerificationImage");
 
     if (!image || !(image instanceof Blob)) {
       return NextResponse.json({ error: "Valid store logo is required." }, { status: 400 });
     }
-    // ... repeat checks for other images ...
 
     // 5. Check if username is taken
     const isUsernameTaken = await prisma.store.findFirst({
@@ -96,20 +93,6 @@ export async function POST(request) {
       folder: "logos",
     });
 
-    const docBuffer = Buffer.from(await verificationDocumentImage.arrayBuffer());
-    const docUpload = await imagekit.upload({
-      file: docBuffer,
-      fileName: "doc-" + Date.now(),
-      folder: "verification/documents",
-    });
-
-    const selfieBuffer = Buffer.from(await facialVerificationImage.arrayBuffer());
-    const selfieUpload = await imagekit.upload({
-      file: selfieBuffer,
-      fileName: "selfie-" + Date.now(),
-      folder: "verification/selfies",
-    });
-
     // 7. DB Operation
     try {
       const createdStore = await prisma.store.create({
@@ -122,14 +105,7 @@ export async function POST(request) {
           contact: sanitized.contact,
           address: sanitized.address,
           logo: logoUpload.url,
-          cacNumber: sanitizeString(formData.get("cacNumber"), 50),
-          verificationDocumentType: sanitizeString(formData.get("verificationDocumentType"), 20).toUpperCase(),
-          verificationDocumentNumber: sanitizeString(formData.get("verificationDocumentNumber"), 100),
-          verificationDocumentUrl: docUpload.url,
-          facialVerificationUrl: selfieUpload.url,
-          payoutBankName: sanitizeString(formData.get("payoutBankName"), 100),
-          payoutAccountName: sanitizeString(formData.get("payoutAccountName"), 120),
-          payoutAccountNumber: sanitizeString(formData.get("payoutAccountNumber"), 30),
+          verificationStatus: "unverified", // Default to unverified
         },
       });
 
@@ -148,12 +124,10 @@ export async function POST(request) {
         console.error("Inngest app/store.created error:", eventError);
       }
 
-      return NextResponse.json({ message: "Applied, Awaiting approval" });
+      return NextResponse.json({ message: "Store created successfully" });
     } catch (dbError) {
       // Cleanup ImageKit on DB failure
       await imagekit.deleteFile(logoUpload.fileId);
-      await imagekit.deleteFile(docUpload.fileId);
-      await imagekit.deleteFile(selfieUpload.fileId);
       throw dbError;
     }
   } catch (error) {

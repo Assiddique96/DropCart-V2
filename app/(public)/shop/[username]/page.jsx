@@ -2,7 +2,7 @@
 import ProductCard from "@/components/ProductCard";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MailIcon, MapPinIcon } from "lucide-react";
+import { MailIcon, MapPinIcon, ShieldCheckIcon, AlertCircleIcon } from "lucide-react";
 import Loading from "@/components/Loading";
 import Image from "next/image";
 import axios from "axios";
@@ -64,9 +64,20 @@ export default function StoreShop() {
               height={200}
             />
             <div className="text-center md:text-left">
-              <h1 className="text-3xl font-semibold text-slate-800 dark:text-slate-50">
-                {storeInfo.name}
-              </h1>
+              <div className="flex items-center gap-2 justify-center md:justify-start">
+                <h1 className="text-3xl font-semibold text-slate-800 dark:text-slate-50">
+                  {storeInfo.name}
+                </h1>
+                {storeInfo.verificationStatus === "verified" && (
+                  <ShieldCheckIcon className="w-6 h-6 text-emerald-600 dark:text-emerald-400" title="Verified Store" />
+                )}
+                {storeInfo.verificationStatus === "unverified" && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-full text-xs font-semibold text-amber-800 dark:text-amber-200">
+                    <AlertCircleIcon className="w-3.5 h-3.5" />
+                    UNVERIFIED
+                  </span>
+                )}
+              </div>
               <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 max-w-lg">
                 {storeInfo.description}
               </p>

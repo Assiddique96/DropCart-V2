@@ -15786,6 +15786,8 @@ export namespace Prisma {
     banner: string | null
     email: string | null
     contact: string | null
+    verificationStatus: string | null
+    verificationRejectedReason: string | null
     cacNumber: string | null
     verificationDocumentType: string | null
     verificationDocumentNumber: string | null
@@ -15816,6 +15818,8 @@ export namespace Prisma {
     banner: string | null
     email: string | null
     contact: string | null
+    verificationStatus: string | null
+    verificationRejectedReason: string | null
     cacNumber: string | null
     verificationDocumentType: string | null
     verificationDocumentNumber: string | null
@@ -15846,6 +15850,8 @@ export namespace Prisma {
     banner: number
     email: number
     contact: number
+    verificationStatus: number
+    verificationRejectedReason: number
     cacNumber: number
     verificationDocumentType: number
     verificationDocumentNumber: number
@@ -15878,6 +15884,8 @@ export namespace Prisma {
     banner?: true
     email?: true
     contact?: true
+    verificationStatus?: true
+    verificationRejectedReason?: true
     cacNumber?: true
     verificationDocumentType?: true
     verificationDocumentNumber?: true
@@ -15908,6 +15916,8 @@ export namespace Prisma {
     banner?: true
     email?: true
     contact?: true
+    verificationStatus?: true
+    verificationRejectedReason?: true
     cacNumber?: true
     verificationDocumentType?: true
     verificationDocumentNumber?: true
@@ -15938,6 +15948,8 @@ export namespace Prisma {
     banner?: true
     email?: true
     contact?: true
+    verificationStatus?: true
+    verificationRejectedReason?: true
     cacNumber?: true
     verificationDocumentType?: true
     verificationDocumentNumber?: true
@@ -16041,6 +16053,8 @@ export namespace Prisma {
     banner: string | null
     email: string
     contact: string
+    verificationStatus: string
+    verificationRejectedReason: string | null
     cacNumber: string | null
     verificationDocumentType: string | null
     verificationDocumentNumber: string | null
@@ -16088,6 +16102,8 @@ export namespace Prisma {
     banner?: boolean
     email?: boolean
     contact?: boolean
+    verificationStatus?: boolean
+    verificationRejectedReason?: boolean
     cacNumber?: boolean
     verificationDocumentType?: boolean
     verificationDocumentNumber?: boolean
@@ -16125,6 +16141,8 @@ export namespace Prisma {
     banner?: boolean
     email?: boolean
     contact?: boolean
+    verificationStatus?: boolean
+    verificationRejectedReason?: boolean
     cacNumber?: boolean
     verificationDocumentType?: boolean
     verificationDocumentNumber?: boolean
@@ -16156,6 +16174,8 @@ export namespace Prisma {
     banner?: boolean
     email?: boolean
     contact?: boolean
+    verificationStatus?: boolean
+    verificationRejectedReason?: boolean
     cacNumber?: boolean
     verificationDocumentType?: boolean
     verificationDocumentNumber?: boolean
@@ -16187,6 +16207,8 @@ export namespace Prisma {
     banner?: boolean
     email?: boolean
     contact?: boolean
+    verificationStatus?: boolean
+    verificationRejectedReason?: boolean
     cacNumber?: boolean
     verificationDocumentType?: boolean
     verificationDocumentNumber?: boolean
@@ -16199,7 +16221,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "username" | "address" | "street" | "city" | "state" | "zip" | "country" | "status" | "isActive" | "logo" | "banner" | "email" | "contact" | "cacNumber" | "verificationDocumentType" | "verificationDocumentNumber" | "verificationDocumentUrl" | "facialVerificationUrl" | "payoutBankName" | "payoutAccountName" | "payoutAccountNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["store"]>
+  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "username" | "address" | "street" | "city" | "state" | "zip" | "country" | "status" | "isActive" | "logo" | "banner" | "email" | "contact" | "verificationStatus" | "verificationRejectedReason" | "cacNumber" | "verificationDocumentType" | "verificationDocumentNumber" | "verificationDocumentUrl" | "facialVerificationUrl" | "payoutBankName" | "payoutAccountName" | "payoutAccountNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["store"]>
   export type StoreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Product?: boolean | Store$ProductArgs<ExtArgs>
     Order?: boolean | Store$OrderArgs<ExtArgs>
@@ -16244,6 +16266,8 @@ export namespace Prisma {
       banner: string | null
       email: string
       contact: string
+      verificationStatus: string
+      verificationRejectedReason: string | null
       cacNumber: string | null
       verificationDocumentType: string | null
       verificationDocumentNumber: string | null
@@ -16700,6 +16724,8 @@ export namespace Prisma {
     readonly banner: FieldRef<"Store", 'String'>
     readonly email: FieldRef<"Store", 'String'>
     readonly contact: FieldRef<"Store", 'String'>
+    readonly verificationStatus: FieldRef<"Store", 'String'>
+    readonly verificationRejectedReason: FieldRef<"Store", 'String'>
     readonly cacNumber: FieldRef<"Store", 'String'>
     readonly verificationDocumentType: FieldRef<"Store", 'String'>
     readonly verificationDocumentNumber: FieldRef<"Store", 'String'>
@@ -20685,6 +20711,8 @@ export namespace Prisma {
     banner: 'banner',
     email: 'email',
     contact: 'contact',
+    verificationStatus: 'verificationStatus',
+    verificationRejectedReason: 'verificationRejectedReason',
     cacNumber: 'cacNumber',
     verificationDocumentType: 'verificationDocumentType',
     verificationDocumentNumber: 'verificationDocumentNumber',
@@ -21982,6 +22010,8 @@ export namespace Prisma {
     banner?: StringNullableFilter<"Store"> | string | null
     email?: StringFilter<"Store"> | string
     contact?: StringFilter<"Store"> | string
+    verificationStatus?: StringFilter<"Store"> | string
+    verificationRejectedReason?: StringNullableFilter<"Store"> | string | null
     cacNumber?: StringNullableFilter<"Store"> | string | null
     verificationDocumentType?: StringNullableFilter<"Store"> | string | null
     verificationDocumentNumber?: StringNullableFilter<"Store"> | string | null
@@ -22018,6 +22048,8 @@ export namespace Prisma {
     banner?: SortOrderInput | SortOrder
     email?: SortOrder
     contact?: SortOrder
+    verificationStatus?: SortOrder
+    verificationRejectedReason?: SortOrderInput | SortOrder
     cacNumber?: SortOrderInput | SortOrder
     verificationDocumentType?: SortOrderInput | SortOrder
     verificationDocumentNumber?: SortOrderInput | SortOrder
@@ -22057,6 +22089,8 @@ export namespace Prisma {
     banner?: StringNullableFilter<"Store"> | string | null
     email?: StringFilter<"Store"> | string
     contact?: StringFilter<"Store"> | string
+    verificationStatus?: StringFilter<"Store"> | string
+    verificationRejectedReason?: StringNullableFilter<"Store"> | string | null
     cacNumber?: StringNullableFilter<"Store"> | string | null
     verificationDocumentType?: StringNullableFilter<"Store"> | string | null
     verificationDocumentNumber?: StringNullableFilter<"Store"> | string | null
@@ -22093,6 +22127,8 @@ export namespace Prisma {
     banner?: SortOrderInput | SortOrder
     email?: SortOrder
     contact?: SortOrder
+    verificationStatus?: SortOrder
+    verificationRejectedReason?: SortOrderInput | SortOrder
     cacNumber?: SortOrderInput | SortOrder
     verificationDocumentType?: SortOrderInput | SortOrder
     verificationDocumentNumber?: SortOrderInput | SortOrder
@@ -22129,6 +22165,8 @@ export namespace Prisma {
     banner?: StringNullableWithAggregatesFilter<"Store"> | string | null
     email?: StringWithAggregatesFilter<"Store"> | string
     contact?: StringWithAggregatesFilter<"Store"> | string
+    verificationStatus?: StringWithAggregatesFilter<"Store"> | string
+    verificationRejectedReason?: StringNullableWithAggregatesFilter<"Store"> | string | null
     cacNumber?: StringNullableWithAggregatesFilter<"Store"> | string | null
     verificationDocumentType?: StringNullableWithAggregatesFilter<"Store"> | string | null
     verificationDocumentNumber?: StringNullableWithAggregatesFilter<"Store"> | string | null
@@ -23440,6 +23478,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -23476,6 +23516,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -23510,6 +23552,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23546,6 +23590,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23581,6 +23627,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -23610,6 +23658,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23640,6 +23690,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24963,6 +25015,8 @@ export namespace Prisma {
     banner?: SortOrder
     email?: SortOrder
     contact?: SortOrder
+    verificationStatus?: SortOrder
+    verificationRejectedReason?: SortOrder
     cacNumber?: SortOrder
     verificationDocumentType?: SortOrder
     verificationDocumentNumber?: SortOrder
@@ -24993,6 +25047,8 @@ export namespace Prisma {
     banner?: SortOrder
     email?: SortOrder
     contact?: SortOrder
+    verificationStatus?: SortOrder
+    verificationRejectedReason?: SortOrder
     cacNumber?: SortOrder
     verificationDocumentType?: SortOrder
     verificationDocumentNumber?: SortOrder
@@ -25023,6 +25079,8 @@ export namespace Prisma {
     banner?: SortOrder
     email?: SortOrder
     contact?: SortOrder
+    verificationStatus?: SortOrder
+    verificationRejectedReason?: SortOrder
     cacNumber?: SortOrder
     verificationDocumentType?: SortOrder
     verificationDocumentNumber?: SortOrder
@@ -26753,6 +26811,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -26787,6 +26847,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -26994,6 +27056,8 @@ export namespace Prisma {
     banner?: StringNullableFilter<"Store"> | string | null
     email?: StringFilter<"Store"> | string
     contact?: StringFilter<"Store"> | string
+    verificationStatus?: StringFilter<"Store"> | string
+    verificationRejectedReason?: StringNullableFilter<"Store"> | string | null
     cacNumber?: StringNullableFilter<"Store"> | string | null
     verificationDocumentType?: StringNullableFilter<"Store"> | string | null
     verificationDocumentNumber?: StringNullableFilter<"Store"> | string | null
@@ -27166,6 +27230,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -27201,6 +27267,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -27372,6 +27440,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27407,6 +27477,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27854,6 +27926,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -27889,6 +27963,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -28053,6 +28129,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28088,6 +28166,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28845,6 +28925,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -28880,6 +28962,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -28929,6 +29013,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28964,6 +29050,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29428,6 +29516,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -29463,6 +29553,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -29512,6 +29604,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29547,6 +29641,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29643,6 +29739,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -29678,6 +29776,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -29796,6 +29896,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29831,6 +29933,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29889,6 +29993,8 @@ export namespace Prisma {
     banner?: string | null
     email: string
     contact: string
+    verificationStatus?: string
+    verificationRejectedReason?: string | null
     cacNumber?: string | null
     verificationDocumentType?: string | null
     verificationDocumentNumber?: string | null
@@ -30022,6 +30128,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30056,6 +30164,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30090,6 +30200,8 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     contact?: StringFieldUpdateOperationsInput | string
+    verificationStatus?: StringFieldUpdateOperationsInput | string
+    verificationRejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
     cacNumber?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentType?: NullableStringFieldUpdateOperationsInput | string | null
     verificationDocumentNumber?: NullableStringFieldUpdateOperationsInput | string | null

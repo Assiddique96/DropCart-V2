@@ -289,6 +289,8 @@ exports.Prisma.StoreScalarFieldEnum = {
   banner: 'banner',
   email: 'email',
   contact: 'contact',
+  verificationStatus: 'verificationStatus',
+  verificationRejectedReason: 'verificationRejectedReason',
   cacNumber: 'cacNumber',
   verificationDocumentType: 'verificationDocumentType',
   verificationDocumentNumber: 'verificationDocumentNumber',
