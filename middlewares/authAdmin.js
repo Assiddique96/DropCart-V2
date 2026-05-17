@@ -5,7 +5,7 @@ const authAdmin = async (userId) => {
     if (!userId) return false;
     const client = await clerkClient();
     const user = await client.users.getUser(userId);
-    return process.env.ShpinxS.split(",")
+    return process.env.ADMIN_EMAILS.split(",")
       .map((e) => e.trim())
       .includes(user.emailAddresses[0].emailAddress);
   } catch (error) {
