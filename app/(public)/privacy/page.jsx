@@ -1,8 +1,8 @@
 import { getSiteContent } from "@/lib/siteContent"
 
 export const metadata = {
-    title: "Privacy Policy — DropCart",
-    description: "Privacy Policy explaining how DropCart collects, uses, and protects your personal information.",
+    title: "Privacy Policy — Shpinx",
+    description: "Privacy Policy explaining how Shpinx collects, uses, and protects your personal information.",
 }
 
 const DEFAULT_PRIVACY_CONTENT = (
@@ -76,7 +76,7 @@ export default async function PrivacyPolicyPage() {
             <div className="max-w-4xl mx-auto my-16">
                 <h1 className="text-3xl font-semibold text-slate-800">Privacy <span className="text-green-500">Policy</span></h1>
                 <p className="text-slate-500 mt-3 text-sm">
-                    This Privacy Policy explains how DropCart collects, uses, and protects your personal information.
+                    This Privacy Policy explains how Shpinx collects, uses, and protects your personal information.
                 </p>
 
                 {policyContent}

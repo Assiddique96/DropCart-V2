@@ -36,7 +36,7 @@ export async function POST(request) {
     const amountSubunit = toSubunit(orders.reduce((sum, o) => sum + o.total, 0));
 
     const origin = request.headers.get("origin") || process.env.NEXT_PUBLIC_APP_URL;
-    const reference = `dropcart_${Date.now()}_${userId.slice(-6)}`;
+    const reference = `shpinx_${Date.now()}_${userId.slice(-6)}`;
 
     const res = await fetch(`${PAYSTACK_BASE}/transaction/initialize`, {
       method: "POST",

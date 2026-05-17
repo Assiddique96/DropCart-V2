@@ -59,7 +59,7 @@ describe('wishlist reducer', () => {
   test('persists to localStorage when toggling', () => {
     localStorageMock.clear();
     wishlistReducer(initialState, toggleWishlist('product-abc'));
-    const stored = localStorageMock.getItem('dropcart_wishlist');
+    const stored = localStorageMock.getItem('shpinx_wishlist');
     expect(stored).toContain('product-abc');
   });
 });

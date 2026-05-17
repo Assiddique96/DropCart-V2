@@ -1,8 +1,8 @@
 import { getSiteContent } from "@/lib/siteContent"
 
 export const metadata = {
-    title: "Cookies Policy — DropCart",
-    description: "Cookies Policy describing how DropCart uses cookies and similar technologies.",
+    title: "Cookies Policy — Shpinx",
+    description: "Cookies Policy describing how Shpinx uses cookies and similar technologies.",
 }
 
 const DEFAULT_COOKIES_CONTENT = (

@@ -405,7 +405,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\USER\\Desktop\\DropCart V2\\src\\generated\\prisma",
+      "value": "C:\\Users\\USER\\Desktop\\Shpinx V2\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -419,7 +419,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\USER\\Desktop\\DropCart V2\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\USER\\Desktop\\Shpinx V2\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

@@ -35,7 +35,7 @@ export async function POST(request) {
     });
 
     const amount = orders.reduce((sum, o) => sum + o.total, 0);
-    const txRef  = `dropcart_${Date.now()}_${userId.slice(-6)}`;
+    const txRef  = `shpinx_${Date.now()}_${userId.slice(-6)}`;
     const origin = request.headers.get("origin") || process.env.NEXT_PUBLIC_APP_URL;
 
     const nameParts = (buyer.name || "Customer").split(" ");
@@ -58,7 +58,7 @@ export async function POST(request) {
         },
         meta: { orderIds: orderIds.join(","), userId },
         customizations: {
-          title: "DropCart",
+          title: "Shpinx",
           description: `Payment for ${orderIds.length} order(s)`,
           logo: `${origin}/favicon.ico`,
         },

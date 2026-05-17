@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
-const KEY = "dropcart_cookie_consent_v1";
+const KEY = "shpinx_cookie_consent_v1";
 
 export default function CookieConsentToast() {
   const [ready, setReady] = useState(false);

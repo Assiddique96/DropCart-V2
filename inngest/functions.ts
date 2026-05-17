@@ -56,7 +56,7 @@ export const syncUserDeletion = inngest.createFunction(
 );
 
 function getAdminEmails() {
-    const raw = process.env.ADMIN_EMAILS || process.env.DropCartS || "";
+    const raw = process.env.ADMIN_EMAILS || process.env.ShpinxS || "";
     return raw
         .split(",")
         .map((email) => email.trim())

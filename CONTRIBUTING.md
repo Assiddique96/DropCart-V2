@@ -1,6 +1,6 @@
-# Contributing to DropCart
+# Contributing to Shpinx
 
-Thank you for considering contributing to **DropCart**!
+Thank you for considering contributing to **Shpinx**!
 We welcome contributions from everyone, whether it's fixing a bug, adding a new feature, or optimizing the codebase.
 
 ## Development Setup

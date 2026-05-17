@@ -83,7 +83,7 @@ export default function AdminApprove() {
 
                 </div>) : (
                 <div className="flex items-center justify-center h-80">
-                    <h1 className="text-3xl text-slate-400 font-medium">No stores waiting for verification</h1>
+                    <h1 className="text-3xl text-slate-400 font-medium">No stores waiting for Approval</h1>
                 </div>
             )}
         </div>

@@ -22,11 +22,11 @@ export default function CreateStore() {
     address: "",
     image: "",
 
-    cacNumber: "",
-    verificationDocumentType: "NIN",
-    verificationDocumentNumber: "",
-    verificationDocumentImage: "",
-    facialVerificationImage: "",
+    //cacNumber: "",
+    //verificationDocumentType: "NIN",
+    //verificationDocumentNumber: "",
+    //verificationDocumentImage: "",
+    //facialVerificationImage: "",
 
     payoutBankName: "",
     payoutAccountName: "",
@@ -95,23 +95,23 @@ export default function CreateStore() {
       formData.append("address", storeInfo.address);
       formData.append("image", storeInfo.image);
 
-      formData.append("cacNumber", storeInfo.cacNumber);
-      formData.append(
-        "verificationDocumentType",
-        storeInfo.verificationDocumentType,
-      );
-      formData.append(
-        "verificationDocumentNumber",
-        storeInfo.verificationDocumentNumber,
-      );
-      formData.append(
-        "verificationDocumentImage",
-        storeInfo.verificationDocumentImage,
-      );
-      formData.append(
-        "facialVerificationImage",
-        storeInfo.facialVerificationImage,
-      );
+      //formData.append("cacNumber", storeInfo.cacNumber);
+      //formData.append(
+        //"verificationDocumentType",
+        //storeInfo.verificationDocumentType,
+      //);
+      //formData.append(
+        //"verificationDocumentNumber",
+        //storeInfo.verificationDocumentNumber,
+      //);
+      //formData.append(
+        //"verificationDocumentImage",
+        //storeInfo.verificationDocumentImage,
+      //);
+      //formData.append(
+        //"facialVerificationImage",
+        //storeInfo.facialVerificationImage,
+      //);
 
       formData.append("payoutBankName", storeInfo.payoutBankName);
       formData.append("payoutAccountName", storeInfo.payoutAccountName);
@@ -222,18 +222,6 @@ export default function CreateStore() {
             className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 outline-slate-400 dark:outline-slate-500 w-full max-w-lg p-2 rounded"
           />
 
-          <p className="text-slate-700 dark:text-slate-200">
-            CAC Registration Number
-          </p>
-          <input
-            name="cacNumber"
-            onChange={onChangeHandler}
-            value={storeInfo.cacNumber}
-            type="text"
-            placeholder="e.g. RC1234567"
-            className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 outline-slate-400 dark:outline-slate-500 w-full max-w-lg p-2 rounded"
-          />
-
           <p className="text-slate-700 dark:text-slate-200">Description</p>
           <textarea
             name="description"
@@ -278,126 +266,6 @@ export default function CreateStore() {
             className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 outline-slate-400 dark:outline-slate-500 w-full max-w-lg p-2 rounded resize-none"
           />
 
-          <div className="w-full max-w-lg mt-4 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900">
-            <p className="text-slate-700 dark:text-slate-100 font-medium">
-              Verification
-            </p>
-            <p className="text-xs text-slate-500 dark:text-slate-300 mt-1">
-              Provide a valid ID document and a selfie for facial verification.
-            </p>
-
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <p className="text-sm text-slate-700 dark:text-slate-200">
-                  Document Type
-                </p>
-                <select
-                  name="verificationDocumentType"
-                  onChange={onChangeHandler}
-                  value={storeInfo.verificationDocumentType}
-                  className="border border-slate-300 dark:border-slate-700 outline-slate-400 dark:outline-slate-500 w-full p-2 rounded bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
-                >
-                  <option value="NIN">NIN</option>
-                  <option value="PASSPORT">Passport</option>
-                </select>
-              </div>
-
-              <div>
-                <p className="text-sm text-slate-700 dark:text-slate-200">
-                  {storeInfo.verificationDocumentType} Number
-                </p>
-                <input
-                  name="verificationDocumentNumber"
-                  onChange={onChangeHandler}
-                  value={storeInfo.verificationDocumentNumber}
-                  type="text"
-                  placeholder={`Enter your ${storeInfo.verificationDocumentType} number`}
-                  className="border border-slate-300 dark:border-slate-700 outline-slate-400 dark:outline-slate-500 w-full p-2 rounded bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
-                />
-              </div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label className="cursor-pointer">
-                <p className="text-sm text-slate-700 dark:text-slate-200">
-                  Upload {storeInfo.verificationDocumentType} Photo
-                </p>
-                <div className="mt-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-md bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center">
-                    {storeInfo.verificationDocumentImage ? (
-                      <Image
-                        src={URL.createObjectURL(
-                          storeInfo.verificationDocumentImage,
-                        )}
-                        alt=""
-                        width={48}
-                        height={48}
-                        className="w-12 h-12 object-cover"
-                      />
-                    ) : (
-                      <span className="text-xs text-slate-400 dark:text-slate-500">
-                        No file
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-300">
-                    Tap to choose an image
-                  </p>
-                </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    setStoreInfo({
-                      ...storeInfo,
-                      verificationDocumentImage: e.target.files[0],
-                    })
-                  }
-                  hidden
-                />
-              </label>
-
-              <label className="cursor-pointer">
-                <p className="text-sm text-slate-700 dark:text-slate-200">
-                  Facial Verification (Selfie)
-                </p>
-                <div className="mt-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-md bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center">
-                    {storeInfo.facialVerificationImage ? (
-                      <Image
-                        src={URL.createObjectURL(
-                          storeInfo.facialVerificationImage,
-                        )}
-                        alt=""
-                        width={48}
-                        height={48}
-                        className="w-12 h-12 object-cover"
-                      />
-                    ) : (
-                      <span className="text-xs text-slate-400 dark:text-slate-500">
-                        No file
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-300">
-                    Tap to take/upload a selfie
-                  </p>
-                </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  capture="user"
-                  onChange={(e) =>
-                    setStoreInfo({
-                      ...storeInfo,
-                      facialVerificationImage: e.target.files[0],
-                    })
-                  }
-                  hidden
-                />
-              </label>
-            </div>
-          </div>
 
           <div className="w-full max-w-lg mt-4 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900">
             <p className="text-slate-700 dark:text-slate-100 font-medium">

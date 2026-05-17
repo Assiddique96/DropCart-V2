@@ -39,8 +39,8 @@ export async function POST(request) {
         attributes: {
           custom_price: customPrice,
           product_options: {
-            name: "DropCart Checkout",
-            description: `Payment for ${orderIds.length} order(s) on DropCart`,
+            name: "Shpinx Checkout",
+            description: `Payment for ${orderIds.length} order(s) on Shpinx`,
             redirect_url: redirectUrl,
           },
           checkout_options: {

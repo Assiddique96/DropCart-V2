@@ -1,8 +1,8 @@
 import { getSiteContent } from "@/lib/siteContent"
 
 export const metadata = {
-    title: "Terms of Use — DropCart",
-    description: "Terms of Use for DropCart customers and store owners.",
+    title: "Terms of Use — Shpinx",
+    description: "Terms of Use for Shpinx customers and store owners.",
 }
 
 const DEFAULT_TERMS_CONTENT = (
@@ -29,7 +29,7 @@ const DEFAULT_TERMS_CONTENT = (
 
         <section>
             <h2 className="text-slate-800 font-semibold mb-2">5. Limitation of Liability</h2>
-            <p>To the maximum extent permitted by law, DropCart will not be liable for indirect or consequential damages arising from your use of the service.</p>
+            <p>To the maximum extent permitted by law, Shpinx will not be liable for indirect or consequential damages arising from your use of the service.</p>
         </section>
 
         <section>
@@ -72,7 +72,7 @@ export default async function TermsPage() {
             <div className="max-w-4xl mx-auto my-16">
                 <h1 className="text-3xl font-semibold text-slate-800">Terms of <span className="text-green-500">Use</span></h1>
                 <p className="text-slate-500 mt-3 text-sm">
-                    These Terms govern your use of DropCart. By using the site, you agree to these Terms.
+                    These Terms govern your use of Shpinx. By using the site, you agree to these Terms.
                 </p>
 
                 {termsContent}
