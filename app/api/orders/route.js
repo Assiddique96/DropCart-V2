@@ -98,6 +98,7 @@ export async function POST(request) {
     const productStockUsage = new Map();
     const variantOptionQuantityMap = new Map();
     const variantOptionStockUsage = new Map();
+    const storeShipping = new Map();
 
     for (const item of items) {
         const product = await prisma.product.findUnique({
@@ -111,6 +112,13 @@ export async function POST(request) {
                 quantity: true,
                 inStock: true,
                 variantGroups: { include: { options: true } },
+                store: {
+                    select: {
+                        shippingLocalFee: true,
+                        shippingAbroadFee: true,
+                        shippingFreeAbove: true,
+                    },
+                },
             },
         });
 
@@ -182,6 +190,13 @@ export async function POST(request) {
         if (!ordersByStore.has(storeId)) {
             ordersByStore.set(storeId, []);
         }
+        if (!storeShipping.has(storeId)) {
+            storeShipping.set(storeId, {
+                localFee: product.store?.shippingLocalFee ?? shippingLocalFee,
+                abroadFee: product.store?.shippingAbroadFee ?? shippingAbroadFee,
+                freeAbove: product.store?.shippingFreeAbove ?? shippingFreeAbove,
+            });
+        }
         ordersByStore.get(storeId).push({
             ...item,
             price: effectivePrice,
@@ -189,6 +204,10 @@ export async function POST(request) {
             acceptCod: product.acceptCod !== false,
         });
     }
+
+    let shippingLocalFee  = 7000;
+    let shippingAbroadFee = 15000;
+    let shippingFreeAbove = 0;
 
     const flatOrderItems = Array.from(ordersByStore.values()).flat();
     const hasAbroadItems = flatOrderItems.some((item) => item.origin === "ABROAD");
@@ -198,10 +217,6 @@ export async function POST(request) {
 
     let orderIds = [];
     let fullAmount = 0;
-    let isShippingFeeAdded = false;
-    let shippingLocalFee  = 7000;
-    let shippingAbroadFee = 15000;
-    let shippingFreeAbove = 0;
 
     try {
       const configRows = await prisma.platformConfig.findMany({
@@ -241,16 +256,17 @@ export async function POST(request) {
                 }
             }
 
-            // Shipping: use the most expensive origin fee in this store's items
-            // (abroad beats local — if any item is ABROAD the higher fee applies)
+            const storeConfig = storeShipping.get(storeId) || {};
+            const storeLocalFee = storeConfig.localFee ?? shippingLocalFee;
+            const storeAbroadFee = storeConfig.abroadFee ?? shippingAbroadFee;
+            const storeFreeAbove = storeConfig.freeAbove ?? shippingFreeAbove;
+
             const storeHasAbroad = sellerItems.some(i => i.origin === 'ABROAD');
-            const applicableShippingFee = storeHasAbroad ? shippingAbroadFee : shippingLocalFee;
+            const applicableShippingFee = storeHasAbroad ? storeAbroadFee : storeLocalFee;
+            const qualifiesForFreeShipping = !storeHasAbroad && storeFreeAbove > 0 && total >= storeFreeAbove;
 
-            const qualifiesForFreeShipping = !storeHasAbroad && shippingFreeAbove > 0 && total >= shippingFreeAbove;
-
-            if (!isPlusMemeber && !isShippingFeeAdded && !qualifiesForFreeShipping) {
+            if (!isPlusMemeber && !qualifiesForFreeShipping) {
                 total += applicableShippingFee;
-                isShippingFeeAdded = true;
             }
 
             const normalizedSellerItems = Object.values(

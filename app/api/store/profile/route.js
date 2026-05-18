@@ -4,6 +4,7 @@ import prisma from "@/src/db";
 import { inngest } from "@/inngest/client";
 import authSeller from "@/middlewares/authSeller";
 import imagekit from "@/configs/imageKit";
+import { defaultLimiter } from "@/lib/rateLimit";
 
 import { sanitizeStoreInput } from "@/lib/sanitize";
 
@@ -24,6 +25,7 @@ export async function GET(request) {
         id: true, name: true, description: true, email: true,
         contact: true, address: true, street: true, city: true,
         state: true, zip: true, country: true,
+        shippingLocalFee: true, shippingAbroadFee: true, shippingFreeAbove: true,
         logo: true, banner: true, username: true, status: true,
         isActive: true, createdAt: true,
       },
@@ -50,12 +52,15 @@ export async function PATCH(request) {
 
     // Sanitize editable text fields
     const { data: sanitized, errors } = sanitizeStoreInput({
-      name:        formData.get("name")        ?? existingStore.name,
-      username:    existingStore.username,     // NOT editable after approval
-      description: formData.get("description") ?? existingStore.description,
-      email:       formData.get("email")       ?? existingStore.email,
-      contact:     formData.get("contact")     ?? existingStore.contact,
-      address:     formData.get("address")     ?? existingStore.address,
+      name:              formData.get("name")        ?? existingStore.name,
+      username:          existingStore.username,     // NOT editable after approval
+      description:       formData.get("description") ?? existingStore.description,
+      email:             formData.get("email")       ?? existingStore.email,
+      contact:           formData.get("contact")     ?? existingStore.contact,
+      address:           formData.get("address")     ?? existingStore.address,
+      shippingLocalFee:  formData.get("shippingLocalFee"),
+      shippingAbroadFee: formData.get("shippingAbroadFee"),
+      shippingFreeAbove: formData.get("shippingFreeAbove"),
     });
 
     if (errors.length > 0) {
@@ -70,6 +75,9 @@ export async function PATCH(request) {
     const country = formData.get("country") ? formData.get("country").slice(0, 100) : existingStore.country;
 
     const updateData = { ...sanitized, street, city, state, zip, country };
+    Object.keys(updateData).forEach((key) => {
+      if (updateData[key] === undefined) delete updateData[key];
+    });
 
     // Handle optional logo replacement
     const logoFile = formData.get("logo");

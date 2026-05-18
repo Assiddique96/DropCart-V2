@@ -2,7 +2,7 @@
 import ProductCard from "@/components/ProductCard";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MailIcon, MapPinIcon, ShieldCheckIcon, AlertCircleIcon } from "lucide-react";
+import { MailIcon, MapPinIcon, ShieldCheckIcon, AlertCircleIcon, StarIcon } from "lucide-react";
 import Loading from "@/components/Loading";
 import Image from "next/image";
 import axios from "axios";
@@ -81,6 +81,21 @@ export default function StoreShop() {
               <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 max-w-lg">
                 {storeInfo.description}
               </p>
+              <div className="flex items-center justify-center md:justify-start gap-2 text-sm mt-3 text-slate-500 dark:text-slate-300">
+                <StarIcon className="w-4 h-4 text-amber-400" />
+                {storeInfo.storeRatingCount > 0 ? (
+                  <>
+                    <span className="font-semibold text-slate-800 dark:text-slate-100">
+                      {storeInfo.storeRatingAvg.toFixed(1)}
+                    </span>
+                    <span>
+                      ({storeInfo.storeRatingCount} review{storeInfo.storeRatingCount !== 1 ? "s" : ""})
+                    </span>
+                  </>
+                ) : (
+                  <span>No reviews yet</span>
+                )}
+              </div>
               <div className="text-xs text-slate-500 dark:text-slate-400 mt-4 space-y-1" />
               <div className="space-y-2 text-sm text-slate-500 dark:text-slate-300">
                 <div className="flex items-center justify-center md:justify-start">

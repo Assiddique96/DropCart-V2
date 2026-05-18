@@ -24,6 +24,7 @@ model User {
     stores      Store[]
     buyerOrders Order[]   @relation("BuyerRelation")
     notifications Notification[]
+    storeRatings StoreRating[]
 }
 
 model Notification {
@@ -175,6 +176,7 @@ model Order {
     notes           String?       // buyer special instructions
     trackingNumber  String?       // shipping tracking number (auto-generated when marked SHIPPED)
     orderItems      OrderItem[]
+    storeRating     StoreRating?
 
     // Relations
     user    User    @relation("BuyerRelation", fields: [userId], references: [id])
@@ -299,6 +301,9 @@ model Store {
     state       String?
     zip         String?
     country     String   @default("Nigeria")
+    shippingLocalFee  Float   @default(7000)
+    shippingAbroadFee Float   @default(15000)
+    shippingFreeAbove Float   @default(0)
     status      String   @default("pending")
     isActive    Boolean  @default(false)
     logo        String
@@ -327,10 +332,26 @@ model Store {
 
     Product Product[]
     Order   Order[]
+    storeRatings StoreRating[]
     user    User      @relation(fields: [userId], references: [id])
     Payout  Payout[]
     Coupon  Coupon[]
     adRequests AdRequest[]
+}
+
+model StoreRating {
+    id        String   @id @default(cuid())
+    storeId   String
+    orderId   String   @unique
+    userId    String
+    rating    Int
+    review    String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+    order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+    user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Payout tracking for sellers

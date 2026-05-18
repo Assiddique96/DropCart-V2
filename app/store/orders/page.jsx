@@ -5,6 +5,7 @@ import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { XCircleIcon, TruckIcon, PackageCheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
+import { shortenId } from "@/lib/format"
 import { isOrderConsideredPaid } from "@/lib/orderPayment"
 import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
@@ -128,7 +129,7 @@ export default function StoreOrders() {
                             {/* Order header row */}
                             <div className="flex flex-wrap items-center gap-3 px-4 py-3 bg-slate-50 dark:bg-slate-900 text-xs text-slate-500 dark:text-slate-300 cursor-pointer"
                                 onClick={() => setSelectedOrder(selectedOrder?.id === order.id ? null : order)}>
-                                <span className="font-medium text-slate-700 dark:text-slate-200">#{index + 1}</span>
+                                <span className="font-medium text-slate-700 dark:text-slate-200">#{shortenId(order.id)}</span>
                                 <span>{order.user?.name}</span>
                                 <span className="font-semibold text-slate-800 dark:text-slate-100">{currency}{order.total.toLocaleString()}</span>
                                 <span>{order.paymentMethod}{isOrderConsideredPaid(order) ? ' ✓' : ''}</span>

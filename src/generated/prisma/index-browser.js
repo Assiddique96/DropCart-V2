@@ -283,6 +283,9 @@ exports.Prisma.StoreScalarFieldEnum = {
   state: 'state',
   zip: 'zip',
   country: 'country',
+  shippingLocalFee: 'shippingLocalFee',
+  shippingAbroadFee: 'shippingAbroadFee',
+  shippingFreeAbove: 'shippingFreeAbove',
   status: 'status',
   isActive: 'isActive',
   logo: 'logo',
@@ -299,6 +302,17 @@ exports.Prisma.StoreScalarFieldEnum = {
   payoutBankName: 'payoutBankName',
   payoutAccountName: 'payoutAccountName',
   payoutAccountNumber: 'payoutAccountNumber',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.StoreRatingScalarFieldEnum = {
+  id: 'id',
+  storeId: 'storeId',
+  orderId: 'orderId',
+  userId: 'userId',
+  rating: 'rating',
+  review: 'review',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -417,6 +431,7 @@ exports.Prisma.ModelName = {
   Address: 'Address',
   Coupon: 'Coupon',
   Store: 'Store',
+  StoreRating: 'StoreRating',
   Payout: 'Payout',
   PlatformConfig: 'PlatformConfig',
   AdRequest: 'AdRequest'

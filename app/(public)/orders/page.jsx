@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { isOrderConsideredPaid } from "@/lib/orderPayment";
 import RatingModal from "@/components/RatingModal";
 import Rating from "@/components/Rating";
+import { shortenId } from "@/lib/format";
 
 const STATUS_COLORS = {
   ORDER_PLACED: "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
@@ -188,6 +189,10 @@ function OrdersContent() {
                     }
                   >
                     <div className="flex gap-4 flex-wrap">
+                      <span>
+                        Order:{" "}
+                        <b className="text-slate-700 dark:text-slate-100">#{shortenId(order.id)}</b>
+                      </span>
                       <span>
                         Placed:{" "}
                         <b className="text-slate-700 dark:text-slate-100">

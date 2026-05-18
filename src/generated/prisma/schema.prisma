@@ -24,6 +24,7 @@ model User {
   stores        Store[]
   buyerOrders   Order[]        @relation("BuyerRelation")
   notifications Notification[]
+  storeRatings  StoreRating[]
 }
 
 model Notification {
@@ -173,6 +174,7 @@ model Order {
   notes          String? // buyer special instructions
   trackingNumber String? // shipping tracking number (auto-generated when marked SHIPPED)
   orderItems     OrderItem[]
+  storeRating    StoreRating?
 
   // Relations
   user    User    @relation("BuyerRelation", fields: [userId], references: [id])
@@ -286,23 +288,26 @@ model Coupon {
 
 // Required for creating a Store: userId, name, username, email, contact, logo, description, address (optional: , status, isActive)
 model Store {
-  id          String  @id @default(cuid())
-  userId      String
-  name        String
-  description String
-  username    String  @unique
-  address     String  @default("") // legacy plain-text (kept for backwards compat)
-  street      String? // structured address
-  city        String?
-  state       String?
-  zip         String?
-  country     String  @default("Nigeria")
-  status      String  @default("pending")
-  isActive    Boolean @default(false)
-  logo        String
-  banner      String?
-  email       String
-  contact     String
+  id                String  @id @default(cuid())
+  userId            String
+  name              String
+  description       String
+  username          String  @unique
+  address           String  @default("") // legacy plain-text (kept for backwards compat)
+  street            String? // structured address
+  city              String?
+  state             String?
+  zip               String?
+  country           String  @default("Nigeria")
+  shippingLocalFee  Float   @default(7000)
+  shippingAbroadFee Float   @default(15000)
+  shippingFreeAbove Float   @default(0)
+  status            String  @default("pending")
+  isActive          Boolean @default(false)
+  logo              String
+  banner            String?
+  email             String
+  contact           String
 
   // ─── Store Verification ──────────────────────────────────────────────────
   verificationStatus         String  @default("unverified") // unverified | pending | verified | rejected
@@ -323,12 +328,28 @@ model Store {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Product    Product[]
-  Order      Order[]
-  user       User        @relation(fields: [userId], references: [id])
-  Payout     Payout[]
-  Coupon     Coupon[]
-  adRequests AdRequest[]
+  Product      Product[]
+  Order        Order[]
+  storeRatings StoreRating[]
+  user         User          @relation(fields: [userId], references: [id])
+  Payout       Payout[]
+  Coupon       Coupon[]
+  adRequests   AdRequest[]
+}
+
+model StoreRating {
+  id        String   @id @default(cuid())
+  storeId   String
+  orderId   String   @unique
+  userId    String
+  rating    Int
+  review    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Payout tracking for sellers
