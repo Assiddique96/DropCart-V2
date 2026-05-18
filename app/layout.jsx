@@ -7,6 +7,7 @@ import CookieConsentToast from "@/components/CookieConsentToast";
 import MandatoryPoliciesToast from "@/components/MandatoryPoliciesToast";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const outfit = Outfit({ subsets: ["latin"], weight: ["400", "500", "600"] });
 
@@ -47,6 +48,7 @@ export default function RootLayout({ children }) {
             </ThemeProvider>
           </StoreProvider>
           <Analytics />
+          <SpeedInsights />
         </body>
       </html>
     </ClerkProvider>
