@@ -1,25 +1,36 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-// Define which routes do not require user authentication
+// Define ONLY the pages that any random guest visitor can see
 const isPublicRoute = createRouteMatcher([
-  '/api/paystack/webhook',
-  '/api/store/data(.*)'
+  '/',                     // Main landing page
+  '/about(.*)',            // About page
+  '/cart(.*)',             // Shopping cart (accessible to guests)
+  '/wishlist(.*)',         // Wishlist page (accessible to guests)
+  '/contact(.*)',          // Contact page
+  '/cookies(.*)',          // Cookies policy
+  '/faq(.*)',              // FAQ page
+  '/pricing(.*)',          // Pricing page
+  '/privacy(.*)',          // Privacy policy
+  '/product(.*)',          // Viewing products
+  '/shop(.*)',             // Browsing the shop marketplace
+  '/terms(.*)',            // Terms of service
+  '/track(.*)',            // Order tracking page
+  '/api/paystack/webhook', // Paystack payment processor webhook
+  '/api/store/data(.*)',   // Store profile dynamic data API
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
-  // If the incoming request is NOT a public route, protect it
+  // Accessing /create-store or /orders will still force a login/signup
   if (!isPublicRoute(request)) {
-    // Pass the request object to protect() or await it natively
     await auth.protect();
   }
 });
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Skip Next.js internals and all static asset files
+    '/((?!_next|[^?]*\\.[\\w]+).*)',
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],
 };
-
