@@ -23049,6 +23049,7 @@ export namespace Prisma {
 
   export type OrderItemWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    orderId_productId?: OrderItemOrderIdProductIdCompoundUniqueInput
     AND?: OrderItemWhereInput | OrderItemWhereInput[]
     OR?: OrderItemWhereInput[]
     NOT?: OrderItemWhereInput | OrderItemWhereInput[]
@@ -23060,7 +23061,7 @@ export namespace Prisma {
     variants?: JsonFilter<"OrderItem">
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
-  }, "id">
+  }, "id" | "orderId_productId">
 
   export type OrderItemOrderByWithAggregationInput = {
     id?: SortOrder
@@ -26300,6 +26301,11 @@ export namespace Prisma {
   export type OrderScalarRelationFilter = {
     is?: OrderWhereInput
     isNot?: OrderWhereInput
+  }
+
+  export type OrderItemOrderIdProductIdCompoundUniqueInput = {
+    orderId: string
+    productId: string
   }
 
   export type OrderItemCountOrderByAggregateInput = {

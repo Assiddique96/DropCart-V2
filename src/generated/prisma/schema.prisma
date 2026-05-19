@@ -197,7 +197,7 @@ model OrderItem {
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
 
-  @@index([orderId])
+  @@unique([orderId, productId])
 }
 
 enum RefundStatus {
