@@ -35,7 +35,7 @@ const Footer = () => {
         {
             title: "CONTACT",
             links: [
-                { text: "+234-812-8762-374", path: '/', icon: MailIcon },
+                { text: "+234 814 352 6776", path: '/', icon: MailIcon },
                 { text: "contact@shpinx.com", path: '/', icon: PhoneIcon },
                 { text: "Abuja, Nigeria", path: '/', icon: MapPinIcon }
             ]
@@ -44,7 +44,7 @@ const Footer = () => {
 
     const socialIcons = [
         { icon: FacebookIcon, link: "https://www.facebook.com" },
-        { icon: InstagramIcon, link: "https://www.instagram.com" },
+        { icon: InstagramIcon, link: "https://www.instagram.com/shpinxofficial?utm_source=qr&igsh=OG9kd3Zwd25xY2Yy" },
         { icon: TwitterIcon, link: "https://twitter.com" },
         { icon: LinkedinIcon, link: "https://www.linkedin.com" },
     ]

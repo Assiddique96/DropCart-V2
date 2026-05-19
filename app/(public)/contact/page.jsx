@@ -67,7 +67,7 @@ export default function ContactPage() {
                 {
                   icon: PhoneIcon,
                   label: "Phone",
-                  value: "+234 800 000 0000",
+                  value: "+234 814 352 6776",
                 },
                 {
                   icon: MapPinIcon,
