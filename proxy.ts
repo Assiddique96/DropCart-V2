@@ -1,6 +1,18 @@
-import { clerkMiddleware } from '@clerk/nextjs/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-export default clerkMiddleware();
+// Define which routes do not require user authentication
+const isPublicRoute = createRouteMatcher([
+  '/api/paystack/webhook',
+  '/api/store/data(.*)'
+]);
+
+export default clerkMiddleware(async (auth, request) => {
+  // If the incoming request is NOT a public route, protect it
+  if (!isPublicRoute(request)) {
+    // Pass the request object to protect() or await it natively
+    await auth.protect();
+  }
+});
 
 export const config = {
   matcher: [
@@ -10,3 +22,4 @@ export const config = {
     '/(api|trpc)(.*)',
   ],
 };
+
