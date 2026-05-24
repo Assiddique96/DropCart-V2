@@ -13,8 +13,11 @@ import { createNotifications } from "@/lib/serverNotifications";
 export async function POST(request) {
   // Rate limit: max 5 orders per minute per IP
 
+  console.log('[DEBUG_ORDER] POST handler invoked');
+
   try {
     const { userId, has } = getAuth(request);
+    console.log(`[DEBUG_ORDER] auth userId=${userId ? userId : 'null'}`);
     if (!userId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
