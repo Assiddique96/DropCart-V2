@@ -143,9 +143,13 @@ export async function POST(request) {
             select: {
                 id: true,
                 storeId: true,
+                name: true,
                 price: true,
                 origin: true,
                 acceptCod: true,
+                deliveryWithinState: true,
+                deliveryNationwide: true,
+                deliveryInternational: true,
                 quantity: true,
                 inStock: true,
                 variantGroups: { include: { options: true } },
