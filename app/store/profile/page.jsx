@@ -1,11 +1,11 @@
 'use client'
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
 import toast from "react-hot-toast"
 import Loading from "@/components/Loading"
 import Image from "next/image"
-import { SaveIcon, UploadIcon } from "lucide-react"
+import { SaveIcon, UploadIcon, X } from "lucide-react"
 //import { assets } from "@/assets/assets"
 import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
@@ -60,6 +60,8 @@ export default function StoreProfile() {
     })
     const [newLogo, setNewLogo] = useState(null)
     const [newBanner, setNewBanner] = useState(null)
+    const [deliveryDropdownOpen, setDeliveryDropdownOpen] = useState(false)
+    const deliveryDropdownRef = useRef(null)
 
     const fetchProfile = async () => {
         try {
@@ -116,6 +118,17 @@ export default function StoreProfile() {
     }
 
     useEffect(() => { fetchProfile() }, [])
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (deliveryDropdownRef.current && !deliveryDropdownRef.current.contains(event.target)) {
+                setDeliveryDropdownOpen(false)
+            }
+        }
+
+        window.addEventListener("mousedown", handleClickOutside)
+        return () => window.removeEventListener("mousedown", handleClickOutside)
+    }, [])
 
     if (loading) return <Loading />
 
@@ -200,25 +213,67 @@ export default function StoreProfile() {
                     />
                 </div>
 
-                <div>
+                <div ref={deliveryDropdownRef} className="relative">
                     <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Delivery States</label>
-                    <select
-                        multiple
-                        value={form.deliveryStates}
-                        onChange={(e) => {
-                            const selected = Array.from(e.target.selectedOptions, (option) => option.value)
-                            setForm({ ...form, deliveryStates: selected })
-                        }}
-                        className="w-full min-h-[10rem] border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 p-2.5 text-sm outline-none focus:border-slate-400 transition"
-                    >
-                        {NIGERIAN_STATES.map((stateName) => (
-                            <option key={stateName} value={stateName}>
-                                {stateName}
-                            </option>
-                        ))}
-                    </select>
+                    <div className="flex flex-col gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setDeliveryDropdownOpen((open) => !open)}
+                            className="w-full flex items-center justify-between border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 px-3 py-2 text-sm text-left outline-none focus:border-slate-400 transition"
+                        >
+                            <span>{form.deliveryStates.length ? `${form.deliveryStates.length} selected` : "Select delivery states"}</span>
+                            <span className="text-slate-400">▾</span>
+                        </button>
+
+                        {form.deliveryStates.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                                {form.deliveryStates.map((stateName) => (
+                                    <span
+                                        key={stateName}
+                                        className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-100 px-3 py-1 text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                                    >
+                                        <span>{stateName}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => setForm({
+                                                ...form,
+                                                deliveryStates: form.deliveryStates.filter((item) => item !== stateName),
+                                            })}
+                                            className="rounded-full p-1 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+                                        >
+                                            <X size={14} />
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {deliveryDropdownOpen && (
+                        <div className="absolute z-20 mt-2 max-h-60 w-full overflow-auto rounded-2xl border border-slate-200 bg-white py-2 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+                            {NIGERIAN_STATES.filter((stateName) => !form.deliveryStates.includes(stateName)).map((stateName) => (
+                                <button
+                                    key={stateName}
+                                    type="button"
+                                    onClick={() => setForm({
+                                        ...form,
+                                        deliveryStates: [...form.deliveryStates, stateName],
+                                    })}
+                                    className="w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+                                >
+                                    {stateName}
+                                </button>
+                            ))}
+                            {form.deliveryStates.length === NIGERIAN_STATES.length && (
+                                <div className="px-4 py-3 text-xs text-slate-500 dark:text-slate-400">
+                                    All delivery states are selected.
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     <p className="text-xs text-slate-400 mt-1">
-                        Select one or more states where you offer within-state delivery. Use Ctrl/Cmd-click to choose multiple.
+                        Choose states where you offer within-state delivery. Selected states appear above and can be removed.
                     </p>
                 </div>
             </div>
