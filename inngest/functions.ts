@@ -2,6 +2,15 @@ import { inngest } from "./client";
 import { prisma } from "../src/db";
 import { resend } from "@/lib/resend";
 
+async function sendResendEmail(options: Parameters<typeof resend.emails.send>[0]) {
+  try {
+    return await resend.emails.send(options);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Resend email failed: ${message}`);
+  }
+}
+
 // Inngest Funtions to save user data to neon database
 
 export const syncUserCreation = inngest.createFunction(
@@ -56,7 +65,7 @@ export const syncUserDeletion = inngest.createFunction(
 );
 
 function getAdminEmails() {
-    const raw = process.env.ADMIN_EMAILS || process.env.ShpinxS || "";
+    const raw = process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || "";
     return raw
         .split(",")
         .map((email) => email.trim())
@@ -82,7 +91,7 @@ export const sendWelcomeEmail = inngest.createFunction(
         if (!userEmail) return;
 
         await step.run('send-welcome-email', async () => {
-            const { data: emailData, error } = await resend.emails.send({
+            const data = await sendResendEmail({
                 from: 'Shpinx <welcome@shpinx.com>',
                 to: [userEmail],
                 subject: 'Welcome to Shpinx! Your account is ready',
@@ -95,8 +104,7 @@ export const sendWelcomeEmail = inngest.createFunction(
                 `,
             });
 
-            if (error) throw new Error(error.message);
-            return emailData;
+            return data;
         });
     }
 );
@@ -143,7 +151,7 @@ export const sendOrderConfirmationEmail = inngest.createFunction(
     await step.run('send-confirmation-email', async () => {
       const itemListHtml = items.map(i => `<li>${i.name} × ${i.quantity} — ${currency}${i.price}</li>`).join('');
 
-      const { data, error } = await resend.emails.send({
+      const data = await sendResendEmail({
         from: 'Shpinx <orders@shpinx.com>', // Replace with your verified domain
         to: [userEmail],
         subject: 'Your Shpinx Order is Confirmed! 🎉',
@@ -158,7 +166,6 @@ export const sendOrderConfirmationEmail = inngest.createFunction(
         `,
       });
 
-      if (error) throw new Error(error.message);
       return data;
     });
   }
@@ -173,7 +180,7 @@ export const sendOrderShippedEmail = inngest.createFunction(
     const { orderId, userEmail, userName, storeName } = event.data;
 
     await step.run('send-shipped-email', async () => {
-      const { data, error } = await resend.emails.send({
+      const data = await sendResendEmail({
         from: 'Shpinx <orders@shpinx.com>',
         to: [userEmail],
         subject: 'Your Shpinx Order Has Shipped! 🚚',
@@ -185,7 +192,6 @@ export const sendOrderShippedEmail = inngest.createFunction(
         `,
       });
 
-      if (error) throw new Error(error.message);
       return data;
     });
   }
@@ -200,7 +206,7 @@ export const notifySellerNewOrder = inngest.createFunction(
     const { storeEmail, storeName, orderId, orderTotal, currency } = event.data;
 
     await step.run('send-seller-notification', async () => {
-      const { data, error } = await resend.emails.send({
+      const data = await sendResendEmail({
         from: 'Shpinx Alerts <system@shpinx.com>',
         to: [storeEmail],
         subject: 'New Order Received on Shpinx 🛍️',
@@ -214,7 +220,6 @@ export const notifySellerNewOrder = inngest.createFunction(
         `,
       });
 
-      if (error) throw new Error(error.message);
       return data;
     });
   }
@@ -228,7 +233,7 @@ export const notifyAdminAndSellerStoreCreated = inngest.createFunction(
 
     await step.run('send-new-store-to-admin', async () => {
       if (adminEmails.length === 0) return null;
-      const { data, error } = await resend.emails.send({
+      const data = await sendResendEmail({
         from: 'Shpinx Alerts <system@shpinx.com>',
         to: adminEmails,
         subject: `New store application: ${storeName}`,
@@ -241,12 +246,11 @@ export const notifyAdminAndSellerStoreCreated = inngest.createFunction(
           <p>— The Shpinx Team</p>
         `,
       });
-      if (error) throw new Error(error.message);
       return data;
     });
 
     await step.run('send-new-store-to-seller', async () => {
-      const { data, error } = await resend.emails.send({
+      const data = await sendResendEmail({
         from: 'Shpinx <welcome@shpinx.com>',
         to: [storeEmail],
         subject: 'Store application received',
@@ -258,7 +262,6 @@ export const notifyAdminAndSellerStoreCreated = inngest.createFunction(
           <p>— The Shpinx Team</p>
         `,
       });
-      if (error) throw new Error(error.message);
       return data;
     });
   }
@@ -272,7 +275,7 @@ export const notifyAdminAndSellerStoreUpdated = inngest.createFunction(
 
     await step.run('send-updated-store-to-admin', async () => {
       if (adminEmails.length === 0) return null;
-      const { data, error } = await resend.emails.send({
+      const data = await sendResendEmail({
         from: 'Shpinx Alerts <system@shpinx.com>',
         to: adminEmails,
         subject: `Store updated: ${storeName}`,
@@ -285,12 +288,11 @@ export const notifyAdminAndSellerStoreUpdated = inngest.createFunction(
           <p>— The Shpinx Team</p>
         `,
       });
-      if (error) throw new Error(error.message);
       return data;
     });
 
     await step.run('send-updated-store-to-seller', async () => {
-      const { data, error } = await resend.emails.send({
+      const data = await sendResendEmail({
         from: 'Shpinx <welcome@shpinx.com>',
         to: [storeEmail],
         subject: 'Your store profile was updated',
@@ -301,7 +303,6 @@ export const notifyAdminAndSellerStoreUpdated = inngest.createFunction(
           <p>— The Shpinx Team</p>
         `,
       });
-      if (error) throw new Error(error.message);
       return data;
     });
   }
