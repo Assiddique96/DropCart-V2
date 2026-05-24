@@ -64,6 +64,7 @@ export async function POST(request) {
 
     const buyerState = String(address.state || "").trim().toLowerCase();
     const buyerCountry = String(address.country || "").trim().toLowerCase();
+    console.log(`[DEBUG_ORDER] addressId=${addressId} buyerState='${buyerState}' buyerCountry='${buyerCountry}'`);
 
     // check coupon
     let coupon = null;
@@ -319,6 +320,8 @@ export async function POST(request) {
                 : storeState && buyerState && storeState === buyerState;
             const sameCountry = storeCountry && buyerCountry && storeCountry === buyerCountry;
 
+            console.log(`[DEBUG_ORDER] storeId=${storeId} storeState='${storeState}' storeDeliveryStates=${JSON.stringify(storeDeliveryStates)} storeCountry='${storeCountry}' sameState=${sameState} sameCountry=${sameCountry} localItems=${localItems.length}`);
+
             const storeHasAbroad = sellerItems.some(i => i.origin === 'ABROAD');
             const localItems = sellerItems.filter(i => i.origin !== 'ABROAD');
 
@@ -332,6 +335,8 @@ export async function POST(request) {
                 return withinStateAllowed || nationwideAllowed;
             });
 
+            console.log(`[DEBUG_ORDER] storeId=${storeId} localCanShip=${localCanShip} localItemsCount=${localItems.length}`);
+
             if (!storeHasAbroad && localItems.length > 0 && !localCanShip) {
                 throw new Error("One or more items in your cart are not available for delivery to the selected address.");
             }
@@ -341,11 +346,13 @@ export async function POST(request) {
                 applicableShippingFee = storeAbroadFee;
             } else {
                 const requiresNationwide = localItems.some((item) => !item.deliveryWithinState);
+                console.log(`[DEBUG_ORDER] storeId=${storeId} requiresNationwide=${requiresNationwide} sameState=${sameState}`);
                 if (sameState && !requiresNationwide) {
                     applicableShippingFee = storeLocalFee;
                 } else {
                     applicableShippingFee = storeNationwideFee;
                 }
+                console.log(`[DEBUG_ORDER] storeId=${storeId} applicableShippingFee=${applicableShippingFee}`);
             }
 
             const qualifiesForFreeShipping = !storeHasAbroad && storeFreeAbove > 0 && total >= storeFreeAbove;
