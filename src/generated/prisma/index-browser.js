@@ -286,6 +286,7 @@ exports.Prisma.StoreScalarFieldEnum = {
   state: 'state',
   zip: 'zip',
   country: 'country',
+  deliveryStates: 'deliveryStates',
   shippingLocalFee: 'shippingLocalFee',
   shippingNationwideFee: 'shippingNationwideFee',
   shippingAbroadFee: 'shippingAbroadFee',

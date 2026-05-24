@@ -61,14 +61,19 @@ export default function DeliveryFeeSettings() {
 
   if (loading) return <Loading />
 
-  const stateLabel = store?.state ? `within ${store.state}` : "within your state"
+  const hasDeliveryStates = store?.deliveryStates && store.deliveryStates.length > 0
+  const stateLabel = hasDeliveryStates
+    ? `within ${store.deliveryStates.join(", ")}`
+    : store?.state
+    ? `within ${store.state}`
+    : "within your state"
   const countryLabel = store?.country || "Nigeria"
 
   return (
     <div className="text-slate-500 dark:text-slate-300 mb-28 max-w-3xl">
       <h1 className="text-2xl mb-2">Delivery Fee Settings</h1>
       <div className="mb-4 text-sm text-slate-400">
-        <p>Seller location: <span className="text-slate-700 dark:text-slate-100">{store?.state || 'State not set'}{store?.country ? `, ${store.country}` : ''}</span></p>
+        <p>Seller location: <span className="text-slate-700 dark:text-slate-100">{hasDeliveryStates ? store.deliveryStates.join(", ") : store?.state || 'State not set'}{store?.country ? `, ${store.country}` : ''}</span></p>
         <p>Set your local, nationwide, and international delivery fees here. Use 0 for free delivery.</p>
       </div>
 

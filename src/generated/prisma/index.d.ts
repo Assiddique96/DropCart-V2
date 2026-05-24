@@ -16067,6 +16067,7 @@ export namespace Prisma {
     state: number
     zip: number
     country: number
+    deliveryStates: number
     shippingLocalFee: number
     shippingNationwideFee: number
     shippingAbroadFee: number
@@ -16191,6 +16192,7 @@ export namespace Prisma {
     state?: true
     zip?: true
     country?: true
+    deliveryStates?: true
     shippingLocalFee?: true
     shippingNationwideFee?: true
     shippingAbroadFee?: true
@@ -16314,6 +16316,7 @@ export namespace Prisma {
     state: string | null
     zip: string | null
     country: string
+    deliveryStates: string[]
     shippingLocalFee: number
     shippingNationwideFee: number
     shippingAbroadFee: number
@@ -16369,6 +16372,7 @@ export namespace Prisma {
     state?: boolean
     zip?: boolean
     country?: boolean
+    deliveryStates?: boolean
     shippingLocalFee?: boolean
     shippingNationwideFee?: boolean
     shippingAbroadFee?: boolean
@@ -16413,6 +16417,7 @@ export namespace Prisma {
     state?: boolean
     zip?: boolean
     country?: boolean
+    deliveryStates?: boolean
     shippingLocalFee?: boolean
     shippingNationwideFee?: boolean
     shippingAbroadFee?: boolean
@@ -16450,6 +16455,7 @@ export namespace Prisma {
     state?: boolean
     zip?: boolean
     country?: boolean
+    deliveryStates?: boolean
     shippingLocalFee?: boolean
     shippingNationwideFee?: boolean
     shippingAbroadFee?: boolean
@@ -16487,6 +16493,7 @@ export namespace Prisma {
     state?: boolean
     zip?: boolean
     country?: boolean
+    deliveryStates?: boolean
     shippingLocalFee?: boolean
     shippingNationwideFee?: boolean
     shippingAbroadFee?: boolean
@@ -16511,7 +16518,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "username" | "address" | "street" | "city" | "state" | "zip" | "country" | "shippingLocalFee" | "shippingNationwideFee" | "shippingAbroadFee" | "shippingFreeAbove" | "status" | "isActive" | "logo" | "banner" | "email" | "contact" | "verificationStatus" | "verificationRejectedReason" | "cacNumber" | "verificationDocumentType" | "verificationDocumentNumber" | "verificationDocumentUrl" | "facialVerificationUrl" | "payoutBankName" | "payoutAccountName" | "payoutAccountNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["store"]>
+  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "username" | "address" | "street" | "city" | "state" | "zip" | "country" | "deliveryStates" | "shippingLocalFee" | "shippingNationwideFee" | "shippingAbroadFee" | "shippingFreeAbove" | "status" | "isActive" | "logo" | "banner" | "email" | "contact" | "verificationStatus" | "verificationRejectedReason" | "cacNumber" | "verificationDocumentType" | "verificationDocumentNumber" | "verificationDocumentUrl" | "facialVerificationUrl" | "payoutBankName" | "payoutAccountName" | "payoutAccountNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["store"]>
   export type StoreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Product?: boolean | Store$ProductArgs<ExtArgs>
     Order?: boolean | Store$OrderArgs<ExtArgs>
@@ -16552,6 +16559,7 @@ export namespace Prisma {
       state: string | null
       zip: string | null
       country: string
+      deliveryStates: string[]
       shippingLocalFee: number
       shippingNationwideFee: number
       shippingAbroadFee: number
@@ -17015,6 +17023,7 @@ export namespace Prisma {
     readonly state: FieldRef<"Store", 'String'>
     readonly zip: FieldRef<"Store", 'String'>
     readonly country: FieldRef<"Store", 'String'>
+    readonly deliveryStates: FieldRef<"Store", 'String[]'>
     readonly shippingLocalFee: FieldRef<"Store", 'Float'>
     readonly shippingNationwideFee: FieldRef<"Store", 'Float'>
     readonly shippingAbroadFee: FieldRef<"Store", 'Float'>
@@ -22185,6 +22194,7 @@ export namespace Prisma {
     state: 'state',
     zip: 'zip',
     country: 'country',
+    deliveryStates: 'deliveryStates',
     shippingLocalFee: 'shippingLocalFee',
     shippingNationwideFee: 'shippingNationwideFee',
     shippingAbroadFee: 'shippingAbroadFee',
@@ -23524,6 +23534,7 @@ export namespace Prisma {
     state?: StringNullableFilter<"Store"> | string | null
     zip?: StringNullableFilter<"Store"> | string | null
     country?: StringFilter<"Store"> | string
+    deliveryStates?: StringNullableListFilter<"Store">
     shippingLocalFee?: FloatFilter<"Store"> | number
     shippingNationwideFee?: FloatFilter<"Store"> | number
     shippingAbroadFee?: FloatFilter<"Store"> | number
@@ -23567,6 +23578,7 @@ export namespace Prisma {
     state?: SortOrderInput | SortOrder
     zip?: SortOrderInput | SortOrder
     country?: SortOrder
+    deliveryStates?: SortOrder
     shippingLocalFee?: SortOrder
     shippingNationwideFee?: SortOrder
     shippingAbroadFee?: SortOrder
@@ -23613,6 +23625,7 @@ export namespace Prisma {
     state?: StringNullableFilter<"Store"> | string | null
     zip?: StringNullableFilter<"Store"> | string | null
     country?: StringFilter<"Store"> | string
+    deliveryStates?: StringNullableListFilter<"Store">
     shippingLocalFee?: FloatFilter<"Store"> | number
     shippingNationwideFee?: FloatFilter<"Store"> | number
     shippingAbroadFee?: FloatFilter<"Store"> | number
@@ -23656,6 +23669,7 @@ export namespace Prisma {
     state?: SortOrderInput | SortOrder
     zip?: SortOrderInput | SortOrder
     country?: SortOrder
+    deliveryStates?: SortOrder
     shippingLocalFee?: SortOrder
     shippingNationwideFee?: SortOrder
     shippingAbroadFee?: SortOrder
@@ -23700,6 +23714,7 @@ export namespace Prisma {
     state?: StringNullableWithAggregatesFilter<"Store"> | string | null
     zip?: StringNullableWithAggregatesFilter<"Store"> | string | null
     country?: StringWithAggregatesFilter<"Store"> | string
+    deliveryStates?: StringNullableListFilter<"Store">
     shippingLocalFee?: FloatWithAggregatesFilter<"Store"> | number
     shippingNationwideFee?: FloatWithAggregatesFilter<"Store"> | number
     shippingAbroadFee?: FloatWithAggregatesFilter<"Store"> | number
@@ -25124,6 +25139,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -25167,6 +25183,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -25208,6 +25225,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -25251,6 +25269,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -25293,6 +25312,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -25328,6 +25348,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -25364,6 +25385,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -26796,6 +26818,7 @@ export namespace Prisma {
     state?: SortOrder
     zip?: SortOrder
     country?: SortOrder
+    deliveryStates?: SortOrder
     shippingLocalFee?: SortOrder
     shippingNationwideFee?: SortOrder
     shippingAbroadFee?: SortOrder
@@ -27984,6 +28007,10 @@ export namespace Prisma {
     update?: XOR<XOR<StoreUpdateToOneWithWhereWithoutCouponInput, StoreUpdateWithoutCouponInput>, StoreUncheckedUpdateWithoutCouponInput>
   }
 
+  export type StoreCreatedeliveryStatesInput = {
+    set: string[]
+  }
+
   export type ProductCreateNestedManyWithoutStoreInput = {
     create?: XOR<ProductCreateWithoutStoreInput, ProductUncheckedCreateWithoutStoreInput> | ProductCreateWithoutStoreInput[] | ProductUncheckedCreateWithoutStoreInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutStoreInput | ProductCreateOrConnectWithoutStoreInput[]
@@ -28072,6 +28099,11 @@ export namespace Prisma {
     connectOrCreate?: AdRequestCreateOrConnectWithoutStoreInput | AdRequestCreateOrConnectWithoutStoreInput[]
     createMany?: AdRequestCreateManyStoreInputEnvelope
     connect?: AdRequestWhereUniqueInput | AdRequestWhereUniqueInput[]
+  }
+
+  export type StoreUpdatedeliveryStatesInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type ProductUpdateManyWithoutStoreNestedInput = {
@@ -28817,6 +28849,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -28858,6 +28891,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -29104,6 +29138,7 @@ export namespace Prisma {
     state?: StringNullableFilter<"Store"> | string | null
     zip?: StringNullableFilter<"Store"> | string | null
     country?: StringFilter<"Store"> | string
+    deliveryStates?: StringNullableListFilter<"Store">
     shippingLocalFee?: FloatFilter<"Store"> | number
     shippingNationwideFee?: FloatFilter<"Store"> | number
     shippingAbroadFee?: FloatFilter<"Store"> | number
@@ -29316,6 +29351,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -29358,6 +29394,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -29536,6 +29573,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -29578,6 +29616,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -30071,6 +30110,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -30113,6 +30153,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -30317,6 +30358,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -30359,6 +30401,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -31165,6 +31208,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -31207,6 +31251,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -31263,6 +31308,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -31305,6 +31351,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -31837,6 +31884,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -31879,6 +31927,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -32015,6 +32064,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -32057,6 +32107,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -32189,6 +32240,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -32231,6 +32283,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -32287,6 +32340,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -32329,6 +32383,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -32438,6 +32493,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -32480,6 +32536,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -32611,6 +32668,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -32653,6 +32711,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -32718,6 +32777,7 @@ export namespace Prisma {
     state?: string | null
     zip?: string | null
     country?: string
+    deliveryStates?: StoreCreatedeliveryStatesInput | string[]
     shippingLocalFee?: number
     shippingNationwideFee?: number
     shippingAbroadFee?: number
@@ -32867,6 +32927,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -32908,6 +32969,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
@@ -32949,6 +33011,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
+    deliveryStates?: StoreUpdatedeliveryStatesInput | string[]
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
     shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number

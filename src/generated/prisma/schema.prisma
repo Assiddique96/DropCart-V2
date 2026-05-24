@@ -291,23 +291,24 @@ model Coupon {
 
 // Required for creating a Store: userId, name, username, email, contact, logo, description, address (optional: , status, isActive)
 model Store {
-  id                    String  @id @default(cuid())
+  id                    String   @id @default(cuid())
   userId                String
   name                  String
   description           String
-  username              String  @unique
-  address               String  @default("") // legacy plain-text (kept for backwards compat)
+  username              String   @unique
+  address               String   @default("") // legacy plain-text (kept for backwards compat)
   street                String? // structured address
   city                  String?
   state                 String?
   zip                   String?
-  country               String  @default("Nigeria")
-  shippingLocalFee      Float   @default(7000)
-  shippingNationwideFee Float   @default(0)
-  shippingAbroadFee     Float   @default(15000)
-  shippingFreeAbove     Float   @default(0)
-  status                String  @default("pending")
-  isActive              Boolean @default(false)
+  country               String   @default("Nigeria")
+  deliveryStates        String[] @default([])
+  shippingLocalFee      Float    @default(7000)
+  shippingNationwideFee Float    @default(0)
+  shippingAbroadFee     Float    @default(15000)
+  shippingFreeAbove     Float    @default(0)
+  status                String   @default("pending")
+  isActive              Boolean  @default(false)
   logo                  String
   banner                String?
   email                 String

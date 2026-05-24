@@ -24,7 +24,7 @@ export async function GET(request) {
       select: {
         id: true, name: true, description: true, email: true,
         contact: true, address: true, street: true, city: true,
-        state: true, zip: true, country: true,
+        state: true, deliveryStates: true, zip: true, country: true,
         shippingLocalFee: true, shippingNationwideFee: true, shippingAbroadFee: true, shippingFreeAbove: true,
         logo: true, banner: true, username: true, status: true,
         isActive: true, createdAt: true,
@@ -62,6 +62,7 @@ export async function PATCH(request) {
       shippingNationwideFee: formData.get("shippingNationwideFee"),
       shippingAbroadFee: formData.get("shippingAbroadFee"),
       shippingFreeAbove: formData.get("shippingFreeAbove"),
+      deliveryStates:    formData.get("deliveryStates") ?? existingStore.deliveryStates,
     });
 
     if (errors.length > 0) {

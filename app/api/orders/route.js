@@ -148,6 +148,7 @@ export async function POST(request) {
                 store: {
                     select: {
                         state: true,
+                        deliveryStates: true,
                         country: true,
                         shippingLocalFee: true,
                         shippingNationwideFee: true,
@@ -247,6 +248,7 @@ export async function POST(request) {
                 abroadFee: product.store?.shippingAbroadFee ?? shippingAbroadFee,
                 freeAbove: product.store?.shippingFreeAbove ?? shippingFreeAbove,
                 state: product.store?.state,
+                deliveryStates: product.store?.deliveryStates ?? [],
                 country: product.store?.country,
             });
         }
@@ -308,8 +310,13 @@ export async function POST(request) {
             const storeAbroadFee = storeConfig.abroadFee ?? shippingAbroadFee;
             const storeFreeAbove = storeConfig.freeAbove ?? shippingFreeAbove;
             const storeState = String(storeConfig.state || "").trim().toLowerCase();
+            const storeDeliveryStates = Array.isArray(storeConfig.deliveryStates)
+                ? storeConfig.deliveryStates.map((s) => String(s || "").trim().toLowerCase()).filter(Boolean)
+                : [];
             const storeCountry = String(storeConfig.country || "").trim().toLowerCase();
-            const sameState = storeState && buyerState && storeState === buyerState;
+            const sameState = storeDeliveryStates.length > 0
+                ? storeDeliveryStates.includes(buyerState)
+                : storeState && buyerState && storeState === buyerState;
             const sameCountry = storeCountry && buyerCountry && storeCountry === buyerCountry;
 
             const storeHasAbroad = sellerItems.some(i => i.origin === 'ABROAD');

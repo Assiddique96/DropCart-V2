@@ -15,7 +15,8 @@ export default function StoreProfile() {
     const [saving, setSaving] = useState(false)
     const [store, setStore] = useState(null)
     const [form, setForm] = useState({
-        name: '', description: '', email: '', contact: '', address: ''
+        name: '', description: '', email: '', contact: '', address: '',
+        street: '', city: '', state: '', zip: '', country: 'Nigeria', deliveryStates: ''
     })
     const [newLogo, setNewLogo] = useState(null)
     const [newBanner, setNewBanner] = useState(null)
@@ -37,6 +38,7 @@ export default function StoreProfile() {
                 state: data.store.state || '',
                 zip: data.store.zip || '',
                 country: data.store.country || 'Nigeria',
+                deliveryStates: (data.store.deliveryStates || []).join(", ") || '',
             })
         } catch (e) {
             toast.error(e?.response?.data?.error || e.message)
@@ -148,6 +150,20 @@ export default function StoreProfile() {
                         placeholder="Store physical address"
                         className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none resize-none focus:border-slate-400 transition"
                     />
+                </div>
+
+                <div>
+                    <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Delivery States</label>
+                    <input
+                        type="text"
+                        value={form.deliveryStates}
+                        onChange={e => setForm({ ...form, deliveryStates: e.target.value })}
+                        placeholder="Enter states separated by commas"
+                        className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none focus:border-slate-400 transition"
+                    />
+                    <p className="text-xs text-slate-400 mt-1">
+                        Use this field to list the states where you offer within-state delivery.
+                    </p>
                 </div>
             </div>
 

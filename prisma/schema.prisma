@@ -304,6 +304,7 @@ model Store {
     state       String?
     zip         String?
     country     String   @default("Nigeria")
+    deliveryStates String[] @default([])
     shippingLocalFee    Float   @default(7000)
     shippingNationwideFee Float @default(0)
     shippingAbroadFee   Float   @default(15000)

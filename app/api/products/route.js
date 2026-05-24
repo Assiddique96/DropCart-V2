@@ -25,6 +25,7 @@ export async function GET() {
             username: true,
             userId: true,
             state: true,
+            deliveryStates: true,
             country: true,
             shippingLocalFee: true,
             shippingNationwideFee: true,
