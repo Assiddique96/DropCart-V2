@@ -51,6 +51,8 @@ export async function PATCH(request) {
     const formData = await request.formData();
 
     // Sanitize editable text fields
+    const deliveryStatesValue = formData.getAll("deliveryStates")
+
     const { data: sanitized, errors } = sanitizeStoreInput({
       name:              formData.get("name")        ?? existingStore.name,
       username:          existingStore.username,     // NOT editable after approval
@@ -62,7 +64,7 @@ export async function PATCH(request) {
       shippingNationwideFee: formData.get("shippingNationwideFee"),
       shippingAbroadFee: formData.get("shippingAbroadFee"),
       shippingFreeAbove: formData.get("shippingFreeAbove"),
-      deliveryStates:    formData.get("deliveryStates") ?? existingStore.deliveryStates,
+      deliveryStates:    deliveryStatesValue.length ? deliveryStatesValue : existingStore.deliveryStates,
     });
 
     if (errors.length > 0) {

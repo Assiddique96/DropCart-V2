@@ -9,6 +9,46 @@ import { SaveIcon, UploadIcon } from "lucide-react"
 //import { assets } from "@/assets/assets"
 import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
+const NIGERIAN_STATES = [
+  "Abia",
+  "Adamawa",
+  "Akwa Ibom",
+  "Anambra",
+  "Bauchi",
+  "Bayelsa",
+  "Benue",
+  "Borno",
+  "Cross River",
+  "Delta",
+  "Ebonyi",
+  "Edo",
+  "Ekiti",
+  "Enugu",
+  "Gombe",
+  "Imo",
+  "Jigawa",
+  "Kaduna",
+  "Kano",
+  "Katsina",
+  "Kebbi",
+  "Kogi",
+  "Kwara",
+  "Lagos",
+  "Nasarawa",
+  "Niger",
+  "Ogun",
+  "Ondo",
+  "Osun",
+  "Oyo",
+  "Plateau",
+  "Rivers",
+  "Sokoto",
+  "Taraba",
+  "Yobe",
+  "Zamfara",
+  "FCT Abuja",
+]
+
 export default function StoreProfile() {
     const { getToken } = useAuth()
     const [loading, setLoading] = useState(true)
@@ -16,7 +56,7 @@ export default function StoreProfile() {
     const [store, setStore] = useState(null)
     const [form, setForm] = useState({
         name: '', description: '', email: '', contact: '', address: '',
-        street: '', city: '', state: '', zip: '', country: 'Nigeria', deliveryStates: ''
+        street: '', city: '', state: '', zip: '', country: 'Nigeria', deliveryStates: []
     })
     const [newLogo, setNewLogo] = useState(null)
     const [newBanner, setNewBanner] = useState(null)
@@ -38,7 +78,7 @@ export default function StoreProfile() {
                 state: data.store.state || '',
                 zip: data.store.zip || '',
                 country: data.store.country || 'Nigeria',
-                deliveryStates: (data.store.deliveryStates || []).join(", ") || '',
+                deliveryStates: data.store.deliveryStates || [],
             })
         } catch (e) {
             toast.error(e?.response?.data?.error || e.message)
@@ -50,7 +90,15 @@ export default function StoreProfile() {
         setSaving(true)
         try {
             const formData = new FormData()
-            Object.entries(form).forEach(([k, v]) => formData.append(k, v))
+            Object.entries(form).forEach(([k, v]) => {
+                if (k === "deliveryStates") return
+                formData.append(k, v)
+            })
+            if (Array.isArray(form.deliveryStates) && form.deliveryStates.length > 0) {
+                form.deliveryStates.forEach((state) => formData.append("deliveryStates", state))
+            } else {
+                formData.append("deliveryStates", "")
+            }
             if (newLogo) formData.append("logo", newLogo)
             if (newBanner) formData.append("banner", newBanner)
 
@@ -154,15 +202,23 @@ export default function StoreProfile() {
 
                 <div>
                     <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Delivery States</label>
-                    <input
-                        type="text"
+                    <select
+                        multiple
                         value={form.deliveryStates}
-                        onChange={e => setForm({ ...form, deliveryStates: e.target.value })}
-                        placeholder="Enter states separated by commas"
-                        className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none focus:border-slate-400 transition"
-                    />
+                        onChange={(e) => {
+                            const selected = Array.from(e.target.selectedOptions, (option) => option.value)
+                            setForm({ ...form, deliveryStates: selected })
+                        }}
+                        className="w-full min-h-[10rem] border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 p-2.5 text-sm outline-none focus:border-slate-400 transition"
+                    >
+                        {NIGERIAN_STATES.map((stateName) => (
+                            <option key={stateName} value={stateName}>
+                                {stateName}
+                            </option>
+                        ))}
+                    </select>
                     <p className="text-xs text-slate-400 mt-1">
-                        Use this field to list the states where you offer within-state delivery.
+                        Select one or more states where you offer within-state delivery. Use Ctrl/Cmd-click to choose multiple.
                     </p>
                 </div>
             </div>
