@@ -67,10 +67,10 @@ export default function DeliveryFeeSettings() {
   return (
     <div className="text-slate-500 dark:text-slate-300 mb-28 max-w-3xl">
       <h1 className="text-2xl mb-2">Delivery Fee Settings</h1>
-      <p className="text-sm text-slate-400 mb-8">
-        Set your seller-specific delivery fees for within-state, nationwide, and international orders.
-        Use 0 for free delivery.
-      </p>
+      <div className="mb-4 text-sm text-slate-400">
+        <p>Seller location: <span className="text-slate-700 dark:text-slate-100">{store?.state || 'State not set'}{store?.country ? `, ${store.country}` : ''}</span></p>
+        <p>Set your local, nationwide, and international delivery fees here. Use 0 for free delivery.</p>
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
         {[

@@ -412,7 +412,10 @@ export default function StoreAddProduct() {
                                 onChange={() => setProductInfo(p => ({
                                     ...p,
                                     origin: opt.value,
-                                    acceptCod: opt.value === 'LOCAL' ? true : false,
+                                    acceptCod: opt.value === 'LOCAL',
+                                    deliveryWithinState: opt.value === 'LOCAL' ? p.deliveryWithinState : false,
+                                    deliveryNationwide: opt.value === 'LOCAL' ? p.deliveryNationwide : false,
+                                    deliveryInternational: opt.value === 'ABROAD' ? true : p.deliveryInternational,
                                 }))} className="sr-only" />
                             <span className="text-xl">{opt.icon}</span>
                             <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">{opt.label}</span>
@@ -425,11 +428,12 @@ export default function StoreAddProduct() {
                 <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900">
                     <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-3">Delivery Methods</p>
                     <div className="grid gap-3">
-                        <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 cursor-pointer dark:border-slate-700 dark:bg-slate-950">
+                        <label className={`flex items-center gap-3 rounded-xl border p-3 cursor-pointer dark:bg-slate-950 ${productInfo.origin === 'ABROAD' ? 'border-slate-200 bg-slate-100 opacity-60 cursor-not-allowed dark:border-slate-700 dark:bg-slate-900' : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950'}`}>
                             <input
                                 type="checkbox"
                                 checked={productInfo.deliveryWithinState}
                                 onChange={e => setProductInfo(p => ({ ...p, deliveryWithinState: e.target.checked }))}
+                                disabled={productInfo.origin === 'ABROAD'}
                                 className="accent-green-600"
                             />
                             <div>
@@ -437,11 +441,12 @@ export default function StoreAddProduct() {
                                 <p className="text-xs text-slate-500 dark:text-slate-400">Delivered within 1 - 3 days.</p>
                             </div>
                         </label>
-                        <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 cursor-pointer dark:border-slate-700 dark:bg-slate-950">
+                        <label className={`flex items-center gap-3 rounded-xl border p-3 cursor-pointer dark:bg-slate-950 ${productInfo.origin === 'ABROAD' ? 'border-slate-200 bg-slate-100 opacity-60 cursor-not-allowed dark:border-slate-700 dark:bg-slate-900' : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950'}`}>
                             <input
                                 type="checkbox"
                                 checked={productInfo.deliveryNationwide}
                                 onChange={e => setProductInfo(p => ({ ...p, deliveryNationwide: e.target.checked }))}
+                                disabled={productInfo.origin === 'ABROAD'}
                                 className="accent-green-600"
                             />
                             <div>
@@ -462,6 +467,9 @@ export default function StoreAddProduct() {
                             </div>
                         </label>
                     </div>
+                    {productInfo.origin === 'ABROAD' && (
+                        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">Within-state and nationwide delivery methods are disabled for products shipped from abroad.</p>
+                    )}
                 </div>
                 {productInfo.origin === 'LOCAL' && (
                     <label className="mt-4 flex items-start gap-3 cursor-pointer rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 hover:border-slate-300 transition">

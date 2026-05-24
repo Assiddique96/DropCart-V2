@@ -146,6 +146,9 @@ export default function StoreManageProducts() {
                                 ...f,
                                 origin: v,
                                 acceptCod: v === 'LOCAL' ? (f.origin === 'ABROAD' ? true : f.acceptCod !== false) : false,
+                                deliveryWithinState: v === 'LOCAL' ? f.deliveryWithinState : false,
+                                deliveryNationwide: v === 'LOCAL' ? f.deliveryNationwide : false,
+                                deliveryInternational: v === 'ABROAD' ? true : f.deliveryInternational,
                             }))
                         }}
                         className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900">
@@ -156,20 +159,22 @@ export default function StoreManageProducts() {
                 <div className="sm:col-span-2 lg:col-span-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950">
                     <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-3">Available delivery methods</p>
                     <div className="grid gap-3 md:grid-cols-3">
-                        <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 cursor-pointer dark:border-slate-700 dark:bg-slate-900">
+                        <label className={`flex items-center gap-3 rounded-xl border p-3 cursor-pointer dark:bg-slate-900 ${editForm.origin === 'ABROAD' ? 'border-slate-200 bg-slate-100 opacity-60 cursor-not-allowed dark:border-slate-700 dark:bg-slate-950' : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900'}`}>
                             <input
                                 type="checkbox"
                                 checked={!!editForm.deliveryWithinState}
                                 onChange={e => setEditForm({ ...editForm, deliveryWithinState: e.target.checked })}
+                                disabled={editForm.origin === 'ABROAD'}
                                 className="accent-green-600"
                             />
                             <span className="text-sm">Within State</span>
                         </label>
-                        <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 cursor-pointer dark:border-slate-700 dark:bg-slate-900">
+                        <label className={`flex items-center gap-3 rounded-xl border p-3 cursor-pointer dark:bg-slate-900 ${editForm.origin === 'ABROAD' ? 'border-slate-200 bg-slate-100 opacity-60 cursor-not-allowed dark:border-slate-700 dark:bg-slate-950' : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900'}`}>
                             <input
                                 type="checkbox"
                                 checked={!!editForm.deliveryNationwide}
                                 onChange={e => setEditForm({ ...editForm, deliveryNationwide: e.target.checked })}
+                                disabled={editForm.origin === 'ABROAD'}
                                 className="accent-green-600"
                             />
                             <span className="text-sm">Nationwide</span>
@@ -184,6 +189,9 @@ export default function StoreManageProducts() {
                             <span className="text-sm">International</span>
                         </label>
                     </div>
+                    {editForm.origin === 'ABROAD' && (
+                        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">Within-state and nationwide delivery methods are disabled for products shipped from abroad.</p>
+                    )}
                 </div>
                 {editForm.origin === 'LOCAL' && (
                     <label className="flex flex-col gap-1 text-xs sm:col-span-2">
