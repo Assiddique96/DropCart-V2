@@ -329,6 +329,9 @@ export async function POST(request) {
                 : storeState && buyerState && storeState === buyerState;
             const sameCountry = storeCountry && buyerCountry && storeCountry === buyerCountry;
 
+            const storeHasAbroad = sellerItems.some(i => i.origin === 'ABROAD');
+            const localItems = sellerItems.filter(i => i.origin !== 'ABROAD');
+
             const debugContext = {
                 buyerState,
                 buyerCountry,
@@ -340,9 +343,6 @@ export async function POST(request) {
                 localItemsCount: localItems.length,
             };
             console.log(`[DEBUG_ORDER] storeId=${storeId} ${JSON.stringify(debugContext)}`);
-
-            const storeHasAbroad = sellerItems.some(i => i.origin === 'ABROAD');
-            const localItems = sellerItems.filter(i => i.origin !== 'ABROAD');
 
             if (localItems.length > 0 && !sameCountry) {
                 const error = new Error("One or more items in your cart cannot be shipped to the selected address.");
