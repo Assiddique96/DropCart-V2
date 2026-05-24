@@ -53,6 +53,9 @@ export async function POST(request) {
       scheduledAt: formData.get("scheduledAt"),
       origin:         formData.get("origin"),
       acceptCod:      formData.get("acceptCod"),
+      deliveryWithinState: formData.get("deliveryWithinState"),
+      deliveryNationwide: formData.get("deliveryNationwide"),
+      deliveryInternational: formData.get("deliveryInternational"),
       madeIn:         formData.get("madeIn"),
       manufacturer:   formData.get("manufacturer"),
       material:       formData.get("material"),
@@ -139,6 +142,9 @@ export async function PATCH(request) {
 
     const acceptCodSource = formData.has("acceptCod") ? formData.get("acceptCod") : existing.acceptCod;
 
+    const rawQuantity = formData.get("quantity");
+    const quantity = rawQuantity ? Math.max(0, parseInt(rawQuantity, 10)) : existing.quantity ?? 0;
+
     const { data: sanitized, errors } = sanitizeProductInput({
       name:        formData.get("name")        ?? existing.name,
       description: formData.get("description") ?? existing.description,
@@ -150,16 +156,10 @@ export async function PATCH(request) {
       scheduledAt: formData.get("scheduledAt") ?? existing.scheduledAt,
       origin:      formData.get("origin")      ?? existing.origin,
       acceptCod:       acceptCodSource,
-      madeIn:          formData.get("madeIn")       ?? existing.madeIn,
-      manufacturer:    formData.get("manufacturer") ?? existing.manufacturer,
-      material:        formData.get("material")     ?? existing.material,
-      guaranteePeriod: formData.get("guaranteePeriod") ?? existing.guaranteePeriod,
+      deliveryWithinState: formData.get("deliveryWithinState") ?? String(existing.deliveryWithinState),
+      deliveryNationwide: formData.get("deliveryNationwide") ?? String(existing.deliveryNationwide),
+      deliveryInternational: formData.get("deliveryInternational") ?? String(existing.deliveryInternational),
     });
-
-    if (errors.length > 0) return NextResponse.json({ error: errors.join(" ") }, { status: 400 });
-
-    const rawQuantity = formData.get("quantity");
-    const quantity = rawQuantity !== null ? Math.max(0, parseInt(rawQuantity, 10)) : existing.quantity;
 
     const newImageFiles = formData.getAll("images").filter((i) => i instanceof File && i.size > 0);
 

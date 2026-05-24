@@ -76,6 +76,9 @@ export default function StoreAddProduct() {
         category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", manufacturer: "",
         material: "", guaranteePeriod: "",
         acceptCod: true,
+        deliveryWithinState: true,
+        deliveryNationwide: true,
+        deliveryInternational: false,
     })
 
     const execCommand = (command, value = null) => {
@@ -237,7 +240,7 @@ export default function StoreAddProduct() {
             }
 
             // Reset form
-            setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", manufacturer: "", material: "", guaranteePeriod: "", acceptCod: true })
+            setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", manufacturer: "", material: "", guaranteePeriod: "", acceptCod: true, deliveryWithinState: true, deliveryNationwide: true, deliveryInternational: false })
             setImages([]); setAiUsed(false); setVariantGroups([]); setNewOptionInputs({})
         } catch (error) {
             toast.error(error.response?.data?.error || error.message)
@@ -418,6 +421,47 @@ export default function StoreAddProduct() {
                             <span className={`text-xs px-2 py-0.5 rounded-full font-medium w-fit mt-1 ${opt.badge}`}>{opt.cod}</span>
                         </label>
                     ))}
+                </div>
+                <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900">
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-3">Delivery Methods</p>
+                    <div className="grid gap-3">
+                        <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 cursor-pointer dark:border-slate-700 dark:bg-slate-950">
+                            <input
+                                type="checkbox"
+                                checked={productInfo.deliveryWithinState}
+                                onChange={e => setProductInfo(p => ({ ...p, deliveryWithinState: e.target.checked }))}
+                                className="accent-green-600"
+                            />
+                            <div>
+                                <p className="text-sm font-medium text-slate-800 dark:text-slate-100">Within State delivery</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">Delivered within 1 - 3 days.</p>
+                            </div>
+                        </label>
+                        <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 cursor-pointer dark:border-slate-700 dark:bg-slate-950">
+                            <input
+                                type="checkbox"
+                                checked={productInfo.deliveryNationwide}
+                                onChange={e => setProductInfo(p => ({ ...p, deliveryNationwide: e.target.checked }))}
+                                className="accent-green-600"
+                            />
+                            <div>
+                                <p className="text-sm font-medium text-slate-800 dark:text-slate-100">Nationwide delivery</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">Delivered within 5 - 7 days.</p>
+                            </div>
+                        </label>
+                        <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 cursor-pointer dark:border-slate-700 dark:bg-slate-950">
+                            <input
+                                type="checkbox"
+                                checked={productInfo.deliveryInternational}
+                                onChange={e => setProductInfo(p => ({ ...p, deliveryInternational: e.target.checked }))}
+                                className="accent-green-600"
+                            />
+                            <div>
+                                <p className="text-sm font-medium text-slate-800 dark:text-slate-100">International delivery</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">Delivered within 20 - 25 days.</p>
+                            </div>
+                        </label>
+                    </div>
                 </div>
                 {productInfo.origin === 'LOCAL' && (
                     <label className="mt-4 flex items-start gap-3 cursor-pointer rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 hover:border-slate-300 transition">

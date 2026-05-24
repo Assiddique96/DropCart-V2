@@ -180,9 +180,19 @@ const ProductDetails = ({ product }) => {
       ) / product.rating.length
     : 0;
 
+  const stateLabel = product.store?.state || "your state";
+  const countryLabel = product.store?.country || "Nigeria";
+  const withinStateFee = product.store?.shippingLocalFee ?? shippingFees.local;
+  const nationwideFee = product.store?.shippingNationwideFee ?? withinStateFee;
+  const internationalFee = product.store?.shippingAbroadFee ?? shippingFees.abroad;
+
   const shippingFee = isAbroad
-    ? shippingFees.abroad
-    : shippingFees.local;
+    ? internationalFee
+    : product.deliveryWithinState
+    ? withinStateFee
+    : product.deliveryNationwide
+    ? nationwideFee
+    : withinStateFee;
   const eta = isAbroad ? "20 – 25 days" : "7 – 10 days";
 
   return (
@@ -609,6 +619,39 @@ const ProductDetails = ({ product }) => {
               <span className="font-medium">{eta}</span>
             </span>
           </div>
+
+          {product.deliveryWithinState && !product.deliveryNationwide && !product.deliveryInternational ? (
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-300">
+              This product is only available for delivery for orders within {stateLabel}.
+            </div>
+          ) : (
+            <div className="space-y-2 pt-2 text-sm text-slate-600 dark:text-slate-300">
+              {product.deliveryWithinState && (
+                <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950">
+                  <span>Delivery within {stateLabel}</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100">
+                    {withinStateFee === 0 ? "FREE" : `${currency}${withinStateFee.toLocaleString()}`}
+                  </span>
+                </div>
+              )}
+              {product.deliveryNationwide && (
+                <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950">
+                  <span>Nationwide delivery</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100">
+                    {nationwideFee === 0 ? "FREE" : `${currency}${nationwideFee.toLocaleString()}`}
+                  </span>
+                </div>
+              )}
+              {product.deliveryInternational && (
+                <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950">
+                  <span>International delivery</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100">
+                    {internationalFee === 0 ? "FREE" : `${currency}${internationalFee.toLocaleString()}`}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
 
           {isAbroad ? (
             <div className="flex items-center gap-3 text-sm text-blue-700 dark:text-blue-300">

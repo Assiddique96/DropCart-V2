@@ -24,6 +24,11 @@ export async function GET() {
             logo: true,
             username: true,
             userId: true,
+            state: true,
+            country: true,
+            shippingLocalFee: true,
+            shippingNationwideFee: true,
+            shippingAbroadFee: true,
           },
         },
         variantGroups: {

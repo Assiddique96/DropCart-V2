@@ -25,7 +25,7 @@ export async function GET(request) {
         id: true, name: true, description: true, email: true,
         contact: true, address: true, street: true, city: true,
         state: true, zip: true, country: true,
-        shippingLocalFee: true, shippingAbroadFee: true, shippingFreeAbove: true,
+        shippingLocalFee: true, shippingNationwideFee: true, shippingAbroadFee: true, shippingFreeAbove: true,
         logo: true, banner: true, username: true, status: true,
         isActive: true, createdAt: true,
       },
@@ -59,6 +59,7 @@ export async function PATCH(request) {
       contact:           formData.get("contact")     ?? existingStore.contact,
       address:           formData.get("address")     ?? existingStore.address,
       shippingLocalFee:  formData.get("shippingLocalFee"),
+      shippingNationwideFee: formData.get("shippingNationwideFee"),
       shippingAbroadFee: formData.get("shippingAbroadFee"),
       shippingFreeAbove: formData.get("shippingFreeAbove"),
     });

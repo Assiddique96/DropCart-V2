@@ -63,6 +63,9 @@ model Product {
     tags         String[]       @default([])
     scheduledAt  DateTime?
     origin          ProductOrigin  @default(LOCAL)
+    deliveryWithinState Boolean   @default(true)
+    deliveryNationwide  Boolean   @default(true)
+    deliveryInternational Boolean @default(false)
     madeIn          String?
     manufacturer    String?
     material        String?
@@ -301,9 +304,10 @@ model Store {
     state       String?
     zip         String?
     country     String   @default("Nigeria")
-    shippingLocalFee  Float   @default(7000)
-    shippingAbroadFee Float   @default(15000)
-    shippingFreeAbove Float   @default(0)
+    shippingLocalFee    Float   @default(7000)
+    shippingNationwideFee Float @default(0)
+    shippingAbroadFee   Float   @default(15000)
+    shippingFreeAbove   Float   @default(0)
     status      String   @default("pending")
     isActive    Boolean  @default(false)
     logo        String

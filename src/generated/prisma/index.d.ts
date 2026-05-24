@@ -5067,6 +5067,9 @@ export namespace Prisma {
     sku: string | null
     scheduledAt: Date | null
     origin: $Enums.ProductOrigin | null
+    deliveryWithinState: boolean | null
+    deliveryNationwide: boolean | null
+    deliveryInternational: boolean | null
     madeIn: string | null
     manufacturer: string | null
     material: string | null
@@ -5091,6 +5094,9 @@ export namespace Prisma {
     sku: string | null
     scheduledAt: Date | null
     origin: $Enums.ProductOrigin | null
+    deliveryWithinState: boolean | null
+    deliveryNationwide: boolean | null
+    deliveryInternational: boolean | null
     madeIn: string | null
     manufacturer: string | null
     material: string | null
@@ -5117,6 +5123,9 @@ export namespace Prisma {
     tags: number
     scheduledAt: number
     origin: number
+    deliveryWithinState: number
+    deliveryNationwide: number
+    deliveryInternational: number
     madeIn: number
     manufacturer: number
     material: number
@@ -5155,6 +5164,9 @@ export namespace Prisma {
     sku?: true
     scheduledAt?: true
     origin?: true
+    deliveryWithinState?: true
+    deliveryNationwide?: true
+    deliveryInternational?: true
     madeIn?: true
     manufacturer?: true
     material?: true
@@ -5179,6 +5191,9 @@ export namespace Prisma {
     sku?: true
     scheduledAt?: true
     origin?: true
+    deliveryWithinState?: true
+    deliveryNationwide?: true
+    deliveryInternational?: true
     madeIn?: true
     manufacturer?: true
     material?: true
@@ -5205,6 +5220,9 @@ export namespace Prisma {
     tags?: true
     scheduledAt?: true
     origin?: true
+    deliveryWithinState?: true
+    deliveryNationwide?: true
+    deliveryInternational?: true
     madeIn?: true
     manufacturer?: true
     material?: true
@@ -5318,6 +5336,9 @@ export namespace Prisma {
     tags: string[]
     scheduledAt: Date | null
     origin: $Enums.ProductOrigin
+    deliveryWithinState: boolean
+    deliveryNationwide: boolean
+    deliveryInternational: boolean
     madeIn: string | null
     manufacturer: string | null
     material: string | null
@@ -5363,6 +5384,9 @@ export namespace Prisma {
     tags?: boolean
     scheduledAt?: boolean
     origin?: boolean
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: boolean
     manufacturer?: boolean
     material?: boolean
@@ -5395,6 +5419,9 @@ export namespace Prisma {
     tags?: boolean
     scheduledAt?: boolean
     origin?: boolean
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: boolean
     manufacturer?: boolean
     material?: boolean
@@ -5422,6 +5449,9 @@ export namespace Prisma {
     tags?: boolean
     scheduledAt?: boolean
     origin?: boolean
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: boolean
     manufacturer?: boolean
     material?: boolean
@@ -5449,6 +5479,9 @@ export namespace Prisma {
     tags?: boolean
     scheduledAt?: boolean
     origin?: boolean
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: boolean
     manufacturer?: boolean
     material?: boolean
@@ -5461,7 +5494,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mrp" | "price" | "images" | "category" | "inStock" | "quantity" | "sku" | "tags" | "scheduledAt" | "origin" | "madeIn" | "manufacturer" | "material" | "guaranteePeriod" | "acceptCod" | "isDigital" | "downloadUrl" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mrp" | "price" | "images" | "category" | "inStock" | "quantity" | "sku" | "tags" | "scheduledAt" | "origin" | "deliveryWithinState" | "deliveryNationwide" | "deliveryInternational" | "madeIn" | "manufacturer" | "material" | "guaranteePeriod" | "acceptCod" | "isDigital" | "downloadUrl" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     store?: boolean | StoreDefaultArgs<ExtArgs>
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
@@ -5500,6 +5533,9 @@ export namespace Prisma {
       tags: string[]
       scheduledAt: Date | null
       origin: $Enums.ProductOrigin
+      deliveryWithinState: boolean
+      deliveryNationwide: boolean
+      deliveryInternational: boolean
       madeIn: string | null
       manufacturer: string | null
       material: string | null
@@ -5954,6 +5990,9 @@ export namespace Prisma {
     readonly tags: FieldRef<"Product", 'String[]'>
     readonly scheduledAt: FieldRef<"Product", 'DateTime'>
     readonly origin: FieldRef<"Product", 'ProductOrigin'>
+    readonly deliveryWithinState: FieldRef<"Product", 'Boolean'>
+    readonly deliveryNationwide: FieldRef<"Product", 'Boolean'>
+    readonly deliveryInternational: FieldRef<"Product", 'Boolean'>
     readonly madeIn: FieldRef<"Product", 'String'>
     readonly manufacturer: FieldRef<"Product", 'String'>
     readonly material: FieldRef<"Product", 'String'>
@@ -15932,12 +15971,14 @@ export namespace Prisma {
 
   export type StoreAvgAggregateOutputType = {
     shippingLocalFee: number | null
+    shippingNationwideFee: number | null
     shippingAbroadFee: number | null
     shippingFreeAbove: number | null
   }
 
   export type StoreSumAggregateOutputType = {
     shippingLocalFee: number | null
+    shippingNationwideFee: number | null
     shippingAbroadFee: number | null
     shippingFreeAbove: number | null
   }
@@ -15955,6 +15996,7 @@ export namespace Prisma {
     zip: string | null
     country: string | null
     shippingLocalFee: number | null
+    shippingNationwideFee: number | null
     shippingAbroadFee: number | null
     shippingFreeAbove: number | null
     status: string | null
@@ -15990,6 +16032,7 @@ export namespace Prisma {
     zip: string | null
     country: string | null
     shippingLocalFee: number | null
+    shippingNationwideFee: number | null
     shippingAbroadFee: number | null
     shippingFreeAbove: number | null
     status: string | null
@@ -16025,6 +16068,7 @@ export namespace Prisma {
     zip: number
     country: number
     shippingLocalFee: number
+    shippingNationwideFee: number
     shippingAbroadFee: number
     shippingFreeAbove: number
     status: number
@@ -16051,12 +16095,14 @@ export namespace Prisma {
 
   export type StoreAvgAggregateInputType = {
     shippingLocalFee?: true
+    shippingNationwideFee?: true
     shippingAbroadFee?: true
     shippingFreeAbove?: true
   }
 
   export type StoreSumAggregateInputType = {
     shippingLocalFee?: true
+    shippingNationwideFee?: true
     shippingAbroadFee?: true
     shippingFreeAbove?: true
   }
@@ -16074,6 +16120,7 @@ export namespace Prisma {
     zip?: true
     country?: true
     shippingLocalFee?: true
+    shippingNationwideFee?: true
     shippingAbroadFee?: true
     shippingFreeAbove?: true
     status?: true
@@ -16109,6 +16156,7 @@ export namespace Prisma {
     zip?: true
     country?: true
     shippingLocalFee?: true
+    shippingNationwideFee?: true
     shippingAbroadFee?: true
     shippingFreeAbove?: true
     status?: true
@@ -16144,6 +16192,7 @@ export namespace Prisma {
     zip?: true
     country?: true
     shippingLocalFee?: true
+    shippingNationwideFee?: true
     shippingAbroadFee?: true
     shippingFreeAbove?: true
     status?: true
@@ -16266,6 +16315,7 @@ export namespace Prisma {
     zip: string | null
     country: string
     shippingLocalFee: number
+    shippingNationwideFee: number
     shippingAbroadFee: number
     shippingFreeAbove: number
     status: string
@@ -16320,6 +16370,7 @@ export namespace Prisma {
     zip?: boolean
     country?: boolean
     shippingLocalFee?: boolean
+    shippingNationwideFee?: boolean
     shippingAbroadFee?: boolean
     shippingFreeAbove?: boolean
     status?: boolean
@@ -16363,6 +16414,7 @@ export namespace Prisma {
     zip?: boolean
     country?: boolean
     shippingLocalFee?: boolean
+    shippingNationwideFee?: boolean
     shippingAbroadFee?: boolean
     shippingFreeAbove?: boolean
     status?: boolean
@@ -16399,6 +16451,7 @@ export namespace Prisma {
     zip?: boolean
     country?: boolean
     shippingLocalFee?: boolean
+    shippingNationwideFee?: boolean
     shippingAbroadFee?: boolean
     shippingFreeAbove?: boolean
     status?: boolean
@@ -16435,6 +16488,7 @@ export namespace Prisma {
     zip?: boolean
     country?: boolean
     shippingLocalFee?: boolean
+    shippingNationwideFee?: boolean
     shippingAbroadFee?: boolean
     shippingFreeAbove?: boolean
     status?: boolean
@@ -16457,7 +16511,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "username" | "address" | "street" | "city" | "state" | "zip" | "country" | "shippingLocalFee" | "shippingAbroadFee" | "shippingFreeAbove" | "status" | "isActive" | "logo" | "banner" | "email" | "contact" | "verificationStatus" | "verificationRejectedReason" | "cacNumber" | "verificationDocumentType" | "verificationDocumentNumber" | "verificationDocumentUrl" | "facialVerificationUrl" | "payoutBankName" | "payoutAccountName" | "payoutAccountNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["store"]>
+  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "username" | "address" | "street" | "city" | "state" | "zip" | "country" | "shippingLocalFee" | "shippingNationwideFee" | "shippingAbroadFee" | "shippingFreeAbove" | "status" | "isActive" | "logo" | "banner" | "email" | "contact" | "verificationStatus" | "verificationRejectedReason" | "cacNumber" | "verificationDocumentType" | "verificationDocumentNumber" | "verificationDocumentUrl" | "facialVerificationUrl" | "payoutBankName" | "payoutAccountName" | "payoutAccountNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["store"]>
   export type StoreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Product?: boolean | Store$ProductArgs<ExtArgs>
     Order?: boolean | Store$OrderArgs<ExtArgs>
@@ -16499,6 +16553,7 @@ export namespace Prisma {
       zip: string | null
       country: string
       shippingLocalFee: number
+      shippingNationwideFee: number
       shippingAbroadFee: number
       shippingFreeAbove: number
       status: string
@@ -16961,6 +17016,7 @@ export namespace Prisma {
     readonly zip: FieldRef<"Store", 'String'>
     readonly country: FieldRef<"Store", 'String'>
     readonly shippingLocalFee: FieldRef<"Store", 'Float'>
+    readonly shippingNationwideFee: FieldRef<"Store", 'Float'>
     readonly shippingAbroadFee: FieldRef<"Store", 'Float'>
     readonly shippingFreeAbove: FieldRef<"Store", 'Float'>
     readonly status: FieldRef<"Store", 'String'>
@@ -21973,6 +22029,9 @@ export namespace Prisma {
     tags: 'tags',
     scheduledAt: 'scheduledAt',
     origin: 'origin',
+    deliveryWithinState: 'deliveryWithinState',
+    deliveryNationwide: 'deliveryNationwide',
+    deliveryInternational: 'deliveryInternational',
     madeIn: 'madeIn',
     manufacturer: 'manufacturer',
     material: 'material',
@@ -22127,6 +22186,7 @@ export namespace Prisma {
     zip: 'zip',
     country: 'country',
     shippingLocalFee: 'shippingLocalFee',
+    shippingNationwideFee: 'shippingNationwideFee',
     shippingAbroadFee: 'shippingAbroadFee',
     shippingFreeAbove: 'shippingFreeAbove',
     status: 'status',
@@ -22617,6 +22677,9 @@ export namespace Prisma {
     tags?: StringNullableListFilter<"Product">
     scheduledAt?: DateTimeNullableFilter<"Product"> | Date | string | null
     origin?: EnumProductOriginFilter<"Product"> | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFilter<"Product"> | boolean
+    deliveryNationwide?: BoolFilter<"Product"> | boolean
+    deliveryInternational?: BoolFilter<"Product"> | boolean
     madeIn?: StringNullableFilter<"Product"> | string | null
     manufacturer?: StringNullableFilter<"Product"> | string | null
     material?: StringNullableFilter<"Product"> | string | null
@@ -22648,6 +22711,9 @@ export namespace Prisma {
     tags?: SortOrder
     scheduledAt?: SortOrderInput | SortOrder
     origin?: SortOrder
+    deliveryWithinState?: SortOrder
+    deliveryNationwide?: SortOrder
+    deliveryInternational?: SortOrder
     madeIn?: SortOrderInput | SortOrder
     manufacturer?: SortOrderInput | SortOrder
     material?: SortOrderInput | SortOrder
@@ -22682,6 +22748,9 @@ export namespace Prisma {
     tags?: StringNullableListFilter<"Product">
     scheduledAt?: DateTimeNullableFilter<"Product"> | Date | string | null
     origin?: EnumProductOriginFilter<"Product"> | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFilter<"Product"> | boolean
+    deliveryNationwide?: BoolFilter<"Product"> | boolean
+    deliveryInternational?: BoolFilter<"Product"> | boolean
     madeIn?: StringNullableFilter<"Product"> | string | null
     manufacturer?: StringNullableFilter<"Product"> | string | null
     material?: StringNullableFilter<"Product"> | string | null
@@ -22713,6 +22782,9 @@ export namespace Prisma {
     tags?: SortOrder
     scheduledAt?: SortOrderInput | SortOrder
     origin?: SortOrder
+    deliveryWithinState?: SortOrder
+    deliveryNationwide?: SortOrder
+    deliveryInternational?: SortOrder
     madeIn?: SortOrderInput | SortOrder
     manufacturer?: SortOrderInput | SortOrder
     material?: SortOrderInput | SortOrder
@@ -22747,6 +22819,9 @@ export namespace Prisma {
     tags?: StringNullableListFilter<"Product">
     scheduledAt?: DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
     origin?: EnumProductOriginWithAggregatesFilter<"Product"> | $Enums.ProductOrigin
+    deliveryWithinState?: BoolWithAggregatesFilter<"Product"> | boolean
+    deliveryNationwide?: BoolWithAggregatesFilter<"Product"> | boolean
+    deliveryInternational?: BoolWithAggregatesFilter<"Product"> | boolean
     madeIn?: StringNullableWithAggregatesFilter<"Product"> | string | null
     manufacturer?: StringNullableWithAggregatesFilter<"Product"> | string | null
     material?: StringNullableWithAggregatesFilter<"Product"> | string | null
@@ -23450,6 +23525,7 @@ export namespace Prisma {
     zip?: StringNullableFilter<"Store"> | string | null
     country?: StringFilter<"Store"> | string
     shippingLocalFee?: FloatFilter<"Store"> | number
+    shippingNationwideFee?: FloatFilter<"Store"> | number
     shippingAbroadFee?: FloatFilter<"Store"> | number
     shippingFreeAbove?: FloatFilter<"Store"> | number
     status?: StringFilter<"Store"> | string
@@ -23492,6 +23568,7 @@ export namespace Prisma {
     zip?: SortOrderInput | SortOrder
     country?: SortOrder
     shippingLocalFee?: SortOrder
+    shippingNationwideFee?: SortOrder
     shippingAbroadFee?: SortOrder
     shippingFreeAbove?: SortOrder
     status?: SortOrder
@@ -23537,6 +23614,7 @@ export namespace Prisma {
     zip?: StringNullableFilter<"Store"> | string | null
     country?: StringFilter<"Store"> | string
     shippingLocalFee?: FloatFilter<"Store"> | number
+    shippingNationwideFee?: FloatFilter<"Store"> | number
     shippingAbroadFee?: FloatFilter<"Store"> | number
     shippingFreeAbove?: FloatFilter<"Store"> | number
     status?: StringFilter<"Store"> | string
@@ -23579,6 +23657,7 @@ export namespace Prisma {
     zip?: SortOrderInput | SortOrder
     country?: SortOrder
     shippingLocalFee?: SortOrder
+    shippingNationwideFee?: SortOrder
     shippingAbroadFee?: SortOrder
     shippingFreeAbove?: SortOrder
     status?: SortOrder
@@ -23622,6 +23701,7 @@ export namespace Prisma {
     zip?: StringNullableWithAggregatesFilter<"Store"> | string | null
     country?: StringWithAggregatesFilter<"Store"> | string
     shippingLocalFee?: FloatWithAggregatesFilter<"Store"> | number
+    shippingNationwideFee?: FloatWithAggregatesFilter<"Store"> | number
     shippingAbroadFee?: FloatWithAggregatesFilter<"Store"> | number
     shippingFreeAbove?: FloatWithAggregatesFilter<"Store"> | number
     status?: StringWithAggregatesFilter<"Store"> | string
@@ -24107,6 +24187,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -24137,6 +24220,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -24167,6 +24253,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24197,6 +24286,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24227,6 +24319,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -24253,6 +24348,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24278,6 +24376,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25024,6 +25125,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -25066,6 +25168,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -25106,6 +25209,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -25148,6 +25252,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -25189,6 +25294,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -25223,6 +25329,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -25258,6 +25365,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -25934,6 +26042,9 @@ export namespace Prisma {
     tags?: SortOrder
     scheduledAt?: SortOrder
     origin?: SortOrder
+    deliveryWithinState?: SortOrder
+    deliveryNationwide?: SortOrder
+    deliveryInternational?: SortOrder
     madeIn?: SortOrder
     manufacturer?: SortOrder
     material?: SortOrder
@@ -25964,6 +26075,9 @@ export namespace Prisma {
     sku?: SortOrder
     scheduledAt?: SortOrder
     origin?: SortOrder
+    deliveryWithinState?: SortOrder
+    deliveryNationwide?: SortOrder
+    deliveryInternational?: SortOrder
     madeIn?: SortOrder
     manufacturer?: SortOrder
     material?: SortOrder
@@ -25988,6 +26102,9 @@ export namespace Prisma {
     sku?: SortOrder
     scheduledAt?: SortOrder
     origin?: SortOrder
+    deliveryWithinState?: SortOrder
+    deliveryNationwide?: SortOrder
+    deliveryInternational?: SortOrder
     madeIn?: SortOrder
     manufacturer?: SortOrder
     material?: SortOrder
@@ -26680,6 +26797,7 @@ export namespace Prisma {
     zip?: SortOrder
     country?: SortOrder
     shippingLocalFee?: SortOrder
+    shippingNationwideFee?: SortOrder
     shippingAbroadFee?: SortOrder
     shippingFreeAbove?: SortOrder
     status?: SortOrder
@@ -26704,6 +26822,7 @@ export namespace Prisma {
 
   export type StoreAvgOrderByAggregateInput = {
     shippingLocalFee?: SortOrder
+    shippingNationwideFee?: SortOrder
     shippingAbroadFee?: SortOrder
     shippingFreeAbove?: SortOrder
   }
@@ -26721,6 +26840,7 @@ export namespace Prisma {
     zip?: SortOrder
     country?: SortOrder
     shippingLocalFee?: SortOrder
+    shippingNationwideFee?: SortOrder
     shippingAbroadFee?: SortOrder
     shippingFreeAbove?: SortOrder
     status?: SortOrder
@@ -26756,6 +26876,7 @@ export namespace Prisma {
     zip?: SortOrder
     country?: SortOrder
     shippingLocalFee?: SortOrder
+    shippingNationwideFee?: SortOrder
     shippingAbroadFee?: SortOrder
     shippingFreeAbove?: SortOrder
     status?: SortOrder
@@ -26780,6 +26901,7 @@ export namespace Prisma {
 
   export type StoreSumOrderByAggregateInput = {
     shippingLocalFee?: SortOrder
+    shippingNationwideFee?: SortOrder
     shippingAbroadFee?: SortOrder
     shippingFreeAbove?: SortOrder
   }
@@ -28696,6 +28818,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -28736,6 +28859,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -28981,6 +29105,7 @@ export namespace Prisma {
     zip?: StringNullableFilter<"Store"> | string | null
     country?: StringFilter<"Store"> | string
     shippingLocalFee?: FloatFilter<"Store"> | number
+    shippingNationwideFee?: FloatFilter<"Store"> | number
     shippingAbroadFee?: FloatFilter<"Store"> | number
     shippingFreeAbove?: FloatFilter<"Store"> | number
     status?: StringFilter<"Store"> | string
@@ -29192,6 +29317,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -29233,6 +29359,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -29410,6 +29537,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -29451,6 +29579,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -29596,6 +29725,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -29625,6 +29757,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -29702,6 +29837,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29731,6 +29869,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29931,6 +30072,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -29972,6 +30114,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -30175,6 +30318,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -30216,6 +30360,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -30370,6 +30515,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -30399,6 +30547,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -30493,6 +30644,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30522,6 +30676,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30680,6 +30837,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -30709,6 +30869,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -30797,6 +30960,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30826,6 +30992,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30997,6 +31166,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -31038,6 +31208,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -31093,6 +31264,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -31134,6 +31306,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -31175,6 +31348,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -31204,6 +31380,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -31477,6 +31656,9 @@ export namespace Prisma {
     tags?: StringNullableListFilter<"Product">
     scheduledAt?: DateTimeNullableFilter<"Product"> | Date | string | null
     origin?: EnumProductOriginFilter<"Product"> | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFilter<"Product"> | boolean
+    deliveryNationwide?: BoolFilter<"Product"> | boolean
+    deliveryInternational?: BoolFilter<"Product"> | boolean
     madeIn?: StringNullableFilter<"Product"> | string | null
     manufacturer?: StringNullableFilter<"Product"> | string | null
     material?: StringNullableFilter<"Product"> | string | null
@@ -31656,6 +31838,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -31697,6 +31880,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -31832,6 +32016,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -31873,6 +32058,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -32004,6 +32190,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -32045,6 +32232,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -32100,6 +32288,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -32141,6 +32330,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -32182,6 +32372,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -32211,6 +32404,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -32243,6 +32439,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -32284,6 +32481,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -32341,6 +32539,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32370,6 +32571,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32408,6 +32612,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -32449,6 +32654,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -32513,6 +32719,7 @@ export namespace Prisma {
     zip?: string | null
     country?: string
     shippingLocalFee?: number
+    shippingNationwideFee?: number
     shippingAbroadFee?: number
     shippingFreeAbove?: number
     status?: string
@@ -32661,6 +32868,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -32701,6 +32909,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -32741,6 +32950,7 @@ export namespace Prisma {
     zip?: NullableStringFieldUpdateOperationsInput | string | null
     country?: StringFieldUpdateOperationsInput | string
     shippingLocalFee?: FloatFieldUpdateOperationsInput | number
+    shippingNationwideFee?: FloatFieldUpdateOperationsInput | number
     shippingAbroadFee?: FloatFieldUpdateOperationsInput | number
     shippingFreeAbove?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
@@ -33206,6 +33416,9 @@ export namespace Prisma {
     tags?: ProductCreatetagsInput | string[]
     scheduledAt?: Date | string | null
     origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
     madeIn?: string | null
     manufacturer?: string | null
     material?: string | null
@@ -33292,6 +33505,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -33321,6 +33537,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
@@ -33350,6 +33569,9 @@ export namespace Prisma {
     tags?: ProductUpdatetagsInput | string[]
     scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
     madeIn?: NullableStringFieldUpdateOperationsInput | string | null
     manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null

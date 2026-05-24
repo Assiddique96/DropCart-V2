@@ -153,6 +153,38 @@ export default function StoreManageProducts() {
                         <option value="ABROAD">✈️ Shipped from Abroad</option>
                     </select>
                 </label>
+                <div className="sm:col-span-2 lg:col-span-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950">
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-3">Available delivery methods</p>
+                    <div className="grid gap-3 md:grid-cols-3">
+                        <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 cursor-pointer dark:border-slate-700 dark:bg-slate-900">
+                            <input
+                                type="checkbox"
+                                checked={!!editForm.deliveryWithinState}
+                                onChange={e => setEditForm({ ...editForm, deliveryWithinState: e.target.checked })}
+                                className="accent-green-600"
+                            />
+                            <span className="text-sm">Within State</span>
+                        </label>
+                        <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 cursor-pointer dark:border-slate-700 dark:bg-slate-900">
+                            <input
+                                type="checkbox"
+                                checked={!!editForm.deliveryNationwide}
+                                onChange={e => setEditForm({ ...editForm, deliveryNationwide: e.target.checked })}
+                                className="accent-green-600"
+                            />
+                            <span className="text-sm">Nationwide</span>
+                        </label>
+                        <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 cursor-pointer dark:border-slate-700 dark:bg-slate-900">
+                            <input
+                                type="checkbox"
+                                checked={!!editForm.deliveryInternational}
+                                onChange={e => setEditForm({ ...editForm, deliveryInternational: e.target.checked })}
+                                className="accent-green-600"
+                            />
+                            <span className="text-sm">International</span>
+                        </label>
+                    </div>
+                </div>
                 {editForm.origin === 'LOCAL' && (
                     <label className="flex flex-col gap-1 text-xs sm:col-span-2">
                         <span className="flex items-center gap-2 cursor-pointer select-none">
@@ -546,6 +578,9 @@ export default function StoreManageProducts() {
             tags: Array.isArray(product.tags) ? product.tags.join(', ') : '',
             scheduledAt: product.scheduledAt ? new Date(product.scheduledAt).toISOString().slice(0,16) : '',
             origin: product.origin ?? 'LOCAL',
+            deliveryWithinState: product.deliveryWithinState !== false,
+            deliveryNationwide: product.deliveryNationwide !== false,
+            deliveryInternational: product.deliveryInternational === true,
             acceptCod: (product.origin ?? 'LOCAL') === 'ABROAD' ? false : product.acceptCod !== false,
         })
         const basePrice = parsePrice(product.price)
@@ -608,6 +643,9 @@ export default function StoreManageProducts() {
             formData.append("scheduledAt", editForm.scheduledAt || "")
             formData.append("origin", editForm.origin || "LOCAL")
             formData.append("acceptCod", editForm.origin === "LOCAL" ? (editForm.acceptCod ? "true" : "false") : "false")
+            formData.append("deliveryWithinState", editForm.deliveryWithinState ? "true" : "false")
+            formData.append("deliveryNationwide", editForm.deliveryNationwide ? "true" : "false")
+            formData.append("deliveryInternational", editForm.deliveryInternational ? "true" : "false")
             formData.append("existingImages", JSON.stringify(editImageUrls))
             newImages.forEach(img => formData.append("images", img))
 

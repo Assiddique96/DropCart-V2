@@ -15,6 +15,7 @@ const StoreSidebar = ({storeInfo, stores = [], onStoreChange}) => {
         { name: 'Manage Product',  href: '/store/manage-product', icon: SquarePenIcon },
         { name: 'Orders',          href: '/store/orders',         icon: LayoutListIcon },
         { name: 'Payouts',         href: '/store/payouts',        icon: CircleDollarSignIcon },
+        { name: 'Delivery Fee',    href: '/store/delivery-fee',  icon: CircleDollarSignIcon },
         { name: 'Store Profile',   href: '/store/profile',        icon: UserCircleIcon },
         { name: 'My Stores',       href: '/store/stores',         icon: StoreIcon },
     ]
