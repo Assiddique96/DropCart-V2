@@ -158,7 +158,9 @@ const OrderSummary = ({ totalPrice, items }) => {
         await redirectToPayment(data.orderIds, token);
       }
     } catch (error) {
-      toast.error(error.response?.data?.error || error.message);
+      const responseData = error.response?.data || {};
+      const debugMessage = responseData.debug ? ` (${JSON.stringify(responseData.debug)})` : "";
+      toast.error(responseData.error ? `${responseData.error}${debugMessage}` : error.message);
     }
   };
 

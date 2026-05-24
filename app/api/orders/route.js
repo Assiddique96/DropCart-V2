@@ -48,7 +48,7 @@ export async function POST(request) {
 
     if (items.some(item => !item.productId || typeof item.quantity !== 'number' || item.quantity <= 0)) {
       return NextResponse.json(
-        { message: "Invalid cart items" },
+        { message: "Invalid cart items", debug: { items } },
         { status: 400 },
       );
     }
@@ -60,14 +60,14 @@ export async function POST(request) {
 
     if (!address || address.userId !== userId) {
       return NextResponse.json(
-        { error: "Invalid shipping address" },
+        { error: "Invalid shipping address", debug: { addressId, address } },
         { status: 400 },
       );
     }
 
     const buyerState = String(address.state || "").trim().toLowerCase();
     const buyerCountry = String(address.country || "").trim().toLowerCase();
-    console.log(`[DEBUG_ORDER] addressId=${addressId} buyerState='${buyerState}' buyerCountry='${buyerCountry}'`);
+    console.log(`[DEBUG_ORDER] addressId=${addressId} buyerState='${buyerState}' buyerCountry='${buyerCountry}' addressState='${address.state}' addressCountry='${address.country}'`);
 
     // check coupon
     let coupon = null;
@@ -164,6 +164,8 @@ export async function POST(request) {
         });
 
         if (!product) continue;
+
+        console.log(`[DEBUG_ORDER] item productId=${item.productId} productFound=${!!product} storeId=${product.storeId} origin=${product.origin} deliveryWithinState=${product.deliveryWithinState} deliveryNationwide=${product.deliveryNationwide} storeDeliveryStates=${JSON.stringify(product.store?.deliveryStates)} storeState='${product.store?.state}' storeCountry='${product.store?.country}'`);
 
         if (!product.inStock || product.quantity < item.quantity) {
             return NextResponse.json(
@@ -323,13 +325,26 @@ export async function POST(request) {
                 : storeState && buyerState && storeState === buyerState;
             const sameCountry = storeCountry && buyerCountry && storeCountry === buyerCountry;
 
-            console.log(`[DEBUG_ORDER] storeId=${storeId} storeState='${storeState}' storeDeliveryStates=${JSON.stringify(storeDeliveryStates)} storeCountry='${storeCountry}' sameState=${sameState} sameCountry=${sameCountry} localItems=${localItems.length}`);
+            const debugContext = {
+                buyerState,
+                buyerCountry,
+                storeState,
+                storeDeliveryStates,
+                storeCountry,
+                sameState,
+                sameCountry,
+                localItemsCount: localItems.length,
+            };
+            console.log(`[DEBUG_ORDER] storeId=${storeId} ${JSON.stringify(debugContext)}`);
 
             const storeHasAbroad = sellerItems.some(i => i.origin === 'ABROAD');
             const localItems = sellerItems.filter(i => i.origin !== 'ABROAD');
 
             if (localItems.length > 0 && !sameCountry) {
-                throw new Error("One or more items in your cart cannot be shipped to the selected address.");
+                const error = new Error("One or more items in your cart cannot be shipped to the selected address.");
+                error.debug = debugContext;
+                console.log(`[DEBUG_ORDER] cannot ship due to country mismatch: ${JSON.stringify(debugContext)}`);
+                throw error;
             }
 
             const localCanShip = localItems.every((item) => {
@@ -341,7 +356,10 @@ export async function POST(request) {
             console.log(`[DEBUG_ORDER] storeId=${storeId} localCanShip=${localCanShip} localItemsCount=${localItems.length}`);
 
             if (!storeHasAbroad && localItems.length > 0 && !localCanShip) {
-                throw new Error("One or more items in your cart are not available for delivery to the selected address.");
+                const error = new Error("One or more items in your cart are not available for delivery to the selected address.");
+                error.debug = debugContext;
+                console.log(`[DEBUG_ORDER] cannot ship due to product delivery constraints: ${JSON.stringify(debugContext)}`);
+                throw error;
             }
 
             let applicableShippingFee;
@@ -539,7 +557,11 @@ export async function POST(request) {
     return NextResponse.json({ message: "Order created successfully", orderIds, fullAmount });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: error.code || error.message }, { status: 400 });
+    const responseBody = { error: error.code || error.message };
+    if (error?.debug) {
+      responseBody.debug = error.debug;
+    }
+    return NextResponse.json(responseBody, { status: 400 });
   }
 }
 

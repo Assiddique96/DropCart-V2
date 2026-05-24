@@ -67,6 +67,8 @@ export async function PATCH(request) {
       deliveryStates:    deliveryStatesValue.length ? deliveryStatesValue : existingStore.deliveryStates,
     });
 
+    console.log(`[DEBUG_STORE_PROFILE] storeId=${storeId} deliveryStatesValue=${JSON.stringify(deliveryStatesValue)} sanitizedDeliveryStates=${JSON.stringify(sanitized.deliveryStates)}`);
+
     if (errors.length > 0) {
       return NextResponse.json({ error: errors.join(" ") }, { status: 400 });
     }
