@@ -17,6 +17,9 @@ const isPublicRoute = createRouteMatcher([
   '/track(.*)',            // Order tracking page
   '/api/paystack/webhook', // Paystack payment processor webhook
   '/api/store/data(.*)',   // Store profile dynamic data API
+  '/api/store/products(.*)', // Store products API
+  '/api/inngest(.*)',          // Inngest API routes (for event handling, etc.)
+  '/api/trpc(.*)',            // tRPC API routes (for client-server communication)
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
