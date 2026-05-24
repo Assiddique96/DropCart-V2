@@ -6,16 +6,20 @@ import { NextResponse } from "next/server";
 // add new address API route handler
 export async function POST(request) {
     try {
-        const {userId} = getAuth(request);
-        const address = await request.json();
+            const {userId} = getAuth(request);
+            const address = await request.json();
 
-        address.userId = userId;
+            // Normalize address fields to avoid mismatches (trim whitespace)
+            if (address.state && typeof address.state === 'string') address.state = address.state.trim();
+            if (address.country && typeof address.country === 'string') address.country = address.country.trim();
 
-        const newAddress = await prisma.address.create({
-            data: {
-                ...address,
-            userId: userId}
-        });
+            address.userId = userId;
+
+            const newAddress = await prisma.address.create({
+                data: {
+                    ...address,
+                userId: userId}
+            });
         return NextResponse.json({message: "Address added successfully", address: newAddress})
     } catch (error) {
         //console.error(error);

@@ -18,9 +18,49 @@ const AddressModal = ({ setShowAddressModal }) => {
     city: "",
     state: "",
     zip: "",
-    country: "",
+    country: "Nigeria",
     phone: "",
   });
+
+  const NIGERIAN_STATES = [
+    "Abia",
+    "Adamawa",
+    "Akwa Ibom",
+    "Anambra",
+    "Bauchi",
+    "Bayelsa",
+    "Benue",
+    "Borno",
+    "Cross River",
+    "Delta",
+    "Ebonyi",
+    "Edo",
+    "Ekiti",
+    "Enugu",
+    "Gombe",
+    "Imo",
+    "Jigawa",
+    "Kaduna",
+    "Kano",
+    "Katsina",
+    "Kebbi",
+    "Kogi",
+    "Kwara",
+    "Lagos",
+    "Nasarawa",
+    "Niger",
+    "Ogun",
+    "Ondo",
+    "Osun",
+    "Oyo",
+    "Plateau",
+    "Rivers",
+    "Sokoto",
+    "Taraba",
+    "Yobe",
+    "Zamfara",
+    "FCT Abuja",
+  ];
 
   const handleAddressChange = (e) => {
     setAddress({
@@ -100,15 +140,20 @@ const AddressModal = ({ setShowAddressModal }) => {
             placeholder="City"
             required
           />
-          <input
+          <select
             name="state"
             onChange={handleAddressChange}
             value={address.state}
             className="p-2 px-4 outline-none border border-slate-200 dark:border-slate-700 rounded w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
-            type="text"
-            placeholder="State"
             required
-          />
+          >
+            <option value="">Select state</option>
+            {NIGERIAN_STATES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="flex gap-4">
           <input
