@@ -5,7 +5,7 @@ import {
   XIcon,
   CreditCardIcon,
 } from "lucide-react"; 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import AddressModal from "./AddressModal";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
@@ -27,7 +27,9 @@ const OrderSummary = ({ totalPrice, items }) => {
   const allProducts = useSelector((state) => state.product.list);
   const hasAbroadItems =
     items?.some((item) => {
-      const product = allProducts.find((p) => p.id === item.id);
+      const product = allProducts.find(
+        (p) => p.id === item.productId || p.id === item.id,
+      );
       return product?.origin === "ABROAD";
     }) ?? false;
 
@@ -61,7 +63,123 @@ const OrderSummary = ({ totalPrice, items }) => {
   const router = useRouter();
 
   const addressList = useSelector((state) => state.address.list);
-  const shippingFee = hasAbroadItems ? shippingFees.abroad : shippingFees.local;
+
+  const shippingFee = useMemo(() => {
+    const normalize = (value) => String(value ?? "").trim().toLowerCase();
+    const buyerState = normalize(selectedAddress?.state);
+    const buyerCountry = normalize(selectedAddress?.country);
+
+    const storeGroups = new Map();
+    items.forEach((item) => {
+      const product = allProducts.find((p) => p.id === item.productId || p.id === item.id);
+      if (!product || !product.store) return;
+
+      const storeId = product.store.id || product.storeId || String(product.store?.id);
+      if (!storeGroups.has(storeId)) {
+        storeGroups.set(storeId, {
+          store: product.store,
+          items: [],
+        });
+      }
+
+      storeGroups.get(storeId).items.push({
+        origin: product.origin,
+        deliveryWithinState: product.deliveryWithinState !== false,
+        deliveryNationwide: product.deliveryNationwide !== false,
+      });
+    });
+
+    if (!selectedAddress || storeGroups.size === 0) {
+      return hasAbroadItems ? shippingFees.abroad : shippingFees.local;
+    }
+
+    let totalFee = 0;
+    storeGroups.forEach(({ store, items: storeItems }) => {
+      const storeLocalFee = store.shippingLocalFee ?? shippingFees.local;
+      const storeNationwideFee = store.shippingNationwideFee ?? storeLocalFee;
+      const storeAbroadFee = store.shippingAbroadFee ?? shippingFees.abroad;
+      const storeState = normalize(store.state);
+      const storeCountry = normalize(store.country);
+      const storeDeliveryStates = Array.isArray(store.deliveryStates)
+        ? store.deliveryStates.map((s) => normalize(s)).filter(Boolean)
+        : [];
+
+      const sameState = storeDeliveryStates.length > 0
+        ? storeDeliveryStates.includes(buyerState)
+        : storeState && buyerState && storeState === buyerState;
+      const sameCountry = storeCountry && buyerCountry && storeCountry === buyerCountry;
+      const storeHasAbroad = storeItems.some((item) => item.origin === "ABROAD");
+
+      if (storeHasAbroad) {
+        totalFee += storeAbroadFee;
+      } else {
+        const requiresNationwide = storeItems.some((item) => !item.deliveryWithinState);
+        totalFee += sameState && !requiresNationwide ? storeLocalFee : storeNationwideFee;
+      }
+    });
+
+    return totalFee;
+  }, [selectedAddress, items, allProducts, shippingFees, hasAbroadItems]);
+
+  const shippingNote = useMemo(() => {
+    if (!selectedAddress) {
+      return "Select a delivery address to confirm the shipping type.";
+    }
+
+    if (hasAbroadItems) {
+      return "Shipped from Abroad: international shipping applies.";
+    }
+
+    const normalize = (value) => String(value ?? "").trim().toLowerCase();
+    const buyerState = normalize(selectedAddress?.state);
+    const buyerCountry = normalize(selectedAddress?.country);
+
+    const storeGroups = new Map();
+    items.forEach((item) => {
+      const product = allProducts.find(
+        (p) => p.id === item.productId || p.id === item.id,
+      );
+      if (!product || !product.store) return;
+
+      const storeId = product.store.id || product.storeId || String(product.store?.id);
+      if (!storeGroups.has(storeId)) {
+        storeGroups.set(storeId, {
+          store: product.store,
+          items: [],
+        });
+      }
+
+      storeGroups.get(storeId).items.push({
+        origin: product.origin,
+        deliveryWithinState: product.deliveryWithinState !== false,
+        deliveryNationwide: product.deliveryNationwide !== false,
+      });
+    });
+
+    const notes = [];
+    storeGroups.forEach(({ store, items: storeItems }) => {
+      const storeState = normalize(store.state);
+      const storeCountry = normalize(store.country);
+      const storeDeliveryStates = Array.isArray(store.deliveryStates)
+        ? store.deliveryStates.map((s) => normalize(s)).filter(Boolean)
+        : [];
+      const sameState = storeDeliveryStates.length > 0
+        ? storeDeliveryStates.includes(buyerState)
+        : storeState && buyerState && storeState === buyerState;
+      const sameCountry = storeCountry && buyerCountry && storeCountry === buyerCountry;
+      const requiresNationwide = storeItems.some((item) => !item.deliveryWithinState);
+
+      if (!sameCountry) {
+        notes.push("Address is outside the store country; shipping may be restricted.");
+      } else if (sameState && !requiresNationwide) {
+        notes.push(`Local shipping to ${selectedAddress.state || selectedAddress.country}`);
+      } else {
+        notes.push(`Nationwide shipping to ${selectedAddress.state || selectedAddress.country}`);
+      }
+    });
+
+    return notes.length > 0 ? Array.from(new Set(notes)).join(" — ") : "Delivery shipping type determined by selected address.";
+  }, [selectedAddress, items, allProducts, hasAbroadItems]);
 
   // Load dynamic shipping fees
   useEffect(() => {
@@ -283,6 +401,9 @@ const OrderSummary = ({ totalPrice, items }) => {
             </Show>
           </span>
         </div>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+          {shippingNote}
+        </p>
         {hasAbroadItems && (
           <div className="text-xs text-blue-600 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg px-3 py-2">
             ✈️ Your cart includes items{" "}

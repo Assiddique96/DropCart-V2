@@ -89,18 +89,12 @@ const Navbar = () => {
                 const token = await getToken()
                 const headers = token ? { Authorization: `Bearer ${token}` } : undefined
 
-                const [adminRes, sellerRes] = await Promise.allSettled([
-                    axios.get("/api/admin/is-admin", { headers }),
-                    axios.get("/api/store/is-seller", { headers }),
-                ])
-
+                const sellerRes = await axios.get("/api/store/is-seller", { headers })
                 if (!active) return
 
-                setIsAdmin(adminRes.status === "fulfilled" ? Boolean(adminRes.value?.data?.isAdmin) : false)
-                setIsSeller(sellerRes.status === "fulfilled" ? Boolean(sellerRes.value?.data?.isSeller) : false)
+                setIsSeller(Boolean(sellerRes.data?.isSeller))
             } catch {
                 if (!active) return
-                setIsAdmin(false)
                 setIsSeller(false)
             }
         }
