@@ -49,6 +49,22 @@ export async function POST(request) {
         { status: 400 },
       );
     }
+
+    const address = await prisma.address.findUnique({
+      where: { id: addressId },
+      select: { id: true, userId: true, state: true, country: true },
+    });
+
+    if (!address || address.userId !== userId) {
+      return NextResponse.json(
+        { error: "Invalid shipping address" },
+        { status: 400 },
+      );
+    }
+
+    const buyerState = String(address.state || "").trim().toLowerCase();
+    const buyerCountry = String(address.country || "").trim().toLowerCase();
+
     // check coupon
     let coupon = null;
     if (couponCode) {
@@ -93,12 +109,29 @@ export async function POST(request) {
     }
 
     // Group orders by store using a map, tracking product origins and stock usage.
+    let shippingLocalFee  = 7000;
+    let shippingAbroadFee = 15000;
+    let shippingFreeAbove = 0;
+
     const ordersByStore = new Map();
     const productQuantityMap = new Map();
     const productStockUsage = new Map();
     const variantOptionQuantityMap = new Map();
     const variantOptionStockUsage = new Map();
     const storeShipping = new Map();
+
+    try {
+      const configRows = await prisma.platformConfig.findMany({
+        where: { key: { in: ["shipping_base_fee", "shipping_abroad_fee", "shipping_free_above"] } },
+      });
+      configRows.forEach((r) => {
+        if (r.key === "shipping_base_fee")    shippingLocalFee  = parseFloat(r.value);
+        if (r.key === "shipping_abroad_fee")  shippingAbroadFee = parseFloat(r.value);
+        if (r.key === "shipping_free_above")  shippingFreeAbove = parseFloat(r.value);
+      });
+    } catch {
+      // non-fatal — use defaults
+    }
 
     for (const item of items) {
         const product = await prisma.product.findUnique({
@@ -114,7 +147,10 @@ export async function POST(request) {
                 variantGroups: { include: { options: true } },
                 store: {
                     select: {
+                        state: true,
+                        country: true,
                         shippingLocalFee: true,
+                        shippingNationwideFee: true,
                         shippingAbroadFee: true,
                         shippingFreeAbove: true,
                     },
@@ -171,6 +207,20 @@ export async function POST(request) {
             }
         }
 
+        if (product.origin === "ABROAD" && !product.deliveryInternational) {
+            return NextResponse.json(
+                { error: "One or more products in your cart are not available for international shipping." },
+                { status: 400 },
+            );
+        }
+
+        if (product.origin !== "ABROAD" && !product.deliveryWithinState && !product.deliveryNationwide) {
+            return NextResponse.json(
+                { error: "One or more products in your cart cannot be delivered to the selected address." },
+                { status: 400 },
+            );
+        }
+
         const storeId = product.storeId;
 
         // Calculate effective price with variant modifiers
@@ -193,8 +243,11 @@ export async function POST(request) {
         if (!storeShipping.has(storeId)) {
             storeShipping.set(storeId, {
                 localFee: product.store?.shippingLocalFee ?? shippingLocalFee,
+                nationwideFee: product.store?.shippingNationwideFee ?? product.store?.shippingLocalFee ?? shippingLocalFee,
                 abroadFee: product.store?.shippingAbroadFee ?? shippingAbroadFee,
                 freeAbove: product.store?.shippingFreeAbove ?? shippingFreeAbove,
+                state: product.store?.state,
+                country: product.store?.country,
             });
         }
         ordersByStore.get(storeId).push({
@@ -202,12 +255,18 @@ export async function POST(request) {
             price: effectivePrice,
             origin: product.origin ?? 'LOCAL',
             acceptCod: product.acceptCod !== false,
+            deliveryWithinState: product.deliveryWithinState !== false,
+            deliveryNationwide: product.deliveryNationwide !== false,
+            deliveryInternational: product.deliveryInternational === true,
         });
     }
 
-    let shippingLocalFee  = 7000;
-    let shippingAbroadFee = 15000;
-    let shippingFreeAbove = 0;
+    if (ordersByStore.size === 0) {
+      return NextResponse.json(
+        { error: "No valid products found in your cart." },
+        { status: 400 },
+      );
+    }
 
     const flatOrderItems = Array.from(ordersByStore.values()).flat();
     const hasAbroadItems = flatOrderItems.some((item) => item.origin === "ABROAD");
@@ -217,19 +276,6 @@ export async function POST(request) {
 
     let orderIds = [];
     let fullAmount = 0;
-
-    try {
-      const configRows = await prisma.platformConfig.findMany({
-        where: { key: { in: ["shipping_base_fee", "shipping_abroad_fee", "shipping_free_above"] } },
-      });
-      configRows.forEach((r) => {
-        if (r.key === "shipping_base_fee")    shippingLocalFee  = parseFloat(r.value);
-        if (r.key === "shipping_abroad_fee")  shippingAbroadFee = parseFloat(r.value);
-        if (r.key === "shipping_free_above")  shippingFreeAbove = parseFloat(r.value);
-      });
-    } catch {
-      // non-fatal — use defaults
-    }
 
     if (paymentMethod === "COD" && codNotAllowed) {
         return NextResponse.json(
@@ -256,13 +302,45 @@ export async function POST(request) {
                 }
             }
 
-            const storeConfig = storeShipping.get(storeId) || {};
+                const storeConfig = storeShipping.get(storeId) || {};
             const storeLocalFee = storeConfig.localFee ?? shippingLocalFee;
+            const storeNationwideFee = storeConfig.nationwideFee ?? storeLocalFee;
             const storeAbroadFee = storeConfig.abroadFee ?? shippingAbroadFee;
             const storeFreeAbove = storeConfig.freeAbove ?? shippingFreeAbove;
+            const storeState = String(storeConfig.state || "").trim().toLowerCase();
+            const storeCountry = String(storeConfig.country || "").trim().toLowerCase();
+            const sameState = storeState && buyerState && storeState === buyerState;
+            const sameCountry = storeCountry && buyerCountry && storeCountry === buyerCountry;
 
             const storeHasAbroad = sellerItems.some(i => i.origin === 'ABROAD');
-            const applicableShippingFee = storeHasAbroad ? storeAbroadFee : storeLocalFee;
+            const localItems = sellerItems.filter(i => i.origin !== 'ABROAD');
+
+            if (localItems.length > 0 && !sameCountry) {
+                throw new Error("One or more items in your cart cannot be shipped to the selected address.");
+            }
+
+            const localCanShip = localItems.every((item) => {
+                const withinStateAllowed = sameState && item.deliveryWithinState;
+                const nationwideAllowed = sameCountry && item.deliveryNationwide;
+                return withinStateAllowed || nationwideAllowed;
+            });
+
+            if (!storeHasAbroad && localItems.length > 0 && !localCanShip) {
+                throw new Error("One or more items in your cart are not available for delivery to the selected address.");
+            }
+
+            let applicableShippingFee;
+            if (storeHasAbroad) {
+                applicableShippingFee = storeAbroadFee;
+            } else {
+                const requiresNationwide = localItems.some((item) => !item.deliveryWithinState);
+                if (sameState && !requiresNationwide) {
+                    applicableShippingFee = storeLocalFee;
+                } else {
+                    applicableShippingFee = storeNationwideFee;
+                }
+            }
+
             const qualifiesForFreeShipping = !storeHasAbroad && storeFreeAbove > 0 && total >= storeFreeAbove;
 
             if (!isPlusMemeber && !qualifiesForFreeShipping) {

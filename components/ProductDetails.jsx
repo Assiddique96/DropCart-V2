@@ -180,7 +180,7 @@ const ProductDetails = ({ product }) => {
       ) / product.rating.length
     : 0;
 
-  const stateLabel = product.store?.state || "your state";
+  const stateLabel = product.store?.state || "seller's state";
   const countryLabel = product.store?.country || "Nigeria";
   const withinStateFee = product.store?.shippingLocalFee ?? shippingFees.local;
   const nationwideFee = product.store?.shippingNationwideFee ?? withinStateFee;
