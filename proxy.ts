@@ -20,6 +20,8 @@ const isPublicRoute = createRouteMatcher([
   '/api/store/products(.*)', // Store products API
   '/api/inngest(.*)',          // Inngest API routes (for event handling, etc.)
   '/api/trpc(.*)',            // tRPC API routes (for client-server communication)
+  '/api/flutterwave/webhook', // Flutterwave payment processor webhook
+
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
