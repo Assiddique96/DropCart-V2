@@ -219,10 +219,7 @@ export async function POST(request) {
         }
 
         if (product.origin === "ABROAD" && !product.deliveryInternational) {
-            return NextResponse.json(
-                { error: "One or more products in your cart are not available for international shipping." },
-                { status: 400 },
-            );
+            console.warn(`[WARN_ORDER] ABROAD product ${product.id} missing deliveryInternational flag, treating as international shipping`);
         }
 
         if (product.origin !== "ABROAD" && !product.deliveryWithinState && !product.deliveryNationwide) {
@@ -269,7 +266,7 @@ export async function POST(request) {
             acceptCod: product.acceptCod !== false,
             deliveryWithinState: product.deliveryWithinState !== false,
             deliveryNationwide: product.deliveryNationwide !== false,
-            deliveryInternational: product.deliveryInternational === true,
+            deliveryInternational: product.origin === 'ABROAD' ? true : product.deliveryInternational === true,
         });
     }
 
