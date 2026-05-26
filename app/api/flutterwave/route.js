@@ -82,9 +82,16 @@ export async function GET(request) {
 
     const { searchParams } = new URL(request.url);
     const transactionId = searchParams.get("transaction_id");
-    if (!transactionId) return NextResponse.json({ error: "transaction_id required" }, { status: 400 });
+    const txRef = searchParams.get("tx_ref");
+    if (!transactionId && !txRef) {
+      return NextResponse.json({ error: "transaction_id or tx_ref required" }, { status: 400 });
+    }
 
-    const res = await fetch(`${FLW_BASE}/transactions/${transactionId}/verify`, {
+    const url = transactionId
+      ? `${FLW_BASE}/transactions/${transactionId}/verify`
+      : `${FLW_BASE}/transactions/verify?tx_ref=${encodeURIComponent(txRef)}`;
+
+    const res = await fetch(url, {
       headers: { Authorization: `Bearer ${FLW_SECRET}` },
     });
     const data = await res.json();

@@ -9,10 +9,15 @@ import prisma from "@/src/db";
  */
 export async function POST(request) {
   const secretHash = process.env.FLUTTERWAVE_SECRET_HASH;
-  const signature  = request.headers.get("verif-hash");
+  const signature =
+    request.headers.get("verif-hash") ||
+    request.headers.get("x-flutterwave-signature");
 
   if (!signature || signature !== secretHash) {
-    console.error("Flutterwave webhook: invalid signature");
+    console.error("Flutterwave webhook: invalid signature", {
+      secretHash: !!secretHash,
+      signature,
+    });
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 

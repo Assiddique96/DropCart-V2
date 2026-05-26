@@ -51,14 +51,45 @@ function OrdersContent() {
   // Handle Stripe/Paystack/Flutterwave return
   useEffect(() => {
     const payment = searchParams.get("payment");
+    const transactionId = searchParams.get("transaction_id");
+    const txRef = searchParams.get("tx_ref");
+
+    const verifyFlutterwave = async () => {
+      try {
+        const query = transactionId
+          ? `transaction_id=${transactionId}`
+          : txRef
+          ? `tx_ref=${encodeURIComponent(txRef)}`
+          : null;
+        if (!query) {
+          toast.success("Payment successful! Your order is confirmed.");
+          return;
+        }
+
+        const { data } = await axios.get(`/api/flutterwave?${query}`);
+        if (data.paid) {
+          toast.success("Payment successful! Your order is confirmed.");
+        } else {
+          toast.error(
+            "Payment succeeded but verification did not complete. Please contact support.",
+          );
+        }
+      } catch (error) {
+        toast.error(
+          error?.response?.data?.error ||
+            "Unable to verify payment. Please contact support.",
+        );
+      }
+    };
+
     if (payment === "success") {
-      toast.success("Payment successful! Your order is confirmed.");
+      verifyFlutterwave();
     }
     if (payment === "cancelled")
       toast.error(
         "Payment cancelled. Your order is still saved — retry from here.",
       );
-  }, []);
+  }, [searchParams]);
 
   useEffect(() => {
     if (!isLoaded) return;

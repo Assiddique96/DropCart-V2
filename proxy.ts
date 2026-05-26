@@ -15,12 +15,22 @@ const isPublicRoute = createRouteMatcher([
   '/shop(.*)',             // Browsing the shop marketplace
   '/terms(.*)',            // Terms of service
   '/track(.*)',            // Order tracking page
-  '/api/paystack/webhook', // Paystack payment processor webhook
+  '/api/products(.*)',     // Public products API used by home/product pages
+  '/api/home/content(.*)', // Hero / home page content
+  '/api/contact(.*)',      // Public contact form submission
+  '/api/track(.*)',        // Public order tracking API
+  '/api/search-by-image(.*)', // Public image search API used by navbar
+  '/api/config(.*)',       // Public checkout / cart configuration
+  '/api/coupon(.*)',       // Public coupon validation API
+  '/api/paystack(.*)',     // Public Paystack payment API + webhooks
+  '/api/flutterwave(.*)',  // Public Flutterwave payment API + verification
+  '/api/stripe(.*)',       // Public Stripe payment API + webhooks
+  '/api/lemonsqueezy(.*)', // Public LemonSqueezy payment API + webhooks
   '/api/store/data(.*)',   // Store profile dynamic data API
   '/api/store/products(.*)', // Store products API
   '/api/inngest(.*)',          // Inngest API routes (for event handling, etc.)
   '/api/trpc(.*)',            // tRPC API routes (for client-server communication)
-  '/api/flutterwave/webhook', // Flutterwave payment processor webhook
+  '/api/flutterwave/webhook(.*)', // Flutterwave payment processor webhook
 
 ]);
 
