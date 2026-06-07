@@ -15,7 +15,10 @@ const isPublicRoute = createRouteMatcher([
   '/shop(.*)',             // Browsing the shop marketplace
   '/terms(.*)',            // Terms of service
   '/track(.*)',            // Order tracking page
+  '/app(.*)',              // Main app page (will show login/signup for guests)
   '/api/products(.*)',     // Public products API used by home/product pages
+  '/api/categories(.*)',   // Public categories API used by home/product pages
+  '/api/brands(.*)',       // Public brands API used by home/product pages
   '/api/home/content(.*)', // Hero / home page content
   '/api/contact(.*)',      // Public contact form submission
   '/api/track(.*)',        // Public order tracking API
@@ -31,6 +34,7 @@ const isPublicRoute = createRouteMatcher([
   '/api/inngest(.*)',          // Inngest API routes (for event handling, etc.)
   '/api/trpc(.*)',            // tRPC API routes (for client-server communication)
   '/api/flutterwave/webhook(.*)', // Flutterwave payment processor webhook
+  '/products(.*)',          // Product listing and details pages
   
 
 ]);
