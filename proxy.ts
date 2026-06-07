@@ -34,7 +34,8 @@ const isPublicRoute = createRouteMatcher([
   '/api/inngest(.*)',          // Inngest API routes (for event handling, etc.)
   '/api/trpc(.*)',            // tRPC API routes (for client-server communication)
   '/api/flutterwave/webhook(.*)', // Flutterwave payment processor webhook
-  '/products(.*)',          // Product listing and details pages
+  '/product/(.*)',          // Product listing and details pages
+
   
 
 ]);
