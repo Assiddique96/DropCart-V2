@@ -9,6 +9,7 @@ const VALID_KEYS = [
   "shipping_base_fee",        // local product shipping (non-Plus members)
   "shipping_abroad_fee",      // abroad product shipping (non-Plus members)
   "shipping_free_above",      // order total above which local shipping is free
+  "tax_rate",                 // VAT/Tax % applied at checkout (0 = disabled)
 ];
 
 // GET /api/admin/config — read all platform config values
@@ -29,6 +30,7 @@ export async function GET(request) {
       shipping_base_fee: 7000,
       shipping_abroad_fee: 15000,
       shipping_free_above: 0,
+      tax_rate: 0,
     };
     return NextResponse.json({ config: { ...defaults, ...config } });
   } catch (error) {

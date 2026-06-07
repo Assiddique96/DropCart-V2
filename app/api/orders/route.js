@@ -116,6 +116,7 @@ export async function POST(request) {
     let shippingLocalFee  = 7000;
     let shippingAbroadFee = 15000;
     let shippingFreeAbove = 0;
+    let taxRate           = 0; // platform VAT/tax percentage
 
     const ordersByStore = new Map();
     const productQuantityMap = new Map();
@@ -126,12 +127,13 @@ export async function POST(request) {
 
     try {
       const configRows = await prisma.platformConfig.findMany({
-        where: { key: { in: ["shipping_base_fee", "shipping_abroad_fee", "shipping_free_above"] } },
+        where: { key: { in: ["shipping_base_fee", "shipping_abroad_fee", "shipping_free_above", "tax_rate"] } },
       });
       configRows.forEach((r) => {
         if (r.key === "shipping_base_fee")    shippingLocalFee  = parseFloat(r.value);
         if (r.key === "shipping_abroad_fee")  shippingAbroadFee = parseFloat(r.value);
         if (r.key === "shipping_free_above")  shippingFreeAbove = parseFloat(r.value);
+        if (r.key === "tax_rate")             taxRate           = parseFloat(r.value);
       });
     } catch {
       // non-fatal — use defaults
@@ -152,6 +154,8 @@ export async function POST(request) {
                 deliveryInternational: true,
                 quantity: true,
                 inStock: true,
+                isWholesale: true,
+                wholesaleTiers: { orderBy: { minQty: "asc" } },
                 variantGroups: { include: { options: true } },
                 store: {
                     select: {
@@ -231,8 +235,21 @@ export async function POST(request) {
 
         const storeId = product.storeId;
 
-        // Calculate effective price with variant modifiers
+        // Calculate effective price: wholesale tier > variant modifier > base price
         let effectivePrice = product.price;
+
+        // Resolve wholesale tier price if product has wholesale enabled
+        if (product.isWholesale && product.wholesaleTiers && product.wholesaleTiers.length > 0) {
+            const qty = item.quantity;
+            // Find the best matching tier (highest minQty that is <= qty)
+            const matchingTier = product.wholesaleTiers
+                .filter(t => t.minQty <= qty && (t.maxQty == null || qty <= t.maxQty))
+                .sort((a, b) => b.minQty - a.minQty)[0];
+            if (matchingTier) {
+                effectivePrice = matchingTier.price;
+            }
+        }
+
         if (item.variants && product.variantGroups) {
             for (const group of product.variantGroups) {
                 const selectedOptionLabel = item.variants[group.label];
@@ -381,6 +398,12 @@ export async function POST(request) {
 
             if (!isPlusMemeber && !qualifiesForFreeShipping) {
                 total += applicableShippingFee;
+            }
+
+            // Apply platform VAT/tax on (subtotal + shipping)
+            if (taxRate > 0) {
+                const taxAmount = parseFloat(((total * taxRate) / 100).toFixed(2));
+                total += taxAmount;
             }
 
             const normalizedSellerItems = Object.values(

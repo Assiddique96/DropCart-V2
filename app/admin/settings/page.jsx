@@ -17,6 +17,7 @@ export default function AdminSettings() {
         shipping_base_fee: 7000,
         shipping_abroad_fee: 15000,
         shipping_free_above: 0,
+        tax_rate: 0,
     })
 
     useEffect(() => {
@@ -66,6 +67,12 @@ export default function AdminSettings() {
             label: `Free Local Shipping Threshold (${currency})`,
             description: `Local orders above this total get free shipping for non-Plus buyers. Set to 0 to disable. Does not apply to abroad shipments.`,
             min: 0, step: 1000,
+        },
+        {
+            key: 'tax_rate',
+            label: 'VAT / Tax Rate (%)',
+            description: '🧾 Percentage tax applied to every order at checkout (applies to subtotal + shipping). Set to 0 to disable tax.',
+            min: 0, max: 100, step: 0.5,
         },
     ]
 

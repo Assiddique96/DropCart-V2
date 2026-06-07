@@ -48,6 +48,10 @@ export default function StoreManageProducts() {
     const [newVariantGroupLabel, setNewVariantGroupLabel] = useState("")
     const [newVariantGroupType, setNewVariantGroupType] = useState("TEXT")
     const [newVariantOptionInputs, setNewVariantOptionInputs] = useState({})
+    // Wholesale state for edit modal
+    const [editIsWholesale, setEditIsWholesale] = useState(false)
+    const [editWholesaleTiers, setEditWholesaleTiers] = useState([])
+    const [editNewTier, setEditNewTier] = useState({ minQty: "", maxQty: "", price: "" })
     const [saving, setSaving] = useState(false)
     const [deletingId, setDeletingId] = useState(null)
     const [confirmDeleteId, setConfirmDeleteId] = useState(null)
@@ -392,6 +396,83 @@ export default function StoreManageProducts() {
                         className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm resize-none bg-white dark:bg-slate-900" />
                 </label>
             </div>
+
+            {/* ── Wholesale / Bulk Pricing ─────────────────────────────────── */}
+            <div className="mt-4 border border-slate-200 dark:border-slate-700 rounded-xl p-4 space-y-3">
+                <div>
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Wholesale / Bulk Pricing</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Quantity-based tiered prices. Buyers get cheaper unit prices the more they order.</p>
+                </div>
+                <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <input type="checkbox" checked={editIsWholesale}
+                        onChange={e => setEditIsWholesale(e.target.checked)}
+                        className="w-4 h-4 accent-slate-700 rounded" />
+                    <span className="text-sm text-slate-700 dark:text-slate-200">Enable wholesale pricing</span>
+                </label>
+                {editIsWholesale && (
+                    <div className="space-y-3">
+                        {editWholesaleTiers.length > 0 && (
+                            <div className="border border-slate-100 dark:border-slate-800 rounded-lg overflow-hidden">
+                                <table className="w-full text-xs">
+                                    <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400">
+                                        <tr>
+                                            <th className="text-left p-2 pl-3 font-medium">Min Qty</th>
+                                            <th className="text-left p-2 font-medium">Max Qty</th>
+                                            <th className="text-left p-2 font-medium">Unit Price ({currency})</th>
+                                            <th className="w-8 p-2"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {editWholesaleTiers.map((tier, idx) => (
+                                            <tr key={idx} className="border-t border-slate-100 dark:border-slate-800">
+                                                <td className="p-2 pl-3 text-slate-700 dark:text-slate-200">{tier.minQty}</td>
+                                                <td className="p-2 text-slate-700 dark:text-slate-200">
+                                                    {tier.maxQty != null ? tier.maxQty : <span className="text-slate-400">∞</span>}
+                                                </td>
+                                                <td className="p-2 text-slate-700 dark:text-slate-200">{tier.price.toLocaleString()}</td>
+                                                <td className="p-2 text-right">
+                                                    <button type="button" onClick={() => removeEditWholesaleTier(idx)}
+                                                        className="text-red-400 hover:text-red-600 transition">
+                                                        <XIcon size={12} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                        <div className="flex gap-2 items-end flex-wrap">
+                            <div className="w-20">
+                                <label className="text-[10px] text-slate-400 mb-0.5 block">Min Qty</label>
+                                <input type="number" min="1" value={editNewTier.minQty}
+                                    onChange={e => setEditNewTier(p => ({ ...p, minQty: e.target.value }))}
+                                    placeholder="1"
+                                    className="w-full p-1.5 border border-slate-200 dark:border-slate-700 rounded text-xs outline-none bg-white dark:bg-slate-900" />
+                            </div>
+                            <div className="w-24">
+                                <label className="text-[10px] text-slate-400 mb-0.5 block">Max Qty <span className="text-slate-300">(∞ if blank)</span></label>
+                                <input type="number" min="1" value={editNewTier.maxQty}
+                                    onChange={e => setEditNewTier(p => ({ ...p, maxQty: e.target.value }))}
+                                    placeholder="99"
+                                    className="w-full p-1.5 border border-slate-200 dark:border-slate-700 rounded text-xs outline-none bg-white dark:bg-slate-900" />
+                            </div>
+                            <div className="w-28">
+                                <label className="text-[10px] text-slate-400 mb-0.5 block">Unit Price ({currency})</label>
+                                <input type="number" min="0" step="0.01" value={editNewTier.price}
+                                    onChange={e => setEditNewTier(p => ({ ...p, price: e.target.value }))}
+                                    placeholder="8000"
+                                    className="w-full p-1.5 border border-slate-200 dark:border-slate-700 rounded text-xs outline-none bg-white dark:bg-slate-900" />
+                            </div>
+                            <button type="button" onClick={addEditWholesaleTier}
+                                className="px-3 py-1.5 bg-slate-700 text-white rounded text-xs hover:bg-slate-800 transition flex items-center gap-1 shrink-0">
+                                + Add Tier
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+
             <div className="mt-4 flex flex-wrap gap-3">
                 <button onClick={() => saveEdit(product.id)} disabled={saving}
                     className="inline-flex items-center gap-1.5 bg-slate-800 text-white px-4 py-2 rounded-full hover:bg-slate-900 transition text-sm disabled:opacity-50">
@@ -611,6 +692,14 @@ export default function StoreManageProducts() {
         setNewVariantGroupLabel("")
         setNewVariantGroupType("TEXT")
         setNewVariantOptionInputs({})
+        // Wholesale
+        setEditIsWholesale(product.isWholesale === true)
+        setEditWholesaleTiers(
+            Array.isArray(product.wholesaleTiers)
+                ? product.wholesaleTiers.map(t => ({ minQty: t.minQty, maxQty: t.maxQty ?? null, price: t.price }))
+                : []
+        )
+        setEditNewTier({ minQty: "", maxQty: "", price: "" })
     }
 
     const cancelEdit = () => {
@@ -622,7 +711,32 @@ export default function StoreManageProducts() {
         setNewVariantGroupLabel("")
         setNewVariantGroupType("TEXT")
         setNewVariantOptionInputs({})
+        setEditIsWholesale(false)
+        setEditWholesaleTiers([])
+        setEditNewTier({ minQty: "", maxQty: "", price: "" })
     }
+
+    const addEditWholesaleTier = () => {
+        const minQty = parseInt(editNewTier.minQty, 10)
+        const maxQty = editNewTier.maxQty !== "" ? parseInt(editNewTier.maxQty, 10) : null
+        const price = parseFloat(editNewTier.price)
+        if (!minQty || minQty < 1) return toast.error("Min quantity must be at least 1.")
+        if (maxQty !== null && maxQty <= minQty) return toast.error("Max quantity must be greater than min quantity.")
+        if (!price || price <= 0) return toast.error("Price must be greater than 0.")
+        const overlaps = editWholesaleTiers.some(t => {
+            const tMax = t.maxQty ?? Infinity
+            const nMax = maxQty ?? Infinity
+            return minQty <= tMax && nMax >= t.minQty
+        })
+        if (overlaps) return toast.error("Quantity range overlaps with an existing tier.")
+        setEditWholesaleTiers(prev =>
+            [...prev, { minQty, maxQty, price }].sort((a, b) => a.minQty - b.minQty)
+        )
+        setEditNewTier({ minQty: "", maxQty: "", price: "" })
+    }
+
+    const removeEditWholesaleTier = (idx) =>
+        setEditWholesaleTiers(prev => prev.filter((_, i) => i !== idx))
 
     const saveEdit = async (productId) => {
         if (editImageUrls.length + newImages.length === 0) {
@@ -656,6 +770,8 @@ export default function StoreManageProducts() {
             formData.append("deliveryInternational", editForm.deliveryInternational ? "true" : "false")
             formData.append("existingImages", JSON.stringify(editImageUrls))
             newImages.forEach(img => formData.append("images", img))
+            formData.append("isWholesale", editIsWholesale ? "true" : "false")
+            formData.append("wholesaleTiers", JSON.stringify(editWholesaleTiers))
 
             const { data } = await axios.patch("/api/store/product", formData, {
                 headers: await getStoreAuthHeaders(getToken)

@@ -29,6 +29,15 @@ export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
  */
 export type Product = $Result.DefaultSelection<Prisma.$ProductPayload>
 /**
+ * Model ProductWholesaleTier
+ * *
+ *  * ProductWholesaleTier — quantity-based price tiers set by the store owner.
+ *  * Example: minQty=1  maxQty=9   price=10000
+ *  *          minQty=10 maxQty=99  price=8000
+ *  *          minQty=100 maxQty=null price=6000  (null = no upper limit)
+ */
+export type ProductWholesaleTier = $Result.DefaultSelection<Prisma.$ProductWholesaleTierPayload>
+/**
  * Model ProductVariantGroup
  * *
  *  * ProductVariantGroup — defines one axis of variation for a product.
@@ -108,7 +117,7 @@ export type Payout = $Result.DefaultSelection<Prisma.$PayoutPayload>
  *  *   shipping_base_fee   Float  (flat fee for non-members, e.g. 7000)
  *  *   shipping_abroad_fee Float  (abroad product shipping fee)
  *  *   shipping_free_above Float  (order total above which shipping is free, e.g. 50000)
- *  *   home_page_content   String (JSON: featured / promo1 / promo2 slide arrays for the public home hero)
+ *  *   tax_rate            Float  (VAT/Tax percentage applied at checkout, e.g. 7.5 = 7.5%. 0 = disabled)
  */
 export type PlatformConfig = $Result.DefaultSelection<Prisma.$PlatformConfigPayload>
 /**
@@ -377,6 +386,16 @@ export class PrismaClient<
     * ```
     */
   get product(): Prisma.ProductDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.productWholesaleTier`: Exposes CRUD operations for the **ProductWholesaleTier** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProductWholesaleTiers
+    * const productWholesaleTiers = await prisma.productWholesaleTier.findMany()
+    * ```
+    */
+  get productWholesaleTier(): Prisma.ProductWholesaleTierDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.productVariantGroup`: Exposes CRUD operations for the **ProductVariantGroup** model.
@@ -944,6 +963,7 @@ export namespace Prisma {
     User: 'User',
     Notification: 'Notification',
     Product: 'Product',
+    ProductWholesaleTier: 'ProductWholesaleTier',
     ProductVariantGroup: 'ProductVariantGroup',
     ProductVariantOption: 'ProductVariantOption',
     Order: 'Order',
@@ -972,7 +992,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "notification" | "product" | "productVariantGroup" | "productVariantOption" | "order" | "orderItem" | "refund" | "rating" | "address" | "coupon" | "store" | "storeRating" | "payout" | "platformConfig" | "adRequest"
+      modelProps: "user" | "notification" | "product" | "productWholesaleTier" | "productVariantGroup" | "productVariantOption" | "order" | "orderItem" | "refund" | "rating" | "address" | "coupon" | "store" | "storeRating" | "payout" | "platformConfig" | "adRequest"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1195,6 +1215,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ProductCountArgs<ExtArgs>
             result: $Utils.Optional<ProductCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProductWholesaleTier: {
+        payload: Prisma.$ProductWholesaleTierPayload<ExtArgs>
+        fields: Prisma.ProductWholesaleTierFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProductWholesaleTierFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductWholesaleTierPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProductWholesaleTierFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductWholesaleTierPayload>
+          }
+          findFirst: {
+            args: Prisma.ProductWholesaleTierFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductWholesaleTierPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProductWholesaleTierFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductWholesaleTierPayload>
+          }
+          findMany: {
+            args: Prisma.ProductWholesaleTierFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductWholesaleTierPayload>[]
+          }
+          create: {
+            args: Prisma.ProductWholesaleTierCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductWholesaleTierPayload>
+          }
+          createMany: {
+            args: Prisma.ProductWholesaleTierCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProductWholesaleTierCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductWholesaleTierPayload>[]
+          }
+          delete: {
+            args: Prisma.ProductWholesaleTierDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductWholesaleTierPayload>
+          }
+          update: {
+            args: Prisma.ProductWholesaleTierUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductWholesaleTierPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProductWholesaleTierDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProductWholesaleTierUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProductWholesaleTierUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductWholesaleTierPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProductWholesaleTierUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductWholesaleTierPayload>
+          }
+          aggregate: {
+            args: Prisma.ProductWholesaleTierAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProductWholesaleTier>
+          }
+          groupBy: {
+            args: Prisma.ProductWholesaleTierGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProductWholesaleTierGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProductWholesaleTierCountArgs<ExtArgs>
+            result: $Utils.Optional<ProductWholesaleTierCountAggregateOutputType> | number
           }
         }
       }
@@ -2271,6 +2365,7 @@ export namespace Prisma {
     user?: UserOmit
     notification?: NotificationOmit
     product?: ProductOmit
+    productWholesaleTier?: ProductWholesaleTierOmit
     productVariantGroup?: ProductVariantGroupOmit
     productVariantOption?: ProductVariantOptionOmit
     order?: OrderOmit
@@ -2443,6 +2538,7 @@ export namespace Prisma {
     orderItems: number
     rating: number
     variantGroups: number
+    wholesaleTiers: number
     adRequests: number
   }
 
@@ -2450,6 +2546,7 @@ export namespace Prisma {
     orderItems?: boolean | ProductCountOutputTypeCountOrderItemsArgs
     rating?: boolean | ProductCountOutputTypeCountRatingArgs
     variantGroups?: boolean | ProductCountOutputTypeCountVariantGroupsArgs
+    wholesaleTiers?: boolean | ProductCountOutputTypeCountWholesaleTiersArgs
     adRequests?: boolean | ProductCountOutputTypeCountAdRequestsArgs
   }
 
@@ -2483,6 +2580,13 @@ export namespace Prisma {
    */
   export type ProductCountOutputTypeCountVariantGroupsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProductVariantGroupWhereInput
+  }
+
+  /**
+   * ProductCountOutputType without action
+   */
+  export type ProductCountOutputTypeCountWholesaleTiersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductWholesaleTierWhereInput
   }
 
   /**
@@ -5077,6 +5181,7 @@ export namespace Prisma {
     acceptCod: boolean | null
     isDigital: boolean | null
     downloadUrl: string | null
+    isWholesale: boolean | null
     storeId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -5104,6 +5209,7 @@ export namespace Prisma {
     acceptCod: boolean | null
     isDigital: boolean | null
     downloadUrl: string | null
+    isWholesale: boolean | null
     storeId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -5133,6 +5239,7 @@ export namespace Prisma {
     acceptCod: number
     isDigital: number
     downloadUrl: number
+    isWholesale: number
     storeId: number
     createdAt: number
     updatedAt: number
@@ -5174,6 +5281,7 @@ export namespace Prisma {
     acceptCod?: true
     isDigital?: true
     downloadUrl?: true
+    isWholesale?: true
     storeId?: true
     createdAt?: true
     updatedAt?: true
@@ -5201,6 +5309,7 @@ export namespace Prisma {
     acceptCod?: true
     isDigital?: true
     downloadUrl?: true
+    isWholesale?: true
     storeId?: true
     createdAt?: true
     updatedAt?: true
@@ -5230,6 +5339,7 @@ export namespace Prisma {
     acceptCod?: true
     isDigital?: true
     downloadUrl?: true
+    isWholesale?: true
     storeId?: true
     createdAt?: true
     updatedAt?: true
@@ -5346,6 +5456,7 @@ export namespace Prisma {
     acceptCod: boolean
     isDigital: boolean
     downloadUrl: string | null
+    isWholesale: boolean
     storeId: string
     createdAt: Date
     updatedAt: Date
@@ -5394,6 +5505,7 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: boolean
+    isWholesale?: boolean
     storeId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -5401,6 +5513,7 @@ export namespace Prisma {
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
     rating?: boolean | Product$ratingArgs<ExtArgs>
     variantGroups?: boolean | Product$variantGroupsArgs<ExtArgs>
+    wholesaleTiers?: boolean | Product$wholesaleTiersArgs<ExtArgs>
     adRequests?: boolean | Product$adRequestsArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
@@ -5429,6 +5542,7 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: boolean
+    isWholesale?: boolean
     storeId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -5459,6 +5573,7 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: boolean
+    isWholesale?: boolean
     storeId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -5489,17 +5604,19 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: boolean
+    isWholesale?: boolean
     storeId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mrp" | "price" | "images" | "category" | "inStock" | "quantity" | "sku" | "tags" | "scheduledAt" | "origin" | "deliveryWithinState" | "deliveryNationwide" | "deliveryInternational" | "madeIn" | "manufacturer" | "material" | "guaranteePeriod" | "acceptCod" | "isDigital" | "downloadUrl" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mrp" | "price" | "images" | "category" | "inStock" | "quantity" | "sku" | "tags" | "scheduledAt" | "origin" | "deliveryWithinState" | "deliveryNationwide" | "deliveryInternational" | "madeIn" | "manufacturer" | "material" | "guaranteePeriod" | "acceptCod" | "isDigital" | "downloadUrl" | "isWholesale" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     store?: boolean | StoreDefaultArgs<ExtArgs>
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
     rating?: boolean | Product$ratingArgs<ExtArgs>
     variantGroups?: boolean | Product$variantGroupsArgs<ExtArgs>
+    wholesaleTiers?: boolean | Product$wholesaleTiersArgs<ExtArgs>
     adRequests?: boolean | Product$adRequestsArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -5517,6 +5634,7 @@ export namespace Prisma {
       orderItems: Prisma.$OrderItemPayload<ExtArgs>[]
       rating: Prisma.$RatingPayload<ExtArgs>[]
       variantGroups: Prisma.$ProductVariantGroupPayload<ExtArgs>[]
+      wholesaleTiers: Prisma.$ProductWholesaleTierPayload<ExtArgs>[]
       adRequests: Prisma.$AdRequestPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -5546,6 +5664,10 @@ export namespace Prisma {
       acceptCod: boolean
       isDigital: boolean
       downloadUrl: string | null
+      /**
+       * Wholesale/bulk pricing — store owner enables this; tiers define qty-based prices
+       */
+      isWholesale: boolean
       storeId: string
       createdAt: Date
       updatedAt: Date
@@ -5947,6 +6069,7 @@ export namespace Prisma {
     orderItems<T extends Product$orderItemsArgs<ExtArgs> = {}>(args?: Subset<T, Product$orderItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rating<T extends Product$ratingArgs<ExtArgs> = {}>(args?: Subset<T, Product$ratingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RatingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     variantGroups<T extends Product$variantGroupsArgs<ExtArgs> = {}>(args?: Subset<T, Product$variantGroupsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductVariantGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    wholesaleTiers<T extends Product$wholesaleTiersArgs<ExtArgs> = {}>(args?: Subset<T, Product$wholesaleTiersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductWholesaleTierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     adRequests<T extends Product$adRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Product$adRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -6000,6 +6123,7 @@ export namespace Prisma {
     readonly acceptCod: FieldRef<"Product", 'Boolean'>
     readonly isDigital: FieldRef<"Product", 'Boolean'>
     readonly downloadUrl: FieldRef<"Product", 'String'>
+    readonly isWholesale: FieldRef<"Product", 'Boolean'>
     readonly storeId: FieldRef<"Product", 'String'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
@@ -6476,6 +6600,30 @@ export namespace Prisma {
   }
 
   /**
+   * Product.wholesaleTiers
+   */
+  export type Product$wholesaleTiersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierInclude<ExtArgs> | null
+    where?: ProductWholesaleTierWhereInput
+    orderBy?: ProductWholesaleTierOrderByWithRelationInput | ProductWholesaleTierOrderByWithRelationInput[]
+    cursor?: ProductWholesaleTierWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProductWholesaleTierScalarFieldEnum | ProductWholesaleTierScalarFieldEnum[]
+  }
+
+  /**
    * Product.adRequests
    */
   export type Product$adRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6515,6 +6663,1128 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ProductInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProductWholesaleTier
+   */
+
+  export type AggregateProductWholesaleTier = {
+    _count: ProductWholesaleTierCountAggregateOutputType | null
+    _avg: ProductWholesaleTierAvgAggregateOutputType | null
+    _sum: ProductWholesaleTierSumAggregateOutputType | null
+    _min: ProductWholesaleTierMinAggregateOutputType | null
+    _max: ProductWholesaleTierMaxAggregateOutputType | null
+  }
+
+  export type ProductWholesaleTierAvgAggregateOutputType = {
+    minQty: number | null
+    maxQty: number | null
+    price: number | null
+    position: number | null
+  }
+
+  export type ProductWholesaleTierSumAggregateOutputType = {
+    minQty: number | null
+    maxQty: number | null
+    price: number | null
+    position: number | null
+  }
+
+  export type ProductWholesaleTierMinAggregateOutputType = {
+    id: string | null
+    productId: string | null
+    minQty: number | null
+    maxQty: number | null
+    price: number | null
+    position: number | null
+  }
+
+  export type ProductWholesaleTierMaxAggregateOutputType = {
+    id: string | null
+    productId: string | null
+    minQty: number | null
+    maxQty: number | null
+    price: number | null
+    position: number | null
+  }
+
+  export type ProductWholesaleTierCountAggregateOutputType = {
+    id: number
+    productId: number
+    minQty: number
+    maxQty: number
+    price: number
+    position: number
+    _all: number
+  }
+
+
+  export type ProductWholesaleTierAvgAggregateInputType = {
+    minQty?: true
+    maxQty?: true
+    price?: true
+    position?: true
+  }
+
+  export type ProductWholesaleTierSumAggregateInputType = {
+    minQty?: true
+    maxQty?: true
+    price?: true
+    position?: true
+  }
+
+  export type ProductWholesaleTierMinAggregateInputType = {
+    id?: true
+    productId?: true
+    minQty?: true
+    maxQty?: true
+    price?: true
+    position?: true
+  }
+
+  export type ProductWholesaleTierMaxAggregateInputType = {
+    id?: true
+    productId?: true
+    minQty?: true
+    maxQty?: true
+    price?: true
+    position?: true
+  }
+
+  export type ProductWholesaleTierCountAggregateInputType = {
+    id?: true
+    productId?: true
+    minQty?: true
+    maxQty?: true
+    price?: true
+    position?: true
+    _all?: true
+  }
+
+  export type ProductWholesaleTierAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProductWholesaleTier to aggregate.
+     */
+    where?: ProductWholesaleTierWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductWholesaleTiers to fetch.
+     */
+    orderBy?: ProductWholesaleTierOrderByWithRelationInput | ProductWholesaleTierOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProductWholesaleTierWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductWholesaleTiers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductWholesaleTiers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProductWholesaleTiers
+    **/
+    _count?: true | ProductWholesaleTierCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProductWholesaleTierAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProductWholesaleTierSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProductWholesaleTierMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProductWholesaleTierMaxAggregateInputType
+  }
+
+  export type GetProductWholesaleTierAggregateType<T extends ProductWholesaleTierAggregateArgs> = {
+        [P in keyof T & keyof AggregateProductWholesaleTier]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProductWholesaleTier[P]>
+      : GetScalarType<T[P], AggregateProductWholesaleTier[P]>
+  }
+
+
+
+
+  export type ProductWholesaleTierGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductWholesaleTierWhereInput
+    orderBy?: ProductWholesaleTierOrderByWithAggregationInput | ProductWholesaleTierOrderByWithAggregationInput[]
+    by: ProductWholesaleTierScalarFieldEnum[] | ProductWholesaleTierScalarFieldEnum
+    having?: ProductWholesaleTierScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProductWholesaleTierCountAggregateInputType | true
+    _avg?: ProductWholesaleTierAvgAggregateInputType
+    _sum?: ProductWholesaleTierSumAggregateInputType
+    _min?: ProductWholesaleTierMinAggregateInputType
+    _max?: ProductWholesaleTierMaxAggregateInputType
+  }
+
+  export type ProductWholesaleTierGroupByOutputType = {
+    id: string
+    productId: string
+    minQty: number
+    maxQty: number | null
+    price: number
+    position: number
+    _count: ProductWholesaleTierCountAggregateOutputType | null
+    _avg: ProductWholesaleTierAvgAggregateOutputType | null
+    _sum: ProductWholesaleTierSumAggregateOutputType | null
+    _min: ProductWholesaleTierMinAggregateOutputType | null
+    _max: ProductWholesaleTierMaxAggregateOutputType | null
+  }
+
+  type GetProductWholesaleTierGroupByPayload<T extends ProductWholesaleTierGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProductWholesaleTierGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProductWholesaleTierGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProductWholesaleTierGroupByOutputType[P]>
+            : GetScalarType<T[P], ProductWholesaleTierGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProductWholesaleTierSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    productId?: boolean
+    minQty?: boolean
+    maxQty?: boolean
+    price?: boolean
+    position?: boolean
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["productWholesaleTier"]>
+
+  export type ProductWholesaleTierSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    productId?: boolean
+    minQty?: boolean
+    maxQty?: boolean
+    price?: boolean
+    position?: boolean
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["productWholesaleTier"]>
+
+  export type ProductWholesaleTierSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    productId?: boolean
+    minQty?: boolean
+    maxQty?: boolean
+    price?: boolean
+    position?: boolean
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["productWholesaleTier"]>
+
+  export type ProductWholesaleTierSelectScalar = {
+    id?: boolean
+    productId?: boolean
+    minQty?: boolean
+    maxQty?: boolean
+    price?: boolean
+    position?: boolean
+  }
+
+  export type ProductWholesaleTierOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "minQty" | "maxQty" | "price" | "position", ExtArgs["result"]["productWholesaleTier"]>
+  export type ProductWholesaleTierInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }
+  export type ProductWholesaleTierIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }
+  export type ProductWholesaleTierIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }
+
+  export type $ProductWholesaleTierPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProductWholesaleTier"
+    objects: {
+      product: Prisma.$ProductPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      productId: string
+      minQty: number
+      maxQty: number | null
+      price: number
+      position: number
+    }, ExtArgs["result"]["productWholesaleTier"]>
+    composites: {}
+  }
+
+  type ProductWholesaleTierGetPayload<S extends boolean | null | undefined | ProductWholesaleTierDefaultArgs> = $Result.GetResult<Prisma.$ProductWholesaleTierPayload, S>
+
+  type ProductWholesaleTierCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProductWholesaleTierFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProductWholesaleTierCountAggregateInputType | true
+    }
+
+  export interface ProductWholesaleTierDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProductWholesaleTier'], meta: { name: 'ProductWholesaleTier' } }
+    /**
+     * Find zero or one ProductWholesaleTier that matches the filter.
+     * @param {ProductWholesaleTierFindUniqueArgs} args - Arguments to find a ProductWholesaleTier
+     * @example
+     * // Get one ProductWholesaleTier
+     * const productWholesaleTier = await prisma.productWholesaleTier.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProductWholesaleTierFindUniqueArgs>(args: SelectSubset<T, ProductWholesaleTierFindUniqueArgs<ExtArgs>>): Prisma__ProductWholesaleTierClient<$Result.GetResult<Prisma.$ProductWholesaleTierPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProductWholesaleTier that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProductWholesaleTierFindUniqueOrThrowArgs} args - Arguments to find a ProductWholesaleTier
+     * @example
+     * // Get one ProductWholesaleTier
+     * const productWholesaleTier = await prisma.productWholesaleTier.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProductWholesaleTierFindUniqueOrThrowArgs>(args: SelectSubset<T, ProductWholesaleTierFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProductWholesaleTierClient<$Result.GetResult<Prisma.$ProductWholesaleTierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProductWholesaleTier that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductWholesaleTierFindFirstArgs} args - Arguments to find a ProductWholesaleTier
+     * @example
+     * // Get one ProductWholesaleTier
+     * const productWholesaleTier = await prisma.productWholesaleTier.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProductWholesaleTierFindFirstArgs>(args?: SelectSubset<T, ProductWholesaleTierFindFirstArgs<ExtArgs>>): Prisma__ProductWholesaleTierClient<$Result.GetResult<Prisma.$ProductWholesaleTierPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProductWholesaleTier that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductWholesaleTierFindFirstOrThrowArgs} args - Arguments to find a ProductWholesaleTier
+     * @example
+     * // Get one ProductWholesaleTier
+     * const productWholesaleTier = await prisma.productWholesaleTier.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProductWholesaleTierFindFirstOrThrowArgs>(args?: SelectSubset<T, ProductWholesaleTierFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProductWholesaleTierClient<$Result.GetResult<Prisma.$ProductWholesaleTierPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProductWholesaleTiers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductWholesaleTierFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProductWholesaleTiers
+     * const productWholesaleTiers = await prisma.productWholesaleTier.findMany()
+     * 
+     * // Get first 10 ProductWholesaleTiers
+     * const productWholesaleTiers = await prisma.productWholesaleTier.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const productWholesaleTierWithIdOnly = await prisma.productWholesaleTier.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProductWholesaleTierFindManyArgs>(args?: SelectSubset<T, ProductWholesaleTierFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductWholesaleTierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProductWholesaleTier.
+     * @param {ProductWholesaleTierCreateArgs} args - Arguments to create a ProductWholesaleTier.
+     * @example
+     * // Create one ProductWholesaleTier
+     * const ProductWholesaleTier = await prisma.productWholesaleTier.create({
+     *   data: {
+     *     // ... data to create a ProductWholesaleTier
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProductWholesaleTierCreateArgs>(args: SelectSubset<T, ProductWholesaleTierCreateArgs<ExtArgs>>): Prisma__ProductWholesaleTierClient<$Result.GetResult<Prisma.$ProductWholesaleTierPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProductWholesaleTiers.
+     * @param {ProductWholesaleTierCreateManyArgs} args - Arguments to create many ProductWholesaleTiers.
+     * @example
+     * // Create many ProductWholesaleTiers
+     * const productWholesaleTier = await prisma.productWholesaleTier.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProductWholesaleTierCreateManyArgs>(args?: SelectSubset<T, ProductWholesaleTierCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProductWholesaleTiers and returns the data saved in the database.
+     * @param {ProductWholesaleTierCreateManyAndReturnArgs} args - Arguments to create many ProductWholesaleTiers.
+     * @example
+     * // Create many ProductWholesaleTiers
+     * const productWholesaleTier = await prisma.productWholesaleTier.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProductWholesaleTiers and only return the `id`
+     * const productWholesaleTierWithIdOnly = await prisma.productWholesaleTier.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProductWholesaleTierCreateManyAndReturnArgs>(args?: SelectSubset<T, ProductWholesaleTierCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductWholesaleTierPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ProductWholesaleTier.
+     * @param {ProductWholesaleTierDeleteArgs} args - Arguments to delete one ProductWholesaleTier.
+     * @example
+     * // Delete one ProductWholesaleTier
+     * const ProductWholesaleTier = await prisma.productWholesaleTier.delete({
+     *   where: {
+     *     // ... filter to delete one ProductWholesaleTier
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProductWholesaleTierDeleteArgs>(args: SelectSubset<T, ProductWholesaleTierDeleteArgs<ExtArgs>>): Prisma__ProductWholesaleTierClient<$Result.GetResult<Prisma.$ProductWholesaleTierPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProductWholesaleTier.
+     * @param {ProductWholesaleTierUpdateArgs} args - Arguments to update one ProductWholesaleTier.
+     * @example
+     * // Update one ProductWholesaleTier
+     * const productWholesaleTier = await prisma.productWholesaleTier.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProductWholesaleTierUpdateArgs>(args: SelectSubset<T, ProductWholesaleTierUpdateArgs<ExtArgs>>): Prisma__ProductWholesaleTierClient<$Result.GetResult<Prisma.$ProductWholesaleTierPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProductWholesaleTiers.
+     * @param {ProductWholesaleTierDeleteManyArgs} args - Arguments to filter ProductWholesaleTiers to delete.
+     * @example
+     * // Delete a few ProductWholesaleTiers
+     * const { count } = await prisma.productWholesaleTier.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProductWholesaleTierDeleteManyArgs>(args?: SelectSubset<T, ProductWholesaleTierDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProductWholesaleTiers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductWholesaleTierUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProductWholesaleTiers
+     * const productWholesaleTier = await prisma.productWholesaleTier.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProductWholesaleTierUpdateManyArgs>(args: SelectSubset<T, ProductWholesaleTierUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProductWholesaleTiers and returns the data updated in the database.
+     * @param {ProductWholesaleTierUpdateManyAndReturnArgs} args - Arguments to update many ProductWholesaleTiers.
+     * @example
+     * // Update many ProductWholesaleTiers
+     * const productWholesaleTier = await prisma.productWholesaleTier.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ProductWholesaleTiers and only return the `id`
+     * const productWholesaleTierWithIdOnly = await prisma.productWholesaleTier.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProductWholesaleTierUpdateManyAndReturnArgs>(args: SelectSubset<T, ProductWholesaleTierUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductWholesaleTierPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ProductWholesaleTier.
+     * @param {ProductWholesaleTierUpsertArgs} args - Arguments to update or create a ProductWholesaleTier.
+     * @example
+     * // Update or create a ProductWholesaleTier
+     * const productWholesaleTier = await prisma.productWholesaleTier.upsert({
+     *   create: {
+     *     // ... data to create a ProductWholesaleTier
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProductWholesaleTier we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProductWholesaleTierUpsertArgs>(args: SelectSubset<T, ProductWholesaleTierUpsertArgs<ExtArgs>>): Prisma__ProductWholesaleTierClient<$Result.GetResult<Prisma.$ProductWholesaleTierPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProductWholesaleTiers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductWholesaleTierCountArgs} args - Arguments to filter ProductWholesaleTiers to count.
+     * @example
+     * // Count the number of ProductWholesaleTiers
+     * const count = await prisma.productWholesaleTier.count({
+     *   where: {
+     *     // ... the filter for the ProductWholesaleTiers we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProductWholesaleTierCountArgs>(
+      args?: Subset<T, ProductWholesaleTierCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProductWholesaleTierCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProductWholesaleTier.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductWholesaleTierAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProductWholesaleTierAggregateArgs>(args: Subset<T, ProductWholesaleTierAggregateArgs>): Prisma.PrismaPromise<GetProductWholesaleTierAggregateType<T>>
+
+    /**
+     * Group by ProductWholesaleTier.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductWholesaleTierGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProductWholesaleTierGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProductWholesaleTierGroupByArgs['orderBy'] }
+        : { orderBy?: ProductWholesaleTierGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProductWholesaleTierGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProductWholesaleTierGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProductWholesaleTier model
+   */
+  readonly fields: ProductWholesaleTierFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProductWholesaleTier.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProductWholesaleTierClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProductWholesaleTier model
+   */
+  interface ProductWholesaleTierFieldRefs {
+    readonly id: FieldRef<"ProductWholesaleTier", 'String'>
+    readonly productId: FieldRef<"ProductWholesaleTier", 'String'>
+    readonly minQty: FieldRef<"ProductWholesaleTier", 'Int'>
+    readonly maxQty: FieldRef<"ProductWholesaleTier", 'Int'>
+    readonly price: FieldRef<"ProductWholesaleTier", 'Float'>
+    readonly position: FieldRef<"ProductWholesaleTier", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProductWholesaleTier findUnique
+   */
+  export type ProductWholesaleTierFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductWholesaleTier to fetch.
+     */
+    where: ProductWholesaleTierWhereUniqueInput
+  }
+
+  /**
+   * ProductWholesaleTier findUniqueOrThrow
+   */
+  export type ProductWholesaleTierFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductWholesaleTier to fetch.
+     */
+    where: ProductWholesaleTierWhereUniqueInput
+  }
+
+  /**
+   * ProductWholesaleTier findFirst
+   */
+  export type ProductWholesaleTierFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductWholesaleTier to fetch.
+     */
+    where?: ProductWholesaleTierWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductWholesaleTiers to fetch.
+     */
+    orderBy?: ProductWholesaleTierOrderByWithRelationInput | ProductWholesaleTierOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProductWholesaleTiers.
+     */
+    cursor?: ProductWholesaleTierWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductWholesaleTiers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductWholesaleTiers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductWholesaleTiers.
+     */
+    distinct?: ProductWholesaleTierScalarFieldEnum | ProductWholesaleTierScalarFieldEnum[]
+  }
+
+  /**
+   * ProductWholesaleTier findFirstOrThrow
+   */
+  export type ProductWholesaleTierFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductWholesaleTier to fetch.
+     */
+    where?: ProductWholesaleTierWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductWholesaleTiers to fetch.
+     */
+    orderBy?: ProductWholesaleTierOrderByWithRelationInput | ProductWholesaleTierOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProductWholesaleTiers.
+     */
+    cursor?: ProductWholesaleTierWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductWholesaleTiers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductWholesaleTiers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductWholesaleTiers.
+     */
+    distinct?: ProductWholesaleTierScalarFieldEnum | ProductWholesaleTierScalarFieldEnum[]
+  }
+
+  /**
+   * ProductWholesaleTier findMany
+   */
+  export type ProductWholesaleTierFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductWholesaleTiers to fetch.
+     */
+    where?: ProductWholesaleTierWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductWholesaleTiers to fetch.
+     */
+    orderBy?: ProductWholesaleTierOrderByWithRelationInput | ProductWholesaleTierOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProductWholesaleTiers.
+     */
+    cursor?: ProductWholesaleTierWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductWholesaleTiers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductWholesaleTiers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductWholesaleTiers.
+     */
+    distinct?: ProductWholesaleTierScalarFieldEnum | ProductWholesaleTierScalarFieldEnum[]
+  }
+
+  /**
+   * ProductWholesaleTier create
+   */
+  export type ProductWholesaleTierCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProductWholesaleTier.
+     */
+    data: XOR<ProductWholesaleTierCreateInput, ProductWholesaleTierUncheckedCreateInput>
+  }
+
+  /**
+   * ProductWholesaleTier createMany
+   */
+  export type ProductWholesaleTierCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProductWholesaleTiers.
+     */
+    data: ProductWholesaleTierCreateManyInput | ProductWholesaleTierCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProductWholesaleTier createManyAndReturn
+   */
+  export type ProductWholesaleTierCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * The data used to create many ProductWholesaleTiers.
+     */
+    data: ProductWholesaleTierCreateManyInput | ProductWholesaleTierCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProductWholesaleTier update
+   */
+  export type ProductWholesaleTierUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProductWholesaleTier.
+     */
+    data: XOR<ProductWholesaleTierUpdateInput, ProductWholesaleTierUncheckedUpdateInput>
+    /**
+     * Choose, which ProductWholesaleTier to update.
+     */
+    where: ProductWholesaleTierWhereUniqueInput
+  }
+
+  /**
+   * ProductWholesaleTier updateMany
+   */
+  export type ProductWholesaleTierUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProductWholesaleTiers.
+     */
+    data: XOR<ProductWholesaleTierUpdateManyMutationInput, ProductWholesaleTierUncheckedUpdateManyInput>
+    /**
+     * Filter which ProductWholesaleTiers to update
+     */
+    where?: ProductWholesaleTierWhereInput
+    /**
+     * Limit how many ProductWholesaleTiers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProductWholesaleTier updateManyAndReturn
+   */
+  export type ProductWholesaleTierUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * The data used to update ProductWholesaleTiers.
+     */
+    data: XOR<ProductWholesaleTierUpdateManyMutationInput, ProductWholesaleTierUncheckedUpdateManyInput>
+    /**
+     * Filter which ProductWholesaleTiers to update
+     */
+    where?: ProductWholesaleTierWhereInput
+    /**
+     * Limit how many ProductWholesaleTiers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProductWholesaleTier upsert
+   */
+  export type ProductWholesaleTierUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProductWholesaleTier to update in case it exists.
+     */
+    where: ProductWholesaleTierWhereUniqueInput
+    /**
+     * In case the ProductWholesaleTier found by the `where` argument doesn't exist, create a new ProductWholesaleTier with this data.
+     */
+    create: XOR<ProductWholesaleTierCreateInput, ProductWholesaleTierUncheckedCreateInput>
+    /**
+     * In case the ProductWholesaleTier was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProductWholesaleTierUpdateInput, ProductWholesaleTierUncheckedUpdateInput>
+  }
+
+  /**
+   * ProductWholesaleTier delete
+   */
+  export type ProductWholesaleTierDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierInclude<ExtArgs> | null
+    /**
+     * Filter which ProductWholesaleTier to delete.
+     */
+    where: ProductWholesaleTierWhereUniqueInput
+  }
+
+  /**
+   * ProductWholesaleTier deleteMany
+   */
+  export type ProductWholesaleTierDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProductWholesaleTiers to delete
+     */
+    where?: ProductWholesaleTierWhereInput
+    /**
+     * Limit how many ProductWholesaleTiers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProductWholesaleTier without action
+   */
+  export type ProductWholesaleTierDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductWholesaleTier
+     */
+    select?: ProductWholesaleTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductWholesaleTier
+     */
+    omit?: ProductWholesaleTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductWholesaleTierInclude<ExtArgs> | null
   }
 
 
@@ -22048,12 +23318,25 @@ export namespace Prisma {
     acceptCod: 'acceptCod',
     isDigital: 'isDigital',
     downloadUrl: 'downloadUrl',
+    isWholesale: 'isWholesale',
     storeId: 'storeId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
+
+
+  export const ProductWholesaleTierScalarFieldEnum: {
+    id: 'id',
+    productId: 'productId',
+    minQty: 'minQty',
+    maxQty: 'maxQty',
+    price: 'price',
+    position: 'position'
+  };
+
+  export type ProductWholesaleTierScalarFieldEnum = (typeof ProductWholesaleTierScalarFieldEnum)[keyof typeof ProductWholesaleTierScalarFieldEnum]
 
 
   export const ProductVariantGroupScalarFieldEnum: {
@@ -22697,6 +23980,7 @@ export namespace Prisma {
     acceptCod?: BoolFilter<"Product"> | boolean
     isDigital?: BoolFilter<"Product"> | boolean
     downloadUrl?: StringNullableFilter<"Product"> | string | null
+    isWholesale?: BoolFilter<"Product"> | boolean
     storeId?: StringFilter<"Product"> | string
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
@@ -22704,6 +23988,7 @@ export namespace Prisma {
     orderItems?: OrderItemListRelationFilter
     rating?: RatingListRelationFilter
     variantGroups?: ProductVariantGroupListRelationFilter
+    wholesaleTiers?: ProductWholesaleTierListRelationFilter
     adRequests?: AdRequestListRelationFilter
   }
 
@@ -22731,6 +24016,7 @@ export namespace Prisma {
     acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrderInput | SortOrder
+    isWholesale?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -22738,6 +24024,7 @@ export namespace Prisma {
     orderItems?: OrderItemOrderByRelationAggregateInput
     rating?: RatingOrderByRelationAggregateInput
     variantGroups?: ProductVariantGroupOrderByRelationAggregateInput
+    wholesaleTiers?: ProductWholesaleTierOrderByRelationAggregateInput
     adRequests?: AdRequestOrderByRelationAggregateInput
   }
 
@@ -22768,6 +24055,7 @@ export namespace Prisma {
     acceptCod?: BoolFilter<"Product"> | boolean
     isDigital?: BoolFilter<"Product"> | boolean
     downloadUrl?: StringNullableFilter<"Product"> | string | null
+    isWholesale?: BoolFilter<"Product"> | boolean
     storeId?: StringFilter<"Product"> | string
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
@@ -22775,6 +24063,7 @@ export namespace Prisma {
     orderItems?: OrderItemListRelationFilter
     rating?: RatingListRelationFilter
     variantGroups?: ProductVariantGroupListRelationFilter
+    wholesaleTiers?: ProductWholesaleTierListRelationFilter
     adRequests?: AdRequestListRelationFilter
   }, "id">
 
@@ -22802,6 +24091,7 @@ export namespace Prisma {
     acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrderInput | SortOrder
+    isWholesale?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -22839,9 +24129,72 @@ export namespace Prisma {
     acceptCod?: BoolWithAggregatesFilter<"Product"> | boolean
     isDigital?: BoolWithAggregatesFilter<"Product"> | boolean
     downloadUrl?: StringNullableWithAggregatesFilter<"Product"> | string | null
+    isWholesale?: BoolWithAggregatesFilter<"Product"> | boolean
     storeId?: StringWithAggregatesFilter<"Product"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
+  }
+
+  export type ProductWholesaleTierWhereInput = {
+    AND?: ProductWholesaleTierWhereInput | ProductWholesaleTierWhereInput[]
+    OR?: ProductWholesaleTierWhereInput[]
+    NOT?: ProductWholesaleTierWhereInput | ProductWholesaleTierWhereInput[]
+    id?: StringFilter<"ProductWholesaleTier"> | string
+    productId?: StringFilter<"ProductWholesaleTier"> | string
+    minQty?: IntFilter<"ProductWholesaleTier"> | number
+    maxQty?: IntNullableFilter<"ProductWholesaleTier"> | number | null
+    price?: FloatFilter<"ProductWholesaleTier"> | number
+    position?: IntFilter<"ProductWholesaleTier"> | number
+    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+  }
+
+  export type ProductWholesaleTierOrderByWithRelationInput = {
+    id?: SortOrder
+    productId?: SortOrder
+    minQty?: SortOrder
+    maxQty?: SortOrderInput | SortOrder
+    price?: SortOrder
+    position?: SortOrder
+    product?: ProductOrderByWithRelationInput
+  }
+
+  export type ProductWholesaleTierWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ProductWholesaleTierWhereInput | ProductWholesaleTierWhereInput[]
+    OR?: ProductWholesaleTierWhereInput[]
+    NOT?: ProductWholesaleTierWhereInput | ProductWholesaleTierWhereInput[]
+    productId?: StringFilter<"ProductWholesaleTier"> | string
+    minQty?: IntFilter<"ProductWholesaleTier"> | number
+    maxQty?: IntNullableFilter<"ProductWholesaleTier"> | number | null
+    price?: FloatFilter<"ProductWholesaleTier"> | number
+    position?: IntFilter<"ProductWholesaleTier"> | number
+    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+  }, "id">
+
+  export type ProductWholesaleTierOrderByWithAggregationInput = {
+    id?: SortOrder
+    productId?: SortOrder
+    minQty?: SortOrder
+    maxQty?: SortOrderInput | SortOrder
+    price?: SortOrder
+    position?: SortOrder
+    _count?: ProductWholesaleTierCountOrderByAggregateInput
+    _avg?: ProductWholesaleTierAvgOrderByAggregateInput
+    _max?: ProductWholesaleTierMaxOrderByAggregateInput
+    _min?: ProductWholesaleTierMinOrderByAggregateInput
+    _sum?: ProductWholesaleTierSumOrderByAggregateInput
+  }
+
+  export type ProductWholesaleTierScalarWhereWithAggregatesInput = {
+    AND?: ProductWholesaleTierScalarWhereWithAggregatesInput | ProductWholesaleTierScalarWhereWithAggregatesInput[]
+    OR?: ProductWholesaleTierScalarWhereWithAggregatesInput[]
+    NOT?: ProductWholesaleTierScalarWhereWithAggregatesInput | ProductWholesaleTierScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProductWholesaleTier"> | string
+    productId?: StringWithAggregatesFilter<"ProductWholesaleTier"> | string
+    minQty?: IntWithAggregatesFilter<"ProductWholesaleTier"> | number
+    maxQty?: IntNullableWithAggregatesFilter<"ProductWholesaleTier"> | number | null
+    price?: FloatWithAggregatesFilter<"ProductWholesaleTier"> | number
+    position?: IntWithAggregatesFilter<"ProductWholesaleTier"> | number
   }
 
   export type ProductVariantGroupWhereInput = {
@@ -24212,12 +25565,14 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutProductInput
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
     rating?: RatingCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupCreateNestedManyWithoutProductInput
+    wholesaleTiers?: ProductWholesaleTierCreateNestedManyWithoutProductInput
     adRequests?: AdRequestCreateNestedManyWithoutProductInput
   }
 
@@ -24245,12 +25600,14 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     rating?: RatingUncheckedCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupUncheckedCreateNestedManyWithoutProductInput
+    wholesaleTiers?: ProductWholesaleTierUncheckedCreateNestedManyWithoutProductInput
     adRequests?: AdRequestUncheckedCreateNestedManyWithoutProductInput
   }
 
@@ -24278,12 +25635,14 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
     rating?: RatingUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUpdateManyWithoutProductNestedInput
+    wholesaleTiers?: ProductWholesaleTierUpdateManyWithoutProductNestedInput
     adRequests?: AdRequestUpdateManyWithoutProductNestedInput
   }
 
@@ -24311,12 +25670,14 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     rating?: RatingUncheckedUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUncheckedUpdateManyWithoutProductNestedInput
+    wholesaleTiers?: ProductWholesaleTierUncheckedUpdateManyWithoutProductNestedInput
     adRequests?: AdRequestUncheckedUpdateManyWithoutProductNestedInput
   }
 
@@ -24344,6 +25705,7 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -24373,6 +25735,7 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -24401,9 +25764,72 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductWholesaleTierCreateInput = {
+    id?: string
+    minQty: number
+    maxQty?: number | null
+    price: number
+    position?: number
+    product: ProductCreateNestedOneWithoutWholesaleTiersInput
+  }
+
+  export type ProductWholesaleTierUncheckedCreateInput = {
+    id?: string
+    productId: string
+    minQty: number
+    maxQty?: number | null
+    price: number
+    position?: number
+  }
+
+  export type ProductWholesaleTierUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    minQty?: IntFieldUpdateOperationsInput | number
+    maxQty?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: FloatFieldUpdateOperationsInput | number
+    position?: IntFieldUpdateOperationsInput | number
+    product?: ProductUpdateOneRequiredWithoutWholesaleTiersNestedInput
+  }
+
+  export type ProductWholesaleTierUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    minQty?: IntFieldUpdateOperationsInput | number
+    maxQty?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: FloatFieldUpdateOperationsInput | number
+    position?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ProductWholesaleTierCreateManyInput = {
+    id?: string
+    productId: string
+    minQty: number
+    maxQty?: number | null
+    price: number
+    position?: number
+  }
+
+  export type ProductWholesaleTierUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    minQty?: IntFieldUpdateOperationsInput | number
+    maxQty?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: FloatFieldUpdateOperationsInput | number
+    position?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ProductWholesaleTierUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    minQty?: IntFieldUpdateOperationsInput | number
+    maxQty?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: FloatFieldUpdateOperationsInput | number
+    position?: IntFieldUpdateOperationsInput | number
   }
 
   export type ProductVariantGroupCreateInput = {
@@ -26032,6 +27458,12 @@ export namespace Prisma {
     none?: ProductVariantGroupWhereInput
   }
 
+  export type ProductWholesaleTierListRelationFilter = {
+    every?: ProductWholesaleTierWhereInput
+    some?: ProductWholesaleTierWhereInput
+    none?: ProductWholesaleTierWhereInput
+  }
+
   export type AdRequestListRelationFilter = {
     every?: AdRequestWhereInput
     some?: AdRequestWhereInput
@@ -26043,6 +27475,10 @@ export namespace Prisma {
   }
 
   export type ProductVariantGroupOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ProductWholesaleTierOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -26074,6 +27510,7 @@ export namespace Prisma {
     acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrder
+    isWholesale?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -26107,6 +27544,7 @@ export namespace Prisma {
     acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrder
+    isWholesale?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -26134,6 +27572,7 @@ export namespace Prisma {
     acceptCod?: SortOrder
     isDigital?: SortOrder
     downloadUrl?: SortOrder
+    isWholesale?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -26201,16 +27640,84 @@ export namespace Prisma {
     _max?: NestedEnumProductOriginFilter<$PrismaModel>
   }
 
-  export type EnumVariantGroupTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.VariantGroupType | EnumVariantGroupTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.VariantGroupType[] | ListEnumVariantGroupTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.VariantGroupType[] | ListEnumVariantGroupTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumVariantGroupTypeFilter<$PrismaModel> | $Enums.VariantGroupType
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type ProductScalarRelationFilter = {
     is?: ProductWhereInput
     isNot?: ProductWhereInput
+  }
+
+  export type ProductWholesaleTierCountOrderByAggregateInput = {
+    id?: SortOrder
+    productId?: SortOrder
+    minQty?: SortOrder
+    maxQty?: SortOrder
+    price?: SortOrder
+    position?: SortOrder
+  }
+
+  export type ProductWholesaleTierAvgOrderByAggregateInput = {
+    minQty?: SortOrder
+    maxQty?: SortOrder
+    price?: SortOrder
+    position?: SortOrder
+  }
+
+  export type ProductWholesaleTierMaxOrderByAggregateInput = {
+    id?: SortOrder
+    productId?: SortOrder
+    minQty?: SortOrder
+    maxQty?: SortOrder
+    price?: SortOrder
+    position?: SortOrder
+  }
+
+  export type ProductWholesaleTierMinOrderByAggregateInput = {
+    id?: SortOrder
+    productId?: SortOrder
+    minQty?: SortOrder
+    maxQty?: SortOrder
+    price?: SortOrder
+    position?: SortOrder
+  }
+
+  export type ProductWholesaleTierSumOrderByAggregateInput = {
+    minQty?: SortOrder
+    maxQty?: SortOrder
+    price?: SortOrder
+    position?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type EnumVariantGroupTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.VariantGroupType | EnumVariantGroupTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.VariantGroupType[] | ListEnumVariantGroupTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.VariantGroupType[] | ListEnumVariantGroupTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumVariantGroupTypeFilter<$PrismaModel> | $Enums.VariantGroupType
   }
 
   export type ProductVariantOptionListRelationFilter = {
@@ -26672,17 +28179,6 @@ export namespace Prisma {
     not?: NestedEnumDiscountTypeFilter<$PrismaModel> | $Enums.DiscountType
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type StoreNullableScalarRelationFilter = {
     is?: StoreWhereInput | null
     isNot?: StoreWhereInput | null
@@ -26758,22 +28254,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumDiscountTypeFilter<$PrismaModel>
     _max?: NestedEnumDiscountTypeFilter<$PrismaModel>
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type ProductListRelationFilter = {
@@ -27413,6 +28893,13 @@ export namespace Prisma {
     connect?: ProductVariantGroupWhereUniqueInput | ProductVariantGroupWhereUniqueInput[]
   }
 
+  export type ProductWholesaleTierCreateNestedManyWithoutProductInput = {
+    create?: XOR<ProductWholesaleTierCreateWithoutProductInput, ProductWholesaleTierUncheckedCreateWithoutProductInput> | ProductWholesaleTierCreateWithoutProductInput[] | ProductWholesaleTierUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: ProductWholesaleTierCreateOrConnectWithoutProductInput | ProductWholesaleTierCreateOrConnectWithoutProductInput[]
+    createMany?: ProductWholesaleTierCreateManyProductInputEnvelope
+    connect?: ProductWholesaleTierWhereUniqueInput | ProductWholesaleTierWhereUniqueInput[]
+  }
+
   export type AdRequestCreateNestedManyWithoutProductInput = {
     create?: XOR<AdRequestCreateWithoutProductInput, AdRequestUncheckedCreateWithoutProductInput> | AdRequestCreateWithoutProductInput[] | AdRequestUncheckedCreateWithoutProductInput[]
     connectOrCreate?: AdRequestCreateOrConnectWithoutProductInput | AdRequestCreateOrConnectWithoutProductInput[]
@@ -27439,6 +28926,13 @@ export namespace Prisma {
     connectOrCreate?: ProductVariantGroupCreateOrConnectWithoutProductInput | ProductVariantGroupCreateOrConnectWithoutProductInput[]
     createMany?: ProductVariantGroupCreateManyProductInputEnvelope
     connect?: ProductVariantGroupWhereUniqueInput | ProductVariantGroupWhereUniqueInput[]
+  }
+
+  export type ProductWholesaleTierUncheckedCreateNestedManyWithoutProductInput = {
+    create?: XOR<ProductWholesaleTierCreateWithoutProductInput, ProductWholesaleTierUncheckedCreateWithoutProductInput> | ProductWholesaleTierCreateWithoutProductInput[] | ProductWholesaleTierUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: ProductWholesaleTierCreateOrConnectWithoutProductInput | ProductWholesaleTierCreateOrConnectWithoutProductInput[]
+    createMany?: ProductWholesaleTierCreateManyProductInputEnvelope
+    connect?: ProductWholesaleTierWhereUniqueInput | ProductWholesaleTierWhereUniqueInput[]
   }
 
   export type AdRequestUncheckedCreateNestedManyWithoutProductInput = {
@@ -27532,6 +29026,20 @@ export namespace Prisma {
     deleteMany?: ProductVariantGroupScalarWhereInput | ProductVariantGroupScalarWhereInput[]
   }
 
+  export type ProductWholesaleTierUpdateManyWithoutProductNestedInput = {
+    create?: XOR<ProductWholesaleTierCreateWithoutProductInput, ProductWholesaleTierUncheckedCreateWithoutProductInput> | ProductWholesaleTierCreateWithoutProductInput[] | ProductWholesaleTierUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: ProductWholesaleTierCreateOrConnectWithoutProductInput | ProductWholesaleTierCreateOrConnectWithoutProductInput[]
+    upsert?: ProductWholesaleTierUpsertWithWhereUniqueWithoutProductInput | ProductWholesaleTierUpsertWithWhereUniqueWithoutProductInput[]
+    createMany?: ProductWholesaleTierCreateManyProductInputEnvelope
+    set?: ProductWholesaleTierWhereUniqueInput | ProductWholesaleTierWhereUniqueInput[]
+    disconnect?: ProductWholesaleTierWhereUniqueInput | ProductWholesaleTierWhereUniqueInput[]
+    delete?: ProductWholesaleTierWhereUniqueInput | ProductWholesaleTierWhereUniqueInput[]
+    connect?: ProductWholesaleTierWhereUniqueInput | ProductWholesaleTierWhereUniqueInput[]
+    update?: ProductWholesaleTierUpdateWithWhereUniqueWithoutProductInput | ProductWholesaleTierUpdateWithWhereUniqueWithoutProductInput[]
+    updateMany?: ProductWholesaleTierUpdateManyWithWhereWithoutProductInput | ProductWholesaleTierUpdateManyWithWhereWithoutProductInput[]
+    deleteMany?: ProductWholesaleTierScalarWhereInput | ProductWholesaleTierScalarWhereInput[]
+  }
+
   export type AdRequestUpdateManyWithoutProductNestedInput = {
     create?: XOR<AdRequestCreateWithoutProductInput, AdRequestUncheckedCreateWithoutProductInput> | AdRequestCreateWithoutProductInput[] | AdRequestUncheckedCreateWithoutProductInput[]
     connectOrCreate?: AdRequestCreateOrConnectWithoutProductInput | AdRequestCreateOrConnectWithoutProductInput[]
@@ -27588,6 +29096,20 @@ export namespace Prisma {
     deleteMany?: ProductVariantGroupScalarWhereInput | ProductVariantGroupScalarWhereInput[]
   }
 
+  export type ProductWholesaleTierUncheckedUpdateManyWithoutProductNestedInput = {
+    create?: XOR<ProductWholesaleTierCreateWithoutProductInput, ProductWholesaleTierUncheckedCreateWithoutProductInput> | ProductWholesaleTierCreateWithoutProductInput[] | ProductWholesaleTierUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: ProductWholesaleTierCreateOrConnectWithoutProductInput | ProductWholesaleTierCreateOrConnectWithoutProductInput[]
+    upsert?: ProductWholesaleTierUpsertWithWhereUniqueWithoutProductInput | ProductWholesaleTierUpsertWithWhereUniqueWithoutProductInput[]
+    createMany?: ProductWholesaleTierCreateManyProductInputEnvelope
+    set?: ProductWholesaleTierWhereUniqueInput | ProductWholesaleTierWhereUniqueInput[]
+    disconnect?: ProductWholesaleTierWhereUniqueInput | ProductWholesaleTierWhereUniqueInput[]
+    delete?: ProductWholesaleTierWhereUniqueInput | ProductWholesaleTierWhereUniqueInput[]
+    connect?: ProductWholesaleTierWhereUniqueInput | ProductWholesaleTierWhereUniqueInput[]
+    update?: ProductWholesaleTierUpdateWithWhereUniqueWithoutProductInput | ProductWholesaleTierUpdateWithWhereUniqueWithoutProductInput[]
+    updateMany?: ProductWholesaleTierUpdateManyWithWhereWithoutProductInput | ProductWholesaleTierUpdateManyWithWhereWithoutProductInput[]
+    deleteMany?: ProductWholesaleTierScalarWhereInput | ProductWholesaleTierScalarWhereInput[]
+  }
+
   export type AdRequestUncheckedUpdateManyWithoutProductNestedInput = {
     create?: XOR<AdRequestCreateWithoutProductInput, AdRequestUncheckedCreateWithoutProductInput> | AdRequestCreateWithoutProductInput[] | AdRequestUncheckedCreateWithoutProductInput[]
     connectOrCreate?: AdRequestCreateOrConnectWithoutProductInput | AdRequestCreateOrConnectWithoutProductInput[]
@@ -27600,6 +29122,28 @@ export namespace Prisma {
     update?: AdRequestUpdateWithWhereUniqueWithoutProductInput | AdRequestUpdateWithWhereUniqueWithoutProductInput[]
     updateMany?: AdRequestUpdateManyWithWhereWithoutProductInput | AdRequestUpdateManyWithWhereWithoutProductInput[]
     deleteMany?: AdRequestScalarWhereInput | AdRequestScalarWhereInput[]
+  }
+
+  export type ProductCreateNestedOneWithoutWholesaleTiersInput = {
+    create?: XOR<ProductCreateWithoutWholesaleTiersInput, ProductUncheckedCreateWithoutWholesaleTiersInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutWholesaleTiersInput
+    connect?: ProductWhereUniqueInput
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type ProductUpdateOneRequiredWithoutWholesaleTiersNestedInput = {
+    create?: XOR<ProductCreateWithoutWholesaleTiersInput, ProductUncheckedCreateWithoutWholesaleTiersInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutWholesaleTiersInput
+    upsert?: ProductUpsertWithoutWholesaleTiersInput
+    connect?: ProductWhereUniqueInput
+    update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutWholesaleTiersInput, ProductUpdateWithoutWholesaleTiersInput>, ProductUncheckedUpdateWithoutWholesaleTiersInput>
   }
 
   export type ProductCreateNestedOneWithoutVariantGroupsInput = {
@@ -27987,14 +29531,6 @@ export namespace Prisma {
 
   export type EnumDiscountTypeFieldUpdateOperationsInput = {
     set?: $Enums.DiscountType
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type StoreUpdateOneWithoutCouponNestedInput = {
@@ -28604,6 +30140,33 @@ export namespace Prisma {
     _max?: NestedEnumProductOriginFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedEnumVariantGroupTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.VariantGroupType | EnumVariantGroupTypeFieldRefInput<$PrismaModel>
     in?: $Enums.VariantGroupType[] | ListEnumVariantGroupTypeFieldRefInput<$PrismaModel>
@@ -28662,17 +30225,6 @@ export namespace Prisma {
     not?: NestedEnumRefundStatusFilter<$PrismaModel> | $Enums.RefundStatus
   }
 
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedEnumRefundStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.RefundStatus | EnumRefundStatusFieldRefInput<$PrismaModel>
     in?: $Enums.RefundStatus[] | ListEnumRefundStatusFieldRefInput<$PrismaModel>
@@ -28714,22 +30266,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumDiscountTypeFilter<$PrismaModel>
     _max?: NestedEnumDiscountTypeFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumPayoutStatusFilter<$PrismaModel = never> = {
@@ -29519,6 +31055,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ProductWholesaleTierCreateWithoutProductInput = {
+    id?: string
+    minQty: number
+    maxQty?: number | null
+    price: number
+    position?: number
+  }
+
+  export type ProductWholesaleTierUncheckedCreateWithoutProductInput = {
+    id?: string
+    minQty: number
+    maxQty?: number | null
+    price: number
+    position?: number
+  }
+
+  export type ProductWholesaleTierCreateOrConnectWithoutProductInput = {
+    where: ProductWholesaleTierWhereUniqueInput
+    create: XOR<ProductWholesaleTierCreateWithoutProductInput, ProductWholesaleTierUncheckedCreateWithoutProductInput>
+  }
+
+  export type ProductWholesaleTierCreateManyProductInputEnvelope = {
+    data: ProductWholesaleTierCreateManyProductInput | ProductWholesaleTierCreateManyProductInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AdRequestCreateWithoutProductInput = {
     id?: string
     status?: $Enums.AdRequestStatus
@@ -29719,6 +31281,34 @@ export namespace Prisma {
     position?: IntFilter<"ProductVariantGroup"> | number
   }
 
+  export type ProductWholesaleTierUpsertWithWhereUniqueWithoutProductInput = {
+    where: ProductWholesaleTierWhereUniqueInput
+    update: XOR<ProductWholesaleTierUpdateWithoutProductInput, ProductWholesaleTierUncheckedUpdateWithoutProductInput>
+    create: XOR<ProductWholesaleTierCreateWithoutProductInput, ProductWholesaleTierUncheckedCreateWithoutProductInput>
+  }
+
+  export type ProductWholesaleTierUpdateWithWhereUniqueWithoutProductInput = {
+    where: ProductWholesaleTierWhereUniqueInput
+    data: XOR<ProductWholesaleTierUpdateWithoutProductInput, ProductWholesaleTierUncheckedUpdateWithoutProductInput>
+  }
+
+  export type ProductWholesaleTierUpdateManyWithWhereWithoutProductInput = {
+    where: ProductWholesaleTierScalarWhereInput
+    data: XOR<ProductWholesaleTierUpdateManyMutationInput, ProductWholesaleTierUncheckedUpdateManyWithoutProductInput>
+  }
+
+  export type ProductWholesaleTierScalarWhereInput = {
+    AND?: ProductWholesaleTierScalarWhereInput | ProductWholesaleTierScalarWhereInput[]
+    OR?: ProductWholesaleTierScalarWhereInput[]
+    NOT?: ProductWholesaleTierScalarWhereInput | ProductWholesaleTierScalarWhereInput[]
+    id?: StringFilter<"ProductWholesaleTier"> | string
+    productId?: StringFilter<"ProductWholesaleTier"> | string
+    minQty?: IntFilter<"ProductWholesaleTier"> | number
+    maxQty?: IntNullableFilter<"ProductWholesaleTier"> | number | null
+    price?: FloatFilter<"ProductWholesaleTier"> | number
+    position?: IntFilter<"ProductWholesaleTier"> | number
+  }
+
   export type AdRequestUpsertWithWhereUniqueWithoutProductInput = {
     where: AdRequestWhereUniqueInput
     update: XOR<AdRequestUpdateWithoutProductInput, AdRequestUncheckedUpdateWithoutProductInput>
@@ -29750,6 +31340,158 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"AdRequest"> | Date | string
   }
 
+  export type ProductCreateWithoutWholesaleTiersInput = {
+    id?: string
+    name: string
+    description: string
+    mrp: number
+    price: number
+    images?: ProductCreateimagesInput | string[]
+    category: string
+    inStock?: boolean
+    quantity?: number
+    sku?: string | null
+    tags?: ProductCreatetagsInput | string[]
+    scheduledAt?: Date | string | null
+    origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
+    madeIn?: string | null
+    manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
+    acceptCod?: boolean
+    isDigital?: boolean
+    downloadUrl?: string | null
+    isWholesale?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    store: StoreCreateNestedOneWithoutProductInput
+    orderItems?: OrderItemCreateNestedManyWithoutProductInput
+    rating?: RatingCreateNestedManyWithoutProductInput
+    variantGroups?: ProductVariantGroupCreateNestedManyWithoutProductInput
+    adRequests?: AdRequestCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductUncheckedCreateWithoutWholesaleTiersInput = {
+    id?: string
+    name: string
+    description: string
+    mrp: number
+    price: number
+    images?: ProductCreateimagesInput | string[]
+    category: string
+    inStock?: boolean
+    quantity?: number
+    sku?: string | null
+    tags?: ProductCreatetagsInput | string[]
+    scheduledAt?: Date | string | null
+    origin?: $Enums.ProductOrigin
+    deliveryWithinState?: boolean
+    deliveryNationwide?: boolean
+    deliveryInternational?: boolean
+    madeIn?: string | null
+    manufacturer?: string | null
+    material?: string | null
+    guaranteePeriod?: string | null
+    acceptCod?: boolean
+    isDigital?: boolean
+    downloadUrl?: string | null
+    isWholesale?: boolean
+    storeId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
+    rating?: RatingUncheckedCreateNestedManyWithoutProductInput
+    variantGroups?: ProductVariantGroupUncheckedCreateNestedManyWithoutProductInput
+    adRequests?: AdRequestUncheckedCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductCreateOrConnectWithoutWholesaleTiersInput = {
+    where: ProductWhereUniqueInput
+    create: XOR<ProductCreateWithoutWholesaleTiersInput, ProductUncheckedCreateWithoutWholesaleTiersInput>
+  }
+
+  export type ProductUpsertWithoutWholesaleTiersInput = {
+    update: XOR<ProductUpdateWithoutWholesaleTiersInput, ProductUncheckedUpdateWithoutWholesaleTiersInput>
+    create: XOR<ProductCreateWithoutWholesaleTiersInput, ProductUncheckedCreateWithoutWholesaleTiersInput>
+    where?: ProductWhereInput
+  }
+
+  export type ProductUpdateToOneWithWhereWithoutWholesaleTiersInput = {
+    where?: ProductWhereInput
+    data: XOR<ProductUpdateWithoutWholesaleTiersInput, ProductUncheckedUpdateWithoutWholesaleTiersInput>
+  }
+
+  export type ProductUpdateWithoutWholesaleTiersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    mrp?: FloatFieldUpdateOperationsInput | number
+    price?: FloatFieldUpdateOperationsInput | number
+    images?: ProductUpdateimagesInput | string[]
+    category?: StringFieldUpdateOperationsInput | string
+    inStock?: BoolFieldUpdateOperationsInput | boolean
+    quantity?: IntFieldUpdateOperationsInput | number
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: ProductUpdatetagsInput | string[]
+    scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
+    madeIn?: NullableStringFieldUpdateOperationsInput | string | null
+    manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
+    isDigital?: BoolFieldUpdateOperationsInput | boolean
+    downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    store?: StoreUpdateOneRequiredWithoutProductNestedInput
+    orderItems?: OrderItemUpdateManyWithoutProductNestedInput
+    rating?: RatingUpdateManyWithoutProductNestedInput
+    variantGroups?: ProductVariantGroupUpdateManyWithoutProductNestedInput
+    adRequests?: AdRequestUpdateManyWithoutProductNestedInput
+  }
+
+  export type ProductUncheckedUpdateWithoutWholesaleTiersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    mrp?: FloatFieldUpdateOperationsInput | number
+    price?: FloatFieldUpdateOperationsInput | number
+    images?: ProductUpdateimagesInput | string[]
+    category?: StringFieldUpdateOperationsInput | string
+    inStock?: BoolFieldUpdateOperationsInput | boolean
+    quantity?: IntFieldUpdateOperationsInput | number
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: ProductUpdatetagsInput | string[]
+    scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    origin?: EnumProductOriginFieldUpdateOperationsInput | $Enums.ProductOrigin
+    deliveryWithinState?: BoolFieldUpdateOperationsInput | boolean
+    deliveryNationwide?: BoolFieldUpdateOperationsInput | boolean
+    deliveryInternational?: BoolFieldUpdateOperationsInput | boolean
+    madeIn?: NullableStringFieldUpdateOperationsInput | string | null
+    manufacturer?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    guaranteePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    acceptCod?: BoolFieldUpdateOperationsInput | boolean
+    isDigital?: BoolFieldUpdateOperationsInput | boolean
+    downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    storeId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
+    rating?: RatingUncheckedUpdateManyWithoutProductNestedInput
+    variantGroups?: ProductVariantGroupUncheckedUpdateManyWithoutProductNestedInput
+    adRequests?: AdRequestUncheckedUpdateManyWithoutProductNestedInput
+  }
+
   export type ProductCreateWithoutVariantGroupsInput = {
     id?: string
     name: string
@@ -29774,11 +31516,13 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutProductInput
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
     rating?: RatingCreateNestedManyWithoutProductInput
+    wholesaleTiers?: ProductWholesaleTierCreateNestedManyWithoutProductInput
     adRequests?: AdRequestCreateNestedManyWithoutProductInput
   }
 
@@ -29806,11 +31550,13 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     rating?: RatingUncheckedCreateNestedManyWithoutProductInput
+    wholesaleTiers?: ProductWholesaleTierUncheckedCreateNestedManyWithoutProductInput
     adRequests?: AdRequestUncheckedCreateNestedManyWithoutProductInput
   }
 
@@ -29886,11 +31632,13 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
     rating?: RatingUpdateManyWithoutProductNestedInput
+    wholesaleTiers?: ProductWholesaleTierUpdateManyWithoutProductNestedInput
     adRequests?: AdRequestUpdateManyWithoutProductNestedInput
   }
 
@@ -29918,11 +31666,13 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     rating?: RatingUncheckedUpdateManyWithoutProductNestedInput
+    wholesaleTiers?: ProductWholesaleTierUncheckedUpdateManyWithoutProductNestedInput
     adRequests?: AdRequestUncheckedUpdateManyWithoutProductNestedInput
   }
 
@@ -30568,11 +32318,13 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutProductInput
     rating?: RatingCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupCreateNestedManyWithoutProductInput
+    wholesaleTiers?: ProductWholesaleTierCreateNestedManyWithoutProductInput
     adRequests?: AdRequestCreateNestedManyWithoutProductInput
   }
 
@@ -30600,11 +32352,13 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
     rating?: RatingUncheckedCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupUncheckedCreateNestedManyWithoutProductInput
+    wholesaleTiers?: ProductWholesaleTierUncheckedCreateNestedManyWithoutProductInput
     adRequests?: AdRequestUncheckedCreateNestedManyWithoutProductInput
   }
 
@@ -30697,11 +32451,13 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
     rating?: RatingUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUpdateManyWithoutProductNestedInput
+    wholesaleTiers?: ProductWholesaleTierUpdateManyWithoutProductNestedInput
     adRequests?: AdRequestUpdateManyWithoutProductNestedInput
   }
 
@@ -30729,11 +32485,13 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     rating?: RatingUncheckedUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUncheckedUpdateManyWithoutProductNestedInput
+    wholesaleTiers?: ProductWholesaleTierUncheckedUpdateManyWithoutProductNestedInput
     adRequests?: AdRequestUncheckedUpdateManyWithoutProductNestedInput
   }
 
@@ -30890,11 +32648,13 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutProductInput
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupCreateNestedManyWithoutProductInput
+    wholesaleTiers?: ProductWholesaleTierCreateNestedManyWithoutProductInput
     adRequests?: AdRequestCreateNestedManyWithoutProductInput
   }
 
@@ -30922,11 +32682,13 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupUncheckedCreateNestedManyWithoutProductInput
+    wholesaleTiers?: ProductWholesaleTierUncheckedCreateNestedManyWithoutProductInput
     adRequests?: AdRequestUncheckedCreateNestedManyWithoutProductInput
   }
 
@@ -31013,11 +32775,13 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUpdateManyWithoutProductNestedInput
+    wholesaleTiers?: ProductWholesaleTierUpdateManyWithoutProductNestedInput
     adRequests?: AdRequestUpdateManyWithoutProductNestedInput
   }
 
@@ -31045,11 +32809,13 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUncheckedUpdateManyWithoutProductNestedInput
+    wholesaleTiers?: ProductWholesaleTierUncheckedUpdateManyWithoutProductNestedInput
     adRequests?: AdRequestUncheckedUpdateManyWithoutProductNestedInput
   }
 
@@ -31405,11 +33171,13 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
     rating?: RatingCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupCreateNestedManyWithoutProductInput
+    wholesaleTiers?: ProductWholesaleTierCreateNestedManyWithoutProductInput
     adRequests?: AdRequestCreateNestedManyWithoutProductInput
   }
 
@@ -31437,11 +33205,13 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     rating?: RatingUncheckedCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupUncheckedCreateNestedManyWithoutProductInput
+    wholesaleTiers?: ProductWholesaleTierUncheckedCreateNestedManyWithoutProductInput
     adRequests?: AdRequestUncheckedCreateNestedManyWithoutProductInput
   }
 
@@ -31713,6 +33483,7 @@ export namespace Prisma {
     acceptCod?: BoolFilter<"Product"> | boolean
     isDigital?: BoolFilter<"Product"> | boolean
     downloadUrl?: StringNullableFilter<"Product"> | string | null
+    isWholesale?: BoolFilter<"Product"> | boolean
     storeId?: StringFilter<"Product"> | string
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
@@ -32437,12 +34208,14 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutProductInput
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
     rating?: RatingCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupCreateNestedManyWithoutProductInput
+    wholesaleTiers?: ProductWholesaleTierCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutAdRequestsInput = {
@@ -32469,12 +34242,14 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     rating?: RatingUncheckedCreateNestedManyWithoutProductInput
     variantGroups?: ProductVariantGroupUncheckedCreateNestedManyWithoutProductInput
+    wholesaleTiers?: ProductWholesaleTierUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutAdRequestsInput = {
@@ -32606,12 +34381,14 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
     rating?: RatingUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUpdateManyWithoutProductNestedInput
+    wholesaleTiers?: ProductWholesaleTierUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutAdRequestsInput = {
@@ -32638,12 +34415,14 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     rating?: RatingUncheckedUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUncheckedUpdateManyWithoutProductNestedInput
+    wholesaleTiers?: ProductWholesaleTierUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type StoreUpsertWithoutAdRequestsInput = {
@@ -33182,6 +34961,14 @@ export namespace Prisma {
     position?: number
   }
 
+  export type ProductWholesaleTierCreateManyProductInput = {
+    id?: string
+    minQty: number
+    maxQty?: number | null
+    price: number
+    position?: number
+  }
+
   export type AdRequestCreateManyProductInput = {
     id?: string
     storeId: string
@@ -33279,6 +35066,30 @@ export namespace Prisma {
     label?: StringFieldUpdateOperationsInput | string
     type?: EnumVariantGroupTypeFieldUpdateOperationsInput | $Enums.VariantGroupType
     required?: BoolFieldUpdateOperationsInput | boolean
+    position?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ProductWholesaleTierUpdateWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    minQty?: IntFieldUpdateOperationsInput | number
+    maxQty?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: FloatFieldUpdateOperationsInput | number
+    position?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ProductWholesaleTierUncheckedUpdateWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    minQty?: IntFieldUpdateOperationsInput | number
+    maxQty?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: FloatFieldUpdateOperationsInput | number
+    position?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ProductWholesaleTierUncheckedUpdateManyWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    minQty?: IntFieldUpdateOperationsInput | number
+    maxQty?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: FloatFieldUpdateOperationsInput | number
     position?: IntFieldUpdateOperationsInput | number
   }
 
@@ -33489,6 +35300,7 @@ export namespace Prisma {
     acceptCod?: boolean
     isDigital?: boolean
     downloadUrl?: string | null
+    isWholesale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -33578,11 +35390,13 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
     rating?: RatingUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUpdateManyWithoutProductNestedInput
+    wholesaleTiers?: ProductWholesaleTierUpdateManyWithoutProductNestedInput
     adRequests?: AdRequestUpdateManyWithoutProductNestedInput
   }
 
@@ -33610,11 +35424,13 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     rating?: RatingUncheckedUpdateManyWithoutProductNestedInput
     variantGroups?: ProductVariantGroupUncheckedUpdateManyWithoutProductNestedInput
+    wholesaleTiers?: ProductWholesaleTierUncheckedUpdateManyWithoutProductNestedInput
     adRequests?: AdRequestUncheckedUpdateManyWithoutProductNestedInput
   }
 
@@ -33642,6 +35458,7 @@ export namespace Prisma {
     acceptCod?: BoolFieldUpdateOperationsInput | boolean
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isWholesale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

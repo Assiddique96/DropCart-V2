@@ -64,6 +64,7 @@ const MAX_IMAGES = 8
 
 export default function StoreAddProduct() {
     const { getToken } = useAuth()
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
     const [images, setImages] = useState([]) // array of File objects, max 8
     const [loading, setLoading] = useState(false)
     const [aiUsed, setAiUsed] = useState(false)
@@ -98,6 +99,11 @@ export default function StoreAddProduct() {
     const [newGroupLabel, setNewGroupLabel] = useState("")
     const [newGroupType, setNewGroupType] = useState("TEXT")
     const [newOptionInputs, setNewOptionInputs] = useState({}) // { [groupIdx]: { label, image, mrp, price, quantity } }
+
+    // Wholesale pricing state
+    const [isWholesale, setIsWholesale] = useState(false)
+    const [wholesaleTiers, setWholesaleTiers] = useState([]) // [{ minQty, maxQty, price }]
+    const [newTierInput, setNewTierInput] = useState({ minQty: "", maxQty: "", price: "" })
 
     const onChange = (e) => setProductInfo(p => ({ ...p, [e.target.name]: e.target.value }))
 
@@ -213,6 +219,28 @@ export default function StoreAddProduct() {
         }
     }
 
+    const addWholesaleTier = () => {
+        const minQty = parseInt(newTierInput.minQty, 10)
+        const maxQty = newTierInput.maxQty !== "" ? parseInt(newTierInput.maxQty, 10) : null
+        const price = parseFloat(newTierInput.price)
+        if (!minQty || minQty < 1) return toast.error("Minimum quantity must be at least 1.")
+        if (maxQty !== null && maxQty <= minQty) return toast.error("Max quantity must be greater than min quantity.")
+        if (!price || price <= 0) return toast.error("Price must be greater than 0.")
+        // Check for overlap with existing tiers
+        const overlaps = wholesaleTiers.some(t => {
+            const tMax = t.maxQty ?? Infinity
+            const nMax = maxQty ?? Infinity
+            return minQty <= tMax && nMax >= t.minQty
+        })
+        if (overlaps) return toast.error("This quantity range overlaps with an existing tier.")
+        setWholesaleTiers(prev =>
+            [...prev, { minQty, maxQty, price }].sort((a, b) => a.minQty - b.minQty)
+        )
+        setNewTierInput({ minQty: "", maxQty: "", price: "" })
+    }
+
+    const removeWholesaleTier = (idx) => setWholesaleTiers(prev => prev.filter((_, i) => i !== idx))
+
     const onSubmit = async (e) => {
         e.preventDefault()
         if (images.length === 0) return toast.error("Upload at least one product image.")
@@ -224,6 +252,10 @@ export default function StoreAddProduct() {
                 else if (k === "acceptCod") formData.append("acceptCod", v ? "true" : "false")
                 else formData.append(k, v)
             })
+            formData.append("isWholesale", isWholesale ? "true" : "false")
+            if (isWholesale && wholesaleTiers.length > 0) {
+                formData.append("wholesaleTiers", JSON.stringify(wholesaleTiers))
+            }
             images.forEach(img => formData.append("images", img))
 
             const { data } = await axios.post("/api/store/product", formData, {
@@ -242,6 +274,7 @@ export default function StoreAddProduct() {
             // Reset form
             setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", manufacturer: "", material: "", guaranteePeriod: "", acceptCod: true, deliveryWithinState: true, deliveryNationwide: true, deliveryInternational: false })
             setImages([]); setAiUsed(false); setVariantGroups([]); setNewOptionInputs({})
+            setIsWholesale(false); setWholesaleTiers([]); setNewTierInput({ minQty: "", maxQty: "", price: "" })
         } catch (error) {
             toast.error(error.response?.data?.error || error.message)
         } finally {
@@ -668,6 +701,90 @@ export default function StoreAddProduct() {
                         {totalOptionCombinations} possible combination{totalOptionCombinations !== 1 ? "s" : ""}.
                         Buyers select one option per required group before adding to cart.
                     </p>
+                )}
+            </div>
+
+            {/* ── Wholesale / Bulk Pricing ──────────────────────────────────── */}
+            <div className="mb-6 border border-slate-200 dark:border-slate-700 rounded-xl p-4 space-y-4">
+                <div>
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Wholesale / Bulk Pricing</p>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                        Enable tiered discounts — the more buyers purchase, the lower the unit price.
+                        Buyers will see the pricing table on the product page.
+                    </p>
+                </div>
+                <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <input type="checkbox" checked={isWholesale}
+                        onChange={e => setIsWholesale(e.target.checked)}
+                        className="w-4 h-4 accent-slate-700 rounded" />
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                        Enable wholesale pricing for this product
+                    </span>
+                </label>
+                {isWholesale && (
+                    <div className="space-y-3">
+                        {wholesaleTiers.length > 0 && (
+                            <div className="border border-slate-100 dark:border-slate-800 rounded-lg overflow-hidden">
+                                <table className="w-full text-xs">
+                                    <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400">
+                                        <tr>
+                                            <th className="text-left p-2 pl-3 font-medium">Min Qty</th>
+                                            <th className="text-left p-2 font-medium">Max Qty</th>
+                                            <th className="text-left p-2 font-medium">Unit Price</th>
+                                            <th className="w-8 p-2"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {wholesaleTiers.map((tier, idx) => (
+                                            <tr key={idx} className="border-t border-slate-100 dark:border-slate-800">
+                                                <td className="p-2 pl-3 text-slate-700 dark:text-slate-200">{tier.minQty}</td>
+                                                <td className="p-2 text-slate-700 dark:text-slate-200">
+                                                    {tier.maxQty != null ? tier.maxQty : <span className="text-slate-400">∞</span>}
+                                                </td>
+                                                <td className="p-2 text-slate-700 dark:text-slate-200">{tier.price.toLocaleString()}</td>
+                                                <td className="p-2 text-right">
+                                                    <button type="button" onClick={() => removeWholesaleTier(idx)}
+                                                        className="text-red-400 hover:text-red-600 transition">
+                                                        <XIcon size={12} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                        <div className="flex gap-2 items-end flex-wrap">
+                            <div className="w-24">
+                                <label className="text-[10px] text-slate-400 mb-0.5 block">Min Qty</label>
+                                <input type="number" min="1" value={newTierInput.minQty}
+                                    onChange={e => setNewTierInput(p => ({ ...p, minQty: e.target.value }))}
+                                    placeholder="e.g. 10"
+                                    className="w-full p-1.5 border border-slate-200 dark:border-slate-700 rounded text-xs outline-none bg-white dark:bg-slate-900" />
+                            </div>
+                            <div className="w-28">
+                                <label className="text-[10px] text-slate-400 mb-0.5 block">Max Qty <span className="text-slate-300">(blank = ∞)</span></label>
+                                <input type="number" min="1" value={newTierInput.maxQty}
+                                    onChange={e => setNewTierInput(p => ({ ...p, maxQty: e.target.value }))}
+                                    placeholder="e.g. 99"
+                                    className="w-full p-1.5 border border-slate-200 dark:border-slate-700 rounded text-xs outline-none bg-white dark:bg-slate-900" />
+                            </div>
+                            <div className="w-32">
+                                <label className="text-[10px] text-slate-400 mb-0.5 block">Unit Price ({currency})</label>
+                                <input type="number" min="0" step="0.01" value={newTierInput.price}
+                                    onChange={e => setNewTierInput(p => ({ ...p, price: e.target.value }))}
+                                    placeholder="e.g. 8000"
+                                    className="w-full p-1.5 border border-slate-200 dark:border-slate-700 rounded text-xs outline-none bg-white dark:bg-slate-900" />
+                            </div>
+                            <button type="button" onClick={addWholesaleTier}
+                                className="px-3 py-1.5 bg-slate-700 text-white rounded text-xs hover:bg-slate-800 transition flex items-center gap-1 shrink-0">
+                                <PlusIcon size={11} /> Add Tier
+                            </button>
+                        </div>
+                        <p className="text-[10px] text-slate-400 bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 rounded-lg px-3 py-2">
+                            📦 Example: 1–9 pcs = {currency}10,000 · 10–99 pcs = {currency}8,000 · 100+ pcs = {currency}6,000
+                        </p>
+                    </div>
                 )}
             </div>
 

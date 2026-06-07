@@ -56,6 +56,11 @@ const ProductCard = ({ product }) => {
               ✈️ Abroad
             </div>
           )}
+          {!isAbroad && product.isWholesale && (
+            <div className="absolute top-3 left-3 z-10 flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-1 text-[10px] font-semibold text-white shadow-sm pointer-events-none">
+              📦 Wholesale
+            </div>
+          )}
           <button
             type="button"
             onClick={handleWishlist}

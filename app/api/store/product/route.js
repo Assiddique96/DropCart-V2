@@ -67,6 +67,26 @@ export async function POST(request) {
     const rawQuantity = formData.get("quantity");
     const quantity = rawQuantity ? Math.max(0, parseInt(rawQuantity, 10)) : 0;
 
+    // Parse wholesale tiers (sent as JSON string)
+    const isWholesale = formData.get("isWholesale") === "true";
+    let wholesaleTiers = [];
+    const rawTiers = formData.get("wholesaleTiers");
+    if (isWholesale && rawTiers) {
+      try {
+        const parsed = JSON.parse(rawTiers);
+        if (Array.isArray(parsed)) {
+          wholesaleTiers = parsed
+            .filter(t => t.minQty >= 1 && t.price > 0)
+            .map((t, i) => ({
+              minQty: parseInt(t.minQty, 10),
+              maxQty: t.maxQty != null ? parseInt(t.maxQty, 10) : null,
+              price: parseFloat(t.price),
+              position: i,
+            }));
+        }
+      } catch { /* non-fatal — ignore malformed tiers */ }
+    }
+
     // Support up to 8 images (removed hardcoded 4 limit)
     const images = formData.getAll("images").filter(i => i instanceof File && i.size > 0);
     if (images.length === 0) return NextResponse.json({ error: "At least one product image is required." }, { status: 400 });
@@ -81,6 +101,10 @@ export async function POST(request) {
         inStock: quantity > 0,
         images: imageUrls,
         storeId,
+        isWholesale,
+        wholesaleTiers: wholesaleTiers.length > 0
+          ? { create: wholesaleTiers }
+          : undefined,
       },
     });
 
@@ -106,6 +130,9 @@ export async function GET(request) {
           include: {
             options: true,
           },
+        },
+        wholesaleTiers: {
+          orderBy: { position: "asc" },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -139,6 +166,28 @@ export async function PATCH(request) {
 
     const existing = await prisma.product.findFirst({ where: { id: productId, storeId } });
     if (!existing) return NextResponse.json({ error: "Product not found" }, { status: 404 });
+
+    // Parse wholesale changes
+    const isWholesale = formData.has("isWholesale")
+      ? formData.get("isWholesale") === "true"
+      : existing.isWholesale;
+    let wholesaleTiersUpdate = null; // null = no tier changes submitted
+    const rawTiers = formData.get("wholesaleTiers");
+    if (rawTiers !== null) {
+      try {
+        const parsed = JSON.parse(rawTiers);
+        if (Array.isArray(parsed)) {
+          wholesaleTiersUpdate = parsed
+            .filter(t => t.minQty >= 1 && t.price > 0)
+            .map((t, i) => ({
+              minQty: parseInt(t.minQty, 10),
+              maxQty: t.maxQty != null ? parseInt(t.maxQty, 10) : null,
+              price: parseFloat(t.price),
+              position: i,
+            }));
+        }
+      } catch { /* non-fatal */ }
+    }
 
     const acceptCodSource = formData.has("acceptCod") ? formData.get("acceptCod") : existing.acceptCod;
 
@@ -194,9 +243,24 @@ export async function PATCH(request) {
       return NextResponse.json({ error: "At least one product image is required." }, { status: 400 });
     }
 
-    const updated = await prisma.product.update({
-      where: { id: productId },
-      data: { ...sanitized, quantity, inStock: quantity > 0, images },
+    // Use a transaction so tier replacement is atomic
+    const updated = await prisma.$transaction(async (tx) => {
+      const product = await tx.product.update({
+        where: { id: productId },
+        data: { ...sanitized, quantity, inStock: quantity > 0, images, isWholesale },
+      });
+
+      // Replace tiers if new data was submitted
+      if (wholesaleTiersUpdate !== null) {
+        await tx.productWholesaleTier.deleteMany({ where: { productId } });
+        if (wholesaleTiersUpdate.length > 0) {
+          await tx.productWholesaleTier.createMany({
+            data: wholesaleTiersUpdate.map(t => ({ ...t, productId })),
+          });
+        }
+      }
+
+      return product;
     });
 
     return NextResponse.json({ message: "Product updated successfully!", product: updated });

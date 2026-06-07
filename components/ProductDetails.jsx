@@ -128,6 +128,19 @@ const ProductDetails = ({ product }) => {
   }, 0);
   const effectivePrice = product.price + priceModifierTotal;
 
+  // Resolve wholesale tier price (preview the price for 1 unit by default;
+  // actual order price is resolved server-side based on final quantity)
+  const wholesaleTiers = product.wholesaleTiers ?? [];
+  const wholesalePreviewQty = exactVariantQuantity > 0 ? exactVariantQuantity + 1 : 1;
+  const activeWholesaleTier = product.isWholesale && wholesaleTiers.length > 0
+    ? wholesaleTiers
+        .filter(t => t.minQty <= wholesalePreviewQty && (t.maxQty == null || wholesalePreviewQty <= t.maxQty))
+        .sort((a, b) => b.minQty - a.minQty)[0]
+    : null;
+  const displayPrice = activeWholesaleTier
+    ? activeWholesaleTier.price + priceModifierTotal
+    : effectivePrice;
+
   const requiredGroups = variantGroups.filter((g) => g.required);
   const allRequiredSelected = requiredGroups.every(
     (g) => selectedOptions[g.label],
@@ -412,7 +425,7 @@ const ProductDetails = ({ product }) => {
           <div className="flex flex-wrap items-center gap-3">
             <p className="text-3xl font-semibold text-slate-900 dark:text-slate-50">
               {currency}
-              {effectivePrice.toLocaleString()}
+              {displayPrice.toLocaleString()}
             </p>
             {product.mrp > product.price && (
               <>
@@ -439,7 +452,58 @@ const ProductDetails = ({ product }) => {
                 {priceModifierTotal.toLocaleString()}
               </span>
             )}
+            {activeWholesaleTier && (
+              <span className="text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 px-2 py-0.5 rounded-full">
+                Bulk price active
+              </span>
+            )}
           </div>
+          {/* Wholesale pricing table */}
+          {product.isWholesale && product.wholesaleTiers?.length > 0 && (
+            <div className="mt-4 border border-amber-200 dark:border-amber-800/60 rounded-xl overflow-hidden">
+              <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-amber-900/20">
+                <span className="text-xs font-semibold text-amber-700 dark:text-amber-300 uppercase tracking-wide">
+                  📦 Wholesale / Bulk Pricing
+                </span>
+              </div>
+              <table className="w-full text-xs">
+                <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400">
+                  <tr>
+                    <th className="text-left p-2 pl-3 font-medium">Quantity</th>
+                    <th className="text-left p-2 font-medium">Unit Price</th>
+                    <th className="text-left p-2 font-medium">You Save</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {product.wholesaleTiers.map((tier, idx) => {
+                    const saving = product.price - tier.price;
+                    return (
+                      <tr key={tier.id ?? idx} className="border-t border-slate-100 dark:border-slate-800">
+                        <td className="p-2 pl-3 text-slate-700 dark:text-slate-200">
+                          {tier.minQty}{tier.maxQty != null ? `–${tier.maxQty}` : "+"} pcs
+                        </td>
+                        <td className="p-2 font-semibold text-slate-800 dark:text-slate-100">
+                          {currency}{tier.price.toLocaleString()}
+                        </td>
+                        <td className="p-2">
+                          {saving > 0 ? (
+                            <span className="text-green-600 dark:text-green-400">
+                              -{currency}{saving.toLocaleString()} / pc
+                            </span>
+                          ) : (
+                            <span className="text-slate-400">—</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <p className="text-[10px] text-slate-400 px-3 py-2 bg-slate-50 dark:bg-slate-900/30 border-t border-slate-100 dark:border-slate-800">
+                Bulk price is applied automatically based on quantity ordered.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Variant selectors */}

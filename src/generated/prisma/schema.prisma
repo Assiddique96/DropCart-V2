@@ -74,16 +74,38 @@ model Product {
   acceptCod             Boolean       @default(true)
   isDigital             Boolean       @default(false) // true = downloadable product
   downloadUrl           String? // secure URL for digital file (set after order paid)
+  /// Wholesale/bulk pricing — store owner enables this; tiers define qty-based prices
+  isWholesale           Boolean       @default(false)
   storeId               String
   createdAt             DateTime      @default(now())
   updatedAt             DateTime      @updatedAt
 
   // Relations
-  store         Store                 @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  orderItems    OrderItem[]
-  rating        Rating[]
-  variantGroups ProductVariantGroup[]
-  adRequests    AdRequest[]
+  store          Store                  @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  orderItems     OrderItem[]
+  rating         Rating[]
+  variantGroups  ProductVariantGroup[]
+  wholesaleTiers ProductWholesaleTier[]
+  adRequests     AdRequest[]
+}
+
+/**
+ * ProductWholesaleTier — quantity-based price tiers set by the store owner.
+ * Example: minQty=1  maxQty=9   price=10000
+ * minQty=10 maxQty=99  price=8000
+ * minQty=100 maxQty=null price=6000  (null = no upper limit)
+ */
+model ProductWholesaleTier {
+  id        String @id @default(cuid())
+  productId String
+  minQty    Int // inclusive lower bound
+  maxQty    Int? // inclusive upper bound; null = no upper limit
+  price     Float // unit price for this tier
+  position  Int    @default(0) // display order (ascending minQty)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, minQty])
 }
 
 /**
@@ -378,7 +400,7 @@ model Payout {
  * shipping_base_fee   Float  (flat fee for non-members, e.g. 7000)
  * shipping_abroad_fee Float  (abroad product shipping fee)
  * shipping_free_above Float  (order total above which shipping is free, e.g. 50000)
- * home_page_content   String (JSON: featured / promo1 / promo2 slide arrays for the public home hero)
+ * tax_rate            Float  (VAT/Tax percentage applied at checkout, e.g. 7.5 = 7.5%. 0 = disabled)
  */
 model PlatformConfig {
   key       String   @id

@@ -167,9 +167,19 @@ exports.Prisma.ProductScalarFieldEnum = {
   acceptCod: 'acceptCod',
   isDigital: 'isDigital',
   downloadUrl: 'downloadUrl',
+  isWholesale: 'isWholesale',
   storeId: 'storeId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductWholesaleTierScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  minQty: 'minQty',
+  maxQty: 'maxQty',
+  price: 'price',
+  position: 'position'
 };
 
 exports.Prisma.ProductVariantGroupScalarFieldEnum = {
@@ -427,6 +437,7 @@ exports.Prisma.ModelName = {
   User: 'User',
   Notification: 'Notification',
   Product: 'Product',
+  ProductWholesaleTier: 'ProductWholesaleTier',
   ProductVariantGroup: 'ProductVariantGroup',
   ProductVariantOption: 'ProductVariantOption',
   Order: 'Order',

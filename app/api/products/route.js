@@ -36,6 +36,9 @@ export async function GET() {
           include: { options: { orderBy: { position: "asc" } } },
           orderBy: { position: "asc" },
         },
+        wholesaleTiers: {
+          orderBy: { position: "asc" },
+        },
         rating: {
           select: {
             id: true,

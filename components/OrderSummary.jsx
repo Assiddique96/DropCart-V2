@@ -33,6 +33,14 @@ const OrderSummary = ({ totalPrice, items }) => {
       return product?.origin === "ABROAD";
     }) ?? false;
 
+  const hasWholesaleItems =
+    items?.some((item) => {
+      const product = allProducts.find(
+        (p) => p.id === item.productId || p.id === item.id,
+      );
+      return product?.isWholesale && product?.wholesaleTiers?.length > 0;
+    }) ?? false;
+
   const codBlocked = cartBlocksCod(allProducts, items);
 
   const PAYMENT_METHODS = codBlocked
@@ -49,6 +57,7 @@ const OrderSummary = ({ totalPrice, items }) => {
     local: 7000,
     abroad: 15000,
   });
+  const [taxRate, setTaxRate] = useState(0); // percentage, e.g. 7.5 = 7.5%
 
   useEffect(() => {
     if (codBlocked && paymentMethod === "COD") {
@@ -181,7 +190,7 @@ const OrderSummary = ({ totalPrice, items }) => {
     return notes.length > 0 ? Array.from(new Set(notes)).join(" — ") : "Delivery shipping type determined by selected address.";
   }, [selectedAddress, items, allProducts, hasAbroadItems]);
 
-  // Load dynamic shipping fees
+  // Load dynamic shipping fees + tax rate
   useEffect(() => {
     axios
       .get("/api/config")
@@ -190,6 +199,7 @@ const OrderSummary = ({ totalPrice, items }) => {
           local: data.shipping_base_fee ?? 7000,
           abroad: data.shipping_abroad_fee ?? 15000,
         });
+        setTaxRate(data.tax_rate ?? 0);
       })
       .catch(() => {});
   }, []);
@@ -282,7 +292,18 @@ const OrderSummary = ({ totalPrice, items }) => {
     }
   };
 
-  const couponDiscount = coupon ? (coupon.discount / 100) * totalPrice : 0;
+  const couponDiscount = coupon
+    ? coupon.discountType === "FIXED"
+      ? coupon.discount
+      : (coupon.discount / 100) * totalPrice
+    : 0;
+
+  // Tax is applied on (subtotal + shipping - coupon)
+  const effectiveShipping = shippingFee;
+  const preTaxTotal = totalPrice + effectiveShipping - couponDiscount;
+  const taxAmount = taxRate > 0 ? parseFloat(((preTaxTotal * taxRate) / 100).toFixed(2)) : 0;
+  const grandTotal = parseFloat((preTaxTotal + taxAmount).toFixed(2));
+  const grandTotalPlusFree = parseFloat((totalPrice - couponDiscount + taxAmount).toFixed(2)); // Plus members get free shipping
 
   return (
     <div className="w-full max-w-lg lg:max-w-[360px] bg-slate-50/30 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-200 text-sm rounded-xl p-6">
@@ -424,12 +445,27 @@ const OrderSummary = ({ totalPrice, items }) => {
             🏠 Local shipping · Delivery in 7–10 days
           </p>
         )}
+        {hasWholesaleItems && (
+          <div className="text-xs text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 rounded-lg px-3 py-2">
+            📦 <span className="font-semibold">Wholesale pricing applied.</span>{" "}
+            Unit prices are adjusted automatically based on your order quantity.
+          </div>
+        )}
         {coupon && (
           <div className="flex justify-between text-green-600 dark:text-green-400">
             <span>Coupon ({coupon.code})</span>
             <span>
               -{currency}
               {couponDiscount.toFixed(2)}
+            </span>
+          </div>
+        )}
+        {taxRate > 0 && (
+          <div className="flex justify-between text-slate-500 dark:text-slate-300">
+            <span>VAT / Tax ({taxRate}%)</span>
+            <span>
+              {currency}
+              {taxAmount.toLocaleString()}
             </span>
           </div>
         )}
@@ -475,9 +511,9 @@ const OrderSummary = ({ totalPrice, items }) => {
         <span>
           <Show
             when={{ plan: "plus" }}
-            fallback={`${currency}${(totalPrice + shippingFee - couponDiscount).toFixed(2)}`}
+            fallback={`${currency}${grandTotal.toLocaleString()}`}
           >
-            {`${currency}${(totalPrice - couponDiscount).toFixed(2)}`}
+            {`${currency}${grandTotalPlusFree.toLocaleString()}`}
           </Show>
         </span>
       </div>
