@@ -7,7 +7,7 @@ export async function GET(
 ) {
   try {
     const { productId } = await params;
-    console.log("[PRODUCT_GET] productId:", productId); // ← add this
+    //console.log("[PRODUCT_GET] productId:", productId); // ← add this
 
     if (!productId) {
       return NextResponse.json({ error: "Product ID required" }, { status: 400 });
@@ -65,7 +65,7 @@ export async function GET(
         },
       },
     });
-    console.log("[PRODUCT_GET] product:", product); // ← and this
+   // console.log("[PRODUCT_GET] product:", product); // ← and this
 
     // Respect the store active check (findUnique can't filter on relations)
     if (!product || !product.store?.isActive) {
