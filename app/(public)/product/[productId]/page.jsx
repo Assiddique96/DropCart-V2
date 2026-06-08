@@ -19,33 +19,34 @@ export default function Product() {
   const products = useSelector((state) => state.product.list);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const loadProduct = async () => {
-      const found = products.find((p) => p.id === productId);
-      if (found) {
-        setProduct(found);
-        setLoading(false);
-        dispatch(addRecentlyViewed(productId));
-        return;
-      }
+useEffect(() => {
+  const loadProduct = async () => {
+    // 1. Check Redux store first (fastest)
+    const found = products.find((p) => p.id === productId);
+    if (found) {
+      setProduct(found);
+      setLoading(false);
+      dispatch(addRecentlyViewed(productId));
+      return;
+    }
 
-      try {
-        const { data } = await axios.get("/api/products");
-        const apiProduct = data.products?.find((p) => p.id === productId);
-        if (apiProduct) {
-          setProduct(apiProduct);
-          dispatch(addRecentlyViewed(productId));
-        }
-      } catch (error) {
-        console.error("Failed to fetch product:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // 2. Fetch the specific product by ID directly
+try {
+  const { data } = await axios.get(`/api/products/${productId}`);
+  if (data?.product) {
+    setProduct(data.product);
+    dispatch(addRecentlyViewed(productId));
+  }
+} catch (error) {
+  console.error("Failed to fetch product:", error);
+} finally {
+  setLoading(false);
+}
+  };
 
-    loadProduct();
-    scrollTo(0, 0);
-  }, [productId, products, dispatch]);
+  if (productId) loadProduct();
+  scrollTo(0, 0);
+}, [productId, products, dispatch]);
 
   const shareUrl =
     typeof window !== "undefined" ? window.location.href : "";
