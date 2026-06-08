@@ -34,8 +34,7 @@ const areVariantsEqual = (a = {}, b = {}) => {
   const bKeys = Object.keys(b).sort();
   if (aKeys.length !== bKeys.length) return false;
   return aKeys.every(
-    (key, index) =>
-      key === bKeys[index] && String(a[key]) === String(b[key]),
+    (key, index) => key === bKeys[index] && String(a[key]) === String(b[key]),
   );
 };
 
@@ -58,9 +57,7 @@ const ProductDetails = ({ product }) => {
   const swipeBlockedClick = useRef(false);
 
   const mainImage =
-    images[
-      Math.min(mainIdx, Math.max(0, images.length - 1))
-    ] || images[0];
+    images[Math.min(mainIdx, Math.max(0, images.length - 1))] || images[0];
 
   const [selectedOptions, setSelectedOptions] = useState({});
   const [shippingFees, setShippingFees] = useState({
@@ -126,28 +123,16 @@ const ProductDetails = ({ product }) => {
     );
     return sum + (selected?.priceModifier ?? 0);
   }, 0);
-  const effectivePrice = product.price + priceModifierTotal;
 
-  // Resolve wholesale tier price (preview the price for 1 unit by default;
-  // actual order price is resolved server-side based on final quantity)
-  const wholesaleTiers = product.wholesaleTiers ?? [];
-  const wholesalePreviewQty = exactVariantQuantity > 0 ? exactVariantQuantity + 1 : 1;
-  const activeWholesaleTier = product.isWholesale && wholesaleTiers.length > 0
-    ? wholesaleTiers
-        .filter(t => t.minQty <= wholesalePreviewQty && (t.maxQty == null || wholesalePreviewQty <= t.maxQty))
-        .sort((a, b) => b.minQty - a.minQty)[0]
-    : null;
-  const displayPrice = activeWholesaleTier
-    ? activeWholesaleTier.price + priceModifierTotal
-    : effectivePrice;
+  const effectivePrice = product.price + priceModifierTotal;
 
   const requiredGroups = variantGroups.filter((g) => g.required);
   const allRequiredSelected = requiredGroups.every(
     (g) => selectedOptions[g.label],
   );
-  const canAddToCart =
-    variantGroups.length === 0 || allRequiredSelected;
+  const canAddToCart = variantGroups.length === 0 || allRequiredSelected;
 
+  // ✅ Declare these BEFORE wholesaleTiers block (fixes "Cannot access before initialization")
   const exactCartItem = cartItems.find(
     (item) =>
       item.productId === productId &&
@@ -157,14 +142,33 @@ const ProductDetails = ({ product }) => {
   const productQuantity = cartSummary[productId] || 0;
   const isVariantProduct = variantGroups.length > 0;
 
-  const selectedVariantStock = variantGroups.length > 0
-    ? variantGroups.reduce((minQty, group) => {
-        const selected = selectedOptions[group.label];
-        if (!selected) return minQty;
-        const option = group.options?.find((o) => o.label === selected);
-        return option ? Math.min(minQty, option.quantity ?? minQty) : minQty;
-      }, Infinity)
-    : Infinity;
+  // ✅ Now safe to use exactVariantQuantity
+  const wholesaleTiers = product.wholesaleTiers ?? [];
+  const wholesalePreviewQty =
+    exactVariantQuantity > 0 ? exactVariantQuantity + 1 : 1;
+  const activeWholesaleTier =
+    product.isWholesale && wholesaleTiers.length > 0
+      ? wholesaleTiers
+          .filter(
+            (t) =>
+              t.minQty <= wholesalePreviewQty &&
+              (t.maxQty == null || wholesalePreviewQty <= t.maxQty),
+          )
+          .sort((a, b) => b.minQty - a.minQty)[0]
+      : null;
+  const displayPrice = activeWholesaleTier
+    ? activeWholesaleTier.price + priceModifierTotal
+    : effectivePrice;
+
+  const selectedVariantStock =
+    variantGroups.length > 0
+      ? variantGroups.reduce((minQty, group) => {
+          const selected = selectedOptions[group.label];
+          if (!selected) return minQty;
+          const option = group.options?.find((o) => o.label === selected);
+          return option ? Math.min(minQty, option.quantity ?? minQty) : minQty;
+        }, Infinity)
+      : Infinity;
   const availableStock = Number.isFinite(selectedVariantStock)
     ? selectedVariantStock
     : product.quantity ?? 0;
@@ -187,19 +191,20 @@ const ProductDetails = ({ product }) => {
   };
 
   const avgRating = product.rating?.length
-    ? product.rating.reduce(
-        (acc, item) => acc + item.rating,
-        0,
-      ) / product.rating.length
+    ? product.rating.reduce((acc, item) => acc + item.rating, 0) /
+      product.rating.length
     : 0;
 
   const stateLabel = product.store?.deliveryStates?.length
     ? product.store.deliveryStates.join(", ")
     : product.store?.state || "seller's state";
   const countryLabel = product.store?.country || "Nigeria";
-  const withinStateFee = product.store?.shippingLocalFee ?? shippingFees.local;
-  const nationwideFee = product.store?.shippingNationwideFee ?? withinStateFee;
-  const internationalFee = product.store?.shippingAbroadFee ?? shippingFees.abroad;
+  const withinStateFee =
+    product.store?.shippingLocalFee ?? shippingFees.local;
+  const nationwideFee =
+    product.store?.shippingNationwideFee ?? withinStateFee;
+  const internationalFee =
+    product.store?.shippingAbroadFee ?? shippingFees.abroad;
 
   const shippingFee = isAbroad
     ? internationalFee
@@ -243,8 +248,7 @@ const ProductDetails = ({ product }) => {
                 type="button"
                 onClick={() => goThumb(index)}
                 className={`relative h-16 overflow-hidden rounded-lg border-2 transition-all ${
-                  index ===
-                  Math.min(mainIdx, Math.max(0, images.length - 1))
+                  index === Math.min(mainIdx, Math.max(0, images.length - 1))
                     ? "border-blue-500 shadow-md ring-2 ring-blue-100"
                     : "border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500"
                 }`}
@@ -262,6 +266,7 @@ const ProductDetails = ({ product }) => {
         )}
       </div>
 
+      {/* Lightbox */}
       {lightboxOpen && mainImage ? (
         <div
           className="fixed inset-0 z-[300] flex items-center justify-center bg-black/92 p-4"
@@ -288,9 +293,7 @@ const ProductDetails = ({ product }) => {
                 className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/15 p-3 text-white hover:bg-white/25"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setMainIdx(
-                    (i) => (i - 1 + images.length) % images.length,
-                  );
+                  setMainIdx((i) => (i - 1 + images.length) % images.length);
                 }}
                 aria-label="Previous"
               >
@@ -376,9 +379,10 @@ const ProductDetails = ({ product }) => {
                 Low stock
               </span>
             )}
-            {typeof product._count?.orderItems === 'number' && (
+            {typeof product._count?.orderItems === "number" && (
               <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
-                Sold {product._count.orderItems} {product._count.orderItems === 1 ? 'time' : 'times'}
+                Sold {product._count.orderItems}{" "}
+                {product._count.orderItems === 1 ? "time" : "times"}
               </span>
             )}
             <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
@@ -401,9 +405,7 @@ const ProductDetails = ({ product }) => {
                     key={i}
                     size={14}
                     className="text-transparent"
-                    fill={
-                      avgRating >= i + 1 ? "#00C950" : "#D1D5DB"
-                    }
+                    fill={avgRating >= i + 1 ? "#00C950" : "#D1D5DB"}
                   />
                 ))}
             </div>
@@ -436,8 +438,7 @@ const ProductDetails = ({ product }) => {
                 <span className="text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 px-2 py-0.5 rounded-full">
                   Save{" "}
                   {(
-                    ((product.mrp - product.price) /
-                      product.mrp) *
+                    ((product.mrp - product.price) / product.mrp) *
                     100
                   ).toFixed(0)}
                   %
@@ -458,6 +459,7 @@ const ProductDetails = ({ product }) => {
               </span>
             )}
           </div>
+
           {/* Wholesale pricing table */}
           {product.isWholesale && product.wholesaleTiers?.length > 0 && (
             <div className="mt-4 border border-amber-200 dark:border-amber-800/60 rounded-xl overflow-hidden">
@@ -478,17 +480,23 @@ const ProductDetails = ({ product }) => {
                   {product.wholesaleTiers.map((tier, idx) => {
                     const saving = product.price - tier.price;
                     return (
-                      <tr key={tier.id ?? idx} className="border-t border-slate-100 dark:border-slate-800">
+                      <tr
+                        key={tier.id ?? idx}
+                        className="border-t border-slate-100 dark:border-slate-800"
+                      >
                         <td className="p-2 pl-3 text-slate-700 dark:text-slate-200">
-                          {tier.minQty}{tier.maxQty != null ? `–${tier.maxQty}` : "+"} pcs
+                          {tier.minQty}
+                          {tier.maxQty != null ? `–${tier.maxQty}` : "+"} pcs
                         </td>
                         <td className="p-2 font-semibold text-slate-800 dark:text-slate-100">
-                          {currency}{tier.price.toLocaleString()}
+                          {currency}
+                          {tier.price.toLocaleString()}
                         </td>
                         <td className="p-2">
                           {saving > 0 ? (
                             <span className="text-green-600 dark:text-green-400">
-                              -{currency}{saving.toLocaleString()} / pc
+                              -{currency}
+                              {saving.toLocaleString()} / pc
                             </span>
                           ) : (
                             <span className="text-slate-400">—</span>
@@ -542,20 +550,14 @@ const ProductDetails = ({ product }) => {
                           title={
                             opt.label +
                             (opt.priceModifier
-                              ? ` (${
-                                  opt.priceModifier > 0 ? "+" : ""
-                                }${opt.priceModifier.toLocaleString()})`
+                              ? ` (${opt.priceModifier > 0 ? "+" : ""}${opt.priceModifier.toLocaleString()})`
                               : "")
                           }
                           className={`relative rounded-lg border-2 overflow-hidden transition ${
                             isSelected
                               ? "border-slate-800 dark:border-slate-100 shadow-md"
                               : "border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500"
-                          } ${
-                            !opt.inStock
-                              ? "opacity-40 cursor-not-allowed"
-                              : ""
-                          }`}
+                          } ${!opt.inStock ? "opacity-40 cursor-not-allowed" : ""}`}
                         >
                           {opt.image ? (
                             <img
@@ -605,11 +607,7 @@ const ProductDetails = ({ product }) => {
                             isSelected
                               ? "border-slate-800 bg-slate-800 text-white dark:border-slate-100 dark:bg-slate-100 dark:text-slate-900"
                               : "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500"
-                          } ${
-                            !opt.inStock
-                              ? "opacity-40 cursor-not-allowed line-through"
-                              : ""
-                          }`}
+                          } ${!opt.inStock ? "opacity-40 cursor-not-allowed line-through" : ""}`}
                         >
                           {opt.label}
                           {opt.priceModifier !== 0 && (
@@ -660,7 +658,9 @@ const ProductDetails = ({ product }) => {
             <TruckIcon
               size={15}
               className={
-                isAbroad ? "text-blue-500" : "text-slate-400 dark:text-slate-500"
+                isAbroad
+                  ? "text-blue-500"
+                  : "text-slate-400 dark:text-slate-500"
               }
             />
             <span>
@@ -687,9 +687,12 @@ const ProductDetails = ({ product }) => {
           </div>
 
           {!isAbroad ? (
-            product.deliveryWithinState && !product.deliveryNationwide && !product.deliveryInternational ? (
+            product.deliveryWithinState &&
+            !product.deliveryNationwide &&
+            !product.deliveryInternational ? (
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-300">
-                This product is only available for delivery for orders within {stateLabel}.
+                This product is only available for delivery for orders within{" "}
+                {stateLabel}.
               </div>
             ) : (
               <div className="space-y-2 pt-2 text-sm text-slate-600 dark:text-slate-300">
@@ -697,7 +700,9 @@ const ProductDetails = ({ product }) => {
                   <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950">
                     <span>Delivery within {stateLabel}</span>
                     <span className="font-semibold text-slate-900 dark:text-slate-100">
-                      {withinStateFee === 0 ? "FREE" : `${currency}${withinStateFee.toLocaleString()}`}
+                      {withinStateFee === 0
+                        ? "FREE"
+                        : `${currency}${withinStateFee.toLocaleString()}`}
                     </span>
                   </div>
                 )}
@@ -705,7 +710,9 @@ const ProductDetails = ({ product }) => {
                   <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950">
                     <span>Nationwide delivery</span>
                     <span className="font-semibold text-slate-900 dark:text-slate-100">
-                      {nationwideFee === 0 ? "FREE" : `${currency}${nationwideFee.toLocaleString()}`}
+                      {nationwideFee === 0
+                        ? "FREE"
+                        : `${currency}${nationwideFee.toLocaleString()}`}
                     </span>
                   </div>
                 )}
@@ -713,7 +720,9 @@ const ProductDetails = ({ product }) => {
                   <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950">
                     <span>International delivery</span>
                     <span className="font-semibold text-slate-900 dark:text-slate-100">
-                      {internationalFee === 0 ? "FREE" : `${currency}${internationalFee.toLocaleString()}`}
+                      {internationalFee === 0
+                        ? "FREE"
+                        : `${currency}${internationalFee.toLocaleString()}`}
                     </span>
                   </div>
                 )}
@@ -725,7 +734,9 @@ const ProductDetails = ({ product }) => {
                 <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950">
                   <span>International delivery</span>
                   <span className="font-semibold text-slate-900 dark:text-slate-100">
-                    {internationalFee === 0 ? "FREE" : `${currency}${internationalFee.toLocaleString()}`}
+                    {internationalFee === 0
+                      ? "FREE"
+                      : `${currency}${internationalFee.toLocaleString()}`}
                   </span>
                 </div>
               </div>
@@ -779,9 +790,7 @@ const ProductDetails = ({ product }) => {
               <Counter
                 productId={productId}
                 variants={
-                  isVariantProduct
-                    ? normalizeVariants(selectedOptions)
-                    : {}
+                  isVariantProduct ? normalizeVariants(selectedOptions) : {}
                 }
               />
             </div>
@@ -793,8 +802,7 @@ const ProductDetails = ({ product }) => {
                 : handleAddToCart()
             }
             className={`px-10 py-3 text-sm font-medium rounded-lg transition active:scale-95 ${
-              !canAddToCart &&
-              (!isVariantProduct || productQuantity === 0)
+              !canAddToCart && (!isVariantProduct || productQuantity === 0)
                 ? "bg-slate-300 text-slate-500 cursor-not-allowed dark:bg-slate-700 dark:text-slate-400"
                 : "bg-slate-800 text-white hover:bg-slate-900 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
             }`}
