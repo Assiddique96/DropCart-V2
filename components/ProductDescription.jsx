@@ -18,18 +18,14 @@ import toast from "react-hot-toast";
 
 const StarRow = ({ count, total, label }) => (
   <div className="flex items-center gap-2 text-xs">
-    <span className="w-3 text-slate-400 dark:text-slate-500">
-      {label}★
-    </span>
+    <span className="w-3 text-slate-400 dark:text-slate-500">{label}★</span>
     <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
       <div
         className="h-full bg-green-400 rounded-full transition-all"
         style={{ width: total > 0 ? `${(count / total) * 100}%` : "0%" }}
       />
     </div>
-    <span className="w-4 text-slate-400 dark:text-slate-500 text-right">
-      {count}
-    </span>
+    <span className="w-4 text-slate-400 dark:text-slate-500 text-right">{count}</span>
   </div>
 );
 
@@ -48,6 +44,30 @@ const StarDisplay = ({ value, size = 16 }) => (
   </div>
 );
 
+// Safe avatar — falls back to an initial if image is missing
+const UserAvatar = ({ src, name, size = 40 }) => {
+  if (src) {
+    return (
+      <Image
+        src={src}
+        alt={name || ""}
+        className="rounded-full shrink-0 object-cover"
+        width={size}
+        height={size}
+        style={{ width: size, height: size }}
+      />
+    );
+  }
+  return (
+    <div
+      className="rounded-full shrink-0 bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-bold text-slate-500 dark:text-slate-300 uppercase"
+      style={{ width: size, height: size, fontSize: size * 0.35 }}
+    >
+      {name?.charAt(0) || "?"}
+    </div>
+  );
+};
+
 export default function ProductDescription({ product }) {
   const [selectedTab, setSelectedTab] = useState("Description");
   const { user } = useUser();
@@ -58,14 +78,12 @@ export default function ProductDescription({ product }) {
   const [editForm, setEditForm] = useState({ rating: 0, review: "" });
   const [respondingId, setRespondingId] = useState(null);
   const [responseText, setResponseText] = useState("");
-  const [localRatings, setLocalRatings] = useState(product.rating || []);
+  const [localRatings, setLocalRatings] = useState(product?.rating || []);
   const [submitting, setSubmitting] = useState(false);
 
   const total = localRatings.length;
   const avg =
-    total > 0
-      ? localRatings.reduce((s, r) => s + r.rating, 0) / total
-      : 0;
+    total > 0 ? localRatings.reduce((s, r) => s + r.rating, 0) / total : 0;
   const breakdown = [5, 4, 3, 2, 1].map((n) => ({
     label: n,
     count: localRatings.filter((r) => r.rating === n).length,
@@ -78,10 +96,10 @@ export default function ProductDescription({ product }) {
       const { data } = await axios.patch(
         "/api/rating",
         { ratingId, rating: editForm.rating, review: editForm.review },
-        { headers: { Authorization: `Bearer ${token}` } },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setLocalRatings((prev) =>
-        prev.map((r) => (r.id === ratingId ? { ...r, ...data.rating } : r)),
+        prev.map((r) => (r.id === ratingId ? { ...r, ...data.rating } : r))
       );
       setEditingId(null);
       toast.success("Review updated.");
@@ -112,14 +130,14 @@ export default function ProductDescription({ product }) {
       const { data } = await axios.post(
         "/api/store/review-response",
         { ratingId, response: responseText },
-        { headers: { Authorization: `Bearer ${token}` } },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setLocalRatings((prev) =>
         prev.map((r) =>
           r.id === ratingId
             ? { ...r, sellerResponse: data.rating.sellerResponse }
-            : r,
-        ),
+            : r
+        )
       );
       setRespondingId(null);
       setResponseText("");
@@ -133,22 +151,22 @@ export default function ProductDescription({ product }) {
   const deleteResponse = async (ratingId) => {
     try {
       const token = await getToken();
-      await axios.delete(
-        `/api/store/review-response?ratingId=${ratingId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      await axios.delete(`/api/store/review-response?ratingId=${ratingId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setLocalRatings((prev) =>
         prev.map((r) =>
-          r.id === ratingId ? { ...r, sellerResponse: null } : r,
-        ),
+          r.id === ratingId ? { ...r, sellerResponse: null } : r
+        )
       );
       toast.success("Response removed.");
     } catch (e) {
       toast.error(e?.response?.data?.error || e.message);
     }
   };
+
+  // Guard against missing product
+  if (!product) return null;
 
   return (
     <div className="my-16 space-y-10 text-slate-700 dark:text-slate-200">
@@ -169,30 +187,14 @@ export default function ProductDescription({ product }) {
 
           <div className="grid gap-3 sm:grid-cols-2 xl:w-[360px]">
             {[
-              {
-                label: "Category",
-                value: product.category || "Others",
-              },
-              {
-                label: "Manufacturer",
-                value: product.manufacturer || "Not specified",
-              },
-              {
-                label: "Material",
-                value: product.material || "Not specified",
-              },
-              {
-                label: "Origin",
-                value: product.madeIn || "Unknown",
-              },
-              {
-                label: "Guarantee",
-                value: product.guaranteePeriod || "Not specified",
-              },
+              { label: "Category", value: product.category || "Others" },
+              { label: "Manufacturer", value: product.manufacturer || "Not specified" },
+              { label: "Material", value: product.material || "Not specified" },
+              { label: "Origin", value: product.madeIn || "Unknown" },
+              { label: "Guarantee", value: product.guaranteePeriod || "Not specified" },
               {
                 label: "Shipping",
-                value:
-                  product.origin === "ABROAD" ? "International" : "Local",
+                value: product.origin === "ABROAD" ? "International" : "Local",
               },
             ].map((item) => (
               <div
@@ -251,24 +253,12 @@ export default function ProductDescription({ product }) {
             <div className="space-y-8">
               <div className="grid gap-4 md:grid-cols-2">
                 {[
-                  {
-                    label: "Category",
-                    value: product.category || "Others",
-                  },
-                  {
-                    label: "Manufacturer",
-                    value: product.manufacturer || "Not specified",
-                  },
-                  {
-                    label: "Origin",
-                    value: product.madeIn || "Unknown",
-                  },
+                  { label: "Category", value: product.category || "Others" },
+                  { label: "Manufacturer", value: product.manufacturer || "Not specified" },
+                  { label: "Origin", value: product.madeIn || "Unknown" },
                   {
                     label: "Shipping",
-                    value:
-                      product.origin === "ABROAD"
-                        ? "International"
-                        : "Local",
+                    value: product.origin === "ABROAD" ? "International" : "Local",
                   },
                 ].map((item) => (
                   <div
@@ -284,7 +274,6 @@ export default function ProductDescription({ product }) {
                   </div>
                 ))}
               </div>
-
               <div className="prose prose-sm max-w-none text-slate-700 dark:text-slate-200">
                 <p>{product.description}</p>
               </div>
@@ -301,10 +290,7 @@ export default function ProductDescription({ product }) {
                         {avg.toFixed(1)}
                       </p>
                       <div className="mt-2 flex justify-center lg:justify-start">
-                        <StarDisplay
-                          value={Math.round(avg)}
-                          size={14}
-                        />
+                        <StarDisplay value={Math.round(avg)} size={14} />
                       </div>
                       <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                         {total} review{total !== 1 ? "s" : ""}
@@ -312,12 +298,7 @@ export default function ProductDescription({ product }) {
                     </div>
                     <div className="flex-1 space-y-2">
                       {breakdown.map(({ label, count }) => (
-                        <StarRow
-                          key={label}
-                          label={label}
-                          count={count}
-                          total={total}
-                        />
+                        <StarRow key={label} label={label} count={count} total={total} />
                       ))}
                     </div>
                   </div>
@@ -341,28 +322,23 @@ export default function ProductDescription({ product }) {
                         className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-6"
                       >
                         <div className="flex gap-4">
-                          <Image
+                          {/* Fixed: safe avatar with fallback */}
+                          <UserAvatar
                             src={item.user?.image}
-                            alt=""
-                            className="size-10 rounded-full shrink-0 object-cover"
-                            width={40}
-                            height={40}
+                            name={item.user?.name}
+                            size={40}
                           />
+
                           <div className="flex-1">
                             <div className="flex flex-wrap items-start justify-between gap-3">
                               <div>
                                 <p className="text-sm font-semibold text-slate-900 dark:text-white">
-                                  {item.user?.name}
+                                  {item.user?.name || "Anonymous"}
                                 </p>
                                 <div className="mt-1 flex items-center gap-2">
-                                  <StarDisplay
-                                    value={item.rating}
-                                    size={13}
-                                  />
+                                  <StarDisplay value={item.rating} size={13} />
                                   <span className="text-xs text-slate-400 dark:text-slate-500">
-                                    {new Date(
-                                      item.createdAt,
-                                    ).toLocaleDateString()}
+                                    {new Date(item.createdAt).toLocaleDateString()}
                                   </span>
                                 </div>
                               </div>
@@ -382,9 +358,7 @@ export default function ProductDescription({ product }) {
                                     <PencilIcon size={14} />
                                   </button>
                                   <button
-                                    onClick={() =>
-                                      deleteRating(item.id)
-                                    }
+                                    onClick={() => deleteRating(item.id)}
                                     className="text-slate-400 dark:text-slate-500 hover:text-red-500 transition"
                                     title="Delete review"
                                   >
@@ -402,21 +376,14 @@ export default function ProductDescription({ product }) {
                                       key={n}
                                       type="button"
                                       onClick={() =>
-                                        setEditForm((f) => ({
-                                          ...f,
-                                          rating: n,
-                                        }))
+                                        setEditForm((f) => ({ ...f, rating: n }))
                                       }
                                       className="p-0.5"
                                     >
                                       <StarIcon
                                         size={20}
                                         className="text-transparent"
-                                        fill={
-                                          editForm.rating >= n
-                                            ? "#00C950"
-                                            : "#4B5563"
-                                        }
+                                        fill={editForm.rating >= n ? "#00C950" : "#4B5563"}
                                       />
                                     </button>
                                   ))}
@@ -425,10 +392,7 @@ export default function ProductDescription({ product }) {
                                   value={editForm.review}
                                   rows={3}
                                   onChange={(e) =>
-                                    setEditForm((f) => ({
-                                      ...f,
-                                      review: e.target.value,
-                                    }))
+                                    setEditForm((f) => ({ ...f, review: e.target.value }))
                                   }
                                   className="w-full resize-none rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 p-3 text-sm text-slate-700 dark:text-slate-200 outline-none"
                                 />
@@ -438,15 +402,11 @@ export default function ProductDescription({ product }) {
                                     disabled={submitting}
                                     className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 transition disabled:opacity-50"
                                   >
-                                    <CheckIcon size={14} />{" "}
-                                    {submitting
-                                      ? "Saving..."
-                                      : "Save"}
+                                    <CheckIcon size={14} />
+                                    {submitting ? "Saving..." : "Save"}
                                   </button>
                                   <button
-                                    onClick={() =>
-                                      setEditingId(null)
-                                    }
+                                    onClick={() => setEditingId(null)}
                                     className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
                                   >
                                     <XIcon size={14} /> Cancel
@@ -460,26 +420,22 @@ export default function ProductDescription({ product }) {
                                 </p>
                                 {item.reviewImages?.length > 0 && (
                                   <div className="mt-4 grid grid-cols-3 gap-3">
-                                    {item.reviewImages.map(
-                                      (src, imgIdx) => (
-                                        <a
-                                          key={imgIdx}
-                                          href={src}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
-                                          <Image
-                                            src={src}
-                                            alt={`Review image ${
-                                              imgIdx + 1
-                                            }`}
-                                            width={80}
-                                            height={80}
-                                            className="h-20 w-full rounded-2xl border border-slate-200 dark:border-slate-700 object-cover"
-                                          />
-                                        </a>
-                                      ),
-                                    )}
+                                    {item.reviewImages.map((src, imgIdx) => (
+                                      <a
+                                        key={imgIdx}
+                                        href={src}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        <Image
+                                          src={src}
+                                          alt={`Review image ${imgIdx + 1}`}
+                                          width={80}
+                                          height={80}
+                                          className="h-20 w-full rounded-2xl border border-slate-200 dark:border-slate-700 object-cover"
+                                        />
+                                      </a>
+                                    ))}
                                   </div>
                                 )}
                               </>
@@ -489,31 +445,21 @@ export default function ProductDescription({ product }) {
                               <div className="mt-5 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 p-4">
                                 <div className="mb-2 flex items-center justify-between gap-3">
                                   <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-                                    <MessageSquareIcon size={12} /> Seller
-                                    Response
+                                    <MessageSquareIcon size={12} /> Seller Response
                                   </p>
-                                  {product.store?.userId ===
-                                    user?.id && (
+                                  {product.store?.userId === user?.id && (
                                     <div className="flex gap-2 text-slate-400 dark:text-slate-500">
                                       <button
                                         onClick={() => {
-                                          setRespondingId(
-                                            item.id,
-                                          );
-                                          setResponseText(
-                                            item.sellerResponse,
-                                          );
+                                          setRespondingId(item.id);
+                                          setResponseText(item.sellerResponse);
                                         }}
                                         className="hover:text-blue-500 transition"
                                       >
                                         <PencilIcon size={14} />
                                       </button>
                                       <button
-                                        onClick={() =>
-                                          deleteResponse(
-                                            item.id,
-                                          )
-                                        }
+                                        onClick={() => deleteResponse(item.id)}
                                         className="hover:text-red-500 transition"
                                       >
                                         <Trash2Icon size={14} />
@@ -537,8 +483,7 @@ export default function ProductDescription({ product }) {
                                   }}
                                   className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 transition"
                                 >
-                                  <MessageSquareIcon size={14} /> Reply to
-                                  review
+                                  <MessageSquareIcon size={14} /> Reply to review
                                 </button>
                               )}
 
@@ -547,29 +492,21 @@ export default function ProductDescription({ product }) {
                                 <textarea
                                   value={responseText}
                                   rows={3}
-                                  onChange={(e) =>
-                                    setResponseText(e.target.value)
-                                  }
+                                  onChange={(e) => setResponseText(e.target.value)}
                                   placeholder="Write your response..."
                                   className="w-full resize-none rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 p-3 text-sm text-slate-700 dark:text-slate-200 outline-none"
                                 />
                                 <div className="flex flex-wrap gap-2">
                                   <button
-                                    onClick={() =>
-                                      saveResponse(item.id)
-                                    }
+                                    onClick={() => saveResponse(item.id)}
                                     disabled={submitting}
                                     className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 transition disabled:opacity-50"
                                   >
-                                    <CheckIcon size={14} />{" "}
-                                    {submitting
-                                      ? "Saving..."
-                                      : "Post Response"}
+                                    <CheckIcon size={14} />
+                                    {submitting ? "Saving..." : "Post Response"}
                                   </button>
                                   <button
-                                    onClick={() =>
-                                      setRespondingId(null)
-                                    }
+                                    onClick={() => setRespondingId(null)}
                                     className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
                                   >
                                     <XIcon size={14} /> Cancel
@@ -592,19 +529,12 @@ export default function ProductDescription({ product }) {
       {/* Store card */}
       <div className="rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-4">
-          {product.store?.logo ? (
-            <Image
-              src={product.store.logo}
-              alt={product.store.name}
-              className="size-11 rounded-full object-cover ring ring-slate-200 dark:ring-slate-700"
-              width={44}
-              height={44}
-            />
-          ) : (
-            <div className="flex size-11 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-300 font-bold ring ring-slate-200 dark:ring-slate-700 uppercase">
-              {product.store?.name?.charAt(0) || "S"}
-            </div>
-          )}
+          {/* Fixed: safe store logo with fallback */}
+          <UserAvatar
+            src={product.store?.logo || null}
+            name={product.store?.name}
+            size={44}
+          />
           <div>
             <p className="font-semibold text-slate-900 dark:text-white">
               Product by {product.store?.name || "Unknown Store"}
