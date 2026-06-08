@@ -1,5 +1,6 @@
 "use client";
 import Counter from "@/components/Counter";
+import WholesaleCounter from "@/components/WholesaleCounter";
 import OrderSummary from "@/components/OrderSummary";
 import PageTitle from "@/components/PageTitle";
 import { deleteItemFromCart } from "@/lib/features/cart/cartSlice";
@@ -9,8 +10,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Cart() {
-  const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "$";
-
   const { items: cartItems } = useSelector((state) => state.cart);
   const products = useSelector((state) => state.product.list);
 
@@ -18,6 +17,15 @@ export default function Cart() {
 
   const [cartArray, setCartArray] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+
+  const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "₦";
+
+  const resolveWholesaleTier = (product, qty) => {
+    if (!product?.isWholesale || !product?.wholesaleTiers?.length) return null;
+    return product.wholesaleTiers
+      .filter(t => t.minQty <= qty && (t.maxQty == null || qty <= t.maxQty))
+      .sort((a, b) => b.minQty - a.minQty)[0] ?? null;
+  };
 
   const getVariantPriceModifier = (product, variants = {}) => {
     if (!product?.variantGroups?.length || !variants || Object.keys(variants).length === 0) return 0;
@@ -36,14 +44,17 @@ export default function Cart() {
         const product = products.find((product) => product.id === item.productId);
         if (!product) return null;
         const priceModifier = getVariantPriceModifier(product, item.variants);
-        const unitPrice = product.price + priceModifier;
-        subtotal += unitPrice * item.quantity;
+        const wholesaleTier = resolveWholesaleTier(product, item.quantity);
+        const baseUnitPrice = (wholesaleTier?.price ?? product.price) + priceModifier;
+        subtotal += baseUnitPrice * item.quantity;
         return {
           ...product,
           quantity: item.quantity,
           variants: item.variants,
-          unitPrice,
+          unitPrice: baseUnitPrice,
           priceModifier,
+          wholesaleTier,
+          wholesaleTiers: product.wholesaleTiers ?? [],
         };
       })
       .filter(Boolean);
@@ -122,15 +133,40 @@ export default function Cart() {
                       <p className="mt-2 text-slate-800 dark:text-slate-50">
                         {currency}
                         {item.unitPrice.toLocaleString()}
+                        {item.isWholesale && <span className="text-xs text-slate-400 ml-1">/pc</span>}
                       </p>
+                      {item.isWholesale && item.wholesaleTier && (
+                        <p className="text-[10px] mt-0.5 text-amber-600 dark:text-amber-400 font-medium">
+                          📦 {item.wholesaleTier.minQty}{item.wholesaleTier.maxQty != null ? `–${item.wholesaleTier.maxQty}` : "+"} pcs tier
+                        </p>
+                      )}
                     </div>
                   </td>
                   <td className="text-center">
-                    <Counter productId={item.id} variants={item.variants} />
+                    {item.isWholesale ? (
+                      <WholesaleCounter
+                        productId={item.id}
+                        quantity={item.quantity}
+                        tiers={item.wholesaleTiers}
+                        variants={item.variants}
+                        currency={currency}
+                        basePrice={item.price}
+                        onTierChange={() => {
+                          // createCartArray re-runs via useEffect on cartItems change
+                        }}
+                      />
+                    ) : (
+                      <Counter productId={item.id} variants={item.variants} />
+                    )}
                   </td>
                   <td className="text-center text-slate-800 dark:text-slate-50">
                     {currency}
                     {(item.unitPrice * item.quantity).toLocaleString()}
+                    {item.isWholesale && item.wholesaleTier && (
+                      <p className="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5">
+                        bulk rate
+                      </p>
+                    )}
                   </td>
                   <td className="text-center max-md:hidden">
                     <button

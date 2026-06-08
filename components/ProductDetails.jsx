@@ -1,5 +1,5 @@
 "use client";
-import { addToCart } from "@/lib/features/cart/cartSlice";
+import { addToCart, setQuantity } from "@/lib/features/cart/cartSlice";
 import toast from "react-hot-toast";
 import {
   StarIcon,
@@ -34,7 +34,8 @@ const areVariantsEqual = (a = {}, b = {}) => {
   const bKeys = Object.keys(b).sort();
   if (aKeys.length !== bKeys.length) return false;
   return aKeys.every(
-    (key, index) => key === bKeys[index] && String(a[key]) === String(b[key]),
+    (key, index) =>
+      key === bKeys[index] && String(a[key]) === String(b[key]),
   );
 };
 
@@ -57,13 +58,17 @@ const ProductDetails = ({ product }) => {
   const swipeBlockedClick = useRef(false);
 
   const mainImage =
-    images[Math.min(mainIdx, Math.max(0, images.length - 1))] || images[0];
+    images[
+      Math.min(mainIdx, Math.max(0, images.length - 1))
+    ] || images[0];
 
   const [selectedOptions, setSelectedOptions] = useState({});
   const [shippingFees, setShippingFees] = useState({
     local: 7000,
     abroad: 15000,
   });
+  // Wholesale: buyer types a quantity before adding to cart
+  const [wholesaleQty, setWholesaleQty] = useState(1);
 
   useEffect(() => {
     setMainIdx(0);
@@ -123,16 +128,30 @@ const ProductDetails = ({ product }) => {
     );
     return sum + (selected?.priceModifier ?? 0);
   }, 0);
-
   const effectivePrice = product.price + priceModifierTotal;
+
+  // Wholesale tier resolution
+  const wholesaleTiers = product.wholesaleTiers ?? [];
+  const isWholesale = product.isWholesale && wholesaleTiers.length > 0;
+
+  const resolveWholesaleTier = (qty) => {
+    if (!isWholesale) return null;
+    return wholesaleTiers
+      .filter(t => t.minQty <= qty && (t.maxQty == null || qty <= t.maxQty))
+      .sort((a, b) => b.minQty - a.minQty)[0] ?? null;
+  };
+
+  const activeWholesaleTier = resolveWholesaleTier(wholesaleQty);
+  const displayPrice = (activeWholesaleTier?.price ?? product.price) + priceModifierTotal;
+  const wholesaleSubtotal = displayPrice * wholesaleQty;
 
   const requiredGroups = variantGroups.filter((g) => g.required);
   const allRequiredSelected = requiredGroups.every(
     (g) => selectedOptions[g.label],
   );
-  const canAddToCart = variantGroups.length === 0 || allRequiredSelected;
+  const canAddToCart =
+    variantGroups.length === 0 || allRequiredSelected;
 
-  // ✅ Declare these BEFORE wholesaleTiers block (fixes "Cannot access before initialization")
   const exactCartItem = cartItems.find(
     (item) =>
       item.productId === productId &&
@@ -142,33 +161,14 @@ const ProductDetails = ({ product }) => {
   const productQuantity = cartSummary[productId] || 0;
   const isVariantProduct = variantGroups.length > 0;
 
-  // ✅ Now safe to use exactVariantQuantity
-  const wholesaleTiers = product.wholesaleTiers ?? [];
-  const wholesalePreviewQty =
-    exactVariantQuantity > 0 ? exactVariantQuantity + 1 : 1;
-  const activeWholesaleTier =
-    product.isWholesale && wholesaleTiers.length > 0
-      ? wholesaleTiers
-          .filter(
-            (t) =>
-              t.minQty <= wholesalePreviewQty &&
-              (t.maxQty == null || wholesalePreviewQty <= t.maxQty),
-          )
-          .sort((a, b) => b.minQty - a.minQty)[0]
-      : null;
-  const displayPrice = activeWholesaleTier
-    ? activeWholesaleTier.price + priceModifierTotal
-    : effectivePrice;
-
-  const selectedVariantStock =
-    variantGroups.length > 0
-      ? variantGroups.reduce((minQty, group) => {
-          const selected = selectedOptions[group.label];
-          if (!selected) return minQty;
-          const option = group.options?.find((o) => o.label === selected);
-          return option ? Math.min(minQty, option.quantity ?? minQty) : minQty;
-        }, Infinity)
-      : Infinity;
+  const selectedVariantStock = variantGroups.length > 0
+    ? variantGroups.reduce((minQty, group) => {
+        const selected = selectedOptions[group.label];
+        if (!selected) return minQty;
+        const option = group.options?.find((o) => o.label === selected);
+        return option ? Math.min(minQty, option.quantity ?? minQty) : minQty;
+      }, Infinity)
+    : Infinity;
   const availableStock = Number.isFinite(selectedVariantStock)
     ? selectedVariantStock
     : product.quantity ?? 0;
@@ -182,29 +182,40 @@ const ProductDetails = ({ product }) => {
       toast.error(`Please select: ${missing.join(", ")}`);
       return;
     }
-    dispatch(
-      addToCart({
-        productId,
-        variants: normalizeVariants(selectedOptions),
-      }),
-    );
+    if (isWholesale) {
+      const qty = Math.max(1, wholesaleQty);
+      dispatch(
+        setQuantity({
+          productId,
+          variants: normalizeVariants(selectedOptions),
+          quantity: qty,
+        }),
+      );
+      toast.success(`${qty} × ${product.name} added to cart`);
+    } else {
+      dispatch(
+        addToCart({
+          productId,
+          variants: normalizeVariants(selectedOptions),
+        }),
+      );
+    }
   };
 
   const avgRating = product.rating?.length
-    ? product.rating.reduce((acc, item) => acc + item.rating, 0) /
-      product.rating.length
+    ? product.rating.reduce(
+        (acc, item) => acc + item.rating,
+        0,
+      ) / product.rating.length
     : 0;
 
   const stateLabel = product.store?.deliveryStates?.length
     ? product.store.deliveryStates.join(", ")
     : product.store?.state || "seller's state";
   const countryLabel = product.store?.country || "Nigeria";
-  const withinStateFee =
-    product.store?.shippingLocalFee ?? shippingFees.local;
-  const nationwideFee =
-    product.store?.shippingNationwideFee ?? withinStateFee;
-  const internationalFee =
-    product.store?.shippingAbroadFee ?? shippingFees.abroad;
+  const withinStateFee = product.store?.shippingLocalFee ?? shippingFees.local;
+  const nationwideFee = product.store?.shippingNationwideFee ?? withinStateFee;
+  const internationalFee = product.store?.shippingAbroadFee ?? shippingFees.abroad;
 
   const shippingFee = isAbroad
     ? internationalFee
@@ -248,7 +259,8 @@ const ProductDetails = ({ product }) => {
                 type="button"
                 onClick={() => goThumb(index)}
                 className={`relative h-16 overflow-hidden rounded-lg border-2 transition-all ${
-                  index === Math.min(mainIdx, Math.max(0, images.length - 1))
+                  index ===
+                  Math.min(mainIdx, Math.max(0, images.length - 1))
                     ? "border-blue-500 shadow-md ring-2 ring-blue-100"
                     : "border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500"
                 }`}
@@ -266,7 +278,6 @@ const ProductDetails = ({ product }) => {
         )}
       </div>
 
-      {/* Lightbox */}
       {lightboxOpen && mainImage ? (
         <div
           className="fixed inset-0 z-[300] flex items-center justify-center bg-black/92 p-4"
@@ -293,7 +304,9 @@ const ProductDetails = ({ product }) => {
                 className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/15 p-3 text-white hover:bg-white/25"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setMainIdx((i) => (i - 1 + images.length) % images.length);
+                  setMainIdx(
+                    (i) => (i - 1 + images.length) % images.length,
+                  );
                 }}
                 aria-label="Previous"
               >
@@ -379,10 +392,9 @@ const ProductDetails = ({ product }) => {
                 Low stock
               </span>
             )}
-            {typeof product._count?.orderItems === "number" && (
+            {typeof product._count?.orderItems === 'number' && (
               <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
-                Sold {product._count.orderItems}{" "}
-                {product._count.orderItems === 1 ? "time" : "times"}
+                Sold {product._count.orderItems} {product._count.orderItems === 1 ? 'time' : 'times'}
               </span>
             )}
             <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
@@ -405,7 +417,9 @@ const ProductDetails = ({ product }) => {
                     key={i}
                     size={14}
                     className="text-transparent"
-                    fill={avgRating >= i + 1 ? "#00C950" : "#D1D5DB"}
+                    fill={
+                      avgRating >= i + 1 ? "#00C950" : "#D1D5DB"
+                    }
                   />
                 ))}
             </div>
@@ -428,6 +442,9 @@ const ProductDetails = ({ product }) => {
             <p className="text-3xl font-semibold text-slate-900 dark:text-slate-50">
               {currency}
               {displayPrice.toLocaleString()}
+              {isWholesale && (
+                <span className="text-base font-normal text-slate-400 dark:text-slate-500 ml-1">/pc</span>
+              )}
             </p>
             {product.mrp > product.price && (
               <>
@@ -438,7 +455,8 @@ const ProductDetails = ({ product }) => {
                 <span className="text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 px-2 py-0.5 rounded-full">
                   Save{" "}
                   {(
-                    ((product.mrp - product.price) / product.mrp) *
+                    ((product.mrp - product.price) /
+                      product.mrp) *
                     100
                   ).toFixed(0)}
                   %
@@ -453,19 +471,16 @@ const ProductDetails = ({ product }) => {
                 {priceModifierTotal.toLocaleString()}
               </span>
             )}
-            {activeWholesaleTier && (
-              <span className="text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 px-2 py-0.5 rounded-full">
-                Bulk price active
-              </span>
-            )}
           </div>
-
           {/* Wholesale pricing table */}
-          {product.isWholesale && product.wholesaleTiers?.length > 0 && (
+          {isWholesale && (
             <div className="mt-4 border border-amber-200 dark:border-amber-800/60 rounded-xl overflow-hidden">
               <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-amber-900/20">
                 <span className="text-xs font-semibold text-amber-700 dark:text-amber-300 uppercase tracking-wide">
                   📦 Wholesale / Bulk Pricing
+                </span>
+                <span className="text-[10px] text-amber-500 dark:text-amber-400 ml-auto">
+                  Price updates live as you change quantity
                 </span>
               </div>
               <table className="w-full text-xs">
@@ -477,29 +492,34 @@ const ProductDetails = ({ product }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {product.wholesaleTiers.map((tier, idx) => {
+                  {wholesaleTiers.map((tier, idx) => {
+                    const isActive = activeWholesaleTier?.minQty === tier.minQty;
                     const saving = product.price - tier.price;
                     return (
                       <tr
                         key={tier.id ?? idx}
-                        className="border-t border-slate-100 dark:border-slate-800"
+                        className={`border-t border-slate-100 dark:border-slate-800 transition-colors ${
+                          isActive
+                            ? "bg-amber-50 dark:bg-amber-900/25"
+                            : ""
+                        }`}
                       >
-                        <td className="p-2 pl-3 text-slate-700 dark:text-slate-200">
-                          {tier.minQty}
-                          {tier.maxQty != null ? `–${tier.maxQty}` : "+"} pcs
+                        <td className="p-2 pl-3 text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                          {isActive && (
+                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                          )}
+                          {tier.minQty}{tier.maxQty != null ? `–${tier.maxQty}` : "+"} pcs
                         </td>
-                        <td className="p-2 font-semibold text-slate-800 dark:text-slate-100">
-                          {currency}
-                          {tier.price.toLocaleString()}
+                        <td className={`p-2 font-semibold ${isActive ? "text-amber-700 dark:text-amber-300" : "text-slate-800 dark:text-slate-100"}`}>
+                          {currency}{tier.price.toLocaleString()}
                         </td>
                         <td className="p-2">
                           {saving > 0 ? (
                             <span className="text-green-600 dark:text-green-400">
-                              -{currency}
-                              {saving.toLocaleString()} / pc
+                              -{currency}{saving.toLocaleString()}/pc
                             </span>
                           ) : (
-                            <span className="text-slate-400">—</span>
+                            <span className="text-slate-400">Base price</span>
                           )}
                         </td>
                       </tr>
@@ -508,7 +528,7 @@ const ProductDetails = ({ product }) => {
                 </tbody>
               </table>
               <p className="text-[10px] text-slate-400 px-3 py-2 bg-slate-50 dark:bg-slate-900/30 border-t border-slate-100 dark:border-slate-800">
-                Bulk price is applied automatically based on quantity ordered.
+                The highlighted row is your current tier based on the quantity entered above.
               </p>
             </div>
           )}
@@ -550,14 +570,20 @@ const ProductDetails = ({ product }) => {
                           title={
                             opt.label +
                             (opt.priceModifier
-                              ? ` (${opt.priceModifier > 0 ? "+" : ""}${opt.priceModifier.toLocaleString()})`
+                              ? ` (${
+                                  opt.priceModifier > 0 ? "+" : ""
+                                }${opt.priceModifier.toLocaleString()})`
                               : "")
                           }
                           className={`relative rounded-lg border-2 overflow-hidden transition ${
                             isSelected
                               ? "border-slate-800 dark:border-slate-100 shadow-md"
                               : "border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500"
-                          } ${!opt.inStock ? "opacity-40 cursor-not-allowed" : ""}`}
+                          } ${
+                            !opt.inStock
+                              ? "opacity-40 cursor-not-allowed"
+                              : ""
+                          }`}
                         >
                           {opt.image ? (
                             <img
@@ -607,7 +633,11 @@ const ProductDetails = ({ product }) => {
                             isSelected
                               ? "border-slate-800 bg-slate-800 text-white dark:border-slate-100 dark:bg-slate-100 dark:text-slate-900"
                               : "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500"
-                          } ${!opt.inStock ? "opacity-40 cursor-not-allowed line-through" : ""}`}
+                          } ${
+                            !opt.inStock
+                              ? "opacity-40 cursor-not-allowed line-through"
+                              : ""
+                          }`}
                         >
                           {opt.label}
                           {opt.priceModifier !== 0 && (
@@ -658,9 +688,7 @@ const ProductDetails = ({ product }) => {
             <TruckIcon
               size={15}
               className={
-                isAbroad
-                  ? "text-blue-500"
-                  : "text-slate-400 dark:text-slate-500"
+                isAbroad ? "text-blue-500" : "text-slate-400 dark:text-slate-500"
               }
             />
             <span>
@@ -687,12 +715,9 @@ const ProductDetails = ({ product }) => {
           </div>
 
           {!isAbroad ? (
-            product.deliveryWithinState &&
-            !product.deliveryNationwide &&
-            !product.deliveryInternational ? (
+            product.deliveryWithinState && !product.deliveryNationwide && !product.deliveryInternational ? (
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-300">
-                This product is only available for delivery for orders within{" "}
-                {stateLabel}.
+                This product is only available for delivery for orders within {stateLabel}.
               </div>
             ) : (
               <div className="space-y-2 pt-2 text-sm text-slate-600 dark:text-slate-300">
@@ -700,9 +725,7 @@ const ProductDetails = ({ product }) => {
                   <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950">
                     <span>Delivery within {stateLabel}</span>
                     <span className="font-semibold text-slate-900 dark:text-slate-100">
-                      {withinStateFee === 0
-                        ? "FREE"
-                        : `${currency}${withinStateFee.toLocaleString()}`}
+                      {withinStateFee === 0 ? "FREE" : `${currency}${withinStateFee.toLocaleString()}`}
                     </span>
                   </div>
                 )}
@@ -710,9 +733,7 @@ const ProductDetails = ({ product }) => {
                   <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950">
                     <span>Nationwide delivery</span>
                     <span className="font-semibold text-slate-900 dark:text-slate-100">
-                      {nationwideFee === 0
-                        ? "FREE"
-                        : `${currency}${nationwideFee.toLocaleString()}`}
+                      {nationwideFee === 0 ? "FREE" : `${currency}${nationwideFee.toLocaleString()}`}
                     </span>
                   </div>
                 )}
@@ -720,9 +741,7 @@ const ProductDetails = ({ product }) => {
                   <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950">
                     <span>International delivery</span>
                     <span className="font-semibold text-slate-900 dark:text-slate-100">
-                      {internationalFee === 0
-                        ? "FREE"
-                        : `${currency}${internationalFee.toLocaleString()}`}
+                      {internationalFee === 0 ? "FREE" : `${currency}${internationalFee.toLocaleString()}`}
                     </span>
                   </div>
                 )}
@@ -734,9 +753,7 @@ const ProductDetails = ({ product }) => {
                 <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950">
                   <span>International delivery</span>
                   <span className="font-semibold text-slate-900 dark:text-slate-100">
-                    {internationalFee === 0
-                      ? "FREE"
-                      : `${currency}${internationalFee.toLocaleString()}`}
+                    {internationalFee === 0 ? "FREE" : `${currency}${internationalFee.toLocaleString()}`}
                   </span>
                 </div>
               </div>
@@ -779,43 +796,140 @@ const ProductDetails = ({ product }) => {
         </div>
 
         {/* Add to cart */}
-        <div className="flex items-end gap-5">
-          {(isVariantProduct
-            ? exactVariantQuantity > 0
-            : productQuantity > 0) && (
+        {isWholesale ? (
+          /* ── Wholesale add-to-cart ── */
+          <div className="flex flex-col gap-4">
+            {/* Quantity input with live tier feedback */}
             <div className="flex flex-col gap-2">
               <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                Quantity
+                Order Quantity
               </p>
-              <Counter
-                productId={productId}
-                variants={
-                  isVariantProduct ? normalizeVariants(selectedOptions) : {}
-                }
-              />
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setWholesaleQty(q => Math.max(1, q - 1))}
+                    className="px-3 py-2.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition select-none text-lg leading-none"
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    min="1"
+                    max={product.quantity || undefined}
+                    value={wholesaleQty}
+                    onChange={e => {
+                      const v = parseInt(e.target.value, 10);
+                      setWholesaleQty(isNaN(v) || v < 1 ? 1 : v);
+                    }}
+                    className="w-20 text-center py-2.5 text-base font-semibold text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-900 outline-none border-x border-slate-200 dark:border-slate-700 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setWholesaleQty(q => q + 1)}
+                    className="px-3 py-2.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition select-none text-lg leading-none"
+                  >
+                    +
+                  </button>
+                </div>
+
+                {/* Live tier badge */}
+                {activeWholesaleTier ? (
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700">
+                    <span className="text-xs font-semibold text-amber-700 dark:text-amber-300">
+                      📦 {currency}{activeWholesaleTier.price.toLocaleString()}/pc
+                    </span>
+                    <span className="text-[10px] text-amber-500 dark:text-amber-400">
+                      ({activeWholesaleTier.minQty}{activeWholesaleTier.maxQty != null ? `–${activeWholesaleTier.maxQty}` : "+"} pcs tier)
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                      Base price · no bulk tier matched
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Subtotal preview */}
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Subtotal:{" "}
+                <span className="font-semibold text-slate-800 dark:text-slate-100">
+                  {currency}{wholesaleSubtotal.toLocaleString()}
+                </span>
+                <span className="text-xs ml-1">
+                  ({wholesaleQty} × {currency}{displayPrice.toLocaleString()})
+                </span>
+              </p>
             </div>
-          )}
-          <button
-            onClick={() =>
-              !isVariantProduct && productQuantity > 0
-                ? router.push("/cart")
-                : handleAddToCart()
-            }
-            className={`px-10 py-3 text-sm font-medium rounded-lg transition active:scale-95 ${
-              !canAddToCart && (!isVariantProduct || productQuantity === 0)
-                ? "bg-slate-300 text-slate-500 cursor-not-allowed dark:bg-slate-700 dark:text-slate-400"
-                : "bg-slate-800 text-white hover:bg-slate-900 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
-            }`}
-          >
-            {isVariantProduct
+
+            {/* Add to cart button */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleAddToCart}
+                disabled={!canAddToCart || !product.inStock}
+                className={`px-10 py-3 text-sm font-medium rounded-lg transition active:scale-95 ${
+                  !canAddToCart || !product.inStock
+                    ? "bg-slate-300 text-slate-500 cursor-not-allowed dark:bg-slate-700 dark:text-slate-400"
+                    : "bg-slate-800 text-white hover:bg-slate-900 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
+                }`}
+              >
+                {!product.inStock ? "Out of Stock" : `Add ${wholesaleQty} to Cart`}
+              </button>
+              {exactVariantQuantity > 0 && (
+                <button
+                  onClick={() => router.push("/cart")}
+                  className="px-6 py-3 text-sm font-medium rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+                >
+                  View Cart ({exactVariantQuantity} in cart)
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          /* ── Regular add-to-cart ── */
+          <div className="flex items-end gap-5">
+            {(isVariantProduct
               ? exactVariantQuantity > 0
-                ? "Add one more"
-                : "Add to Cart"
-              : productQuantity > 0
-              ? "View Cart"
-              : "Add to Cart"}
-          </button>
-        </div>
+              : productQuantity > 0) && (
+              <div className="flex flex-col gap-2">
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                  Quantity
+                </p>
+                <Counter
+                  productId={productId}
+                  variants={
+                    isVariantProduct
+                      ? normalizeVariants(selectedOptions)
+                      : {}
+                  }
+                />
+              </div>
+            )}
+            <button
+              onClick={() =>
+                !isVariantProduct && productQuantity > 0
+                  ? router.push("/cart")
+                  : handleAddToCart()
+              }
+              className={`px-10 py-3 text-sm font-medium rounded-lg transition active:scale-95 ${
+                !canAddToCart &&
+                (!isVariantProduct || productQuantity === 0)
+                  ? "bg-slate-300 text-slate-500 cursor-not-allowed dark:bg-slate-700 dark:text-slate-400"
+                  : "bg-slate-800 text-white hover:bg-slate-900 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
+              }`}
+            >
+              {isVariantProduct
+                ? exactVariantQuantity > 0
+                  ? "Add one more"
+                  : "Add to Cart"
+                : productQuantity > 0
+                ? "View Cart"
+                : "Add to Cart"}
+            </button>
+          </div>
+        )}
 
         <hr className="border-slate-200 dark:border-slate-700 my-5" />
 

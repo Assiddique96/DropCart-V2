@@ -128,10 +128,18 @@ const ProductCard = ({ product }) => {
               {product.mrp.toLocaleString()}
             </p>
           )}
-          <p className="mt-1 text-base font-semibold text-slate-900 dark:text-white">
-            {currency}
-            {product.price.toLocaleString()}
-          </p>
+          {product.isWholesale && product.wholesaleTiers?.length > 0 ? (
+            <p className="mt-1 text-base font-semibold text-slate-900 dark:text-white">
+              From {currency}
+              {Math.min(...product.wholesaleTiers.map(t => t.price)).toLocaleString()}
+              <span className="text-xs font-normal text-slate-400 dark:text-slate-500 ml-1">/pc</span>
+            </p>
+          ) : (
+            <p className="mt-1 text-base font-semibold text-slate-900 dark:text-white">
+              {currency}
+              {product.price.toLocaleString()}
+            </p>
+          )}
         </Link>
 
         <div className="mt-auto flex items-center justify-between gap-2">
