@@ -13,7 +13,7 @@ export async function POST(request, { params }) {
     // 2. UNWRAP PARAMS (Next.js 15 Fix)
     // Params is now a Promise and must be awaited before accessing properties
     const resolvedParams = await params;
-    const productId = resolvedParams.id;
+    const productId = resolvedParams.productId;
 
     if (!productId) {
       return NextResponse.json({ error: "Product ID is missing" }, { status: 400 });
