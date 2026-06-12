@@ -1,15 +1,13 @@
 'use client'
-
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-const DashboardSidebar = ({ navItems, header, user, onNavigate }) => {
+const DashboardSidebar = ({ navItems = [], header, user, onNavigate }) => {
   const pathname = usePathname()
 
   return (
-    <div className="h-screen w-60 flex flex-col border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-      <!-- Header (fixed, not scrolled) -->
-      <div className="shrink-0 p-5 border-b border-slate-200/70 dark:border-slate-800/80">
+    <div className="h-full flex flex-col">
+      <div className="p-5 border-b border-slate-200/70 dark:border-slate-800/80 flex-none">
         {header ? (
           header
         ) : (
@@ -24,13 +22,11 @@ const DashboardSidebar = ({ navItems, header, user, onNavigate }) => {
         )}
       </div>
 
-      <!-- Scrollable nav area -->
-      <nav className="flex-1 min-h-0 overflow-y-auto p-3">
+      <nav className="flex-1 p-3 overflow-y-auto">
         <div className="space-y-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href
             const Icon = item.icon
-
             return (
               <Link
                 key={item.href}
@@ -67,8 +63,7 @@ const DashboardSidebar = ({ navItems, header, user, onNavigate }) => {
         </div>
       </nav>
 
-      <!-- Footer (fixed, not scrolled) -->
-      <div className="shrink-0 p-4 border-t border-slate-200/70 dark:border-slate-800/80">
+      <div className="p-4 border-t border-slate-200/70 dark:border-slate-800/80 flex-none">
         <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-relaxed">
           Secure admin & seller tools for managing stores, products, orders, and payouts.
         </p>
