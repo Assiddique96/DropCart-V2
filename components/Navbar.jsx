@@ -162,13 +162,6 @@ const Navbar = () => {
       {/* Top utility bar (like WB top strip but Shpinx colors) */}
       <div className="hidden md:flex items-center justify-between px-6 lg:px-10 h-9 text-xs bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-300">
         <div className="flex items-center gap-4">
-          <span className="font-medium">Shpinx .NG</span>
-          <Link href="/faq" className="hover:text-slate-800 dark:hover:text-white">Help & FAQs</Link>
-          <Link href="/create-store" className="hover:text-slate-800 dark:hover:text-white">
-            Sell on Shpinx
-          </Link>
-        </div>
-        <div className="flex items-center gap-4">
           <Link href="/track" className="hover:text-slate-800 dark:hover:text-white">
             Track order
           </Link>
