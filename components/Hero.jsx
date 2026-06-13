@@ -5,6 +5,8 @@ import {
   ArrowRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ShieldCheckIcon,
+  StarIcon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -54,19 +56,53 @@ function getTopDiscountPrimaryImage(products) {
   return scored[0].img;
 }
 
-function useCarouselIndex(length, intervalMs) {
-  const [index, setIndex] = useState(0);
+/**
+ * Infinite carousel index:
+ * - Autoplays through the N "real" slides.
+ * - We render [last, ...slides, first] to allow a seamless CSS transition.
+ */
+function useInfiniteCarousel(length, intervalMs) {
+  const [index, setIndex] = useState(1); // start at first "real" slide (after cloned last)
+  const [animating, setAnimating] = useState(true);
+
   useEffect(() => {
-    if (length <= 1) return undefined;
+    if (length <= 1) return;
     const t = setInterval(() => {
-      setIndex((i) => (i + 1) % length);
+      setIndex((prev) => prev + 1);
     }, intervalMs);
     return () => clearInterval(t);
   }, [length, intervalMs]);
+
+  // Reset when length changes
   useEffect(() => {
-    setIndex(0);
+    setIndex(1);
   }, [length]);
-  return [index, setIndex];
+
+  const handleTransitionEnd = () => {
+    if (length <= 1) return;
+    // If at the cloned last slide (index = 0) jump to real last
+    if (index === 0) {
+      setAnimating(false);
+      setIndex(length);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setAnimating(true));
+      });
+    }
+    // If at the cloned first slide (index = length + 1) jump to real first
+    if (index === length + 1) {
+      setAnimating(false);
+      setIndex(1);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setAnimating(true));
+      });
+    }
+  };
+
+  const goTo = (targetIndex) => {
+    setIndex(targetIndex);
+  };
+
+  return { index, setIndex: goTo, handleTransitionEnd, animating };
 }
 
 /** Darkening overlay on promo background — variant presets from admin. */
@@ -90,6 +126,45 @@ const Hero = () => {
   const topDiscountImage = useMemo(
     () => getTopDiscountPrimaryImage(products),
     [products]
+  );
+
+  // Fake vendor data – later you can fetch from /api/vendors or Redux
+  const verifiedVendors = useMemo(
+    () => [
+      {
+        id: 1,
+        name: "Lagos Tech Hub",
+        rating: 4.9,
+        orders: "2.1k+",
+        tag: "Enterprise vendor",
+        href: "/vendor/lagos-tech-hub",
+      },
+      {
+        id: 2,
+        name: "Abuja Gadgets Pro",
+        rating: 4.8,
+        orders: "1.6k+",
+        tag: "Verified SME",
+        href: "/vendor/abuja-gadgets-pro",
+      },
+      {
+        id: 3,
+        name: "Malta Electronics Lab",
+        rating: 4.7,
+        orders: "980+",
+        tag: "EU warehouse",
+        href: "/vendor/malta-electronics-lab",
+      },
+      {
+        id: 4,
+        name: "Krasnodar Digital Store",
+        rating: 4.9,
+        orders: "1.3k+",
+        tag: "Priority vendor",
+        href: "/vendor/krasnodar-digital-store",
+      },
+    ],
+    []
   );
 
   const defaults = useMemo(
@@ -156,6 +231,35 @@ const Hero = () => {
         { label: "Computers", href: "/shop?category=computers" },
         { label: "Smartphones", href: "/shop?category=smartphones" },
       ],
+      middleBanners: [
+        {
+          id: 1,
+          size: "lg",
+          title: "Flash deals for SMEs",
+          subtitle: "Limited‑time bulk discounts on core gadgets",
+          cta: "Browse flash deals",
+          href: "/flash-deals",
+          image: assets.hero_product_img1,
+        },
+        {
+          id: 2,
+          size: "sm",
+          title: "International shipping",
+          subtitle: "Malta & EU warehouse for cross‑border orders",
+          cta: "View options",
+          href: "/intl-shipping",
+          image: assets.hero_product_img2,
+        },
+        {
+          id: 3,
+          size: "sm",
+          title: "Installment plans",
+          subtitle: "Flexible financing for growing businesses",
+          cta: "Check eligibility",
+          href: "/installments",
+          image: assets.hero_model_img,
+        },
+      ],
     }),
     [currency, topRatedImage, topDiscountImage]
   );
@@ -179,7 +283,7 @@ const Hero = () => {
     };
   }, []);
 
-  const featuredSlides =
+  const featuredBase =
     remote === undefined
       ? defaults.featured
       : remote.featured?.length
@@ -215,17 +319,44 @@ const Hero = () => {
         }))
       : defaults.promo2;
 
-  const [fi, setFi] = useCarouselIndex(featuredSlides.length, 6500);
-  const [p1i, setP1i] = useCarouselIndex(promo1Slides.length, 5500);
-  const [p2i, setP2i] = useCarouselIndex(promo2Slides.length, 5500);
+  // Build cloned slides array for infinite hero
+  const featuredSlides =
+    featuredBase.length > 1
+      ? [
+          featuredBase[featuredBase.length - 1],
+          ...featuredBase,
+          featuredBase[0],
+        ]
+      : featuredBase;
 
-  const go = (setter, len, delta) => {
-    setter((i) => (i + delta + len) % len);
+  const {
+    index: fi,
+    setIndex: setFi,
+    handleTransitionEnd,
+    animating,
+  } = useInfiniteCarousel(featuredBase.length, 6500);
+
+  const [p1i, setP1i] = useInfiniteCarousel(
+    promo1Slides.length,
+    5500
+  );
+  const [p2i, setP2i] = useInfiniteCarousel(
+    promo2Slides.length,
+    5500
+  );
+
+  const goFinite = (setter, length, delta) => {
+    setter((i) => {
+      const next = i + delta;
+      if (next < 0) return length - 1;
+      if (next >= length) return 0;
+      return next;
+    });
   };
 
   return (
     <section className="mx-3 sm:mx-4 md:mx-6">
-      {/* Top info / quick filters bar – compact, marketplace-like */}
+      {/* Top info / quick filters bar */}
       <div className="mx-auto flex max-w-7xl flex-col gap-3 pt-3 text-xs sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2 text-slate-700 dark:text-slate-200">
           <span className="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white dark:bg-slate-100 dark:text-slate-900">
@@ -250,11 +381,17 @@ const Hero = () => {
 
       {/* Main hero grid */}
       <div className="mx-auto mt-4 flex max-w-7xl gap-4 lg:gap-6 xl:gap-8 max-xl:flex-col">
-        {/* Hero left (main slider) */}
+        {/* Hero left (infinite main slider) */}
         <div className="group relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-gradient-to-br from-slate-200 via-slate-300 to-slate-400 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 shadow-sm">
           <div
-            className="flex h-full transition-transform duration-500 ease-out"
-            style={{ transform: `translateX(-${fi * 100}%)` }}
+            className={`flex h-full transition-transform duration-500 ease-out ${
+              animating ? "" : "transition-none"
+            }`}
+            style={{
+              transform: `translateX(-${fi * 100}%)`,
+              width: `${featuredSlides.length * 100}%`,
+            }}
+            onTransitionEnd={handleTransitionEnd}
           >
             {featuredSlides.map((slide, idx) => (
               <article
@@ -267,7 +404,7 @@ const Hero = () => {
                   fill
                   className="object-cover object-center"
                   sizes="(max-width: 1280px) 100vw, min(896px, 100vw)"
-                  priority={idx === 0}
+                  priority={idx === 1}
                 />
                 <div
                   className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/35"
@@ -340,24 +477,30 @@ const Hero = () => {
                     </div>
                   </div>
 
-                  {/* Bottom indicator row */}
-                  {featuredSlides.length > 1 && (
+                  {/* Bottom indicator row – reflect "real" slides */}
+                  {featuredBase.length > 1 && (
                     <div className="mt-4 flex items-center justify-between text-[11px] text-white/80">
                       <div className="flex items-center gap-1">
-                        <span>{fi + 1}</span>
+                        <span>
+                          {/* Normalize index to [1..length] */}
+                          {((fi - 1 + featuredBase.length) %
+                            featuredBase.length) +
+                            1}
+                        </span>
                         <span className="text-white/60">
-                          / {featuredSlides.length}
+                          / {featuredBase.length}
                         </span>
                       </div>
                       <div className="flex gap-1.5">
-                        {featuredSlides.map((_, i) => (
+                        {featuredBase.map((_, i) => (
                           <button
                             key={i}
                             type="button"
                             aria-label={`Go to slide ${i + 1}`}
-                            onClick={() => setFi(i)}
+                            onClick={() => setFi(i + 1)}
                             className={`h-1.5 rounded-full transition-all ${
-                              i === fi
+                              ((fi - 1 + featuredBase.length) %
+                                featuredBase.length) === i
                                 ? "w-5 bg-white"
                                 : "w-2 bg-white/40"
                             }`}
@@ -371,12 +514,18 @@ const Hero = () => {
             ))}
           </div>
 
-          {featuredSlides.length > 1 && (
+          {featuredBase.length > 1 && (
             <>
               <button
                 type="button"
                 aria-label="Previous slide"
-                onClick={() => go(setFi, featuredSlides.length, -1)}
+                onClick={() =>
+                  setFi(
+                    fi - 1 < 0
+                      ? featuredBase.length
+                      : fi - 1
+                  )
+                }
                 className="absolute left-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-800 shadow hover:bg-white lg:flex dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-900"
               >
                 <ChevronLeftIcon size={18} />
@@ -384,7 +533,13 @@ const Hero = () => {
               <button
                 type="button"
                 aria-label="Next slide"
-                onClick={() => go(setFi, featuredSlides.length, 1)}
+                onClick={() =>
+                  setFi(
+                    fi + 1 > featuredBase.length + 1
+                      ? 1
+                      : fi + 1
+                  )
+                }
                 className="absolute right-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-800 shadow hover:bg-white lg:flex dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-900"
               >
                 <ChevronRightIcon size={18} />
@@ -393,7 +548,7 @@ const Hero = () => {
           )}
         </div>
 
-        {/* Right side – stacked promos similar to marketplace tiles */}
+        {/* Right side – stacked promos (finite but auto) */}
         <div className="flex w-full flex-col gap-4 text-sm md:flex-row xl:max-w-sm xl:flex-col">
           <PromoCarousel
             slides={promo1Slides}
@@ -407,6 +562,12 @@ const Hero = () => {
           />
         </div>
       </div>
+
+      {/* Middle carousel banner row – inspired by AliExpress style wide mid promos [web:24] */}
+      <MiddleBannerRow banners={defaults.middleBanners} />
+
+      {/* Verified vendors section */}
+      <VerifiedVendorsSection vendors={verifiedVendors} currency={currency} />
 
       {/* Micro promos row under the hero */}
       <div className="mx-auto mt-4 grid max-w-7xl grid-cols-2 gap-2 text-[11px] sm:grid-cols-4 sm:text-xs">
@@ -430,7 +591,7 @@ const Hero = () => {
         ))}
       </div>
 
-      {/* Categories strip (you already had this) */}
+      {/* Categories strip */}
       <div className="mt-5">
         <CategoriesMarquee />
       </div>
@@ -439,78 +600,285 @@ const Hero = () => {
 };
 
 function PromoCarousel({ slides, index, setIndex }) {
+  if (!slides || slides.length === 0) return null;
+
+  const realLength = slides.length;
+  const hasMany = realLength > 1;
+
+  const localIndex = hasMany ? index : 0;
+
+  const handleNext = () => {
+    if (!hasMany) return;
+    setIndex(localIndex + 1 > realLength ? 1 : localIndex + 1);
+  };
+
+  const handlePrev = () => {
+    if (!hasMany) return;
+    setIndex(localIndex - 1 < 1 ? realLength : localIndex - 1);
+  };
+
+  const currentSlide = hasMany
+    ? slides[(localIndex - 1 + realLength) % realLength]
+    : slides[0];
+
   return (
     <aside className="relative flex w-full flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-slate-200 shadow-sm dark:bg-slate-900">
-      <div
-        className="flex h-full min-h-[180px] w-full transition-transform duration-500 ease-out"
-        style={{ transform: `translateX(-${index * 100}%)` }}
+      <Link
+        href={currentSlide.href || "/shop"}
+        className="group relative block min-h-[180px] w-full"
       >
-        {slides.map((slide, idx) => (
-          <Link
-            key={idx}
-            href={slide.href || "/shop"}
-            className="group relative block min-h-[180px] min-w-full shrink-0"
-          >
-            {isValidImageSrc(slide.image) ? (
-              <Image
-                src={slide.image}
-                alt={slide.title || "Promo"}
-                fill
-                className="object-cover object-center"
-                sizes="(max-width: 1280px) 100vw, 380px"
-              />
-            ) : (
-              <div
-                className="absolute inset-0 bg-slate-400 dark:bg-slate-700"
-                aria-hidden
-              />
-            )}
-            <div
-              className={`absolute inset-0 ${
-                PROMO_BG_OVERLAY[slide.variant] ||
-                PROMO_BG_OVERLAY.light
-              }`}
-              aria-hidden
+        {isValidImageSrc(currentSlide.image) ? (
+          <Image
+            src={currentSlide.image}
+            alt={currentSlide.title || "Promo"}
+            fill
+            className="object-cover object-center"
+            sizes="(max-width: 1280px) 100vw, 380px"
+          />
+        ) : (
+          <div
+            className="absolute inset-0 bg-slate-400 dark:bg-slate-700"
+            aria-hidden
+          />
+        )}
+        <div
+          className={`absolute inset-0 ${
+            PROMO_BG_OVERLAY[currentSlide.variant] ||
+            PROMO_BG_OVERLAY.light
+          }`}
+          aria-hidden
+        />
+        <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-5">
+          <div className="flex flex-col gap-1">
+            <p className="max-w-[14rem] text-base font-semibold leading-tight text-white drop-shadow-md sm:text-lg">
+              {currentSlide.title || "Offers"}
+            </p>
+            <p className="text-[11px] text-white/85 sm:text-xs">
+              {currentSlide.subtitle ||
+                "View more electronics deals today"}
+            </p>
+          </div>
+          <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-white/95 drop-shadow sm:text-xs">
+            View more
+            <ArrowRightIcon
+              className="shrink-0 transition-transform group-hover:translate-x-0.5"
+              size={16}
             />
-            <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-5">
-              <div className="flex flex-col gap-1">
-                <p className="max-w-[14rem] text-base font-semibold leading-tight text-white drop-shadow-md sm:text-lg">
-                  {slide.title || "Offers"}
-                </p>
-                <p className="text-[11px] text-white/85 sm:text-xs">
-                  {slide.subtitle || "View more electronics deals today"}
-                </p>
-              </div>
-              <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-white/95 drop-shadow sm:text-xs">
-                View more
-                <ArrowRightIcon
-                  className="shrink-0 transition-transform group-hover:translate-x-0.5"
-                  size={16}
+          </p>
+        </div>
+      </Link>
+      {hasMany && (
+        <div className="pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-between px-1">
+          <button
+            type="button"
+            aria-label="Previous promo"
+            onClick={(e) => {
+              e.preventDefault();
+              handlePrev();
+            }}
+            className="pointer-events-auto rounded-full bg-black/25 p-1 text-white shadow hover:bg-black/40"
+          >
+            <ChevronLeftIcon size={16} />
+          </button>
+          <button
+            type="button"
+            aria-label="Next promo"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNext();
+            }}
+            className="pointer-events-auto rounded-full bg-black/25 p-1 text-white shadow hover:bg-black/40"
+          >
+            <ChevronRightIcon size={16} />
+          </button>
+        </div>
+      )}
+    </aside>
+  );
+}
+
+/** AliExpress-like middle banner row: 1 large, 2 small banners in a carousel strip [web:24] */
+function MiddleBannerRow({ banners }) {
+  const [index, setIndex] = useState(0);
+
+  if (!banners || banners.length === 0) return null;
+
+  // Create "pages" – first element is the large banner, others are grouped as small
+  const large = banners.find((b) => b.size === "lg") || banners[0];
+  const small = banners.filter((b) => b.id !== large.id);
+
+  const next = () => {
+    setIndex((i) => (i + 1) % Math.max(1, small.length));
+  };
+  const prev = () => {
+    setIndex((i) =>
+      (i - 1 + Math.max(1, small.length)) %
+      Math.max(1, small.length)
+    );
+  };
+
+  const smallView =
+    small.length <= 1
+      ? small
+      : [small[index], small[(index + 1) % small.length]];
+
+  return (
+    <div className="mx-auto mt-5 flex max-w-7xl flex-col gap-3 md:flex-row">
+      {/* Large banner */}
+      <Link
+        href={large.href}
+        className="group relative flex-1 overflow-hidden rounded-3xl bg-slate-100 shadow-sm dark:bg-slate-900"
+      >
+        {isValidImageSrc(large.image) && (
+          <Image
+            src={large.image}
+            alt={large.title}
+            fill
+            className="object-cover object-center"
+            sizes="(max-width: 1280px) 100vw, 640px"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/30" />
+        <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-6 lg:p-8">
+          <div className="space-y-1">
+            <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white/80 backdrop-blur-sm">
+              Flash deals
+            </p>
+            <h2 className="max-w-md text-lg font-semibold text-white drop-shadow-md sm:text-xl lg:text-2xl">
+              {large.title}
+            </h2>
+            <p className="max-w-md text-[11px] text-white/85 sm:text-xs">
+              {large.subtitle}
+            </p>
+          </div>
+          <div className="mt-3 flex items-center gap-2 text-[11px] font-semibold text-white sm:text-xs">
+            <span>{large.cta}</span>
+            <ArrowRightIcon size={16} />
+          </div>
+        </div>
+      </Link>
+
+      {/* Small banners (carousel-style pair) */}
+      <div className="relative flex w-full flex-col gap-3 md:w-[280px]">
+        <div className="flex flex-col gap-3">
+          {smallView.map((b) => (
+            <Link
+              key={b.id}
+              href={b.href}
+              className="group relative h-[90px] overflow-hidden rounded-2xl bg-slate-100 shadow-sm dark:bg-slate-900"
+            >
+              {isValidImageSrc(b.image) && (
+                <Image
+                  src={b.image}
+                  alt={b.title}
+                  fill
+                  className="object-cover object-center"
+                  sizes="280px"
                 />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/30" />
+              <div className="absolute inset-0 z-10 flex flex-col justify-center p-3">
+                <h3 className="line-clamp-1 text-xs font-semibold text-white sm:text-sm">
+                  {b.title}
+                </h3>
+                <p className="mt-1 line-clamp-2 text-[10px] text-white/85 sm:text-[11px]">
+                  {b.subtitle}
+                </p>
+                <div className="mt-1 flex items-center gap-1 text-[10px] font-medium text-white/90">
+                  <span>{b.cta}</span>
+                  <ArrowRightIcon size={14} />
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+        {small.length > 2 && (
+          <div className="absolute inset-y-0 right-1 flex flex-col justify-center gap-1">
+            <button
+              type="button"
+              onClick={prev}
+              className="rounded-full bg-black/25 p-1 text-white shadow hover:bg-black/40"
+              aria-label="Previous banner"
+            >
+              <ChevronLeftIcon size={14} />
+            </button>
+            <button
+              type="button"
+              onClick={next}
+              className="rounded-full bg-black/25 p-1 text-white shadow hover:bg-black/40"
+              aria-label="Next banner"
+            >
+              <ChevronRightIcon size={14} />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Verified vendors strip – dev/marketing session for verified sellers */
+function VerifiedVendorsSection({ vendors, currency }) {
+  if (!vendors || vendors.length === 0) return null;
+
+  return (
+    <div className="mx-auto mt-6 max-w-7xl rounded-3xl bg-slate-50 px-3 py-3 text-[11px] shadow-sm ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-800 sm:px-4 sm:py-4 sm:text-xs">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900">
+            <ShieldCheckIcon size={16} />
+          </span>
+          <div>
+            <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+              Verified vendors
+            </p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400">
+              Curated sellers with strict quality, logistics and payment checks
+            </p>
+          </div>
+        </div>
+        <Link
+          href="/vendors/verified"
+          className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-3 py-1 text-[10px] font-semibold text-slate-800 transition hover:border-slate-900 hover:bg-slate-900 hover:text-white dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-100 dark:hover:bg-slate-100 dark:hover:text-slate-900"
+        >
+          Join as a verified vendor
+          <ArrowRightIcon size={14} />
+        </Link>
+      </div>
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {vendors.map((v) => (
+          <Link
+            key={v.id}
+            href={v.href}
+            className="group flex flex-col justify-between rounded-2xl bg-white p-3 text-slate-800 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:ring-slate-900 dark:bg-slate-950 dark:text-slate-100 dark:ring-slate-800 dark:hover:ring-slate-100"
+          >
+            <div className="flex items-center justify-between gap-1">
+              <p className="line-clamp-1 text-[11px] font-semibold sm:text-xs">
+                {v.name}
               </p>
+              <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-semibold text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200">
+                <ShieldCheckIcon size={11} />
+                Verified
+              </span>
+            </div>
+            <p className="mt-1 line-clamp-1 text-[10px] text-slate-500 dark:text-slate-400">
+              {v.tag}
+            </p>
+            <div className="mt-2 flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-300">
+              <span className="inline-flex items-center gap-0.5">
+                <StarIcon
+                  size={12}
+                  className="text-amber-400"
+                  aria-hidden
+                />
+                <span>{v.rating.toFixed(1)}</span>
+              </span>
+              <span>{v.orders} orders</span>
             </div>
           </Link>
         ))}
       </div>
-      {slides.length > 1 && (
-        <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-20 flex justify-center gap-1">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Promo slide ${i + 1}`}
-              onClick={(e) => {
-                e.preventDefault();
-                setIndex(i);
-              }}
-              className={`pointer-events-auto h-1.5 rounded-full transition-all ${
-                i === index ? "w-5 bg-white" : "w-1.5 bg-white/45"
-              }`}
-            />
-          ))}
-        </div>
-      )}
-    </aside>
+    </div>
   );
 }
 
