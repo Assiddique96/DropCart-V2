@@ -224,6 +224,8 @@ const Hero = () => {
         { label: "Computers", href: "/shop?category=computers" },
         { label: "Smartphones", href: "/shop?category=smartphones" },
       ],
+      // middleBanners stays defined here if you still want the data,
+      // but it will no longer be rendered inside Hero
       middleBanners: [
         {
           id: 1,
@@ -336,7 +338,7 @@ const Hero = () => {
             <Link
               key={q.label}
               href={q.href}
-              className="rounded-full border border-slate-200 px-2.5 py-1 transition hover:border-slate-900 hover:bg-slate-900 hover:text-white dark:border-slate-700 dark:hover:border-slate-100 dark:hover:bg-slate-100 dark:hover:text-slate-900"
+              className="rounded-full border border-slate-200 px-2.5 py-1 transition hover:border-slate-900 hover:bg-slate-900 hover:text-white dark:border-slate-700 dark:hover:border-slate-100 dark:hover:bg-slate-100 dark:hover.text-slate-900"
             >
               {q.label}
             </Link>
@@ -381,7 +383,7 @@ const Hero = () => {
                     {(slide.badgeText || slide.badgeLabel) && (
                       <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[11px] text-gray-50 backdrop-blur-sm sm:text-xs">
                         {slide.badgeLabel && (
-                          <span className="rounded-full bg.white/25 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white bg-white/25">
+                          <span className="rounded-full bg-white/25 px-3 py-0.5 text-[10px] font-semibold.uppercase tracking-wide text-white">
                             {slide.badgeLabel}
                           </span>
                         )}
@@ -483,7 +485,7 @@ const Hero = () => {
                       : fi - 1
                   )
                 }
-                className="absolute left-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-800 shadow hover:bg-white lg:flex dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-900"
+                className="absolute left-2 top-1/2 z-20.hidden -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-800 shadow hover:bg-white lg:flex dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-900"
               >
                 <ChevronLeftIcon size={18} />
               </button>
@@ -516,9 +518,6 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Middle carousel banner row */}
-      <MiddleBannerRow banners={defaults.middleBanners} />
-
       {/* Verified stores section */}
       <VerifiedStoresSection stores={verifiedStores} currency={currency} />
 
@@ -528,7 +527,7 @@ const Hero = () => {
           <Link
             key={p.label}
             href={p.href}
-            className="group flex items-center justify-between gap-2 rounded-2xl bg-white px-3 py-2 text-slate-800 shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-900 hover:text-white hover:ring-slate-900 dark:bg-slate-900 dark:text-slate-100 dark:ring-slate-800 dark:hover:bg-slate-100 dark:hover:text-slate-900 dark:hover:ring-slate-100"
+            className="group flex items-center.justify-between gap-2 rounded-2xl bg.white px-3 py-2 text-slate-800 shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-900 hover:text-white hover:ring-slate-900 dark:bg-slate-900 dark:text-slate-100 dark:ring-slate-800 dark:hover:bg-slate-100 dark:hover:text-slate-900 dark:hover:ring-slate-100"
           >
             <div className="flex flex-col">
               <span className="font-semibold">{p.label}</span>
@@ -571,7 +570,7 @@ function PromoCarousel({ slides, index, setIndex }) {
   const currentSlide = slides[index];
 
   return (
-    <aside className="relative flex w-full flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-slate-200 shadow-sm dark:bg-slate-900">
+    <aside className="relative flex w-full.flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-slate-200 shadow-sm dark:bg-slate-900">
       <Link
         href={currentSlide.href || "/shop"}
         className="group relative block min-h-[180px] w-full"
@@ -607,7 +606,7 @@ function PromoCarousel({ slides, index, setIndex }) {
                 "View more electronics deals today"}
             </p>
           </div>
-          <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text.white/95 drop-shadow sm:text-xs text-white">
+          <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-white/95 drop-shadow sm:text-xs">
             View more
             <ArrowRightIcon
               className="shrink-0 transition-transform group-hover:translate-x-0.5"
@@ -643,124 +642,6 @@ function PromoCarousel({ slides, index, setIndex }) {
         </div>
       )}
     </aside>
-  );
-}
-
-/** AliExpress-like middle banner row */
-function MiddleBannerRow({ banners }) {
-  const [index, setIndex] = useState(0);
-
-  if (!banners || banners.length === 0) return null;
-
-  const large = banners.find((b) => b.size === "lg") || banners[0];
-  const small = banners.filter((b) => b.id !== large.id);
-
-  const next = () => {
-    setIndex((i) => (i + 1) % Math.max(1, small.length));
-  };
-  const prev = () => {
-    setIndex((i) =>
-      (i - 1 + Math.max(1, small.length)) % Math.max(1, small.length)
-    );
-  };
-
-  const smallView =
-    small.length <= 1
-      ? small
-      : [small[index], small[(index + 1) % small.length]];
-
-  return (
-    <div className="mx-auto mt-5 flex max-w-7xl flex-col gap-3 md:flex-row">
-      {/* Large banner */}
-      <Link
-        href={large.href}
-        className="group relative flex-1 overflow-hidden rounded-3xl bg-slate-100 shadow-sm dark:bg-slate-900"
-      >
-        {isValidImageSrc(large.image) && (
-          <Image
-            src={large.image}
-            alt={large.title}
-            fill
-            className="object-cover object-center"
-            sizes="(max-width: 1280px) 100vw, 640px"
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/30" />
-        <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-6 lg:p-8">
-          <div className="space-y-1">
-            <p className="inline-flex items-center gap-2 rounded-full bg.white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white/80 backdrop-blur-sm bg-white/10">
-              Flash deals
-            </p>
-            <h2 className="max-w-md text-lg font-semibold text-white drop-shadow-md sm:text-xl lg:text-2xl">
-              {large.title}
-            </h2>
-            <p className="max-w-md text-[11px] text-white/85 sm:text-xs">
-              {large.subtitle}
-            </p>
-          </div>
-          <div className="mt-3 flex items-center gap-2 text-[11px] font-semibold text.white sm:text-xs text-white">
-            <span>{large.cta}</span>
-            <ArrowRightIcon size={16} />
-          </div>
-        </div>
-      </Link>
-
-      {/* Small banners (carousel-style pair) */}
-      <div className="relative flex w-full flex-col gap-3 md:w-[280px]">
-        <div className="flex flex-col gap-3">
-          {smallView.map((b) => (
-            <Link
-              key={b.id}
-              href={b.href}
-              className="group relative h-[90px] overflow-hidden rounded-2xl bg-slate-100 shadow-sm dark:bg-slate-900"
-            >
-              {isValidImageSrc(b.image) && (
-                <Image
-                  src={b.image}
-                  alt={b.title}
-                  fill
-                  className="object-cover object-center"
-                  sizes="280px"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/30" />
-              <div className="absolute inset-0 z-10 flex flex-col justify-center p-3">
-                <h3 className="line-clamp-1 text-xs font-semibold text-white sm:text-sm">
-                  {b.title}
-                </h3>
-                <p className="mt-1 line-clamp-2 text-[10px] text-white/85 sm:text-[11px]">
-                  {b.subtitle}
-                </p>
-                <div className="mt-1 flex items-center gap-1 text-[10px] font-medium text-white/90">
-                  <span>{b.cta}</span>
-                  <ArrowRightIcon size={14} />
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-        {small.length > 2 && (
-          <div className="absolute inset-y-0 right-1 flex flex-col justify-center gap-1">
-            <button
-              type="button"
-              onClick={prev}
-              className="rounded-full bg-black/25 p-1 text-white shadow hover:bg-black/40"
-              aria-label="Previous banner"
-            >
-              <ChevronLeftIcon size={14} />
-            </button>
-            <button
-              type="button"
-              onClick={next}
-              className="rounded-full bg-black/25 p-1 text-white shadow hover:bg-black/40"
-              aria-label="Next banner"
-            >
-              <ChevronRightIcon size={14} />
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
   );
 }
 
