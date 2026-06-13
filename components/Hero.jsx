@@ -57,52 +57,61 @@ function getTopDiscountPrimaryImage(products) {
 }
 
 /**
- * Infinite carousel index:
- * - Autoplays through the N "real" slides.
- * - We render [last, ...slides, first] to allow a seamless CSS transition.
+ * Simple finite carousel hook used by side promos.
+ * Always returns [index, setIndex].
  */
-function useInfiniteCarousel(length, intervalMs) {
-  const [index, setIndex] = useState(1); // start at first "real" slide (after cloned last)
-  const [animating, setAnimating] = useState(true);
+function useFiniteCarousel(length, intervalMs) {
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    if (length <= 1) return;
+    if (!length || length <= 1) return;
     const t = setInterval(() => {
-      setIndex((prev) => prev + 1);
+      setIndex((i) => (i + 1) % length);
     }, intervalMs);
     return () => clearInterval(t);
   }, [length, intervalMs]);
 
-  // Reset when length changes
   useEffect(() => {
-    setIndex(1);
+    setIndex(0);
+  }, [length]);
+
+  return [index, setIndex];
+}
+
+/**
+ * Infinite carousel hook for main hero.
+ * Always returns [index, setIndex, handleTransitionEnd, animating].
+ */
+function useInfiniteCarousel(length, intervalMs) {
+  const [index, setIndex] = useState(0); // 0..length-1
+  const [animating, setAnimating] = useState(true);
+
+  useEffect(() => {
+    if (!length || length <= 1) return;
+    const t = setInterval(() => {
+      setIndex((prev) => (prev + 1) % length);
+    }, intervalMs);
+    return () => clearInterval(t);
+  }, [length, intervalMs]);
+
+  useEffect(() => {
+    setIndex(0);
   }, [length]);
 
   const handleTransitionEnd = () => {
-    if (length <= 1) return;
-    // If at the cloned last slide (index = 0) jump to real last
-    if (index === 0) {
-      setAnimating(false);
-      setIndex(length);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => setAnimating(true));
-      });
-    }
-    // If at the cloned first slide (index = length + 1) jump to real first
-    if (index === length + 1) {
-      setAnimating(false);
-      setIndex(1);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => setAnimating(true));
-      });
-    }
+    // reserved for future smooth-loop tweaks
   };
 
-  const goTo = (targetIndex) => {
-    setIndex(targetIndex);
+  const goTo = (nextIndex) => {
+    if (!length) return;
+    setAnimating(false);
+    setIndex(((nextIndex % length) + length) % length);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setAnimating(true));
+    });
   };
 
-  return { index, setIndex: goTo, handleTransitionEnd, animating };
+  return [index, goTo, handleTransitionEnd, animating];
 }
 
 /** Darkening overlay on promo background — variant presets from admin. */
@@ -319,40 +328,13 @@ const Hero = () => {
         }))
       : defaults.promo2;
 
-  // Build cloned slides array for infinite hero
-  const featuredSlides =
-    featuredBase.length > 1
-      ? [
-          featuredBase[featuredBase.length - 1],
-          ...featuredBase,
-          featuredBase[0],
-        ]
-      : featuredBase;
+  // No clones needed; infinite behaviour is handled by the hook
+  const featuredSlides = featuredBase;
 
-  const {
-    index: fi,
-    setIndex: setFi,
-    handleTransitionEnd,
-    animating,
-  } = useInfiniteCarousel(featuredBase.length, 6500);
-
-  const [p1i, setP1i] = useInfiniteCarousel(
-    promo1Slides.length,
-    5500
-  );
-  const [p2i, setP2i] = useInfiniteCarousel(
-    promo2Slides.length,
-    5500
-  );
-
-  const goFinite = (setter, length, delta) => {
-    setter((i) => {
-      const next = i + delta;
-      if (next < 0) return length - 1;
-      if (next >= length) return 0;
-      return next;
-    });
-  };
+  const [fi, setFi, handleTransitionEnd, animating] =
+    useInfiniteCarousel(featuredSlides.length, 6500);
+  const [p1i, setP1i] = useFiniteCarousel(promo1Slides.length, 5500);
+  const [p2i, setP2i] = useFiniteCarousel(promo2Slides.length, 5500);
 
   return (
     <section className="mx-3 sm:mx-4 md:mx-6">
@@ -404,7 +386,7 @@ const Hero = () => {
                   fill
                   className="object-cover object-center"
                   sizes="(max-width: 1280px) 100vw, min(896px, 100vw)"
-                  priority={idx === 1}
+                  priority={idx === 0}
                 />
                 <div
                   className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/35"
@@ -434,7 +416,7 @@ const Hero = () => {
                   {/* Main content */}
                   <div className="mt-6 max-w-xl">
                     {slide.title && (
-                      <h1 className="text-balance text-2xl font-semibold leading-tight text-white drop-shadow-md sm:text-3xl md:text-4xl lg:text-[2.5rem]">
+                      <h1 className="text-balance text-2xl font-semibold leading-tight text.white drop-shadow-md sm:text-3xl md:text-4xl lg:text-[2.5rem] text-white">
                         {slide.title}
                       </h1>
                     )}
@@ -477,32 +459,24 @@ const Hero = () => {
                     </div>
                   </div>
 
-                  {/* Bottom indicator row – reflect "real" slides */}
-                  {featuredBase.length > 1 && (
+                  {/* Bottom indicator row */}
+                  {featuredSlides.length > 1 && (
                     <div className="mt-4 flex items-center justify-between text-[11px] text-white/80">
                       <div className="flex items-center gap-1">
-                        <span>
-                          {/* Normalize index to [1..length] */}
-                          {((fi - 1 + featuredBase.length) %
-                            featuredBase.length) +
-                            1}
-                        </span>
+                        <span>{fi + 1}</span>
                         <span className="text-white/60">
-                          / {featuredBase.length}
+                          / {featuredSlides.length}
                         </span>
                       </div>
                       <div className="flex gap-1.5">
-                        {featuredBase.map((_, i) => (
+                        {featuredSlides.map((_, i) => (
                           <button
                             key={i}
                             type="button"
                             aria-label={`Go to slide ${i + 1}`}
-                            onClick={() => setFi(i + 1)}
+                            onClick={() => setFi(i)}
                             className={`h-1.5 rounded-full transition-all ${
-                              ((fi - 1 + featuredBase.length) %
-                                featuredBase.length) === i
-                                ? "w-5 bg-white"
-                                : "w-2 bg-white/40"
+                              i === fi ? "w-5 bg-white" : "w-2 bg-white/40"
                             }`}
                           />
                         ))}
@@ -514,7 +488,7 @@ const Hero = () => {
             ))}
           </div>
 
-          {featuredBase.length > 1 && (
+          {featuredSlides.length > 1 && (
             <>
               <button
                 type="button"
@@ -522,7 +496,7 @@ const Hero = () => {
                 onClick={() =>
                   setFi(
                     fi - 1 < 0
-                      ? featuredBase.length
+                      ? featuredSlides.length - 1
                       : fi - 1
                   )
                 }
@@ -534,11 +508,7 @@ const Hero = () => {
                 type="button"
                 aria-label="Next slide"
                 onClick={() =>
-                  setFi(
-                    fi + 1 > featuredBase.length + 1
-                      ? 1
-                      : fi + 1
-                  )
+                  setFi((fi + 1) % featuredSlides.length)
                 }
                 className="absolute right-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-800 shadow hover:bg-white lg:flex dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-900"
               >
@@ -549,7 +519,7 @@ const Hero = () => {
         </div>
 
         {/* Right side – stacked promos (finite but auto) */}
-        <div className="flex w-full flex-col gap-4 text-sm md:flex-row xl:max-w-sm xl:flex-col">
+        <div className="flex w.full flex-col gap-4 text-sm md:flex-row xl:max-w-sm xl:flex-col">
           <PromoCarousel
             slides={promo1Slides}
             index={p1i}
@@ -563,7 +533,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Middle carousel banner row – inspired by AliExpress style wide mid promos [web:24] */}
+      {/* Middle carousel banner row */}
       <MiddleBannerRow banners={defaults.middleBanners} />
 
       {/* Verified vendors section */}
@@ -609,17 +579,15 @@ function PromoCarousel({ slides, index, setIndex }) {
 
   const handleNext = () => {
     if (!hasMany) return;
-    setIndex(localIndex + 1 > realLength ? 1 : localIndex + 1);
+    setIndex(localIndex + 1 >= realLength ? 0 : localIndex + 1);
   };
 
   const handlePrev = () => {
     if (!hasMany) return;
-    setIndex(localIndex - 1 < 1 ? realLength : localIndex - 1);
+    setIndex(localIndex - 1 < 0 ? realLength - 1 : localIndex - 1);
   };
 
-  const currentSlide = hasMany
-    ? slides[(localIndex - 1 + realLength) % realLength]
-    : slides[0];
+  const currentSlide = slides[localIndex];
 
   return (
     <aside className="relative flex w-full flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-slate-200 shadow-sm dark:bg-slate-900">
@@ -697,7 +665,7 @@ function PromoCarousel({ slides, index, setIndex }) {
   );
 }
 
-/** AliExpress-like middle banner row: 1 large, 2 small banners in a carousel strip [web:24] */
+/** AliExpress-like middle banner row: 1 large, 2 small banners in a carousel strip */
 function MiddleBannerRow({ banners }) {
   const [index, setIndex] = useState(0);
 
@@ -712,8 +680,7 @@ function MiddleBannerRow({ banners }) {
   };
   const prev = () => {
     setIndex((i) =>
-      (i - 1 + Math.max(1, small.length)) %
-      Math.max(1, small.length)
+      (i - 1 + Math.max(1, small.length)) % Math.max(1, small.length)
     );
   };
 
