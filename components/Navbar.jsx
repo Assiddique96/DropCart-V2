@@ -366,28 +366,55 @@ const Navbar = () => {
             <span>Catalog</span>
           </button>
 
-          {/* Search bar */}
+          {/* Search bar – Wildberries-like */}
           <form
             onSubmit={handleSearch}
-            className="flex-1 flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-3 sm:px-4 py-2 rounded-full border border-transparent dark:border-slate-800"
+            className="flex-1 flex items-stretch bg-slate-100 dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-800"
           >
-            <Search size={18} className="text-slate-500 shrink-0" />
-            <input
-              className="w-full bg-transparent outline-none placeholder-slate-400 text-sm text-slate-700 dark:text-slate-200"
-              type="text"
-              placeholder="Search on Shpinx"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              required
-            />
+            {/* Left: search icon + input */}
+            <div className="flex flex-1 items-center gap-2 px-3 sm:px-4">
+              <Search size={18} className="text-slate-500 shrink-0" />
+              <input
+                className="w-full bg-transparent outline-none placeholder-slate-400 text-sm text-slate-700 dark:text-slate-200"
+                type="text"
+                placeholder="Search for products, brands and categories"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                required
+              />
+            </div>
+
+            {/* Right: image search button (desktop) */}
             <label
-              className={`hidden sm:inline-flex cursor-pointer ${
-                imageSearching ? "opacity-50" : ""
+              className={`hidden sm:inline-flex items-center gap-2 px-3 sm:px-4 border-l border-slate-200/70 dark:border-slate-800 cursor-pointer bg-slate-100/80 dark:bg-slate-900/80 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 transition ${
+                imageSearching ? "opacity-60 cursor-wait" : ""
               }`}
             >
               <Camera
                 size={18}
-                className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition"
+                className="text-slate-500"
+              />
+              <span className="hidden md:inline text-[11px] font-medium text-slate-600 dark:text-slate-300">
+                Search by photo
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageSearch}
+                disabled={imageSearching}
+                className="hidden"
+              />
+            </label>
+
+            {/* Mobile: icon-only image search */}
+            <label
+              className={`sm:hidden inline-flex items-center justify-center px-3 border-l border-slate-200/70 dark:border-slate-800 cursor-pointer bg-slate-100/80 dark:bg-slate-900/80 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 transition ${
+                imageSearching ? "opacity-60 cursor-wait" : ""
+              }`}
+            >
+              <Camera
+                size={18}
+                className="text-slate-500"
               />
               <input
                 type="file"
@@ -581,7 +608,7 @@ const Navbar = () => {
           className="md:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-950 shadow-xl border-t border-slate-100 dark:border-slate-800 z-40 max-h-[85vh] overflow-y-auto"
         >
           <div className="p-4 space-y-4">
-            {/* Search */}
+            {/* Search – mobile, text only (keep simple here) */}
             <form
               onSubmit={handleSearch}
               className="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-2.5 rounded-full border border-transparent dark:border-slate-800"
