@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import {
   PackageIcon, Search, ShoppingCart, HeartIcon,
@@ -52,7 +52,7 @@ const Navbar = () => {
 
   const [search, setSearch] = useState("");
   const [imageSearching, setImageSearching] = useState(false);
-  const [megaOpen, setMegaOpen] = useState(false);
+  const [catalogOpen, setCatalogOpen] = useState(false);    // left sidebar like WB
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
@@ -60,14 +60,14 @@ const Navbar = () => {
   const cartCount = useSelector((state) => state.cart.total);
   const wishlistCount = useSelector((state) => state.wishlist.items.length);
 
-  const megaRef = useRef(null);
+  const catalogRef = useRef(null);
   const mobileRef = useRef(null);
 
-  // Close mega and mobile on outside click (JSX-safe)
+  // Close catalog and mobile on outside click
   useEffect(() => {
     const handler = (e) => {
-      if (megaRef.current && !megaRef.current.contains(e.target)) {
-        setMegaOpen(false);
+      if (catalogRef.current && !catalogRef.current.contains(e.target)) {
+        setCatalogOpen(false);
       }
       if (mobileRef.current && !mobileRef.current.contains(e.target)) {
         setMobileOpen(false);
@@ -75,12 +75,6 @@ const Navbar = () => {
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  // Close on mount/route change (simple reset)
-  useEffect(() => {
-    setMegaOpen(false);
-    setMobileOpen(false);
   }, []);
 
   // Fetch roles
@@ -118,7 +112,7 @@ const Navbar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     router.push(`/shop?search=${search}`);
-    setMegaOpen(false);
+    setCatalogOpen(false);
     setMobileOpen(false);
   };
 
@@ -139,7 +133,7 @@ const Navbar = () => {
 
         const description = response.data.description;
         router.push(`/shop?search=${encodeURIComponent(description)}`);
-        setMegaOpen(false);
+        setCatalogOpen(false);
         setMobileOpen(false);
       };
       reader.readAsDataURL(file);
@@ -153,7 +147,7 @@ const Navbar = () => {
 
   const goToCategory = (cat) => {
     router.push(`/shop?category=${encodeURIComponent(cat)}`);
-    setMegaOpen(false);
+    setCatalogOpen(false);
     setMobileOpen(false);
   };
 
@@ -164,13 +158,27 @@ const Navbar = () => {
   const featuredLinks = [...FEATURED_LINKS, storeCta];
 
   return (
-    <nav
-      className="sticky top-0 z-50 bg-white/95 dark:bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 supports-[backdrop-filter]:dark:bg-slate-950/80"
-      ref={megaRef}
-    >
-      {/* Top bar: neutral (matches theme toggle) */}
-      <div className="mx-6">
-        <div className="flex items-center justify-between max-w-7xl mx-auto py-4">
+    <header className="sticky top-0 z-50 bg-white dark:bg-slate-950 shadow-sm">
+      {/* Top utility bar (like WB top strip but Shpinx colors) */}
+      <div className="hidden md:flex items-center justify-between px-6 lg:px-10 h-9 text-xs bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-300">
+        <div className="flex items-center gap-4">
+          <span className="font-medium">Shpinx .NG</span>
+          <Link href="/faq" className="hover:text-slate-800 dark:hover:text-white">Help & FAQs</Link>
+          <Link href="/create-store" className="hover:text-slate-800 dark:hover:text-white">
+            Sell on Shpinx
+          </Link>
+        </div>
+        <div className="flex items-center gap-4">
+          <Link href="/track" className="hover:text-slate-800 dark:hover:text-white">
+            Track order
+          </Link>
+          <ThemeToggle />
+        </div>
+      </div>
+
+      {/* Main bar: logo, search, cart/account (like WB main row) */}
+      <div className="px-4 lg:px-10 py-3 bg-white dark:bg-slate-950">
+        <div className="max-w-7xl mx-auto flex items-center gap-3 md:gap-6">
           {/* Logo */}
           <Link
             href="/"
@@ -180,191 +188,147 @@ const Navbar = () => {
             <Image
               src={shpinxLogo}
               alt="Shpinx"
-              width={32}
-              height={32}
-              className="w-8 h-8"
+              width={36}
+              height={36}
+              className="w-9 h-9"
             />
-            <span className="text-4xl font-semibold text-slate-400 hidden sm:inline">
-              <span className="text-gray-600 dark:text-gray-300">Shp</span>
-              inx
-              <span className="text-gray-600 dark:text-gray-300 text-5xl leading-0">
-                .
+            <div className="hidden sm:block leading-tight">
+              <span className="text-3xl font-semibold text-slate-700 dark:text-slate-100">
+                Shp<span className="text-slate-400">inx</span>
               </span>
-            </span>
-            <p className="absolute text-xs font-semibold -top-1 sm:-right-8 -right-6 px-3 py-0.5 rounded-full text-white bg-gray-500">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400">
+                Nigeria&apos;s marketplace
+              </p>
+            </div>
+            <p className="absolute -top-1 -right-5 text-[9px] font-semibold px-2 py-0.5 rounded-full text-white bg-gray-500">
               .NG
             </p>
             <Show when={{ plan: "plus" }}>
-              <p className="absolute text-xs font-semibold -top-1 sm:-right-8 -right-6 px-3 py-0.5 rounded-full text-white bg-indigo-500">
+              <p className="absolute -bottom-3 left-0 text-[9px] font-semibold px-2 py-0.5 rounded-full text-white bg-indigo-500">
                 Plus
               </p>
             </Show>
           </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden sm:flex items-center gap-4 xl:gap-6 text-slate-600 dark:text-slate-300 text-sm">
-            <div className="flex items-center gap-3 lg:gap-4">
-              <Link
-                href="/"
-                className="hover:text-slate-900 dark:hover:text-white transition"
-              >
-                Home
-              </Link>
+          {/* Catalog button (desktop) */}
+          <button
+            onClick={() => setCatalogOpen((v) => !v)}
+            className="hidden md:inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-semibold"
+          >
+            <MenuIcon size={18} />
+            <span>Catalog</span>
+          </button>
 
-              {/* Mega menu trigger */}
-              <button
-                onClick={() => setMegaOpen((v) => !v)}
-                className={`flex items-center gap-1 hover:text-slate-900 dark:hover:text-white transition font-medium ${
-                  megaOpen ? "text-slate-900 dark:text-white" : ""
-                }`}
-              >
-                Shop
-                <ChevronDownIcon
-                  size={14}
-                  className={`transition-transform duration-200 ${
-                    megaOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-
-              <Link
-                href="/contact"
-                className="hover:text-slate-900 dark:hover:text-white transition"
-              >
-                Contact
-              </Link>
-              {isSeller && (
-                <Link
-                  href="/store"
-                  className="hover:text-slate-900 dark:hover:text-white transition font-medium whitespace-nowrap"
-                >
-                  Store Dashboard
-                </Link>
-              )}
-            </div>
-
-            {/* Search (desktop) */}
-            <form
-              onSubmit={handleSearch}
-              className="hidden lg:flex items-center text-sm gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-2.5 rounded-full w-56 xl:w-72 border border-transparent dark:border-slate-800"
+          {/* Search bar */}
+          <form
+            onSubmit={handleSearch}
+            className="flex-1 flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-3 sm:px-4 py-2 rounded-full border border-transparent dark:border-slate-800"
+          >
+            <Search size={18} className="text-slate-500 shrink-0" />
+            <input
+              className="w-full bg-transparent outline-none placeholder-slate-400 text-sm text-slate-700 dark:text-slate-200"
+              type="text"
+              placeholder="Search on Shpinx"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              required
+            />
+            <label
+              className={`hidden sm:inline-flex cursor-pointer ${
+                imageSearching ? "opacity-50" : ""
+              }`}
             >
-              <Search size={15} className="text-slate-500 shrink-0" />
-              <input
-                className="w-full bg-transparent outline-none placeholder-slate-400 text-slate-700 dark:text-slate-200"
-                type="text"
-                placeholder="Search products..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                required
+              <Camera
+                size={18}
+                className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition"
               />
-              <label
-                className={`cursor-pointer ${
-                  imageSearching ? "opacity-50" : ""
-                }`}
-              >
-                <Camera
-                  size={15}
-                  className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition"
-                />
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageSearch}
-                  disabled={imageSearching}
-                  className="hidden"
-                />
-              </label>
-            </form>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageSearch}
+                disabled={imageSearching}
+                className="hidden"
+              />
+            </label>
+          </form>
 
-            {/* Right side icons + profile */}
-            <div className="flex items-center gap-2 xl:gap-3">
-              <Link
-                href="/wishlist"
-                className="relative flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition whitespace-nowrap"
-              >
-                <HeartIcon size={16} />
-                <span className="hidden xl:inline">Wishlist</span>
-                {wishlistCount > 0 && (
-                  <span className="absolute -top-1.5 left-2.5 text-[8px] text-white bg-red-500 min-w-[14px] h-3.5 px-0.5 rounded-full flex items-center justify-center">
-                    {wishlistCount}
-                  </span>
-                )}
-              </Link>
-
-              <Link
-                href="/cart"
-                className="relative flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition whitespace-nowrap"
-              >
-                <ShoppingCart size={16} />
-                <span className="hidden xl:inline">Cart</span>
-                {cartCount > 0 && (
-                  <span className="absolute -top-1.5 left-2 text-[8px] text-white bg-slate-700 min-w-[14px] h-3.5 px-0.5 rounded-full flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
-
-              <ThemeToggle />
-
-              {isAdmin && (
-                <Link
-                  href="/admin"
-                  className="hidden xl:inline-flex px-4 py-2 rounded-full bg-green-500 hover:bg-green-600 transition text-white text-sm font-semibold whitespace-nowrap"
-                >
-                  Admin Dashboard
-                </Link>
+          {/* Account / cart / wishlist (desktop) */}
+          <div className="hidden md:flex items-center gap-4 text-sm text-slate-600 dark:text-slate-200">
+            <Link
+              href="/wishlist"
+              className="relative flex flex-col items-center gap-1 hover:text-slate-900 dark:hover:text-white"
+            >
+              <HeartIcon size={20} />
+              <span className="text-[11px]">Wishlist</span>
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-2 text-[9px] text-white bg-red-500 min-w-[16px] h-4 px-0.5 rounded-full flex items-center justify-center">
+                  {wishlistCount}
+                </span>
               )}
+            </Link>
 
-              {!user ? (
-                <button
-                  onClick={openSignIn}
-                  className="px-5 xl:px-6 py-2 bg-slate-900 hover:bg-slate-800 transition text-white rounded-full text-sm whitespace-nowrap"
-                >
-                  Login
-                </button>
-              ) : (
-                <div className="flex items-center gap-2.5">
-                  <NotificationBell />
-                  <UserButton>
-                    <UserButton.MenuItems>
-                      {isSeller && (
-                        <UserButton.Action
-                          labelIcon={<StoreIcon size={16} />}
-                          label="Store Dashboard"
-                          onClick={() => router.push("/store")}
-                        />
-                      )}
-                      {isAdmin && (
-                        <UserButton.Action
-                          labelIcon={<ShieldCheckIcon size={16} />}
-                          label="Admin Dashboard"
-                          onClick={() => router.push("/admin")}
-                        />
-                      )}
-                      <UserButton.Action
-                        labelIcon={<PackageIcon size={16} />}
-                        label="My Orders"
-                        onClick={() => router.push("/orders")}
-                      />
-                      <UserButton.Action
-                        labelIcon={<HeartIcon size={16} />}
-                        label="Wishlist"
-                        onClick={() => router.push("/wishlist")}
-                      />
-                    </UserButton.MenuItems>
-                  </UserButton>
-                </div>
+            <Link
+              href="/cart"
+              className="relative flex flex-col items-center gap-1 hover:text-slate-900 dark:hover:text-white"
+            >
+              <ShoppingCart size={20} />
+              <span className="text-[11px]">Cart</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-2 text-[9px] text-white bg-slate-700 min-w-[16px] h-4 px-0.5 rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
               )}
-            </div>
+            </Link>
+
+            {user ? (
+              <div className="flex items-center gap-2">
+                <NotificationBell />
+                <UserButton>
+                  <UserButton.MenuItems>
+                    {isSeller && (
+                      <UserButton.Action
+                        labelIcon={<StoreIcon size={16} />}
+                        label="Store Dashboard"
+                        onClick={() => router.push("/store")}
+                      />
+                    )}
+                    {isAdmin && (
+                      <UserButton.Action
+                        labelIcon={<ShieldCheckIcon size={16} />}
+                        label="Admin Dashboard"
+                        onClick={() => router.push("/admin")}
+                      />
+                    )}
+                    <UserButton.Action
+                      labelIcon={<PackageIcon size={16} />}
+                      label="My Orders"
+                      onClick={() => router.push("/orders")}
+                    />
+                    <UserButton.Action
+                      labelIcon={<HeartIcon size={16} />}
+                      label="Wishlist"
+                      onClick={() => router.push("/wishlist")}
+                    />
+                  </UserButton.MenuItems>
+                </UserButton>
+              </div>
+            ) : (
+              <button
+                onClick={openSignIn}
+                className="px-4 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800"
+              >
+                Sign in
+              </button>
+            )}
           </div>
 
-          {/* Mobile controls */}
-          <div className="sm:hidden flex items-center gap-2">
-            {user && <NotificationBell />}
+          {/* Right: mobile controls */}
+          <div className="flex md:hidden items-center gap-2">
             <ThemeToggle compact />
+            {user && <NotificationBell />}
             <button
               onClick={() => setMobileOpen((v) => !v)}
-              className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition text-slate-600 dark:text-slate-200"
+              className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-100"
             >
               {mobileOpen ? <XIcon size={22} /> : <MenuIcon size={22} />}
             </button>
@@ -372,101 +336,102 @@ const Navbar = () => {
         </div>
       </div>
 
-      <hr className="border-slate-200 dark:border-slate-800" />
+      {/* Second row: horizontal category shortcuts (like WB main menu row) */}
+      <div className="hidden md:block border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/80">
+        <div className="max-w-7xl mx-auto px-4 lg:px-10 flex items-center gap-5 h-10 text-xs font-medium text-slate-600 dark:text-slate-200 overflow-x-auto no-scrollbar">
+          <Link href="/shop?sort=promo" className="text-red-500 font-semibold">
+            SALE
+          </Link>
+          <Link href="/shop?origin=abroad" className="hover:text-slate-900 dark:hover:text-white">
+            Shipped from abroad
+          </Link>
+          <Link href="/shop?sort=popular" className="hover:text-slate-900 dark:hover:text-white">
+            Best sellers
+          </Link>
+          <Link href="/shop?sort=newest" className="hover:text-slate-900 dark:hover:text-white">
+            New arrivals
+          </Link>
+          <Link href="/shop?category=Electronics" className="hover:text-slate-900 dark:hover:text-white">
+            Electronics
+          </Link>
+          <Link href="/shop?category=Clothing" className="hover:text-slate-900 dark:hover:text-white">
+            Fashion
+          </Link>
+          <Link href="/shop?category=Home%20%26%20Garden" className="hover:text-slate-900 dark:hover:text-white">
+            Home & living
+          </Link>
+          <Link href="/shop?category=Beauty%20%26%20Health" className="hover:text-slate-900 dark:hover:text-white">
+            Beauty
+          </Link>
+          <Link href="/create-store" className="ml-auto hover:text-slate-900 dark:hover:text-white">
+            Sell on Shpinx
+          </Link>
+        </div>
+      </div>
 
-      {/* ─── Mega menu (desktop) ─── */}
-      {megaOpen && (
-        <div className="absolute top-full left-0 right-0 bg-white dark:bg-slate-950 shadow-2xl border-t border-slate-100 dark:border-slate-800 z-50">
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            <div className="grid grid-cols-12 gap-8">
-              {/* Categories grid */}
-              <div className="col-span-7">
-                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-4">
-                  Browse by Category
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {CATEGORIES.map((cat) => (
-                    <button
-                      key={cat.name}
-                      onClick={() => goToCategory(cat.name)}
-                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-900 transition text-left group"
-                    >
-                      <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-900 shrink-0">
-                        <cat.icon size={16} className={cat.color} />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white">
-                          {cat.name}
-                        </p>
-                        <p className="text-xs text-slate-400">{cat.desc}</p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
+      {/* Desktop left catalog sidebar (like WB) */}
+      {catalogOpen && (
+        <div
+          ref={catalogRef}
+          className="hidden md:block absolute top-[118px] left-0 z-40"
+        >
+          <div className="flex">
+            {/* Left narrow column with categories */}
+            <div className="w-64 bg-white dark:bg-slate-950 border-r border-slate-100 dark:border-slate-800 shadow-xl">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat.name}
+                  onClick={() => goToCategory(cat.name)}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-900"
+                >
+                  <cat.icon size={16} className={cat.color} />
+                  <span>{cat.name}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Right panel for quick links / promo */}
+            <div className="w-[420px] bg-slate-50 dark:bg-slate-900 shadow-xl border border-l-0 border-slate-100 dark:border-slate-800 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                Quick links
+              </p>
+              <div className="space-y-1">
+                {featuredLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setCatalogOpen(false)}
+                    className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-sm text-slate-600 dark:text-slate-200"
+                  >
+                    <span>{link.emoji}</span>
+                    <span>{link.label}</span>
+                  </Link>
+                ))}
               </div>
 
-              {/* Featured + search */}
-              <div className="col-span-5 border-l border-slate-100 dark:border-slate-800 pl-8">
-                <form
-                  onSubmit={handleSearch}
-                  className="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-2.5 rounded-full mb-6"
-                >
-                  <Search size={15} className="text-slate-400 shrink-0" />
-                  <input
-                    className="w-full bg-transparent outline-none placeholder-slate-400 text-sm text-slate-700 dark:text-slate-200"
-                    type="text"
-                    placeholder="Search products..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    required
-                  />
-                </form>
-
-                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">
-                  Quick Links
+              <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 text-white text-sm">
+                <p className="font-semibold mb-1">🚀 Sell on Shpinx</p>
+                <p className="text-xs opacity-90 mb-3">
+                  List your gadgets and products, reach buyers all across Nigeria.
                 </p>
-                <div className="space-y-1">
-                  {featuredLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setMegaOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-900 transition group"
-                    >
-                      <span className="text-base">{link.emoji}</span>
-                      <span className="text-sm text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white">
-                        {link.label}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-
-                <div className="mt-6 p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
-                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-1">
-                    🚀 Sell on Shpinx
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-                    Reach thousands of buyers across Nigeria
-                  </p>
-                  <Link
-                    href={storeCta.href}
-                    onClick={() => setMegaOpen(false)}
-                    className="text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 px-4 py-1.5 rounded-full transition inline-block"
-                  >
-                    {isSeller ? "Go to dashboard →" : "Open your store →"}
-                  </Link>
-                </div>
+                <Link
+                  href={storeCta.href}
+                  onClick={() => setCatalogOpen(false)}
+                  className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20"
+                >
+                  {isSeller ? "Go to dashboard →" : "Open your store →"}
+                </Link>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* ─── Mobile menu ─── */}
+      {/* Mobile menu (full screen) */}
       {mobileOpen && (
         <div
-          className="sm:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-950 shadow-xl border-t border-slate-100 dark:border-slate-800 z-50 max-h-[85vh] overflow-y-auto"
           ref={mobileRef}
+          className="md:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-950 shadow-xl border-t border-slate-100 dark:border-slate-800 z-40 max-h-[85vh] overflow-y-auto"
         >
           <div className="p-4 space-y-4">
             {/* Search */}
@@ -474,19 +439,19 @@ const Navbar = () => {
               onSubmit={handleSearch}
               className="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-2.5 rounded-full border border-transparent dark:border-slate-800"
             >
-              <Search size={15} className="text-slate-400 shrink-0" />
+              <Search size={16} className="text-slate-400 shrink-0" />
               <input
                 className="w-full bg-transparent outline-none placeholder-slate-400 text-sm text-slate-700 dark:text-slate-200"
                 type="text"
-                placeholder="Search products..."
+                placeholder="Search on Shpinx"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 required
               />
             </form>
 
-            {/* Top links */}
-            <div className="grid grid-cols-4 gap-2">
+            {/* Quick tiles */}
+            <div className="grid grid-cols-4 gap-2 text-xs">
               {[
                 { label: "Cart", href: "/cart", badge: cartCount, icon: ShoppingCart },
                 { label: "Wishlist", href: "/wishlist", badge: wishlistCount, icon: HeartIcon },
@@ -497,10 +462,10 @@ const Navbar = () => {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="relative flex flex-col items-center gap-1 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                  className="relative flex flex-col items-center gap-1 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-700 dark:text-slate-100"
                 >
                   <item.icon size={18} />
-                  <span className="text-xs">{item.label}</span>
+                  <span>{item.label}</span>
                   {item.badge > 0 && (
                     <span className="absolute -top-1 -right-1 text-[9px] text-white bg-red-500 min-w-[16px] h-4 px-0.5 rounded-full flex items-center justify-center">
                       {item.badge}
@@ -510,30 +475,28 @@ const Navbar = () => {
               ))}
             </div>
 
-            {(isSeller || isAdmin) && (
-              <div className="grid grid-cols-2 gap-2">
-                {isSeller && (
-                  <Link
-                    href="/store"
-                    onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-center gap-2 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-sm font-medium"
+            {/* Categories list (mobile) */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                Categories
+              </p>
+              <div className="grid grid-cols-2 gap-1.5">
+                {CATEGORIES.map((cat) => (
+                  <button
+                    key={cat.name}
+                    onClick={() => goToCategory(cat.name)}
+                    className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-left"
                   >
-                    <StoreIcon size={16} />
-                    Store Dashboard
-                  </Link>
-                )}
-                {isAdmin && (
-                  <Link
-                    href="/admin"
-                    onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-center gap-2 p-3 bg-green-500 rounded-xl text-white hover:bg-green-600 transition text-sm font-semibold"
-                  >
-                    <ShieldCheckIcon size={16} />
-                    Admin Dashboard
-                  </Link>
-                )}
+                    <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800">
+                      <cat.icon size={14} className={cat.color} />
+                    </div>
+                    <span className="text-xs font-medium text-slate-700 dark:text-slate-200">
+                      {cat.name}
+                    </span>
+                  </button>
+                ))}
               </div>
-            )}
+            </div>
 
             {/* Auth */}
             {!user ? (
@@ -542,12 +505,12 @@ const Navbar = () => {
                   openSignIn();
                   setMobileOpen(false);
                 }}
-                className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-medium transition"
+                className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-medium"
               >
-                Login / Sign Up
+                Login / Sign up
               </button>
             ) : (
-              <div className="flex items-center gap-3 px-1">
+              <div className="flex items-center gap-3">
                 <UserButton>
                   <UserButton.MenuItems>
                     {isSeller && (
@@ -582,57 +545,13 @@ const Navbar = () => {
               </div>
             )}
 
-            {/* Categories */}
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 px-1">
-                Categories
-              </p>
-              <div className="grid grid-cols-2 gap-1.5">
-                {CATEGORIES.map((cat) => (
-                  <button
-                    key={cat.name}
-                    onClick={() => goToCategory(cat.name)}
-                    className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-left"
-                  >
-                    <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0">
-                      <cat.icon size={13} className={cat.color} />
-                    </div>
-                    <span className="text-xs font-medium text-slate-700 dark:text-slate-200 leading-tight">
-                      {cat.name}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick links */}
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 px-1">
-                Quick Links
-              </p>
-              <div className="space-y-0.5">
-                {featuredLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition"
-                  >
-                    <span>{link.emoji}</span>
-                    <span className="text-sm text-slate-600 dark:text-slate-200">
-                      {link.label}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div className="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-transparent dark:border-slate-700">
-              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            {/* Sell CTA */}
+            <div className="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border dark:border-slate-700 text-sm">
+              <p className="font-semibold text-slate-900 dark:text-slate-100">
                 🚀 Sell on Shpinx
               </p>
-              <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 mb-3">
-                Reach buyers across Nigeria
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 mb-3">
+                List your products and reach buyers nationwide.
               </p>
               <Link
                 href={storeCta.href}
@@ -645,7 +564,7 @@ const Navbar = () => {
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 };
 
