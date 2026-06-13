@@ -56,10 +56,7 @@ function getTopDiscountPrimaryImage(products) {
   return scored[0].img;
 }
 
-/**
- * Simple finite carousel hook used by side promos.
- * Always returns [index, setIndex].
- */
+/** Simple finite carousel hook for side promos. */
 function useFiniteCarousel(length, intervalMs) {
   const [index, setIndex] = useState(0);
 
@@ -78,10 +75,7 @@ function useFiniteCarousel(length, intervalMs) {
   return [index, setIndex];
 }
 
-/**
- * Infinite carousel hook for main hero.
- * Always returns [index, setIndex, handleTransitionEnd, animating].
- */
+/** Infinite carousel hook for main hero. */
 function useInfiniteCarousel(length, intervalMs) {
   const [index, setIndex] = useState(0); // 0..length-1
   const [animating, setAnimating] = useState(true);
@@ -99,7 +93,7 @@ function useInfiniteCarousel(length, intervalMs) {
   }, [length]);
 
   const handleTransitionEnd = () => {
-    // reserved for future smooth-loop tweaks
+    // reserved for further smooth-loop tweaks
   };
 
   const goTo = (nextIndex) => {
@@ -137,16 +131,16 @@ const Hero = () => {
     [products]
   );
 
-  // Fake vendor data – later you can fetch from /api/vendors or Redux
-  const verifiedVendors = useMemo(
+  // Fake store data – later you can fetch from /api/stores or Redux
+  const verifiedStores = useMemo(
     () => [
       {
         id: 1,
         name: "Lagos Tech Hub",
         rating: 4.9,
         orders: "2.1k+",
-        tag: "Enterprise vendor",
-        href: "/vendor/lagos-tech-hub",
+        tag: "Enterprise store",
+        href: "/store/lagos-tech-hub",
       },
       {
         id: 2,
@@ -154,7 +148,7 @@ const Hero = () => {
         rating: 4.8,
         orders: "1.6k+",
         tag: "Verified SME",
-        href: "/vendor/abuja-gadgets-pro",
+        href: "/store/abuja-gadgets-pro",
       },
       {
         id: 3,
@@ -162,15 +156,15 @@ const Hero = () => {
         rating: 4.7,
         orders: "980+",
         tag: "EU warehouse",
-        href: "/vendor/malta-electronics-lab",
+        href: "/store/malta-electronics-lab",
       },
       {
         id: 4,
         name: "Krasnodar Digital Store",
         rating: 4.9,
         orders: "1.3k+",
-        tag: "Priority vendor",
-        href: "/vendor/krasnodar-digital-store",
+        tag: "Priority store",
+        href: "/store/krasnodar-digital-store",
       },
     ],
     []
@@ -213,19 +207,9 @@ const Hero = () => {
       ],
       microPromos: [
         {
-          label: "Fast delivery",
-          desc: "Nationwide logistics",
-          href: "/info/delivery",
-        },
-        {
-          label: "Bulk orders",
-          desc: "SME–friendly pricing",
+          label: "Wholesales",
+          desc: "SME–friendly bulk pricing",
           href: "/bulk",
-        },
-        {
-          label: "Secure payment",
-          desc: "Stripe & Flutterwave",
-          href: "/info/payments",
         },
         {
           label: "Vendor center",
@@ -328,7 +312,6 @@ const Hero = () => {
         }))
       : defaults.promo2;
 
-  // No clones needed; infinite behaviour is handled by the hook
   const featuredSlides = featuredBase;
 
   const [fi, setFi, handleTransitionEnd, animating] =
@@ -398,7 +381,7 @@ const Hero = () => {
                     {(slide.badgeText || slide.badgeLabel) && (
                       <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[11px] text-gray-50 backdrop-blur-sm sm:text-xs">
                         {slide.badgeLabel && (
-                          <span className="rounded-full bg-white/25 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                          <span className="rounded-full bg.white/25 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white bg-white/25">
                             {slide.badgeLabel}
                           </span>
                         )}
@@ -416,7 +399,7 @@ const Hero = () => {
                   {/* Main content */}
                   <div className="mt-6 max-w-xl">
                     {slide.title && (
-                      <h1 className="text-balance text-2xl font-semibold leading-tight text.white drop-shadow-md sm:text-3xl md:text-4xl lg:text-[2.5rem] text-white">
+                      <h1 className="text-balance text-2xl font-semibold leading-tight text-white drop-shadow-md sm:text-3xl md:text-4xl lg:text-[2.5rem]">
                         {slide.title}
                       </h1>
                     )}
@@ -518,8 +501,8 @@ const Hero = () => {
           )}
         </div>
 
-        {/* Right side – stacked promos (finite but auto) */}
-        <div className="flex w.full flex-col gap-4 text-sm md:flex-row xl:max-w-sm xl:flex-col">
+        {/* Right side – stacked promos */}
+        <div className="flex w-full flex-col gap-4 text-sm md:flex-row xl:max-w-sm xl:flex-col">
           <PromoCarousel
             slides={promo1Slides}
             index={p1i}
@@ -536,8 +519,8 @@ const Hero = () => {
       {/* Middle carousel banner row */}
       <MiddleBannerRow banners={defaults.middleBanners} />
 
-      {/* Verified vendors section */}
-      <VerifiedVendorsSection vendors={verifiedVendors} currency={currency} />
+      {/* Verified stores section */}
+      <VerifiedStoresSection stores={verifiedStores} currency={currency} />
 
       {/* Micro promos row under the hero */}
       <div className="mx-auto mt-4 grid max-w-7xl grid-cols-2 gap-2 text-[11px] sm:grid-cols-4 sm:text-xs">
@@ -572,22 +555,20 @@ const Hero = () => {
 function PromoCarousel({ slides, index, setIndex }) {
   if (!slides || slides.length === 0) return null;
 
-  const realLength = slides.length;
-  const hasMany = realLength > 1;
-
-  const localIndex = hasMany ? index : 0;
+  const length = slides.length;
+  const hasMany = length > 1;
 
   const handleNext = () => {
     if (!hasMany) return;
-    setIndex(localIndex + 1 >= realLength ? 0 : localIndex + 1);
+    setIndex((index + 1) % length);
   };
 
   const handlePrev = () => {
     if (!hasMany) return;
-    setIndex(localIndex - 1 < 0 ? realLength - 1 : localIndex - 1);
+    setIndex((index - 1 + length) % length);
   };
 
-  const currentSlide = slides[localIndex];
+  const currentSlide = slides[index];
 
   return (
     <aside className="relative flex w-full flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-slate-200 shadow-sm dark:bg-slate-900">
@@ -626,7 +607,7 @@ function PromoCarousel({ slides, index, setIndex }) {
                 "View more electronics deals today"}
             </p>
           </div>
-          <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-white/95 drop-shadow sm:text-xs">
+          <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text.white/95 drop-shadow sm:text-xs text-white">
             View more
             <ArrowRightIcon
               className="shrink-0 transition-transform group-hover:translate-x-0.5"
@@ -665,13 +646,12 @@ function PromoCarousel({ slides, index, setIndex }) {
   );
 }
 
-/** AliExpress-like middle banner row: 1 large, 2 small banners in a carousel strip */
+/** AliExpress-like middle banner row */
 function MiddleBannerRow({ banners }) {
   const [index, setIndex] = useState(0);
 
   if (!banners || banners.length === 0) return null;
 
-  // Create "pages" – first element is the large banner, others are grouped as small
   const large = banners.find((b) => b.size === "lg") || banners[0];
   const small = banners.filter((b) => b.id !== large.id);
 
@@ -708,7 +688,7 @@ function MiddleBannerRow({ banners }) {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/30" />
         <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-6 lg:p-8">
           <div className="space-y-1">
-            <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white/80 backdrop-blur-sm">
+            <p className="inline-flex items-center gap-2 rounded-full bg.white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white/80 backdrop-blur-sm bg-white/10">
               Flash deals
             </p>
             <h2 className="max-w-md text-lg font-semibold text-white drop-shadow-md sm:text-xl lg:text-2xl">
@@ -718,7 +698,7 @@ function MiddleBannerRow({ banners }) {
               {large.subtitle}
             </p>
           </div>
-          <div className="mt-3 flex items-center gap-2 text-[11px] font-semibold text-white sm:text-xs">
+          <div className="mt-3 flex items-center gap-2 text-[11px] font-semibold text.white sm:text-xs text-white">
             <span>{large.cta}</span>
             <ArrowRightIcon size={16} />
           </div>
@@ -784,9 +764,9 @@ function MiddleBannerRow({ banners }) {
   );
 }
 
-/** Verified vendors strip – dev/marketing session for verified sellers */
-function VerifiedVendorsSection({ vendors, currency }) {
-  if (!vendors || vendors.length === 0) return null;
+/** Verified stores strip */
+function VerifiedStoresSection({ stores, currency }) {
+  if (!stores || stores.length === 0) return null;
 
   return (
     <div className="mx-auto mt-6 max-w-7xl rounded-3xl bg-slate-50 px-3 py-3 text-[11px] shadow-sm ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-800 sm:px-4 sm:py-4 sm:text-xs">
@@ -797,10 +777,10 @@ function VerifiedVendorsSection({ vendors, currency }) {
           </span>
           <div>
             <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
-              Verified vendors
+              Verified stores
             </p>
             <p className="text-[10px] text-slate-500 dark:text-slate-400">
-              Curated sellers with strict quality, logistics and payment checks
+              Curated stores with strict quality, logistics and payment checks
             </p>
           </div>
         </div>
@@ -808,12 +788,12 @@ function VerifiedVendorsSection({ vendors, currency }) {
           href="/vendors/verified"
           className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-3 py-1 text-[10px] font-semibold text-slate-800 transition hover:border-slate-900 hover:bg-slate-900 hover:text-white dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-100 dark:hover:bg-slate-100 dark:hover:text-slate-900"
         >
-          Join as a verified vendor
+          Join as a verified store
           <ArrowRightIcon size={14} />
         </Link>
       </div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {vendors.map((v) => (
+        {stores.map((v) => (
           <Link
             key={v.id}
             href={v.href}
