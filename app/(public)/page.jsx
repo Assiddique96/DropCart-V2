@@ -8,7 +8,7 @@ import Newsletter from "@/components/Newsletter";
 import MiddleBannerRow, {
   defaultMiddleBanners,
 } from "@/components/MiddleBannerRow";
-import InfiniteProductsGrid from "@/components/InfiniteProductsGrid";
+// import InfiniteProductsGrid from "@/components/InfiniteProductsGrid";
 
 export default function Home() {
   return (
@@ -32,9 +32,9 @@ export default function Home() {
       </section>
 
       {/* Infinite scroll product feed (Wildberries‑like long page) */}
-      <section className="mt-8">
+      {/* <section className="mt-8">
         <InfiniteProductsGrid />
-      </section>
+      </section> */}
 
       {/* Info / trust / specs + newsletter */}
       <section className="mt-10">
