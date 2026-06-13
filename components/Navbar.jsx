@@ -5,7 +5,8 @@ import {
   ChevronDownIcon, MonitorIcon, ShirtIcon, HomeIcon,
   SparklesIcon, ToyBrickIcon, DumbbellIcon, BookOpenIcon,
   UtensilsIcon, PaletteIcon, GridIcon, PlaneIcon, MenuIcon, XIcon,
-  StoreIcon, ShieldCheckIcon, CarIcon, BabyIcon, BriefcaseIcon, WrenchIcon, Camera
+  StoreIcon, ShieldCheckIcon, CarIcon, BabyIcon, BriefcaseIcon, WrenchIcon, Camera,
+  MapPinIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -57,13 +58,26 @@ const Navbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
 
+  // Location & currency
+  const [locationLabel, setLocationLabel] = useState("Detecting…");
+  const [currency, setCurrency] = useState("NGN");
+  const [currencySymbol, setCurrencySymbol] = useState("₦");
+  const [currencyMenuOpen, setCurrencyMenuOpen] = useState(false);
+  const [availableCurrencies] = useState([
+    { code: "NGN", symbol: "₦", label: "Nigeria" },
+    { code: "USD", symbol: "$", label: "United States" },
+    { code: "EUR", symbol: "€", label: "Euro area" },
+    { code: "GBP", symbol: "£", label: "United Kingdom" },
+  ]);
+
   const cartCount = useSelector((state) => state.cart.total);
   const wishlistCount = useSelector((state) => state.wishlist.items.length);
 
   const catalogRef = useRef(null);
   const mobileRef = useRef(null);
+  const currencyRef = useRef(null);
 
-  // Close catalog and mobile on outside click
+  // Close catalog, mobile and currency menu on outside click
   useEffect(() => {
     const handler = (e) => {
       if (catalogRef.current && !catalogRef.current.contains(e.target)) {
@@ -71,6 +85,9 @@ const Navbar = () => {
       }
       if (mobileRef.current && !mobileRef.current.contains(e.target)) {
         setMobileOpen(false);
+      }
+      if (currencyRef.current && !currencyRef.current.contains(e.target)) {
+        setCurrencyMenuOpen(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -108,6 +125,90 @@ const Navbar = () => {
       active = false;
     };
   }, [user, getToken]);
+
+  // Detect approximate location (IP-based) and set default currency
+  useEffect(() => {
+    let cancelled = false;
+
+    const detectLocation = async () => {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+
+        if (cancelled) return;
+
+        const city = data.city;
+        const country = data.country_name;
+        const countryCode = data.country || "NG";
+
+        setLocationLabel(
+          [city, country].filter(Boolean).join(", ") || "Select location"
+        );
+
+        const countryCurrencyMap = {
+          NG: "NGN",
+          US: "USD",
+          GB: "GBP",
+          DE: "EUR",
+          FR: "EUR",
+          IT: "EUR",
+          ES: "EUR",
+          NL: "EUR",
+          PT: "EUR",
+          IE: "EUR",
+          BE: "EUR",
+          AT: "EUR",
+        };
+
+        const detectedCurrency = countryCurrencyMap[countryCode] || "NGN";
+        const found = availableCurrencies.find(
+          (c) => c.code === detectedCurrency
+        );
+
+        setCurrency(found?.code || "NGN");
+        setCurrencySymbol(found?.symbol || "₦");
+
+        if (typeof window !== "undefined") {
+          localStorage.setItem("shpinx_currency", found?.code || "NGN");
+        }
+      } catch (e) {
+        if (cancelled) return;
+        setLocationLabel("Select location");
+        setCurrency("NGN");
+        setCurrencySymbol("₦");
+      }
+    };
+
+    // Restore from localStorage if present
+    if (typeof window !== "undefined") {
+      const storedCurrency = localStorage.getItem("shpinx_currency");
+      const found = availableCurrencies.find(
+        (c) => c.code === storedCurrency
+      );
+      if (found) {
+        setCurrency(found.code);
+        setCurrencySymbol(found.symbol);
+      }
+    }
+
+    detectLocation();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [availableCurrencies]);
+
+  const handleCurrencyChange = (code) => {
+    const found = availableCurrencies.find((c) => c.code === code);
+    if (!found) return;
+    setCurrency(found.code);
+    setCurrencySymbol(found.symbol);
+    setCurrencyMenuOpen(false);
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem("shpinx_currency", found.code);
+    }
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -162,9 +263,62 @@ const Navbar = () => {
       {/* Top utility bar (like WB top strip but Shpinx colors) */}
       <div className="hidden md:flex items-center justify-between px-6 lg:px-10 h-9 text-xs bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-300">
         <div className="flex items-center gap-4">
+          {/* Location (IP-based) */}
+          <button
+            type="button"
+            className="inline-flex items-center gap-1 hover:text-slate-800 dark:hover:text-white"
+          >
+            <MapPinIcon className="w-3.5 h-3.5" />
+            <span className="max-w-[180px] truncate">
+              {locationLabel}
+            </span>
+          </button>
+
+          {/* Currency dropdown */}
+          <div className="relative" ref={currencyRef}>
+            <button
+              type="button"
+              onClick={() => setCurrencyMenuOpen((v) => !v)}
+              className="inline-flex items-center gap-1 hover:text-slate-800 dark:hover:text-white"
+            >
+              <span className="font-semibold">{currencySymbol}</span>
+              <span className="uppercase">{currency}</span>
+              <ChevronDownIcon className="w-3 h-3" />
+            </button>
+            {currencyMenuOpen && (
+              <div className="absolute left-0 mt-2 w-44 rounded-lg border border-slate-100 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900 z-50">
+                {availableCurrencies.map((c) => (
+                  <button
+                    key={c.code}
+                    type="button"
+                    onClick={() => handleCurrencyChange(c.code)}
+                    className="flex w-full items-center justify-between px-3 py-2 text-[11px] hover:bg-slate-50 dark:hover:bg-slate-800"
+                  >
+                    <span className="flex flex-col text-left">
+                      <span className="font-medium">
+                        {c.symbol} {c.code}
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        {c.label}
+                      </span>
+                    </span>
+                    {currency === c.code && (
+                      <span className="text-[10px] text-emerald-500 font-semibold">
+                        ✓
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           <Link href="/track" className="hover:text-slate-800 dark:hover:text-white">
             Track order
           </Link>
+        </div>
+
+        <div className="flex items-center gap-4">
           <ThemeToggle />
         </div>
       </div>
