@@ -1,4 +1,5 @@
 "use client";
+
 import { assets } from "@/assets/assets";
 import {
   ArrowRightIcon,
@@ -68,9 +69,20 @@ function useCarouselIndex(length, intervalMs) {
   return [index, setIndex];
 }
 
+/** Darkening overlay on promo background — variant presets from admin. */
+const PROMO_BG_OVERLAY = {
+  light:
+    "bg-gradient-to-t from-black/70 via-black/40 to-black/25",
+  medium:
+    "bg-gradient-to-t from-black/75 via-black/50 to-black/30",
+  dark:
+    "bg-gradient-to-t from-black/85 via-black/65 to-black/40",
+};
+
 const Hero = () => {
-  const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "$";
+  const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "₦";
   const products = useSelector((state) => state.product.list);
+
   const topRatedImage = useMemo(
     () => getTopRatedPrimaryImage(products),
     [products]
@@ -93,27 +105,56 @@ const Hero = () => {
             "Order from the comfort of your home/office anywhere nation wide.",
           priceLabel: "Starts from",
           price: `${currency}40,000`,
-          cta: "Shop Now!",
+          cta: "Shop Now",
           href: "/shop",
         },
       ],
       promo1: [
         {
           image: topRatedImage || assets.hero_product_img1,
-          title: "Best products",
-          subtitle: "View more",
-          href: "/shop",
+          title: "Best rated items",
+          subtitle: "Top quality picks",
+          href: "/shop?sort=rating",
           variant: "light",
         },
       ],
       promo2: [
         {
           image: topDiscountImage || assets.hero_product_img2,
-          title: "Top discounts",
-          subtitle: "View more",
-          href: "/shop",
+          title: "Biggest discounts",
+          subtitle: "Save more today",
+          href: "/shop?sort=discount",
           variant: "medium",
         },
+      ],
+      microPromos: [
+        {
+          label: "Fast delivery",
+          desc: "Nationwide logistics",
+          href: "/info/delivery",
+        },
+        {
+          label: "Bulk orders",
+          desc: "SME–friendly pricing",
+          href: "/bulk",
+        },
+        {
+          label: "Secure payment",
+          desc: "Stripe & Flutterwave",
+          href: "/info/payments",
+        },
+        {
+          label: "Vendor center",
+          desc: "Sell on Shpinx",
+          href: "/vendors",
+        },
+      ],
+      quickFilters: [
+        { label: "New arrivals", href: "/shop?tag=new" },
+        { label: "Top sellers", href: "/shop?tag=top" },
+        { label: "Electronics", href: "/shop?category=electronics" },
+        { label: "Computers", href: "/shop?category=computers" },
+        { label: "Smartphones", href: "/shop?category=smartphones" },
       ],
     }),
     [currency, topRatedImage, topDiscountImage]
@@ -174,10 +215,7 @@ const Hero = () => {
         }))
       : defaults.promo2;
 
-  const [fi, setFi] = useCarouselIndex(
-    featuredSlides.length,
-    6500
-  );
+  const [fi, setFi] = useCarouselIndex(featuredSlides.length, 6500);
   const [p1i, setP1i] = useCarouselIndex(promo1Slides.length, 5500);
   const [p2i, setP2i] = useCarouselIndex(promo2Slides.length, 5500);
 
@@ -186,118 +224,177 @@ const Hero = () => {
   };
 
   return (
-    <div className="mx-6">
-      <div className="mx-auto my10 flex max-w-7xl gap-8 max-xl:flex-col">
-        {/* Hero left */}
-        <div className="group relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-gray-300 dark:bg-slate-900">
+    <section className="mx-3 sm:mx-4 md:mx-6">
+      {/* Top info / quick filters bar – compact, marketplace-like */}
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 pt-3 text-xs sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2 text-slate-700 dark:text-slate-200">
+          <span className="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white dark:bg-slate-100 dark:text-slate-900">
+            Shpinx Marketplace
+          </span>
+          <span className="text-[11px] sm:text-xs">
+            SME focused electronics hub • Nationwide delivery
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600 dark:text-slate-300">
+          {defaults.quickFilters.map((q) => (
+            <Link
+              key={q.label}
+              href={q.href}
+              className="rounded-full border border-slate-200 px-2.5 py-1 transition hover:border-slate-900 hover:bg-slate-900 hover:text-white dark:border-slate-700 dark:hover:border-slate-100 dark:hover:bg-slate-100 dark:hover:text-slate-900"
+            >
+              {q.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Main hero grid */}
+      <div className="mx-auto mt-4 flex max-w-7xl gap-4 lg:gap-6 xl:gap-8 max-xl:flex-col">
+        {/* Hero left (main slider) */}
+        <div className="group relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-gradient-to-br from-slate-200 via-slate-300 to-slate-400 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 shadow-sm">
           <div
             className="flex h-full transition-transform duration-500 ease-out"
             style={{ transform: `translateX(-${fi * 100}%)` }}
           >
             {featuredSlides.map((slide, idx) => (
-              <div
+              <article
                 key={idx}
-                className="relative min-h-[300px] w-full min-w-full shrink-0 sm:min-h-[360px] xl:min-h-[420px]"
+                className="relative min-h-[320px] w-full min-w-full shrink-0 sm:min-h-[360px] lg:min-h-[420px]"
               >
                 <Image
                   src={slide.image}
-                  alt=""
+                  alt={slide.title || "Featured promo"}
                   fill
                   className="object-cover object-center"
                   sizes="(max-width: 1280px) 100vw, min(896px, 100vw)"
                   priority={idx === 0}
                 />
                 <div
-                  className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/25"
+                  className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/35"
                   aria-hidden
                 />
-                <div className="absolute inset-0 z-10 flex max-w-2xl flex-col justify-center p-5 sm:p-16">
-                  {(slide.badgeText || slide.badgeLabel) && (
-                    <div className="inline-flex w-fit items-center gap-3 rounded-full border border-white/10 bg-black/40 pr-4 pl-1 py-1 text-xs text-gray-200 backdrop-blur-sm sm:text-sm">
-                      {slide.badgeLabel && (
-                        <span className="max-sm:ml-0 rounded-full bg-white/25 px-3 py-1 text-xs text-white">
-                          {slide.badgeLabel}
+                <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-6 lg:p-10">
+                  {/* Top badge row */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {(slide.badgeText || slide.badgeLabel) && (
+                      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[11px] text-gray-50 backdrop-blur-sm sm:text-xs">
+                        {slide.badgeLabel && (
+                          <span className="rounded-full bg-white/25 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                            {slide.badgeLabel}
+                          </span>
+                        )}
+                        <span className="line-clamp-1">
+                          {slide.badgeText}
                         </span>
+                        <ChevronRightIcon
+                          className="hidden shrink-0 text-white/80 transition-all group-hover:translate-x-0.5 sm:block"
+                          size={14}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Main content */}
+                  <div className="mt-6 max-w-xl">
+                    {slide.title && (
+                      <h1 className="text-balance text-2xl font-semibold leading-tight text-white drop-shadow-md sm:text-3xl md:text-4xl lg:text-[2.5rem]">
+                        {slide.title}
+                      </h1>
+                    )}
+                    {(slide.line1 || slide.line2) && (
+                      <div className="mt-3 space-y-1 text-xs font-medium text-white/90 drop-shadow sm:mt-4 sm:text-sm">
+                        {slide.line1 && <p>{slide.line1}</p>}
+                        {slide.line2 && <p>{slide.line2}</p>}
+                      </div>
+                    )}
+                    {(slide.price || slide.priceLabel) && (
+                      <div className="mt-4 flex flex-wrap items-baseline gap-2 text-xs text-white/95 drop-shadow sm:mt-6 sm:text-sm">
+                        {slide.priceLabel && <p>{slide.priceLabel}</p>}
+                        {slide.price && (
+                          <p className="text-2xl font-semibold text-white sm:text-3xl">
+                            {slide.price}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-8">
+                      {slide.cta && slide.href && (
+                        <Link
+                          href={slide.href}
+                          className="inline-flex items-center justify-center rounded-full bg-white px-6 py-2 text-xs font-semibold text-slate-900 shadow-lg transition hover:scale-[1.02] hover:bg-white/95 active:scale-95 sm:px-8 sm:py-3 sm:text-sm"
+                        >
+                          {slide.cta}
+                          <ArrowRightIcon
+                            size={18}
+                            className="ml-1.5"
+                          />
+                        </Link>
                       )}
-                      {slide.badgeText}
-                      <ChevronRightIcon
-                        className="shrink-0 text-white/80 transition-all group-hover:ml-2"
-                        size={16}
-                      />
+                      <Link
+                        href="/shop?tag=offers"
+                        className="inline-flex items-center text-[11px] font-medium text-white/90 underline-offset-2 hover:underline sm:text-xs"
+                      >
+                        View all offers
+                        <ChevronRightIcon size={14} className="ml-1" />
+                      </Link>
                     </div>
-                  )}
-                  {slide.title && (
-                    <h2 className="my-3 max-w-md text-3xl font-medium leading-[1.2] text-white drop-shadow-md sm:text-5xl">
-                      {slide.title}
-                    </h2>
-                  )}
-                  {(slide.line1 || slide.line2) && (
-                    <div className="mt-4 text-sm font-medium text-white/90 drop-shadow sm:mt-8">
-                      {slide.line1 && <p>{slide.line1}</p>}
-                      {slide.line2 && <p>{slide.line2}</p>}
+                  </div>
+
+                  {/* Bottom indicator row */}
+                  {featuredSlides.length > 1 && (
+                    <div className="mt-4 flex items-center justify-between text-[11px] text-white/80">
+                      <div className="flex items-center gap-1">
+                        <span>{fi + 1}</span>
+                        <span className="text-white/60">
+                          / {featuredSlides.length}
+                        </span>
+                      </div>
+                      <div className="flex gap-1.5">
+                        {featuredSlides.map((_, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            aria-label={`Go to slide ${i + 1}`}
+                            onClick={() => setFi(i)}
+                            className={`h-1.5 rounded-full transition-all ${
+                              i === fi
+                                ? "w-5 bg-white"
+                                : "w-2 bg-white/40"
+                            }`}
+                          />
+                        ))}
+                      </div>
                     </div>
-                  )}
-                  {(slide.price || slide.priceLabel) && (
-                    <div className="mt-4 text-sm font-medium text-white/95 drop-shadow sm:mt-8">
-                      {slide.priceLabel && <p>{slide.priceLabel}</p>}
-                      {slide.price && (
-                        <p className="text-3xl font-semibold text-white">
-                          {slide.price}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                  {slide.cta && slide.href && (
-                    <Link
-                      href={slide.href}
-                      className="mt-4 inline-block w-fit rounded-md bg-white px-7 py-2.5 text-center text-sm font-medium text-slate-900 shadow-lg transition hover:bg-white/95 hover:scale-[1.02] active:scale-95 sm:mt-10 sm:px-10 sm:py-4"
-                    >
-                      {slide.cta}
-                    </Link>
                   )}
                 </div>
-              </div>
+              </article>
             ))}
           </div>
+
           {featuredSlides.length > 1 && (
             <>
               <button
                 type="button"
                 aria-label="Previous slide"
                 onClick={() => go(setFi, featuredSlides.length, -1)}
-                className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-800 shadow hover:bg-white dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-900"
+                className="absolute left-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-800 shadow hover:bg-white lg:flex dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-900"
               >
-                <ChevronLeftIcon size={20} />
+                <ChevronLeftIcon size={18} />
               </button>
               <button
                 type="button"
                 aria-label="Next slide"
                 onClick={() => go(setFi, featuredSlides.length, 1)}
-                className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-800 shadow hover:bg-white dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-900"
+                className="absolute right-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-800 shadow hover:bg-white lg:flex dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-900"
               >
-                <ChevronRightIcon size={20} />
+                <ChevronRightIcon size={18} />
               </button>
-              <div className="absolute bottom-3 left-0 right-0 z-20 flex justify-center gap-1.5">
-                {featuredSlides.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    aria-label={`Go to slide ${i + 1}`}
-                    onClick={() => setFi(i)}
-                    className={`h-2 rounded-full transition-all ${
-                      i === fi
-                        ? "w-6 bg-white"
-                        : "w-2 bg-white/40"
-                    }`}
-                  />
-                ))}
-              </div>
             </>
           )}
         </div>
 
-        {/* Right promos */}
-        <div className="flex w-full flex-col gap-5 text-sm md:flex-row xl:max-w-sm xl:flex-col">
+        {/* Right side – stacked promos similar to marketplace tiles */}
+        <div className="flex w-full flex-col gap-4 text-sm md:flex-row xl:max-w-sm xl:flex-col">
           <PromoCarousel
             slides={promo1Slides}
             index={p1i}
@@ -310,38 +407,54 @@ const Hero = () => {
           />
         </div>
       </div>
-      <CategoriesMarquee />
-    </div>
-  );
-};
 
-/** Darkening overlay on promo background — variant presets from admin. */
-const PROMO_BG_OVERLAY = {
-  light:
-    "bg-gradient-to-t from-black/70 via-black/40 to-black/25",
-  medium:
-    "bg-gradient-to-t from-black/75 via-black/50 to-black/30",
-  dark:
-    "bg-gradient-to-t from-black/85 via-black/65 to-black/40",
+      {/* Micro promos row under the hero */}
+      <div className="mx-auto mt-4 grid max-w-7xl grid-cols-2 gap-2 text-[11px] sm:grid-cols-4 sm:text-xs">
+        {defaults.microPromos.map((p) => (
+          <Link
+            key={p.label}
+            href={p.href}
+            className="group flex items-center justify-between gap-2 rounded-2xl bg-white px-3 py-2 text-slate-800 shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-900 hover:text-white hover:ring-slate-900 dark:bg-slate-900 dark:text-slate-100 dark:ring-slate-800 dark:hover:bg-slate-100 dark:hover:text-slate-900 dark:hover:ring-slate-100"
+          >
+            <div className="flex flex-col">
+              <span className="font-semibold">{p.label}</span>
+              <span className="text-[10px] text-slate-500 group-hover:text-slate-100 dark:text-slate-400 dark:group-hover:text-slate-700">
+                {p.desc}
+              </span>
+            </div>
+            <ArrowRightIcon
+              size={16}
+              className="shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-white dark:text-slate-500 dark:group-hover:text-slate-800"
+            />
+          </Link>
+        ))}
+      </div>
+
+      {/* Categories strip (you already had this) */}
+      <div className="mt-5">
+        <CategoriesMarquee />
+      </div>
+    </section>
+  );
 };
 
 function PromoCarousel({ slides, index, setIndex }) {
   return (
-    <div className="relative flex-1 w-full min-h-[200px] rounded-3xl overflow-hidden shadow-md bg-slate-200 dark:bg-slate-900">
+    <aside className="relative flex w-full flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-slate-200 shadow-sm dark:bg-slate-900">
       <div
-        className="flex h-full min-h-[200px] transition-transform duration-500 ease-out"
+        className="flex h-full min-h-[180px] w-full transition-transform duration-500 ease-out"
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
         {slides.map((slide, idx) => (
           <Link
             key={idx}
             href={slide.href || "/shop"}
-            className="group relative block min-h-[200px] min-w-full shrink-0"
+            className="group relative block min-h-[180px] min-w-full shrink-0"
           >
             {isValidImageSrc(slide.image) ? (
               <Image
                 src={slide.image}
-                alt=""
+                alt={slide.title || "Promo"}
                 fill
                 className="object-cover object-center"
                 sizes="(max-width: 1280px) 100vw, 380px"
@@ -359,15 +472,20 @@ function PromoCarousel({ slides, index, setIndex }) {
               }`}
               aria-hidden
             />
-            <div className="absolute inset-0 z-10 flex flex-col justify-end p-6 px-8">
-              <p className="max-w-[14rem] text-2xl font-semibold leading-tight text-white drop-shadow-md sm:text-3xl">
-                {slide.title || "Offers"}
-              </p>
-              <p className="mt-3 flex items-center gap-1 text-sm font-medium text-white/95 drop-shadow">
-                {slide.subtitle || "View more"}
+            <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-5">
+              <div className="flex flex-col gap-1">
+                <p className="max-w-[14rem] text-base font-semibold leading-tight text-white drop-shadow-md sm:text-lg">
+                  {slide.title || "Offers"}
+                </p>
+                <p className="text-[11px] text-white/85 sm:text-xs">
+                  {slide.subtitle || "View more electronics deals today"}
+                </p>
+              </div>
+              <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-white/95 drop-shadow sm:text-xs">
+                View more
                 <ArrowRightIcon
                   className="shrink-0 transition-transform group-hover:translate-x-0.5"
-                  size={18}
+                  size={16}
                 />
               </p>
             </div>
@@ -375,7 +493,7 @@ function PromoCarousel({ slides, index, setIndex }) {
         ))}
       </div>
       {slides.length > 1 && (
-        <div className="absolute bottom-2 left-0 right-0 z-20 flex justify-center gap-1">
+        <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-20 flex justify-center gap-1">
           {slides.map((_, i) => (
             <button
               key={i}
@@ -385,14 +503,14 @@ function PromoCarousel({ slides, index, setIndex }) {
                 e.preventDefault();
                 setIndex(i);
               }}
-              className={`h-1.5 rounded-full ${
+              className={`pointer-events-auto h-1.5 rounded-full transition-all ${
                 i === index ? "w-5 bg-white" : "w-1.5 bg-white/45"
               }`}
             />
           ))}
         </div>
       )}
-    </div>
+    </aside>
   );
 }
 
