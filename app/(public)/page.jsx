@@ -7,7 +7,7 @@ import OurSpecs from "@/components/OurSpec";
 import Newsletter from "@/components/Newsletter";
 import MiddleBannerRow, {
   defaultMiddleBanners,
-} from "@/components/MiddleBannerRow";
+} from "@/components/MiddleBannerRow";/
 import InfiniteProductsGrid from "@/components/InfiniteProductsGrid";
 
 export default function Home() {
