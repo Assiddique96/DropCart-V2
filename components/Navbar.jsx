@@ -63,13 +63,13 @@ const Navbar = () => {
   const megaRef = useRef(null);
   const mobileRef = useRef(null);
 
-  // Close mega and mobile on outside click
+  // Close mega and mobile on outside click (JSX-safe)
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (megaRef.current && !(megaRef.current as HTMLElement).contains(e.target as Node)) {
+    const handler = (e) => {
+      if (megaRef.current && !megaRef.current.contains(e.target)) {
         setMegaOpen(false);
       }
-      if (mobileRef.current && !(mobileRef.current as HTMLElement).contains(e.target as Node)) {
+      if (mobileRef.current && !mobileRef.current.contains(e.target)) {
         setMobileOpen(false);
       }
     };
@@ -115,14 +115,14 @@ const Navbar = () => {
     };
   }, [user, getToken]);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     router.push(`/shop?search=${search}`);
     setMegaOpen(false);
     setMobileOpen(false);
   };
 
-  const handleImageSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSearch = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -130,7 +130,7 @@ const Navbar = () => {
     try {
       const reader = new FileReader();
       reader.onload = async () => {
-        const base64 = (reader.result as string).split(",")[1];
+        const base64 = String(reader.result).split(",")[1];
 
         const response = await axios.post("/api/search-by-image", {
           image: base64,
@@ -151,7 +151,7 @@ const Navbar = () => {
     e.target.value = "";
   };
 
-  const goToCategory = (cat: string) => {
+  const goToCategory = (cat) => {
     router.push(`/shop?category=${encodeURIComponent(cat)}`);
     setMegaOpen(false);
     setMobileOpen(false);
@@ -211,7 +211,7 @@ const Navbar = () => {
                 Home
               </Link>
 
-              {/* Mega menu trigger - now behaves like Wildberries "catalog" */}
+              {/* Mega menu trigger */}
               <button
                 onClick={() => setMegaOpen((v) => !v)}
                 className={`flex items-center gap-1 hover:text-slate-900 dark:hover:text-white transition font-medium ${
@@ -379,7 +379,7 @@ const Navbar = () => {
         <div className="absolute top-full left-0 right-0 bg-white dark:bg-slate-950 shadow-2xl border-t border-slate-100 dark:border-slate-800 z-50">
           <div className="max-w-7xl mx-auto px-6 py-8">
             <div className="grid grid-cols-12 gap-8">
-              {/* Categories grid (as left panel) */}
+              {/* Categories grid */}
               <div className="col-span-7">
                 <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-4">
                   Browse by Category
@@ -407,7 +407,6 @@ const Navbar = () => {
 
               {/* Featured + search */}
               <div className="col-span-5 border-l border-slate-100 dark:border-slate-800 pl-8">
-                {/* Search in mega menu */}
                 <form
                   onSubmit={handleSearch}
                   className="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-2.5 rounded-full mb-6"
@@ -465,7 +464,10 @@ const Navbar = () => {
 
       {/* ─── Mobile menu ─── */}
       {mobileOpen && (
-        <div className="sm:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-950 shadow-xl border-t border-slate-100 dark:border-slate-800 z-50 max-h-[85vh] overflow-y-auto" ref={mobileRef}>
+        <div
+          className="sm:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-950 shadow-xl border-t border-slate-100 dark:border-slate-800 z-50 max-h-[85vh] overflow-y-auto"
+          ref={mobileRef}
+        >
           <div className="p-4 space-y-4">
             {/* Search */}
             <form
