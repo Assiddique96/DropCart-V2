@@ -336,7 +336,7 @@ const Hero = () => {
       {/* Top info / quick filters bar */}
       <div className="mx-auto flex max-w-7xl flex-col gap-3 pt-3 text-xs sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2 text-slate-700 dark:text-slate-200">
-          <span className="rounded-full bg-slate-900 dark:bg-slate-800 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white dark:text-slate-200 border border-slate-700 dark:border-slate-600 shadow-lg shadow-slate-900/20 dark:shadow-slate-700/20">
+          <span className="rounded-full bg-slate-900 dark:bg-slate-800 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white dark:text-slate-200 border border-slate-700 dark:border-slate-600">
             Shpinx Marketplace
           </span>
           <span className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300">
@@ -348,7 +348,7 @@ const Hero = () => {
             <Link
               key={q.label}
               href={q.href}
-              className="rounded-full border border-slate-200 dark:border-slate-600 px-2.5 py-1 transition hover:border-slate-900 dark:hover:border-slate-400 hover:bg-slate-900 dark:hover:bg-slate-700 hover:text-white dark:hover:text-slate-100 hover:shadow-lg dark:hover:shadow-slate-700/20"
+              className="rounded-full border border-slate-200 dark:border-slate-600 px-2.5 py-1 transition hover:border-slate-900 dark:hover:border-slate-400 hover:bg-slate-900 dark:hover:bg-slate-700 hover:text-white dark:hover:text-slate-100"
             >
               {q.label}
             </Link>
@@ -359,7 +359,7 @@ const Hero = () => {
       {/* Main hero grid */}
       <div className="mx-auto mt-4 flex max-w-7xl gap-4 lg:gap-6 xl:gap-8 max-xl:flex-col">
         {/* Hero left (infinite main slider) */}
-        <div className="group relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-gradient-to-br from-slate-200 via-slate-300 to-slate-400 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shadow-2xl shadow-slate-900/10 dark:shadow-slate-700/10 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300">
+        <div className="group relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-gradient-to-br from-slate-200 via-slate-300 to-slate-400 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300">
           {/* 3D depth effect - dark and light variants */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-500/5 via-transparent to-slate-600/5 dark:from-slate-400/10 dark:via-transparent dark:to-slate-500/10" />
           
@@ -397,9 +397,9 @@ const Hero = () => {
                   {/* Top badge row */}
                   <div className="flex flex-wrap items-center gap-2">
                     {(slide.badgeText || slide.badgeLabel) && (
-                      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-600/40 dark:border-slate-500/40 bg-slate-800/60 dark:bg-slate-900/60 px-3 py-1 text-[11px] text-slate-200 dark:text-slate-200 backdrop-blur-md shadow-lg shadow-slate-900/20 dark:shadow-slate-700/20">
+                      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-600/40 dark:border-slate-500/40 bg-slate-800/60 dark:bg-slate-900/60 px-3 py-1 text-[11px] text-slate-200 dark:text-slate-200 backdrop-blur-md">
                         {slide.badgeLabel && (
-                          <span className="rounded-full bg-slate-700 dark:bg-slate-600 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white dark:text-slate-100 shadow-lg shadow-slate-900/30 dark:shadow-slate-700/40">
+                          <span className="rounded-full bg-slate-700 dark:bg-slate-600 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white dark:text-slate-100">
                             {slide.badgeLabel}
                           </span>
                         )}
@@ -415,21 +415,21 @@ const Hero = () => {
                   {/* Main content */}
                   <div className="mt-6 max-w-xl">
                     {slide.title && (
-                      <h1 className="text-balance text-2xl font-semibold leading-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] sm:text-3xl md:text-4xl lg:text-[2.5rem] bg-gradient-to-r from-white via-slate-100 to-slate-200 bg-clip-text">
+                      <h1 className="text-balance text-2xl font-semibold leading-tight text-white sm:text-3xl md:text-4xl lg:text-[2.5rem] bg-gradient-to-r from-white via-slate-100 to-slate-200 bg-clip-text">
                         {slide.title}
                       </h1>
                     )}
                     {(slide.line1 || slide.line2) && (
-                      <div className="mt-3 space-y-1 text-xs font-medium text-slate-300 dark:text-slate-200/90 drop-shadow sm:mt-4 sm:text-sm">
+                      <div className="mt-3 space-y-1 text-xs font-medium text-slate-300 dark:text-slate-200/90 sm:mt-4 sm:text-sm">
                         {slide.line1 && <p>{slide.line1}</p>}
                         {slide.line2 && <p>{slide.line2}</p>}
                       </div>
                     )}
                     {(slide.price || slide.priceLabel) && (
-                      <div className="mt-4 flex flex-wrap items-baseline gap-2 text-xs text-slate-300 dark:text-slate-200/95 drop-shadow sm:mt-6 sm:text-sm">
+                      <div className="mt-4 flex flex-wrap items-baseline gap-2 text-xs text-slate-300 dark:text-slate-200/95 sm:mt-6 sm:text-sm">
                         {slide.priceLabel && <p>{slide.priceLabel}</p>}
                         {slide.price && (
-                          <p className="text-2xl font-semibold text-slate-200 sm:text-3xl shadow-lg shadow-slate-900/30">
+                          <p className="text-2xl font-semibold text-slate-200 sm:text-3xl">
                             {slide.price}
                           </p>
                         )}
@@ -439,7 +439,7 @@ const Hero = () => {
                       {slide.cta && slide.href && (
                         <Link
                           href={slide.href}
-                          className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-slate-700 to-slate-800 dark:from-slate-600 dark:to-slate-700 px-6 py-2 text-xs font-semibold text-white shadow-xl shadow-slate-900/40 dark:shadow-slate-700/40 transition hover:scale-[1.02] hover:shadow-slate-900/60 dark:hover:shadow-slate-700/60 active:scale-95 sm:px-8 sm:py-3 sm:text-sm border border-slate-600 dark:border-slate-500"
+                          className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-slate-700 to-slate-800 dark:from-slate-600 dark:to-slate-700 px-6 py-2 text-xs font-semibold text-white transition hover:scale-[1.02] active:scale-95 sm:px-8 sm:py-3 sm:text-sm border border-slate-600 dark:border-slate-500"
                         >
                           {slide.cta}
                           <ArrowRightIcon
@@ -474,8 +474,8 @@ const Hero = () => {
                             type="button"
                             aria-label={`Go to slide ${i + 1}`}
                             onClick={() => setFi(i)}
-                            className={`h-1.5 rounded-full transition-all shadow-lg ${
-                              i === fi ? "w-5 bg-gradient-to-r from-slate-600 to-slate-700 dark:from-slate-400 dark:to-slate-500 shadow-slate-900/50 dark:shadow-slate-600/50" : "w-2 bg-slate-600/30 dark:bg-slate-400/30 hover:bg-slate-600/50 dark:hover:bg-slate-400/50"
+                            className={`h-1.5 rounded-full transition-all ${
+                              i === fi ? "w-5 bg-gradient-to-r from-slate-600 to-slate-700 dark:from-slate-400 dark:to-slate-500" : "w-2 bg-slate-600/30 dark:bg-slate-400/30 hover:bg-slate-600/50 dark:hover:bg-slate-400/50"
                             }`}
                           />
                         ))}
@@ -499,7 +499,7 @@ const Hero = () => {
                       : fi - 1
                   )
                 }
-                className="absolute left-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-gradient-to-br from-slate-700/90 to-slate-800/90 dark:from-slate-600/90 dark:to-slate-700/90 p-2 text-white shadow-xl shadow-slate-900/40 dark:shadow-slate-700/40 hover:from-slate-600 hover:to-slate-700 dark:hover:from-slate-500 dark:hover:to-slate-600 lg:flex border border-slate-600/30 dark:border-slate-500/30"
+                className="absolute left-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-gradient-to-br from-slate-700/90 to-slate-800/90 dark:from-slate-600/90 dark:to-slate-700/90 p-2 text-white hover:from-slate-600 hover:to-slate-700 dark:hover:from-slate-500 dark:hover:to-slate-600 lg:flex border border-slate-600/30 dark:border-slate-500/30"
               >
                 <ChevronLeftIcon size={18} />
               </button>
@@ -509,7 +509,7 @@ const Hero = () => {
                 onClick={() =>
                   setFi((fi + 1) % featuredSlides.length)
                 }
-                className="absolute right-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-gradient-to-br from-slate-700/90 to-slate-800/90 dark:from-slate-600/90 dark:to-slate-700/90 p-2 text-white shadow-xl shadow-slate-900/40 dark:shadow-slate-700/40 hover:from-slate-600 hover:to-slate-700 dark:hover:from-slate-500 dark:hover:to-slate-600 lg:flex border border-slate-600/30 dark:border-slate-500/30"
+                className="absolute right-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-gradient-to-br from-slate-700/90 to-slate-800/90 dark:from-slate-600/90 dark:to-slate-700/90 p-2 text-white hover:from-slate-600 hover:to-slate-700 dark:hover:from-slate-500 dark:hover:to-slate-600 lg:flex border border-slate-600/30 dark:border-slate-500/30"
               >
                 <ChevronRightIcon size={18} />
               </button>
@@ -541,7 +541,7 @@ const Hero = () => {
           <Link
             key={p.label}
             href={p.href}
-            className="group flex items-center justify-between gap-2 rounded-2xl bg-white dark:bg-gradient-to-br dark:from-slate-800/40 dark:to-slate-700/30 px-3 py-2 text-slate-800 dark:text-slate-200 shadow-lg shadow-slate-200/50 dark:shadow-slate-700/10 transition hover:bg-slate-50 dark:hover:from-slate-700/50 dark:hover:to-slate-600/30 hover:text-slate-900 dark:hover:text-slate-100 hover:shadow-xl dark:hover:shadow-slate-700/20 hover:-translate-y-0.5 border border-slate-200 dark:border-slate-600/20 dark:hover:border-slate-500/40"
+            className="group flex items-center justify-between gap-2 rounded-2xl bg-white dark:bg-gradient-to-br dark:from-slate-800/40 dark:to-slate-700/30 px-3 py-2 text-slate-800 dark:text-slate-200 transition hover:bg-slate-50 dark:hover:from-slate-700/50 dark:hover:to-slate-600/30 hover:text-slate-900 dark:hover:text-slate-100 hover:-translate-y-0.5 border border-slate-200 dark:border-slate-600/20 dark:hover:border-slate-500/40"
           >
             <div className="flex flex-col">
               <span className="font-semibold text-slate-800 dark:text-slate-200">{p.label}</span>
@@ -584,7 +584,7 @@ function PromoCarousel({ slides, index, setIndex }) {
   const currentSlide = slides[index];
 
   return (
-    <aside className="relative flex w-full flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-slate-200 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shadow-xl shadow-slate-200/50 dark:shadow-slate-700/10 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300">
+    <aside className="relative flex w-full flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-slate-200 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300">
       {/* 3D depth effect - dark and light variants */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-500/5 via-transparent to-slate-600/5 dark:from-slate-400/10 dark:via-transparent dark:to-slate-500/10" />
       
@@ -618,7 +618,7 @@ function PromoCarousel({ slides, index, setIndex }) {
         
         <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-5">
           <div className="flex flex-col gap-1">
-            <p className="max-w-[14rem] text-base font-semibold leading-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] sm:text-lg bg-gradient-to-r from-white via-slate-100 to-slate-200 bg-clip-text">
+            <p className="max-w-[14rem] text-base font-semibold leading-tight text-white sm:text-lg bg-gradient-to-r from-white via-slate-100 to-slate-200 bg-clip-text">
               {currentSlide.title || "Offers"}
             </p>
             <p className="text-[11px] text-slate-300 dark:text-slate-200/85 sm:text-xs">
@@ -626,7 +626,7 @@ function PromoCarousel({ slides, index, setIndex }) {
                 "View more electronics deals today"}
             </p>
           </div>
-          <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-slate-300 dark:text-slate-200/95 drop-shadow sm:text-xs">
+          <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-slate-300 dark:text-slate-200/95 sm:text-xs">
             View more
             <ArrowRightIcon
               className="shrink-0 transition-transform group-hover:translate-x-0.5"
@@ -644,7 +644,7 @@ function PromoCarousel({ slides, index, setIndex }) {
               e.preventDefault();
               handlePrev();
             }}
-            className="pointer-events-auto rounded-full bg-gradient-to-br from-slate-600/80 to-slate-700/80 dark:from-slate-500/80 dark:to-slate-600/80 p-1 text-white shadow-lg shadow-slate-900/30 dark:shadow-slate-700/30 hover:from-slate-500 hover:to-slate-600 dark:hover:from-slate-400 dark:hover:to-slate-500 border border-slate-500/30 dark:border-slate-400/30"
+            className="pointer-events-auto rounded-full bg-gradient-to-br from-slate-600/80 to-slate-700/80 dark:from-slate-500/80 dark:to-slate-600/80 p-1 text-white hover:from-slate-500 hover:to-slate-600 dark:hover:from-slate-400 dark:hover:to-slate-500 border border-slate-500/30 dark:border-slate-400/30"
           >
             <ChevronLeftIcon size={16} />
           </button>
@@ -655,7 +655,7 @@ function PromoCarousel({ slides, index, setIndex }) {
               e.preventDefault();
               handleNext();
             }}
-            className="pointer-events-auto rounded-full bg-gradient-to-br from-slate-600/80 to-slate-700/80 dark:from-slate-500/80 dark:to-slate-600/80 p-1 text-white shadow-lg shadow-slate-900/30 dark:shadow-slate-700/30 hover:from-slate-500 hover:to-slate-600 dark:hover:from-slate-400 dark:hover:to-slate-500 border border-slate-500/30 dark:border-slate-400/30"
+            className="pointer-events-auto rounded-full bg-gradient-to-br from-slate-600/80 to-slate-700/80 dark:from-slate-500/80 dark:to-slate-600/80 p-1 text-white hover:from-slate-500 hover:to-slate-600 dark:hover:from-slate-400 dark:hover:to-slate-500 border border-slate-500/30 dark:border-slate-400/30"
           >
             <ChevronRightIcon size={16} />
           </button>
@@ -670,10 +670,10 @@ function VerifiedStoresSection({ stores, currency }) {
   if (!stores || stores.length === 0) return null;
 
   return (
-    <div className="mx-auto mt-6 max-w-7xl rounded-3xl bg-slate-50 dark:bg-gradient-to-br dark:from-slate-800/20 dark:via-slate-900/40 dark:to-slate-700/20 px-3 py-3 text-[11px] shadow-xl shadow-slate-200/50 dark:shadow-slate-700/10 ring-1 ring-slate-200 dark:ring-slate-600/20 sm:px-4 sm:py-4 sm:text-xs">
+    <div className="mx-auto mt-6 max-w-7xl rounded-3xl bg-slate-50 dark:bg-gradient-to-br dark:from-slate-800/20 dark:via-slate-900/40 dark:to-slate-700/20 px-3 py-3 text-[11px] ring-1 ring-slate-200 dark:ring-slate-600/20 sm:px-4 sm:py-4 sm:text-xs">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-slate-700 to-slate-800 dark:from-slate-600 dark:to-slate-700 text-white shadow-lg shadow-slate-900/40 dark:shadow-slate-700/40">
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-slate-700 to-slate-800 dark:from-slate-600 dark:to-slate-700 text-white">
             <ShieldCheckIcon size={16} />
           </span>
           <div>
@@ -687,7 +687,7 @@ function VerifiedStoresSection({ stores, currency }) {
         </div>
         <Link
           href="/vendors/verified"
-          className="inline-flex items-center gap-1 rounded-full border border-slate-200 dark:border-slate-600/30 px-3 py-1 text-[10px] font-semibold text-slate-800 dark:text-slate-200 transition hover:border-slate-900 dark:hover:border-slate-400 hover:bg-slate-900 dark:hover:bg-slate-700 hover:text-white dark:hover:text-slate-100 hover:shadow-lg dark:hover:shadow-slate-700/20"
+          className="inline-flex items-center gap-1 rounded-full border border-slate-200 dark:border-slate-600/30 px-3 py-1 text-[10px] font-semibold text-slate-800 dark:text-slate-200 transition hover:border-slate-900 dark:hover:border-slate-400 hover:bg-slate-900 dark:hover:bg-slate-700 hover:text-white dark:hover:text-slate-100"
         >
           Join as a verified store
           <ArrowRightIcon size={14} />
@@ -698,7 +698,7 @@ function VerifiedStoresSection({ stores, currency }) {
           <Link
             key={v.id}
             href={v.href}
-            className="group flex flex-col justify-between rounded-2xl bg-white dark:bg-gradient-to-br dark:from-slate-800/30 dark:to-slate-700/20 p-3 text-slate-800 dark:text-slate-200 shadow-lg shadow-slate-200/50 dark:shadow-slate-700/10 transition hover:-translate-y-0.5 hover:shadow-xl dark:hover:shadow-slate-700/20 ring-1 ring-slate-100 dark:ring-slate-600/20 hover:ring-slate-900 dark:hover:ring-slate-500/40"
+            className="group flex flex-col justify-between rounded-2xl bg-white dark:bg-gradient-to-br dark:from-slate-800/30 dark:to-slate-700/20 p-3 text-slate-800 dark:text-slate-200 transition hover:-translate-y-0.5 ring-1 ring-slate-100 dark:ring-slate-600/20 hover:ring-slate-900 dark:hover:ring-slate-500/40"
           >
             <div className="flex items-center justify-between gap-1">
               <p className="line-clamp-1 text-[11px] font-semibold sm:text-xs text-slate-800 dark:text-slate-200">
