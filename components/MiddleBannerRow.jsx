@@ -48,7 +48,10 @@ const MiddleBannerRow = ({ banners }) => {
         </div>
 
         <div className="relative min-h-[460px] p-4 sm:p-6 lg:p-8">
-          <div className="relative grid min-h-[420px] place-items-center overflow-hidden rounded-[2.1rem] border border-white/10 bg-white/5 backdrop-blur-2xl">
+          <Link
+            href={hero.href || "/shop"}
+            className="relative grid min-h-[420px] place-items-center overflow-hidden rounded-[2.1rem] border border-white/10 bg-white/5 backdrop-blur-2xl transition-transform duration-500 hover:-translate-y-1 hover:shadow-[0_0_60px_rgba(34,211,238,0.35)]"
+          >
             {isValidImageSrc(hero.image) && (
               <Image
                 src={hero.image}
@@ -92,7 +95,7 @@ const MiddleBannerRow = ({ banners }) => {
                 </span>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
     </div>
