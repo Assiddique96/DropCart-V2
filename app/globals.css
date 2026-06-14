@@ -48,3 +48,9 @@
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
+
+
+@keyframes scanMove {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
