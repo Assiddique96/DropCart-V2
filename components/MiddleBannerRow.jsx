@@ -31,12 +31,6 @@ const MiddleBannerRow = ({ banners }) => {
   if (!banners || banners.length === 0) return null;
 
   const hero = banners.find((b) => b.size === "lg") || banners[0];
-  const orbit = banners.filter((b) => b.id !== hero.id);
-  const orbitA = orbit[0] || banners[1] || hero;
-  const orbitB = orbit[1] || banners[2] || hero;
-  const orbitC = orbit[2] || banners[0] || hero;
-
-  const orbitCards = [orbitA, orbitB, orbitC];
 
   return (
     <div ref={containerRef} className="mx-auto mt-6 w-full max-w-7xl px-3 sm:px-4">
@@ -97,49 +91,6 @@ const MiddleBannerRow = ({ banners }) => {
                   {mounted ? "Live motion" : "Loading"}
                 </span>
               </div>
-            </div>
-          </div>
-
-          <div className="pointer-events-none absolute inset-x-6 top-1/2 hidden -translate-y-1/2 lg:block">
-            <div className="relative h-[420px]">
-              {orbitCards.map((b, i) => (
-                <div
-                  key={b.id}
-                  className="absolute left-1/2 top-1/2 w-[220px] -translate-x-1/2 -translate-y-1/2"
-                >
-                  <Link
-                    href={b.href || "/shop"}
-                    className="group overflow-hidden rounded-[1.6rem] border border-white/10 bg-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-transform duration-500 hover:-translate-y-1 hover:scale-105"
-                  >
-                    {isValidImageSrc(b.image) && (
-                      <Image
-                        src={b.image}
-                        alt={b.title || "Promo"}
-                        width={440}
-                        height={290}
-                        className="h-[180px] w-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
-                      />
-                    )}
-                    <div className="bg-[linear-gradient(135deg,rgba(0,0,0,0.86)_0%,rgba(0,0,0,0.42)_60%,rgba(0,0,0,0.16)_100%)] p-4">
-                      <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-cyan-100">
-                        Orbit {i + 1}
-                      </p>
-                      <h3 className="mt-2 line-clamp-1 text-sm font-semibold text-white">
-                        {b.title || "Special offer"}
-                      </h3>
-                      <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-white/75">
-                        {b.subtitle}
-                      </p>
-                      <div className="mt-3 flex items-center justify-between">
-                        <span className="text-xs font-medium text-cyan-100">
-                          {b.cta || "View more"}
-                        </span>
-                        <ArrowRightIcon size={14} className="text-white/85" />
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
             </div>
           </div>
         </div>
