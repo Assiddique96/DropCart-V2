@@ -1,3 +1,54 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer components {
+    @keyframes marqueeScroll {
+        0% {
+            transform: translateX(0%);
+        }
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+}
+
+@layer base {
+    :root {
+        color-scheme: light;
+    }
+
+    .dark {
+        color-scheme: dark;
+    }
+
+    body {
+        @apply bg-white text-slate-900 dark:bg-slate-950 dark:text-white;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    a {
+        @apply text-slate-900 dark:text-white;
+    }
+
+    input,
+    textarea,
+    select {
+        @apply text-slate-900 dark:text-white;
+    }
+
+    .dark input::placeholder,
+    .dark textarea::placeholder {
+        color: rgb(148 163 184) !important;
+    }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
 @keyframes scanMove {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
