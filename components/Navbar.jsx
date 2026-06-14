@@ -19,22 +19,22 @@ import ThemeToggle from "./ThemeToggle";
 import shpinxLogo from "@/assets/logo.png";
 
 const CATEGORIES = [
-  { name: "Electronics",        icon: MonitorIcon,    color: "text-cyan-400",   desc: "Phones, laptops, gadgetarya" },
-  { name: "Clothing",           icon: ShirtIcon,      color: "text-fuchsia-400",   desc: "Fashion & apparel" },
-  { name: "Home & Garden",      icon: HomeIcon,       color: "text-amber-400",  desc: "Furniture & appliances" },
-  { name: "Beauty & Health",    icon: SparklesIcon,   color: "text-violet-400", desc: "Skincare & wellness" },
-  { name: "Toys & Games",       icon: ToyBrickIcon,   color: "text-yellow-400", desc: "Kids & family" },
-  { name: "Sports & Outdoors",  icon: DumbbellIcon,   color: "text-emerald-400",desc: "Fitness & outdoor" },
-  { name: "Books & Media",      icon: BookOpenIcon,   color: "text-sky-400",  desc: "Books, music, movies" },
-  { name: "Food & Beverage",    icon: UtensilsIcon,   color: "text-red-400",    desc: "Groceries & beverages" },
-  { name: "Hobbies & Crafts",   icon: PaletteIcon,    color: "text-teal-400",   desc: "Art & DIY" },
-  { name: "Automotive",         icon: CarIcon,        color: "text-blue-400",   desc: "Car parts & accessories" },
-  { name: "Baby & Kids",        icon: BabyIcon,       color: "text-pink-400", desc: "Baby products & toys" },
-  { name: "Pet Supplies",       icon: HeartIcon,      color: "text-green-400",desc: "Pet food & accessories" },
-  { name: "Office Supplies",    icon: BriefcaseIcon,  color: "text-indigo-400", desc: "Office & stationery" },
-  { name: "Industrial & Scientific", icon: WrenchIcon, color: "text-lime-400", desc: "Tools & equipment" },
-  { name: "Travel & Luggage",   icon: PlaneIcon,      color: "text-purple-400", desc: "Travel gear" },
-  { name: "Others",             icon: GridIcon,       color: "text-gray-400",   desc: "Everything else" },
+  { name: "Electronics",        icon: MonitorIcon,    color: "text-cyan-500 dark:text-cyan-400",   desc: "Phones, laptops, gadgets" },
+  { name: "Clothing",           icon: ShirtIcon,      color: "text-fuchsia-500 dark:text-fuchsia-400",   desc: "Fashion & apparel" },
+  { name: "Home & Garden",      icon: HomeIcon,       color: "text-amber-500 dark:text-amber-400",  desc: "Furniture & appliances" },
+  { name: "Beauty & Health",    icon: SparklesIcon,   color: "text-violet-500 dark:text-violet-400", desc: "Skincare & wellness" },
+  { name: "Toys & Games",       icon: ToyBrickIcon,   color: "text-yellow-500 dark:text-yellow-400", desc: "Kids & family" },
+  { name: "Sports & Outdoors",  icon: DumbbellIcon,   color: "text-emerald-500 dark:text-emerald-400",desc: "Fitness & outdoor" },
+  { name: "Books & Media",      icon: BookOpenIcon,   color: "text-sky-500 dark:text-sky-400",  desc: "Books, music, movies" },
+  { name: "Food & Beverage",    icon: UtensilsIcon,   color: "text-red-500 dark:text-red-400",    desc: "Groceries & beverages" },
+  { name: "Hobbies & Crafts",   icon: PaletteIcon,    color: "text-teal-500 dark:text-teal-400",   desc: "Art & DIY" },
+  { name: "Automotive",         icon: CarIcon,        color: "text-blue-500 dark:text-blue-400",   desc: "Car parts & accessories" },
+  { name: "Baby & Kids",        icon: BabyIcon,       color: "text-pink-500 dark:text-pink-400", desc: "Baby products & toys" },
+  { name: "Pet Supplies",       icon: HeartIcon,      color: "text-green-500 dark:text-green-400",desc: "Pet food & accessories" },
+  { name: "Office Supplies",    icon: BriefcaseIcon,  color: "text-indigo-500 dark:text-indigo-400", desc: "Office & stationery" },
+  { name: "Industrial & Scientific", icon: WrenchIcon, color: "text-lime-500 dark:text-lime-400", desc: "Tools & equipment" },
+  { name: "Travel & Luggage",   icon: PlaneIcon,      color: "text-purple-500 dark:text-purple-400", desc: "Travel gear" },
+  { name: "Others",             icon: GridIcon,       color: "text-gray-500 dark:text-gray-400",   desc: "Everything else" },
 ];
 
 const FEATURED_LINKS = [
@@ -259,23 +259,23 @@ const Navbar = () => {
   const featuredLinks = [...FEATURED_LINKS, storeCta];
 
   return (
-    <header className="sticky top-0 z-50 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 shadow-2xl">
+    <header className="sticky top-0 z-50 bg-white dark:bg-slate-950 shadow-2xl">
       {/* Futuristic glowing top border */}
       <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-cyan-400 animate-pulse shadow-[0_0_20px_rgba(34,211,238,0.8)]" />
 
       {/* Top utility bar - 3D glassmorphism */}
-      <div className="hidden md:flex items-center justify-between px-6 lg:px-10 h-12 text-xs bg-slate-900/60 dark:bg-slate-950/60 backdrop-blur-xl border-b border-slate-700/50 shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
+      <div className="hidden md:flex items-center justify-between px-6 lg:px-10 h-12 text-xs bg-slate-50/80 dark:bg-slate-900/60 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-700/50 shadow-[0_4px_20px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
         <div className="flex items-center gap-6">
           {/* Location with 3D icon */}
           <button
             type="button"
-            className="inline-flex items-center gap-2 hover:text-cyan-400 transition-all duration-300 hover:scale-105 group"
+            className="inline-flex items-center gap-2 hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105 group"
           >
             <div className="relative">
-              <MapPinIcon className="w-4 h-4 text-cyan-400 group-hover:animate-bounce" />
+              <MapPinIcon className="w-4 h-4 text-cyan-500 dark:text-cyan-400 group-hover:animate-bounce" />
               <div className="absolute inset-0 bg-cyan-400/30 rounded-full animate-ping" />
             </div>
-            <span className="max-w-[180px] truncate text-slate-300 group-hover:text-cyan-400 font-medium">
+            <span className="max-w-[180px] truncate text-slate-600 dark:text-slate-300 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 font-medium">
               {locationLabel}
             </span>
           </button>
@@ -285,31 +285,31 @@ const Navbar = () => {
             <button
               type="button"
               onClick={() => setCurrencyMenuOpen((v) => !v)}
-              className="inline-flex items-center gap-2 hover:text-fuchsia-400 transition-all duration-300 hover:scale-105 group bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-700/50 hover:border-fuchsia-400/50 hover:shadow-[0_0_15px_rgba(232,121,249,0.3)]"
+              className="inline-flex items-center gap-2 hover:text-fuchsia-500 dark:hover:text-fuchsia-400 transition-all duration-300 hover:scale-105 group bg-slate-100/50 dark:bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-200/50 dark:border-slate-700/50 hover:border-fuchsia-400/50 hover:shadow-[0_0_15px_rgba(232,121,249,0.3)]"
             >
-              <span className="font-bold text-lg text-fuchsia-400">{currencySymbol}</span>
-              <span className="uppercase text-slate-200 font-bold">{currency}</span>
-              <ChevronDownIcon className="w-4 h-4 text-cyan-400 group-hover:rotate-180 transition-transform duration-300" />
+              <span className="font-bold text-lg text-fuchsia-500 dark:text-fuchsia-400">{currencySymbol}</span>
+              <span className="uppercase text-slate-700 dark:text-slate-200 font-bold">{currency}</span>
+              <ChevronDownIcon className="w-4 h-4 text-cyan-500 dark:text-cyan-400 group-hover:rotate-180 transition-transform duration-300" />
             </button>
             {currencyMenuOpen && (
-              <div className="absolute left-0 mt-3 w-56 rounded-xl border border-slate-600/50 bg-slate-900/95 dark:bg-slate-950/95 backdrop-blur-2xl shadow-[0_8px_32px_rgba(34,211,238,0.2)] z-50 overflow-hidden">
+              <div className="absolute left-0 mt-3 w-56 rounded-xl border border-slate-200 dark:border-slate-600/50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl shadow-[0_8px_32px_rgba(34,211,238,0.2)] z-50 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/5 via-fuchsia-400/5 to-transparent" />
                 {availableCurrencies.map((c, idx) => (
                   <button
                     key={c.code}
                     type="button"
                     onClick={() => handleCurrencyChange(c.code)}
-                    className={`flex w-full items-center justify-between px-4 py-3 text-sm hover:bg-slate-800/70 transition-all duration-200 ${idx !== availableCurrencies.length - 1 ? 'border-b border-slate-700/30' : ''}`}
+                    className={`flex w-full items-center justify-between px-4 py-3 text-sm hover:bg-slate-50 dark:hover:bg-slate-800/70 transition-all duration-200 ${idx !== availableCurrencies.length - 1 ? 'border-b border-slate-100 dark:border-slate-700/30' : ''}`}
                   >
                     <span className="flex flex-col text-left">
-                      <span className="font-bold text-slate-100 flex items-center gap-2">
-                        <span className="text-fuchsia-400">{c.symbol}</span>
+                      <span className="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <span className="text-fuchsia-500 dark:text-fuchsia-400">{c.symbol}</span>
                         {c.code}
                       </span>
-                      <span className="text-xs text-slate-400">{c.label}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">{c.label}</span>
                     </span>
                     {currency === c.code && (
-                      <span className="text-cyan-400 font-bold animate-pulse">
+                      <span className="text-cyan-500 dark:text-cyan-400 font-bold animate-pulse">
                         ✓
                       </span>
                     )}
@@ -319,7 +319,7 @@ const Navbar = () => {
             )}
           </div>
 
-          <Link href="/track" className="hover:text-cyan-400 transition-all duration-300 hover:scale-105 text-slate-300">
+          <Link href="/track" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105 text-slate-600 dark:text-slate-300">
             Track order
           </Link>
         </div>
@@ -329,8 +329,8 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Main bar - 3D futuristic design */}
-      <div className="px-4 lg:px-10 py-4 bg-gradient-to-b from-slate-800/80 to-slate-900/80 dark:from-slate-900/80 dark:to-slate-950/80 backdrop-blur-xl">
+      {/* Main bar - 3D futuristic design with light/dark support */}
+      <div className="px-4 lg:px-10 py-4 bg-white dark:bg-slate-950">
         <div className="max-w-7xl mx-auto flex items-center gap-4 md:gap-6">
           {/* 3D Logo with glow */}
           <Link
@@ -349,10 +349,10 @@ const Navbar = () => {
               <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400/20 to-fuchsia-400/20 animate-pulse" />
             </div>
             <div className="hidden sm:block leading-tight">
-              <span className="text-4xl font-bold bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent group-hover:animate-pulse">
-                Shp<span className="text-fuchsia-400">inx</span>
+              <span className="text-4xl font-bold bg-gradient-to-r from-cyan-500 via-fuchsia-500 to-cyan-500 dark:from-cyan-400 dark:via-fuchsia-400 dark:to-cyan-400 bg-clip-text text-transparent group-hover:animate-pulse">
+                Shp<span className="text-fuchsia-500 dark:text-fuchsia-400">inx</span>
               </span>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 group-hover:text-cyan-400 transition-colors">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors">
                 Nigeria&apos;s marketplace
               </p>
             </div>
@@ -369,7 +369,7 @@ const Navbar = () => {
           {/* 3D Catalog button */}
           <button
             onClick={() => setCatalogOpen((v) => !v)}
-            className="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-slate-700 to-slate-800 text-slate-200 hover:from-cyan-600 hover:to-fuchsia-600 hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] border border-slate-600/50 hover:border-cyan-400/50 font-bold shadow-[0_4px_15px_rgba(0,0,0,0.3)]"
+            className="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 hover:from-cyan-600 hover:to-fuchsia-600 hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] border border-slate-200 dark:border-slate-700/50 hover:border-cyan-400/50 font-bold shadow-[0_4px_15px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_15px_rgba(0,0,0,0.3)]"
           >
             <MenuIcon size={18} className="group-hover:rotate-12 transition-transform" />
             <span>Catalog</span>
@@ -378,13 +378,13 @@ const Navbar = () => {
           {/* 3D Futuristic Search bar */}
           <form
             onSubmit={handleSearch}
-            className="flex-1 flex items-stretch bg-gradient-to-r from-slate-800/80 to-slate-900/80 rounded-2xl overflow-hidden border border-slate-600/50 hover:border-cyan-400/50 shadow-[0_0_30px_rgba(34,211,238,0.15)] hover:shadow-[0_0_50px_rgba(34,211,238,0.3)] transition-all duration-300"
+            className="flex-1 flex items-stretch bg-slate-100 dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-700/50 hover:border-cyan-400/50 shadow-[0_0_30px_rgba(34,211,238,0.08)] hover:shadow-[0_0_50px_rgba(34,211,238,0.2)] transition-all duration-300"
           >
             {/* Left: search icon + input */}
             <div className="flex flex-1 items-center gap-3 px-4 sm:px-5">
-              <Search size={20} className="text-cyan-400 shrink-0 animate-pulse" />
+              <Search size={20} className="text-slate-400 dark:text-slate-500 shrink-0 animate-pulse" />
               <input
-                className="w-full bg-transparent outline-none placeholder-slate-500 text-sm text-slate-200"
+                className="w-full bg-transparent outline-none placeholder-slate-400 text-sm text-slate-700 dark:text-slate-200"
                 type="text"
                 placeholder="Search for products, brands and categories"
                 value={search}
@@ -395,15 +395,15 @@ const Navbar = () => {
 
             {/* Right: image search button - 3D */}
             <label
-              className={`hidden sm:inline-flex items-center gap-2 px-4 sm:px-5 border-l border-slate-700/50 cursor-pointer bg-gradient-to-r from-slate-800/60 to-slate-900/60 hover:from-cyan-600/40 hover:to-fuchsia-600/40 transition-all duration-300 ${
+              className={`hidden sm:inline-flex items-center gap-2 px-4 sm:px-5 border-l border-slate-200/70 dark:border-slate-700/50 cursor-pointer bg-slate-100/80 dark:bg-slate-900/80 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 hover:from-cyan-600/40 hover:to-fuchsia-600/40 transition-all duration-300 ${
                 imageSearching ? "opacity-50 cursor-wait" : ""
               } hover:scale-105 hover:shadow-[0_0_20px_rgba(232,121,249,0.3)]`}
             >
               <Camera
                 size={20}
-                className="text-fuchsia-400"
+                className="text-slate-400 dark:text-slate-500"
               />
-              <span className="hidden md:inline text-[11px] font-bold text-slate-300 group-hover:text-white">
+              <span className="hidden md:inline text-[11px] font-bold text-slate-500 dark:text-slate-300 group-hover:text-white">
                 Search by photo
               </span>
               <input
@@ -417,13 +417,13 @@ const Navbar = () => {
 
             {/* Mobile: icon-only image search */}
             <label
-              className={`sm:hidden inline-flex items-center justify-center px-3 border-l border-slate-700/50 cursor-pointer bg-gradient-to-r from-slate-800/60 to-slate-900/60 hover:from-cyan-600/40 hover:to-fuchsia-600/40 transition-all duration-300 ${
+              className={`sm:hidden inline-flex items-center justify-center px-3 border-l border-slate-200/70 dark:border-slate-700/50 cursor-pointer bg-slate-100/80 dark:bg-slate-900/80 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 hover:from-cyan-600/40 hover:to-fuchsia-600/40 transition-all duration-300 ${
                 imageSearching ? "opacity-50 cursor-wait" : ""
               } hover:scale-110`}
             >
               <Camera
                 size={20}
-                className="text-fuchsia-400"
+                className="text-slate-400 dark:text-slate-500"
               />
               <input
                 type="file"
@@ -436,10 +436,10 @@ const Navbar = () => {
           </form>
 
           {/* Account / cart / wishlist - 3D icons */}
-          <div className="hidden md:flex items-center gap-5 text-sm text-slate-300">
+          <div className="hidden md:flex items-center gap-5 text-sm text-slate-600 dark:text-slate-300">
             <Link
               href="/wishlist"
-              className="relative flex flex-col items-center gap-1 hover:text-fuchsia-400 transition-all duration-300 hover:scale-110 group"
+              className="relative flex flex-col items-center gap-1 hover:text-fuchsia-500 dark:hover:text-fuchsia-400 transition-all duration-300 hover:scale-110 group"
             >
               <div className="relative">
                 <HeartIcon size={22} className="group-hover:animate-pulse" />
@@ -455,7 +455,7 @@ const Navbar = () => {
 
             <Link
               href="/cart"
-              className="relative flex flex-col items-center gap-1 hover:text-cyan-400 transition-all duration-300 hover:scale-110 group"
+              className="relative flex flex-col items-center gap-1 hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-110 group"
             >
               <div className="relative">
                 <ShoppingCart size={22} className="group-hover:animate-pulse" />
@@ -504,7 +504,7 @@ const Navbar = () => {
             ) : (
               <button
                 onClick={openSignIn}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-fuchsia-600 text-white text-sm font-bold hover:from-cyan-500 hover:to-fuchsia-500 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] shadow-[0_4px_15px_rgba(0,0,0,0.3)]"
+                className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 text-white text-sm font-bold hover:bg-slate-800 dark:hover:bg-slate-700 hover:from-cyan-600 hover:to-fuchsia-600 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] shadow-[0_4px_15px_rgba(0,0,0,0.2)]"
               >
                 Sign in
               </button>
@@ -517,7 +517,7 @@ const Navbar = () => {
             {user && <NotificationBell />}
             <button
               onClick={() => setMobileOpen((v) => !v)}
-              className="p-2 rounded-xl bg-gradient-to-r from-slate-700 to-slate-800 text-slate-200 hover:from-cyan-600 hover:to-fuchsia-600 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_25px_rgba(34,211,238,0.4)] border border-slate-600/50"
+              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_25px_rgba(34,211,238,0.4)] border border-slate-200 dark:border-slate-700"
             >
               {mobileOpen ? <XIcon size={24} /> : <MenuIcon size={24} />}
             </button>
@@ -526,33 +526,33 @@ const Navbar = () => {
       </div>
 
       {/* Second row - 3D category shortcuts */}
-      <div className="hidden md:block border-t border-slate-700/50 bg-slate-900/60 dark:bg-slate-950/60 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
-        <div className="max-w-7xl mx-auto px-4 lg:px-10 flex items-center gap-6 h-12 text-xs font-bold text-slate-300 overflow-x-auto no-scrollbar">
-          <Link href="/shop?sort=promo" className="text-fuchsia-400 font-bold hover:scale-110 transition-all animate-pulse">
+      <div className="hidden md:block border-t border-slate-100 dark:border-slate-700/50 bg-slate-50/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
+        <div className="max-w-7xl mx-auto px-4 lg:px-10 flex items-center gap-6 h-12 text-xs font-bold text-slate-600 dark:text-slate-300 overflow-x-auto no-scrollbar">
+          <Link href="/shop?sort=promo" className="text-fuchsia-500 dark:text-fuchsia-400 font-bold hover:scale-110 transition-all animate-pulse">
             SALE
           </Link>
-          <Link href="/shop?origin=abroad" className="hover:text-cyan-400 transition-all duration-300 hover:scale-105">
+          <Link href="/shop?origin=abroad" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105">
             Shipped from abroad
           </Link>
-          <Link href="/shop?sort=popular" className="hover:text-fuchsia-400 transition-all duration-300 hover:scale-105">
+          <Link href="/shop?sort=popular" className="hover:text-fuchsia-500 dark:hover:text-fuchsia-400 transition-all duration-300 hover:scale-105">
             Best sellers
           </Link>
-          <Link href="/shop?sort=newest" className="hover:text-cyan-400 transition-all duration-300 hover:scale-105">
+          <Link href="/shop?sort=newest" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105">
             New arrivals
           </Link>
-          <Link href="/shop?category=Electronics" className="hover:text-cyan-400 transition-all duration-300 hover:scale-105">
+          <Link href="/shop?category=Electronics" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105">
             Electronics
           </Link>
-          <Link href="/shop?category=Clothing" className="hover:text-fuchsia-400 transition-all duration-300 hover:scale-105">
+          <Link href="/shop?category=Clothing" className="hover:text-fuchsia-500 dark:hover:text-fuchsia-400 transition-all duration-300 hover:scale-105">
             Fashion
           </Link>
-          <Link href="/shop?category=Home%20%26%20Garden" className="hover:text-amber-400 transition-all duration-300 hover:scale-105">
+          <Link href="/shop?category=Home%20%26%20Garden" className="hover:text-amber-500 dark:hover:text-amber-400 transition-all duration-300 hover:scale-105">
             Home & living
           </Link>
-          <Link href="/shop?category=Beauty%20%26%20Health" className="hover:text-violet-400 transition-all duration-300 hover:scale-105">
+          <Link href="/shop?category=Beauty%20%26%20Health" className="hover:text-violet-500 dark:hover:text-violet-400 transition-all duration-300 hover:scale-105">
             Beauty
           </Link>
-          <Link href="/create-store" className="ml-auto hover:text-cyan-400 transition-all duration-300 hover:scale-105">
+          <Link href="/create-store" className="ml-auto hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105">
             Sell on Shpinx
           </Link>
         </div>
@@ -566,12 +566,12 @@ const Navbar = () => {
         >
           <div className="flex">
             {/* Left narrow column with 3D categories */}
-            <div className="w-64 bg-gradient-to-b from-slate-900/95 to-slate-800/95 dark:from-slate-950/95 dark:to-slate-900/95 backdrop-blur-2xl border-r border-slate-700/50 shadow-[0_0_50px_rgba(34,211,238,0.2)]">
+            <div className="w-64 bg-white dark:bg-slate-950 border-r border-slate-100 dark:border-slate-700/50 shadow-xl dark:shadow-[0_0_50px_rgba(34,211,238,0.2)]">
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat.name}
                   onClick={() => goToCategory(cat.name)}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-slate-200 hover:bg-gradient-to-r hover:from-cyan-600/20 hover:to-fuchsia-600/20 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] border-l-2 border-transparent hover:border-cyan-400"
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900 hover:from-cyan-600/20 hover:to-fuchsia-600/20 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(34,211,238,0.15)] dark:hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] border-l-2 border-transparent hover:border-cyan-400"
                 >
                   <cat.icon size={18} className={`${cat.color} drop-shadow-[0_0_10px_currentColor]`} />
                   <span className="font-medium">{cat.name}</span>
@@ -580,8 +580,8 @@ const Navbar = () => {
             </div>
 
             {/* Right panel - 3D quick links */}
-            <div className="w-[420px] bg-gradient-to-b from-slate-800/90 to-slate-900/90 dark:from-slate-900/90 dark:to-slate-950/90 backdrop-blur-2xl shadow-[0_0_50px_rgba(232,121,249,0.2)] border border-l-0 border-slate-700/50 p-5">
-              <p className="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-3 flex items-center gap-2">
+            <div className="w-[420px] bg-slate-50 dark:bg-slate-900 shadow-xl dark:shadow-[0_0_50px_rgba(232,121,249,0.2)] border border-l-0 border-slate-100 dark:border-slate-700/50 p-5">
+              <p className="text-xs font-bold uppercase tracking-wider text-cyan-500 dark:text-cyan-400 mb-3 flex items-center gap-2">
                 <SparklesIcon size={14} />
                 Quick links
               </p>
@@ -591,7 +591,7 @@ const Navbar = () => {
                     key={link.href}
                     href={link.href}
                     onClick={() => setCatalogOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gradient-to-r hover:from-cyan-600/20 hover:to-fuchsia-600/20 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] text-sm text-slate-300 hover:text-white"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 hover:from-cyan-600/20 hover:to-fuchsia-600/20 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(34,211,238,0.15)] dark:hover:shadow-[0_0_15px_rgba(34,211,238,0.25)] text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                   >
                     <span className="text-lg">{link.emoji}</span>
                     <span className="font-medium">{link.label}</span>
@@ -624,17 +624,17 @@ const Navbar = () => {
       {mobileOpen && (
         <div
           ref={mobileRef}
-          className="md:hidden absolute top-full left-0 right-0 bg-gradient-to-b from-slate-900/98 to-slate-800/98 dark:from-slate-950/98 dark:to-slate-900/98 backdrop-blur-2xl border-t border-slate-700/50 shadow-[0_0_50px_rgba(34,211,238,0.2)] z-40 max-h-[85vh] overflow-y-auto"
+          className="md:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-950 shadow-xl border-t border-slate-100 dark:border-slate-700/50 shadow-[0_0_50px_rgba(34,211,238,0.1)] dark:shadow-[0_0_50px_rgba(34,211,238,0.2)] z-40 max-h-[85vh] overflow-y-auto"
         >
           <div className="p-5 space-y-5">
             {/* Mobile search */}
             <form
               onSubmit={handleSearch}
-              className="flex items-center gap-2 bg-gradient-to-r from-slate-800/80 to-slate-900/80 px-4 py-3 rounded-full border border-slate-600/50 hover:border-cyan-400/50 shadow-[0_0_20px_rgba(34,211,238,0.1)]"
+              className="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-3 rounded-full border border-slate-200 dark:border-slate-700/50 hover:border-cyan-400/50 shadow-[0_0_20px_rgba(34,211,238,0.08)]"
             >
-              <Search size={18} className="text-cyan-400 shrink-0 animate-pulse" />
+              <Search size={18} className="text-slate-400 dark:text-slate-500 shrink-0 animate-pulse" />
               <input
-                className="w-full bg-transparent outline-none placeholder-slate-500 text-sm text-slate-200"
+                className="w-full bg-transparent outline-none placeholder-slate-400 text-sm text-slate-700 dark:text-slate-200"
                 type="text"
                 placeholder="Search on Shpinx"
                 value={search}
@@ -655,7 +655,7 @@ const Navbar = () => {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="relative flex flex-col items-center gap-2 p-4 bg-gradient-to-b from-slate-800/60 to-slate-900/60 rounded-2xl text-slate-300 hover:from-cyan-600/20 hover:to-fuchsia-600/20 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] border border-slate-700/50"
+                  className="relative flex flex-col items-center gap-2 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:from-cyan-600/20 hover:to-fuchsia-600/20 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] border border-slate-200 dark:border-slate-700/50"
                 >
                   <item.icon size={20} className="hover:animate-pulse" />
                   <span className="font-medium">{item.label}</span>
@@ -670,7 +670,7 @@ const Navbar = () => {
 
             {/* Categories list - 3D mobile */}
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-3 flex items-center gap-2">
+              <p className="text-xs font-bold uppercase tracking-wider text-cyan-500 dark:text-cyan-400 mb-3 flex items-center gap-2">
                 <GridIcon size={14} />
                 Categories
               </p>
@@ -679,12 +679,12 @@ const Navbar = () => {
                   <button
                     key={cat.name}
                     onClick={() => goToCategory(cat.name)}
-                    className="flex items-center gap-2 p-3 rounded-xl bg-gradient-to-b from-slate-800/60 to-slate-900/60 hover:from-cyan-600/20 hover:to-fuchsia-600/20 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] border border-slate-700/50 text-left"
+                    className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 hover:from-cyan-600/20 hover:to-fuchsia-600/20 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(34,211,238,0.15)] dark:hover:shadow-[0_0_15px_rgba(34,211,238,0.25)] border border-slate-200 dark:border-slate-700/50 text-left"
                   >
-                    <div className="p-1.5 rounded-lg bg-slate-800/80">
+                    <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800">
                       <cat.icon size={16} className={cat.color} />
                     </div>
-                    <span className="text-xs font-bold text-slate-200">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-200">
                       {cat.name}
                     </span>
                   </button>
@@ -699,7 +699,7 @@ const Navbar = () => {
                   openSignIn();
                   setMobileOpen(false);
                 }}
-                className="w-full py-3 bg-gradient-to-r from-cyan-600 to-fuchsia-600 hover:from-cyan-500 hover:to-fuchsia-500 text-white rounded-xl text-sm font-bold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] shadow-[0_4px_15px_rgba(0,0,0,0.3)]"
+                className="w-full py-3 bg-slate-900 dark:bg-slate-800 text-white text-sm font-bold hover:bg-slate-800 dark:hover:bg-slate-700 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] shadow-[0_4px_15px_rgba(0,0,0,0.2)]"
               >
                 Login / Sign up
               </button>
@@ -733,18 +733,18 @@ const Navbar = () => {
                     />
                   </UserButton.MenuItems>
                 </UserButton>
-                <p className="text-sm text-slate-300 font-medium">
+                <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">
                   Hi, {user.firstName || "there"}!
                 </p>
               </div>
             )}
 
             {/* Sell CTA - 3D */}
-            <div className="p-5 bg-gradient-to-b from-slate-800/60 to-slate-900/60 rounded-2xl border border-slate-700/50 text-sm shadow-[0_0_30px_rgba(167,139,250,0.2)]">
-              <p className="font-bold text-lg text-white flex items-center gap-2">
+            <div className="p-5 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700/50 text-sm shadow-[0_0_30px_rgba(167,139,250,0.1)] dark:shadow-[0_0_30px_rgba(167,139,250,0.2)]">
+              <p className="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
                 🚀 Sell on Shpinx
               </p>
-              <p className="text-xs text-slate-400 mt-2 mb-3">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 mb-3">
                 List your products and reach buyers nationwide.
               </p>
               <Link
