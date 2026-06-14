@@ -108,14 +108,14 @@ function useInfiniteCarousel(length, intervalMs) {
   return [index, goTo, handleTransitionEnd, animating];
 }
 
-/** Darkening overlay on promo background — variant presets from admin. */
+/** Futuristic 3D overlay gradients */
 const PROMO_BG_OVERLAY = {
   light:
-    "bg-gradient-to-t from-black/70 via-black/40 to-black/25",
+    "bg-gradient-to-t from-cyan-950/90 via-cyan-900/60 to-cyan-800/40 mix-blend-screen",
   medium:
-    "bg-gradient-to-t from-black/75 via-black/50 to-black/30",
+    "bg-gradient-to-t from-violet-950/95 via-violet-900/70 to-violet-800/50 mix-blend-screen",
   dark:
-    "bg-gradient-to-t from-black/85 via-black/65 to-black/40",
+    "bg-gradient-to-br from-indigo-950/98 via-purple-900/80 to-cyan-900/60 mix-blend-screen",
 };
 
 const Hero = () => {
@@ -224,8 +224,6 @@ const Hero = () => {
         { label: "Computers", href: "/shop?category=computers" },
         { label: "Smartphones", href: "/shop?category=smartphones" },
       ],
-      // middleBanners stays defined here if you still want the data,
-      // but it will no longer be rendered inside Hero
       middleBanners: [
         {
           id: 1,
@@ -322,23 +320,29 @@ const Hero = () => {
   const [p2i, setP2i] = useFiniteCarousel(promo2Slides.length, 5500);
 
   return (
-    <section className="mx-3 sm:mx-4 md:mx-6">
+    <section className="mx-3 sm:mx-4 md:mx-6 relative">
+      {/* Futuristic background glow */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      </div>
+
       {/* Top info / quick filters bar */}
       <div className="mx-auto flex max-w-7xl flex-col gap-3 pt-3 text-xs sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-2 text-slate-700 dark:text-slate-200">
-          <span className="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white dark:bg-slate-100 dark:text-slate-900">
+        <div className="flex flex-wrap items-center gap-2 text-cyan-100">
+          <span className="rounded-full bg-cyan-900/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-cyan-300 border border-cyan-500/30 shadow-lg shadow-cyan-500/20">
             Shpinx Marketplace
           </span>
-          <span className="text-[11px] sm:text-xs">
+          <span className="text-[11px] sm:text-xs text-cyan-200/80">
             SME focused electronics hub • Nationwide delivery
           </span>
         </div>
-        <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600 dark:text-slate-300">
+        <div className="flex flex-wrap items-center gap-2 text-[11px] text-cyan-200/70">
           {defaults.quickFilters.map((q) => (
             <Link
               key={q.label}
               href={q.href}
-              className="rounded-full border border-slate-200 px-2.5 py-1 transition hover:border-slate-900 hover:bg-slate-900 hover:text-white dark:border-slate-700 dark:hover:border-slate-100 dark:hover:bg-slate-100 dark:hover.text-slate-900"
+              className="rounded-full border border-cyan-500/30 px-2.5 py-1 transition hover:border-cyan-400 hover:bg-cyan-900/50 hover:text-cyan-300 hover:shadow-lg hover:shadow-cyan-500/20 dark:border-cyan-400/30 dark:hover:border-cyan-300 dark:hover:bg-cyan-800/40"
             >
               {q.label}
             </Link>
@@ -349,7 +353,10 @@ const Hero = () => {
       {/* Main hero grid */}
       <div className="mx-auto mt-4 flex max-w-7xl gap-4 lg:gap-6 xl:gap-8 max-xl:flex-col">
         {/* Hero left (infinite main slider) */}
-        <div className="group relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-gradient-to-br from-slate-200 via-slate-300 to-slate-400 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 shadow-sm">
+        <div className="group relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 shadow-2xl shadow-cyan-500/10 border border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300">
+          {/* 3D depth effect */}
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-violet-500/5" />
+          
           <div
             className={`flex h-full transition-transform duration-500 ease-out ${
               animating ? "" : "transition-none"
@@ -369,29 +376,30 @@ const Hero = () => {
                   src={slide.image}
                   alt={slide.title || "Featured promo"}
                   fill
-                  className="object-cover object-center"
+                  className="object-cover object-center opacity-90"
                   sizes="(max-width: 1280px) 100vw, min(896px, 100vw)"
                   priority={idx === 0}
                 />
                 <div
-                  className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/35"
+                  className="absolute inset-0 bg-gradient-to-r from-cyan-950/95 via-cyan-900/70 to-violet-900/50"
                   aria-hidden
                 />
+                {/* 3D glow overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 via-transparent to-violet-500/10" aria-hidden />
+                
                 <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-6 lg:p-10">
                   {/* Top badge row */}
                   <div className="flex flex-wrap items-center gap-2">
                     {(slide.badgeText || slide.badgeLabel) && (
-                      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[11px] text-gray-50 backdrop-blur-sm sm:text-xs">
+                      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-cyan-400/40 bg-cyan-950/60 px-3 py-1 text-[11px] text-cyan-200 backdrop-blur-md shadow-lg shadow-cyan-500/20">
                         {slide.badgeLabel && (
-                          <span className="rounded-full bg-white/25 px-3 py-0.5 text-[10px] font-semibold.uppercase tracking-wide text-white">
+                          <span className="rounded-full bg-cyan-500/80 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow-lg shadow-cyan-400/40">
                             {slide.badgeLabel}
                           </span>
                         )}
-                        <span className="line-clamp-1">
-                          {slide.badgeText}
-                        </span>
+                        <span className="line-clamp-1">{slide.badgeText}</span>
                         <ChevronRightIcon
-                          className="hidden shrink-0 text-white/80 transition-all group-hover:translate-x-0.5 sm:block"
+                          className="hidden shrink-0 text-cyan-300/80 transition-all group-hover:translate-x-0.5 sm:block"
                           size={14}
                         />
                       </div>
@@ -401,21 +409,21 @@ const Hero = () => {
                   {/* Main content */}
                   <div className="mt-6 max-w-xl">
                     {slide.title && (
-                      <h1 className="text-balance text-2xl font-semibold leading-tight text-white drop-shadow-md sm:text-3xl md:text-4xl lg:text-[2.5rem]">
+                      <h1 className="text-balance text-2xl font-semibold leading-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] sm:text-3xl md:text-4xl lg:text-[2.5rem] bg-gradient-to-r from-white via-cyan-100 to-violet-100 bg-clip-text">
                         {slide.title}
                       </h1>
                     )}
                     {(slide.line1 || slide.line2) && (
-                      <div className="mt-3 space-y-1 text-xs font-medium text-white/90 drop-shadow sm:mt-4 sm:text-sm">
+                      <div className="mt-3 space-y-1 text-xs font-medium text-cyan-100/90 drop-shadow sm:mt-4 sm:text-sm">
                         {slide.line1 && <p>{slide.line1}</p>}
                         {slide.line2 && <p>{slide.line2}</p>}
                       </div>
                     )}
                     {(slide.price || slide.priceLabel) && (
-                      <div className="mt-4 flex flex-wrap items-baseline gap-2 text-xs text-white/95 drop-shadow sm:mt-6 sm:text-sm">
+                      <div className="mt-4 flex flex-wrap items-baseline gap-2 text-xs text-cyan-100/95 drop-shadow sm:mt-6 sm:text-sm">
                         {slide.priceLabel && <p>{slide.priceLabel}</p>}
                         {slide.price && (
-                          <p className="text-2xl font-semibold text-white sm:text-3xl">
+                          <p className="text-2xl font-semibold text-cyan-300 sm:text-3xl shadow-lg shadow-cyan-400/30">
                             {slide.price}
                           </p>
                         )}
@@ -425,7 +433,7 @@ const Hero = () => {
                       {slide.cta && slide.href && (
                         <Link
                           href={slide.href}
-                          className="inline-flex items-center justify-center rounded-full bg-white px-6 py-2 text-xs font-semibold text-slate-900 shadow-lg transition hover:scale-[1.02] hover:bg-white/95 active:scale-95 sm:px-8 sm:py-3 sm:text-sm"
+                          className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 px-6 py-2 text-xs font-semibold text-white shadow-xl shadow-cyan-500/40 transition hover:scale-[1.02] hover:shadow-cyan-500/60 active:scale-95 sm:px-8 sm:py-3 sm:text-sm border border-cyan-400/30"
                         >
                           {slide.cta}
                           <ArrowRightIcon
@@ -436,7 +444,7 @@ const Hero = () => {
                       )}
                       <Link
                         href="/shop?tag=offers"
-                        className="inline-flex items-center text-[11px] font-medium text-white/90 underline-offset-2 hover:underline sm:text-xs"
+                        className="inline-flex items-center text-[11px] font-medium text-cyan-200/80 underline-offset-2 hover:underline hover:text-cyan-300 sm:text-xs"
                       >
                         View all offers
                         <ChevronRightIcon size={14} className="ml-1" />
@@ -446,10 +454,10 @@ const Hero = () => {
 
                   {/* Bottom indicator row */}
                   {featuredSlides.length > 1 && (
-                    <div className="mt-4 flex items-center justify-between text-[11px] text-white/80">
+                    <div className="mt-4 flex items-center justify-between text-[11px] text-cyan-200/70">
                       <div className="flex items-center gap-1">
-                        <span>{fi + 1}</span>
-                        <span className="text-white/60">
+                        <span className="text-cyan-300">{fi + 1}</span>
+                        <span className="text-cyan-200/50">
                           / {featuredSlides.length}
                         </span>
                       </div>
@@ -460,8 +468,8 @@ const Hero = () => {
                             type="button"
                             aria-label={`Go to slide ${i + 1}`}
                             onClick={() => setFi(i)}
-                            className={`h-1.5 rounded-full transition-all ${
-                              i === fi ? "w-5 bg-white" : "w-2 bg-white/40"
+                            className={`h-1.5 rounded-full transition-all shadow-lg ${
+                              i === fi ? "w-5 bg-gradient-to-r from-cyan-400 to-violet-400 shadow-cyan-400/50" : "w-2 bg-cyan-400/30 hover:bg-cyan-400/50"
                             }`}
                           />
                         ))}
@@ -485,7 +493,7 @@ const Hero = () => {
                       : fi - 1
                   )
                 }
-                className="absolute left-2 top-1/2 z-20.hidden -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-800 shadow hover:bg-white lg:flex dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-900"
+                className="absolute left-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-gradient-to-br from-cyan-500/90 to-violet-500/90 p-2 text-white shadow-xl shadow-cyan-500/40 hover:from-cyan-400 hover:to-violet-400 lg:flex border border-cyan-400/30"
               >
                 <ChevronLeftIcon size={18} />
               </button>
@@ -495,7 +503,7 @@ const Hero = () => {
                 onClick={() =>
                   setFi((fi + 1) % featuredSlides.length)
                 }
-                className="absolute right-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-white/90 p-2 text-slate-800 shadow hover:bg-white lg:flex dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-900"
+                className="absolute right-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-gradient-to-br from-cyan-500/90 to-violet-500/90 p-2 text-white shadow-xl shadow-cyan-500/40 hover:from-cyan-400 hover:to-violet-400 lg:flex border border-cyan-400/30"
               >
                 <ChevronRightIcon size={18} />
               </button>
@@ -527,17 +535,17 @@ const Hero = () => {
           <Link
             key={p.label}
             href={p.href}
-            className="group flex items-center.justify-between gap-2 rounded-2xl bg.white px-3 py-2 text-slate-800 shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-900 hover:text-white hover:ring-slate-900 dark:bg-slate-900 dark:text-slate-100 dark:ring-slate-800 dark:hover:bg-slate-100 dark:hover:text-slate-900 dark:hover:ring-slate-100"
+            className="group flex items-center justify-between gap-2 rounded-2xl bg-gradient-to-br from-cyan-900/40 to-violet-900/40 px-3 py-2 text-cyan-100 shadow-lg shadow-cyan-500/10 transition hover:from-cyan-800/50 hover:to-violet-800/50 hover:text-cyan-200 hover:shadow-xl hover:shadow-cyan-500/20 hover:-translate-y-0.5 border border-cyan-500/20 dark:border-cyan-400/20"
           >
             <div className="flex flex-col">
-              <span className="font-semibold">{p.label}</span>
-              <span className="text-[10px] text-slate-500 group-hover:text-slate-100 dark:text-slate-400 dark:group-hover:text-slate-700">
+              <span className="font-semibold text-cyan-200">{p.label}</span>
+              <span className="text-[10px] text-cyan-200/60 group-hover:text-cyan-200/80">
                 {p.desc}
               </span>
             </div>
             <ArrowRightIcon
               size={16}
-              className="shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-white dark:text-slate-500 dark:group-hover:text-slate-800"
+              className="shrink-0 text-cyan-300/60 transition-transform group-hover:translate-x-0.5 group-hover:text-cyan-200"
             />
           </Link>
         ))}
@@ -570,7 +578,10 @@ function PromoCarousel({ slides, index, setIndex }) {
   const currentSlide = slides[index];
 
   return (
-    <aside className="relative flex w-full.flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-slate-200 shadow-sm dark:bg-slate-900">
+    <aside className="relative flex w-full flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 shadow-xl shadow-cyan-500/10 border border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300">
+      {/* 3D depth effect */}
+      <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/5 via-transparent to-violet-500/5" />
+      
       <Link
         href={currentSlide.href || "/shop"}
         className="group relative block min-h-[180px] w-full"
@@ -580,12 +591,12 @@ function PromoCarousel({ slides, index, setIndex }) {
             src={currentSlide.image}
             alt={currentSlide.title || "Promo"}
             fill
-            className="object-cover object-center"
+            className="object-cover object-center opacity-85"
             sizes="(max-width: 1280px) 100vw, 380px"
           />
         ) : (
           <div
-            className="absolute inset-0 bg-slate-400 dark:bg-slate-700"
+            className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800"
             aria-hidden
           />
         )}
@@ -596,17 +607,20 @@ function PromoCarousel({ slides, index, setIndex }) {
           }`}
           aria-hidden
         />
+        {/* 3D glow */}
+        <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 via-transparent to-violet-500/10" aria-hidden />
+        
         <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-5">
           <div className="flex flex-col gap-1">
-            <p className="max-w-[14rem] text-base font-semibold leading-tight text-white drop-shadow-md sm:text-lg">
+            <p className="max-w-[14rem] text-base font-semibold leading-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] sm:text-lg bg-gradient-to-r from-white via-cyan-100 to-violet-100 bg-clip-text">
               {currentSlide.title || "Offers"}
             </p>
-            <p className="text-[11px] text-white/85 sm:text-xs">
+            <p className="text-[11px] text-cyan-100/85 sm:text-xs">
               {currentSlide.subtitle ||
                 "View more electronics deals today"}
             </p>
           </div>
-          <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-white/95 drop-shadow sm:text-xs">
+          <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-cyan-200/95 drop-shadow sm:text-xs">
             View more
             <ArrowRightIcon
               className="shrink-0 transition-transform group-hover:translate-x-0.5"
@@ -624,7 +638,7 @@ function PromoCarousel({ slides, index, setIndex }) {
               e.preventDefault();
               handlePrev();
             }}
-            className="pointer-events-auto rounded-full bg-black/25 p-1 text-white shadow hover:bg-black/40"
+            className="pointer-events-auto rounded-full bg-gradient-to-br from-cyan-600/80 to-violet-600/80 p-1 text-white shadow-lg shadow-cyan-500/30 hover:from-cyan-500 hover:to-violet-500 border border-cyan-400/30"
           >
             <ChevronLeftIcon size={16} />
           </button>
@@ -635,7 +649,7 @@ function PromoCarousel({ slides, index, setIndex }) {
               e.preventDefault();
               handleNext();
             }}
-            className="pointer-events-auto rounded-full bg-black/25 p-1 text-white shadow hover:bg-black/40"
+            className="pointer-events-auto rounded-full bg-gradient-to-br from-cyan-600/80 to-violet-600/80 p-1 text-white shadow-lg shadow-cyan-500/30 hover:from-cyan-500 hover:to-violet-500 border border-cyan-400/30"
           >
             <ChevronRightIcon size={16} />
           </button>
@@ -650,24 +664,24 @@ function VerifiedStoresSection({ stores, currency }) {
   if (!stores || stores.length === 0) return null;
 
   return (
-    <div className="mx-auto mt-6 max-w-7xl rounded-3xl bg-slate-50 px-3 py-3 text-[11px] shadow-sm ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-800 sm:px-4 sm:py-4 sm:text-xs">
+    <div className="mx-auto mt-6 max-w-7xl rounded-3xl bg-gradient-to-br from-cyan-900/20 via-slate-900/40 to-violet-900/20 px-3 py-3 text-[11px] shadow-xl shadow-cyan-500/10 ring-1 ring-cyan-500/20 dark:ring-cyan-400/20 sm:px-4 sm:py-4 sm:text-xs">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900">
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-cyan-600 to-violet-600 text-white shadow-lg shadow-cyan-500/40">
             <ShieldCheckIcon size={16} />
           </span>
           <div>
-            <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+            <p className="text-xs font-semibold text-cyan-100">
               Verified stores
             </p>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400">
+            <p className="text-[10px] text-cyan-200/60">
               Curated stores with strict quality, logistics and payment checks
             </p>
           </div>
         </div>
         <Link
           href="/vendors/verified"
-          className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-3 py-1 text-[10px] font-semibold text-slate-800 transition hover:border-slate-900 hover:bg-slate-900 hover:text-white dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-100 dark:hover:bg-slate-100 dark:hover:text-slate-900"
+          className="inline-flex items-center gap-1 rounded-full border border-cyan-500/30 px-3 py-1 text-[10px] font-semibold text-cyan-200 transition hover:border-cyan-400 hover:bg-cyan-900/40 hover:text-cyan-100 hover:shadow-lg hover:shadow-cyan-500/20"
         >
           Join as a verified store
           <ArrowRightIcon size={14} />
@@ -678,21 +692,21 @@ function VerifiedStoresSection({ stores, currency }) {
           <Link
             key={v.id}
             href={v.href}
-            className="group flex flex-col justify-between rounded-2xl bg-white p-3 text-slate-800 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:ring-slate-900 dark:bg-slate-950 dark:text-slate-100 dark:ring-slate-800 dark:hover:ring-slate-100"
+            className="group flex flex-col justify-between rounded-2xl bg-gradient-to-br from-cyan-900/30 to-violet-900/20 p-3 text-cyan-100 shadow-lg shadow-cyan-500/10 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-cyan-500/20 ring-1 ring-cyan-500/20 hover:ring-cyan-400/40"
           >
             <div className="flex items-center justify-between gap-1">
-              <p className="line-clamp-1 text-[11px] font-semibold sm:text-xs">
+              <p className="line-clamp-1 text-[11px] font-semibold sm:text-xs text-cyan-200">
                 {v.name}
               </p>
-              <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-semibold text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200">
+              <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-900/60 px-2 py-0.5 text-[9px] font-semibold text-emerald-300 border border-emerald-500/30">
                 <ShieldCheckIcon size={11} />
                 Verified
               </span>
             </div>
-            <p className="mt-1 line-clamp-1 text-[10px] text-slate-500 dark:text-slate-400">
+            <p className="mt-1 line-clamp-1 text-[10px] text-cyan-200/60">
               {v.tag}
             </p>
-            <div className="mt-2 flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-300">
+            <div className="mt-2 flex items-center justify-between text-[10px] text-cyan-200/70">
               <span className="inline-flex items-center gap-0.5">
                 <StarIcon
                   size={12}
