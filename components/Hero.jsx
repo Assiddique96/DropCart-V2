@@ -326,13 +326,7 @@ const Hero = () => {
   const [p2i, setP2i] = useFiniteCarousel(promo2Slides.length, 5500);
 
   return (
-    <section className="mx-3 sm:mx-4 md:mx-6 relative">
-      {/* Futuristic background glow - neutral dark and light variants */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-slate-500/10 dark:bg-slate-400/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-slate-600/10 dark:bg-slate-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-      </div>
-
+    <section className="mx-3 sm:mx-4 md:mx-6">
       {/* Top info / quick filters bar */}
       <div className="mx-auto flex max-w-7xl flex-col gap-3 pt-3 text-xs sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2 text-slate-700 dark:text-slate-200">
