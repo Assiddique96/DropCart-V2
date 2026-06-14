@@ -332,7 +332,7 @@ const Navbar = () => {
       {/* Main bar - 3D futuristic design with light/dark support */}
       <div className="px-4 lg:px-10 py-4 bg-white dark:bg-slate-950">
         <div className="max-w-7xl mx-auto flex items-center gap-4 md:gap-6">
-          {/* 3D Logo with glow */}
+          {/* 3D Logo with glow - ORIGINAL COLORS KEPT */}
           <Link
             href="/"
             className="relative flex items-center gap-3 shrink-0 group hover:scale-105 transition-all duration-300"
@@ -349,8 +349,9 @@ const Navbar = () => {
               <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400/20 to-fuchsia-400/20 animate-pulse" />
             </div>
             <div className="hidden sm:block leading-tight">
-              <span className="text-4xl font-bold bg-gradient-to-r from-cyan-500 via-fuchsia-500 to-cyan-500 dark:from-cyan-400 dark:via-fuchsia-400 dark:to-cyan-400 bg-clip-text text-transparent group-hover:animate-pulse">
-                Shp<span className="text-fuchsia-500 dark:text-fuchsia-400">inx</span>
+              {/* Original color scheme: text-slate-700 for "Shp", text-slate-400 for "inx" */}
+              <span className="text-4xl font-semibold text-slate-700 dark:text-slate-100 group-hover:text-slate-800 dark:group-hover:text-white transition-colors">
+                Shp<span className="text-slate-400 dark:text-slate-400">inx</span>
               </span>
               <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors">
                 Nigeria&apos;s marketplace
