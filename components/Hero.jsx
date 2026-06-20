@@ -16,8 +16,10 @@ import CategoriesMarquee from "./CategoriesMarquee";
 
 function isValidImageSrc(src) {
   if (src == null) return false;
+  // Imported assets or StaticImageData will be objects
+  if (typeof src === "object") return true;
   if (typeof src === "string") return src.trim() !== "";
-  return true;
+  return false;
 }
 
 /** Primary image of the product with the highest average rating (tie-break: more reviews). */
@@ -137,7 +139,6 @@ const Hero = () => {
     [products]
   );
 
-  // Fake store data – later you can fetch from /api/stores or Redux
   const verifiedStores = useMemo(
     () => [
       {
@@ -354,9 +355,9 @@ const Hero = () => {
       <div className="mx-auto mt-4 flex max-w-7xl gap-4 lg:gap-6 xl:gap-8 max-xl:flex-col">
         {/* Hero left (infinite main slider) */}
         <div className="group relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-gradient-to-br from-slate-200 via-slate-300 to-slate-400 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300">
-          {/* 3D depth effect - dark and light variants */}
+          {/* 3D depth effect */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-500 via-transparent to-slate-600 dark:from-slate-400 dark:via-transparent dark:to-slate-500" />
-          
+
           <div
             className={`flex h-full transition-transform duration-500 ease-out ${
               animating ? "" : "transition-none"
@@ -372,21 +373,31 @@ const Hero = () => {
                 key={idx}
                 className="relative min-h-[320px] w-full min-w-full shrink-0 sm:min-h-[360px] lg:min-h-[420px]"
               >
-                <Image
-                  src={slide.image}
-                  alt={slide.title || "Featured promo"}
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 1280px) 100vw, min(896px, 100vw)"
-                  priority={idx === 0}
-                />
+                {isValidImageSrc(slide.image) ? (
+                  <Image
+                    src={slide.image}
+                    alt={slide.title || "Featured promo"}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 1280px) 100vw, min(896px, 100vw)"
+                    priority={idx === 0}
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0 bg-gradient-to-br from-slate-400 via-slate-500 to-slate-600 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
+                    aria-hidden
+                  />
+                )}
+
                 <div
                   className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800"
                   aria-hidden
                 />
-                {/* 3D glow overlay - dark and light variants */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-500 via-transparent to-slate-600 dark:from-slate-400 dark:via-transparent dark:to-slate-500" aria-hidden />
-                
+                <div
+                  className="absolute inset-0 bg-gradient-to-t from-slate-500 via-transparent to-slate-600 dark:from-slate-400 dark:via-transparent dark:to-slate-500"
+                  aria-hidden
+                />
+
                 <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-6 lg:p-10">
                   {/* Top badge row */}
                   <div className="flex flex-wrap items-center gap-2">
@@ -436,10 +447,7 @@ const Hero = () => {
                           className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-slate-700 to-slate-800 dark:from-slate-600 dark:to-slate-700 px-6 py-2 text-xs font-semibold text-white transition hover:scale-[1.02] active:scale-95 sm:px-8 sm:py-3 sm:text-sm border border-slate-600 dark:border-slate-500"
                         >
                           {slide.cta}
-                          <ArrowRightIcon
-                            size={18}
-                            className="ml-1.5"
-                          />
+                          <ArrowRightIcon size={18} className="ml-1.5" />
                         </Link>
                       )}
                       <Link
@@ -469,7 +477,9 @@ const Hero = () => {
                             aria-label={`Go to slide ${i + 1}`}
                             onClick={() => setFi(i)}
                             className={`h-1.5 rounded-full transition-all ${
-                              i === fi ? "w-5 bg-gradient-to-r from-slate-600 to-slate-700 dark:from-slate-400 dark:to-slate-500" : "w-2 bg-slate-600 dark:bg-slate-400 hover:bg-slate-500 dark:hover:bg-slate-300"
+                              i === fi
+                                ? "w-5 bg-gradient-to-r from-slate-600 to-slate-700 dark:from-slate-400 dark:to-slate-500"
+                                : "w-2 bg-slate-600 dark:bg-slate-400 hover:bg-slate-500 dark:hover:bg-slate-300"
                             }`}
                           />
                         ))}
@@ -488,9 +498,7 @@ const Hero = () => {
                 aria-label="Previous slide"
                 onClick={() =>
                   setFi(
-                    fi - 1 < 0
-                      ? featuredSlides.length - 1
-                      : fi - 1
+                    fi - 1 < 0 ? featuredSlides.length - 1 : fi - 1
                   )
                 }
                 className="absolute left-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 dark:from-slate-600 dark:to-slate-700 p-2 text-white hover:from-slate-600 hover:to-slate-700 dark:hover:from-slate-500 dark:hover:to-slate-600 lg:flex border border-slate-600 dark:border-slate-500"
@@ -538,7 +546,9 @@ const Hero = () => {
             className="group flex items-center justify-between gap-2 rounded-2xl bg-white dark:bg-gradient-to-br dark:from-slate-800 dark:to-slate-700 px-3 py-2 text-slate-800 dark:text-slate-200 transition hover:bg-slate-50 dark:hover:from-slate-700 dark:hover:to-slate-600 hover:text-slate-900 dark:hover:text-slate-100 hover:-translate-y-0.5 border border-slate-200 dark:border-slate-600 dark:hover:border-slate-500"
           >
             <div className="flex flex-col">
-              <span className="font-semibold text-slate-800 dark:text-slate-200">{p.label}</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">
+                {p.label}
+              </span>
               <span className="text-[10px] text-slate-500 dark:text-slate-300 group-hover:text-slate-600 dark:group-hover:text-slate-200">
                 {p.desc}
               </span>
@@ -579,9 +589,9 @@ function PromoCarousel({ slides, index, setIndex }) {
 
   return (
     <aside className="relative flex w-full flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-slate-200 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300">
-      {/* 3D depth effect - dark and light variants */}
+      {/* 3D depth effect */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-500 via-transparent to-slate-600 dark:from-slate-400 dark:via-transparent dark:to-slate-500" />
-      
+
       <Link
         href={currentSlide.href || "/shop"}
         className="group relative block min-h-[180px] w-full"
@@ -596,10 +606,11 @@ function PromoCarousel({ slides, index, setIndex }) {
           />
         ) : (
           <div
-            className="absolute inset-0 bg-gradient-to-br from-slate-400 dark:bg-gradient-to-br dark:from-slate-700 dark:to-slate-800"
+            className="absolute inset-0 bg-gradient-to-br from-slate-400 via-slate-500 to-slate-600 dark:from-slate-700 dark:via-slate-800 dark:to-slate-900"
             aria-hidden
           />
         )}
+
         <div
           className={`absolute inset-0 ${
             PROMO_BG_OVERLAY[currentSlide.variant]?.dark ||
@@ -607,9 +618,11 @@ function PromoCarousel({ slides, index, setIndex }) {
           }`}
           aria-hidden
         />
-        {/* 3D glow - dark and light variants */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-500 via-transparent to-slate-600 dark:from-slate-400 dark:via-transparent dark:to-slate-500" aria-hidden />
-        
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-slate-500 via-transparent to-slate-600 dark:from-slate-400 dark:via-transparent dark:to-slate-500"
+          aria-hidden
+        />
+
         <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-5">
           <div className="flex flex-col gap-1">
             <p className="max-w-[14rem] text-base font-semibold leading-tight text-white sm:text-lg bg-gradient-to-r from-white via-slate-100 to-slate-200 bg-clip-text">
@@ -660,7 +673,7 @@ function PromoCarousel({ slides, index, setIndex }) {
 }
 
 /** Verified stores strip */
-function VerifiedStoresSection({ stores, currency }) {
+function VerifiedStoresSection({ stores }) {
   if (!stores || stores.length === 0) return null;
 
   return (
@@ -708,11 +721,7 @@ function VerifiedStoresSection({ stores, currency }) {
             </p>
             <div className="mt-2 flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-300">
               <span className="inline-flex items-center gap-0.5">
-                <StarIcon
-                  size={12}
-                  className="text-amber-400"
-                  aria-hidden
-                />
+                <StarIcon size={12} className="text-amber-400" aria-hidden />
                 <span>{v.rating.toFixed(1)}</span>
               </span>
               <span>{v.orders} orders</span>
