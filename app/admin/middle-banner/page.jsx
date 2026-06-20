@@ -38,7 +38,10 @@ export default function MiddleBannerAdminPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          position: Number(form.position),
+        }),
       });
 
       const data = await res.json();
