@@ -120,12 +120,12 @@ const Hero = () => {
   const router = useRouter();
 
   const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "₦";
-  const products = useSelector((state) => state.product.list);
+  const products = useSelector((state) => state?.product?.list ?? []);
 
-  // Optional: user & store state slices
-  const user = useSelector((state) => state.auth.user);
-  const store = useSelector((state) => state.store.currentStore);
-  const isVerifiedStore = store?.isVerified;
+  // Optional: user & store state slices (defensive access)
+  const user = useSelector((state) => state?.auth?.user ?? null);
+  const store = useSelector((state) => state?.store?.currentStore ?? null);
+  const isVerifiedStore = store?.isVerified ?? false;
   const hasStore = !!store;
 
   const topRatedImage = useMemo(
@@ -336,8 +336,6 @@ const Hero = () => {
   }, []);
 
   const microPromos = useMemo(() => {
-    // keep defaults.microPromos out of the dependency array by
-    // taking a local reference to the array
     const base = defaults.microPromos;
 
     return base.map((p) => {
