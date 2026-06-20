@@ -1,123 +1,146 @@
 import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export default async function handler(req, res) {
-  if (req.method === "GET") {
-    try {
-      const banners = await prisma.middleBanner.findMany({
-        orderBy: { position: "asc" },
-      });
+export async function GET(request) {
+  try {
+    const banners = await prisma.middleBanner.findMany({
+      orderBy: { position: "asc" },
+    });
 
-      return res.status(200).json({ banners });
-    } catch (error) {
-      console.error("GET /api/admin/middle-banners error:", error);
-      return res.status(500).json({ message: "Failed to load banners" });
-    }
+    return NextResponse.json({ banners });
+  } catch (error) {
+    console.error("GET /api/admin/middle-banners error:", error);
+    return NextResponse.json(
+      { message: "Failed to load banners" },
+      { status: 500 }
+    );
   }
+}
 
-  if (req.method === "POST") {
-    try {
-      const {
+export async function POST(request) {
+  try {
+    const body = await request.json();
+
+    const {
+      title,
+      subtitle,
+      imageUrl,
+      linkUrl,
+      ctaText,
+      position,
+      isActive,
+      countryCode,
+      startsAt,
+      endsAt,
+    } = body;
+
+    if (!title || !imageUrl) {
+      return NextResponse.json(
+        { message: "Title and imageUrl are required" },
+        { status: 400 }
+      );
+    }
+
+    const banner = await prisma.middleBanner.create({
+      data: {
         title,
-        subtitle,
+        subtitle: subtitle || null,
         imageUrl,
-        linkUrl,
-        ctaText,
-        position,
-        isActive,
-        countryCode,
-        startsAt,
-        endsAt,
-      } = req.body;
+        linkUrl: linkUrl || null,
+        ctaText: ctaText || null,
+        position: Number(position ?? 0),
+        isActive: isActive !== undefined ? Boolean(isActive) : true,
+        countryCode: countryCode || null,
+        startsAt: startsAt ? new Date(startsAt) : null,
+        endsAt: endsAt ? new Date(endsAt) : null,
+      },
+    });
 
-      if (!title || !imageUrl) {
-        return res.status(400).json({ message: "Title and imageUrl are required" });
-      }
-
-      const banner = await prisma.middleBanner.create({
-        data: {
-          title,
-          subtitle: subtitle || null,
-          imageUrl,
-          linkUrl: linkUrl || null,
-          ctaText: ctaText || null,
-          position: Number(position || 0),
-          isActive: isActive !== undefined ? Boolean(isActive) : true,
-          countryCode: countryCode || null,
-          startsAt: startsAt ? new Date(startsAt) : null,
-          endsAt: endsAt ? new Date(endsAt) : null,
-        },
-      });
-
-      return res.status(201).json({ banner });
-    } catch (error) {
-      console.error("POST /api/admin/middle-banners error:", error);
-      return res.status(500).json({ message: "Failed to create banner" });
-    }
+    return NextResponse.json({ banner }, { status: 201 });
+  } catch (error) {
+    console.error("POST /api/admin/middle-banners error:", error);
+    return NextResponse.json(
+      { message: "Failed to create banner" },
+      { status: 500 }
+    );
   }
+}
 
-  if (req.method === "PUT") {
-    try {
-      const {
-        id,
+export async function PUT(request) {
+  try {
+    const body = await request.json();
+
+    const {
+      id,
+      title,
+      subtitle,
+      imageUrl,
+      linkUrl,
+      ctaText,
+      position,
+      isActive,
+      countryCode,
+      startsAt,
+      endsAt,
+    } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { message: "id is required" },
+        { status: 400 }
+      );
+    }
+
+    const banner = await prisma.middleBanner.update({
+      where: { id },
+      data: {
         title,
-        subtitle,
+        subtitle: subtitle || null,
         imageUrl,
-        linkUrl,
-        ctaText,
-        position,
-        isActive,
-        countryCode,
-        startsAt,
-        endsAt,
-      } = req.body;
+        linkUrl: linkUrl || null,
+        ctaText: ctaText || null,
+        position: position !== undefined ? Number(position) : undefined,
+        isActive: isActive !== undefined ? Boolean(isActive) : undefined,
+        countryCode: countryCode || null,
+        startsAt: startsAt ? new Date(startsAt) : null,
+        endsAt: endsAt ? new Date(endsAt) : null,
+      },
+    });
 
-      if (!id) {
-        return res.status(400).json({ message: "id is required" });
-      }
-
-      const banner = await prisma.middleBanner.update({
-        where: { id },
-        data: {
-          title,
-          subtitle: subtitle || null,
-          imageUrl,
-          linkUrl: linkUrl || null,
-          ctaText: ctaText || null,
-          position: position !== undefined ? Number(position) : undefined,
-          isActive: isActive !== undefined ? Boolean(isActive) : undefined,
-          countryCode: countryCode || null,
-          startsAt: startsAt ? new Date(startsAt) : null,
-          endsAt: endsAt ? new Date(endsAt) : null,
-        },
-      });
-
-      return res.status(200).json({ banner });
-    } catch (error) {
-      console.error("PUT /api/admin/middle-banners error:", error);
-      return res.status(500).json({ message: "Failed to update banner" });
-    }
+    return NextResponse.json({ banner });
+  } catch (error) {
+    console.error("PUT /api/admin/middle-banners error:", error);
+    return NextResponse.json(
+      { message: "Failed to update banner" },
+      { status: 500 }
+    );
   }
+}
 
-  if (req.method === "DELETE") {
-    try {
-      const { id } = req.body;
+export async function DELETE(request) {
+  try {
+    const body = await request.json();
+    const { id } = body;
 
-      if (!id) {
-        return res.status(400).json({ message: "id is required" });
-      }
-
-      await prisma.middleBanner.delete({
-        where: { id },
-      });
-
-      return res.status(200).json({ message: "Banner deleted" });
-    } catch (error) {
-      console.error("DELETE /api/admin/middle-banners error:", error);
-      return res.status(500).json({ message: "Failed to delete banner" });
+    if (!id) {
+      return NextResponse.json(
+        { message: "id is required" },
+        { status: 400 }
+      );
     }
-  }
 
-  return res.status(405).json({ message: "Method not allowed" });
+    await prisma.middleBanner.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ message: "Banner deleted" });
+  } catch (error) {
+    console.error("DELETE /api/admin/middle-banners error:", error);
+    return NextResponse.json(
+      { message: "Failed to delete banner" },
+      { status: 500 }
+    );
+  }
 }
