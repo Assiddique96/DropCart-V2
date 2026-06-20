@@ -12,7 +12,10 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import CategoriesMarquee from "./CategoriesMarquee";
+
+/** Utils */
 
 function isValidImageSrc(src) {
   if (src == null) return false;
@@ -54,6 +57,8 @@ function getTopDiscountPrimaryImage(products) {
   scored.sort((a, b) => b.pct - a.pct || b.off - a.off);
   return scored[0].img;
 }
+
+/** Carousels */
 
 function useFiniteCarousel(length, intervalMs) {
   const [index, setIndex] = useState(0);
@@ -103,24 +108,25 @@ function useInfiniteCarousel(length, intervalMs) {
   return [index, goTo, handleTransitionEnd, animating];
 }
 
+/** Static overlay config (kept for future theming) */
+
 const PROMO_BG_OVERLAY = {
-  light: {
-    light: "",
-    dark: "",
-  },
-  medium: {
-    light: "",
-    dark: "",
-  },
-  dark: {
-    light: "",
-    dark: "",
-  },
+  light: { light: "", dark: "" },
+  medium: { light: "", dark: "" },
+  dark: { light: "", dark: "" },
 };
 
 const Hero = () => {
+  const router = useRouter();
+
   const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "₦";
   const products = useSelector((state) => state.product.list);
+
+  // Optional: user & store state slices
+  const user = useSelector((state) => state.auth.user);
+  const store = useSelector((state) => state.store.currentStore);
+  const isVerifiedStore = store?.isVerified;
+  const hasStore = !!store;
 
   const topRatedImage = useMemo(
     () => getTopRatedPrimaryImage(products),
@@ -131,43 +137,7 @@ const Hero = () => {
     [products]
   );
 
-  const verifiedStores = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "Lagos Tech Hub",
-        rating: 4.9,
-        orders: "2.1k+",
-        tag: "Enterprise store",
-        href: "/store/lagos-tech-hub",
-      },
-      {
-        id: 2,
-        name: "Abuja Gadgets Pro",
-        rating: 4.8,
-        orders: "1.6k+",
-        tag: "Verified SME",
-        href: "/store/abuja-gadgets-pro",
-      },
-      {
-        id: 3,
-        name: "Malta Electronics Lab",
-        rating: 4.7,
-        orders: "980+",
-        tag: "EU warehouse",
-        href: "/store/malta-electronics-lab",
-      },
-      {
-        id: 4,
-        name: "Krasnodar Digital Store",
-        rating: 4.9,
-        orders: "1.3k+",
-        tag: "Priority store",
-        href: "/store/krasnodar-digital-store",
-      },
-    ],
-    []
-  );
+  /** DEFAULT STATIC FALLBACKS */
 
   const defaults = useMemo(
     () => ({
@@ -206,11 +176,13 @@ const Hero = () => {
       ],
       microPromos: [
         {
+          key: "wholesale",
           label: "Wholesales",
           desc: "SME–friendly bulk pricing",
           href: "/bulk",
         },
         {
+          key: "vendor-center",
           label: "Vendor center",
           desc: "Sell on Shpinx",
           href: "/vendors",
@@ -256,6 +228,8 @@ const Hero = () => {
     [currency, topRatedImage, topDiscountImage]
   );
 
+  /** REMOTE HOME CONTENT */
+
   const [remote, setRemote] = useState(undefined);
 
   useEffect(() => {
@@ -266,8 +240,7 @@ const Hero = () => {
         const j = await res.json();
         if (!cancelled) setRemote(j);
       } catch {
-        if (!cancelled)
-          setRemote({ featured: [], promo1: [], promo2: [] });
+        if (!cancelled) setRemote({ featured: [], promo1: [], promo2: [] });
       }
     })();
     return () => {
@@ -281,9 +254,7 @@ const Hero = () => {
       : remote.featured?.length
       ? remote.featured.map((s) => ({
           ...s,
-          image: isValidImageSrc(s.image)
-            ? s.image
-            : defaults.featured[0].image,
+          image: isValidImageSrc(s.image) ? s.image : defaults.featured[0].image,
         }))
       : defaults.featured;
 
@@ -317,6 +288,101 @@ const Hero = () => {
     useInfiniteCarousel(featuredSlides.length, 6500);
   const [p1i, setP1i] = useFiniteCarousel(promo1Slides.length, 5500);
   const [p2i, setP2i] = useFiniteCarousel(promo2Slides.length, 5500);
+
+  /** VERIFIED STORES + WHOLESALE + VENDOR CENTER – FETCH FROM SHPINX PAGES */
+
+  const [verifiedStores, setVerifiedStores] = useState([]);
+  const [wholesalePromo, setWholesalePromo] = useState(null);
+  const [vendorCenterPromo, setVendorCenterPromo] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadHeroMeta = async () => {
+      try {
+        const [
+          verifiedStoresRes,
+          wholesaleRes,
+          vendorRes,
+        ] = await Promise.all([
+          fetch("/api/verified-stores"),
+          fetch("/api/wholesale"),
+          fetch("/api/vendor-center"),
+        ]);
+
+        const [verifiedStoresData, wholesaleData, vendorData] =
+          await Promise.all([
+            verifiedStoresRes.json(),
+            wholesaleRes.json(),
+            vendorRes.json(),
+          ]);
+
+        if (cancelled) return;
+
+        setVerifiedStores(verifiedStoresData?.stores || []);
+        setWholesalePromo(wholesaleData?.heroPromo || null);
+        setVendorCenterPromo(vendorData?.heroPromo || null);
+      } catch (e) {
+        if (cancelled) return;
+        // graceful fallback – keep defaults
+        setVerifiedStores([]);
+        setWholesalePromo(null);
+        setVendorCenterPromo(null);
+      }
+    };
+
+    loadHeroMeta();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const microPromos = useMemo(() => {
+    return defaults.microPromos.map((p) => {
+      if (p.key === "wholesale" && wholesalePromo) {
+        return {
+          ...p,
+          label: wholesalePromo.label ?? p.label,
+          desc: wholesalePromo.desc ?? p.desc,
+          href: wholesalePromo.href ?? p.href,
+        };
+      }
+      if (p.key === "vendor-center" && vendorCenterPromo) {
+        return {
+          ...p,
+          label: vendorCenterPromo.label ?? p.label,
+          desc: vendorCenterPromo.desc ?? p.desc,
+          href: vendorCenterPromo.href ?? p.href,
+        };
+      }
+      return p;
+    });
+  }, [defaults.microPromos, wholesalePromo, vendorCenterPromo]);
+
+  /** JOIN AS VERIFIED STORE – ROUTING LOGIC */
+
+  const handleJoinVerifiedStore = () => {
+    // you can refine these routes to real URLs:
+    if (!user) {
+      // No account → signup
+      router.push("/auth/signup");
+      return;
+    }
+
+    if (hasStore) {
+      if (isVerifiedStore) {
+        // already verified – maybe go to verified store dashboard/settings
+        router.push("/vendors/verified/dashboard");
+      } else {
+        // has store but not verified – go to verification flow
+        router.push("/vendors/verify-store");
+      }
+      return;
+    }
+
+    // logged in but no store → Sell on Shpinx onboarding
+    router.push("/vendors");
+  };
 
   return (
     <section className="mx-3 sm:mx-4 md:mx-6">
@@ -478,9 +544,7 @@ const Hero = () => {
                 type="button"
                 aria-label="Previous slide"
                 onClick={() =>
-                  setFi(
-                    fi - 1 < 0 ? featuredSlides.length - 1 : fi - 1
-                  )
+                  setFi(fi - 1 < 0 ? featuredSlides.length - 1 : fi - 1)
                 }
                 className="absolute left-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-black/60 p-2 text-white hover:bg-black/80 lg:flex border border-white/20"
               >
@@ -502,25 +566,58 @@ const Hero = () => {
 
         {/* Right side – stacked promos */}
         <div className="flex w-full flex-col gap-4 text-sm md:flex-row xl:max-w-sm xl:flex-col">
-          <PromoCarousel
-            slides={promo1Slides}
-            index={p1i}
-            setIndex={setP1i}
-          />
-          <PromoCarousel
-            slides={promo2Slides}
-            index={p2i}
-            setIndex={setP2i}
-          />
+          <PromoCarousel slides={promo1Slides} index={p1i} setIndex={setP1i} />
+          <PromoCarousel slides={promo2Slides} index={p2i} setIndex={setP2i} />
         </div>
       </div>
 
-      {/* Verified stores section */}
-      <VerifiedStoresSection stores={verifiedStores} />
+      {/* Verified stores section – data from /api/verified-stores */}
+      <VerifiedStoresSection
+        stores={
+          verifiedStores.length
+            ? verifiedStores
+            : [
+                // fallback – optional
+                {
+                  id: 1,
+                  name: "Lagos Tech Hub",
+                  rating: 4.9,
+                  orders: "2.1k+",
+                  tag: "Enterprise store",
+                  href: "/store/lagos-tech-hub",
+                },
+                {
+                  id: 2,
+                  name: "Abuja Gadgets Pro",
+                  rating: 4.8,
+                  orders: "1.6k+",
+                  tag: "Verified SME",
+                  href: "/store/abuja-gadgets-pro",
+                },
+                {
+                  id: 3,
+                  name: "Malta Electronics Lab",
+                  rating: 4.7,
+                  orders: "980+",
+                  tag: "EU warehouse",
+                  href: "/store/malta-electronics-lab",
+                },
+                {
+                  id: 4,
+                  name: "Krasnodar Digital Store",
+                  rating: 4.9,
+                  orders: "1.3k+",
+                  tag: "Priority store",
+                  href: "/store/krasnodar-digital-store",
+                },
+              ]
+        }
+        onJoinVerifiedStore={handleJoinVerifiedStore}
+      />
 
-      {/* Micro promos row under the hero */}
+      {/* Micro promos row under the hero – wholesale + vendor center powered from pages */}
       <div className="mx-auto mt-4 grid max-w-7xl grid-cols-2 gap-2 text-[11px] sm:grid-cols-4 sm:text-xs">
-        {defaults.microPromos.map((p) => (
+        {microPromos.map((p) => (
           <Link
             key={p.label}
             href={p.href}
@@ -549,6 +646,8 @@ const Hero = () => {
     </section>
   );
 };
+
+/** PromoCarousel */
 
 function PromoCarousel({ slides, index, setIndex }) {
   if (!slides || slides.length === 0) return null;
@@ -595,8 +694,7 @@ function PromoCarousel({ slides, index, setIndex }) {
               {currentSlide.title || "Offers"}
             </p>
             <p className="text-[11px] text-slate-100 sm:text-xs">
-              {currentSlide.subtitle ||
-                "View more electronics deals today"}
+              {currentSlide.subtitle || "View more electronics deals today"}
             </p>
           </div>
           <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-slate-100 sm:text-xs">
@@ -638,7 +736,9 @@ function PromoCarousel({ slides, index, setIndex }) {
   );
 }
 
-function VerifiedStoresSection({ stores }) {
+/** Verified stores */
+
+function VerifiedStoresSection({ stores, onJoinVerifiedStore }) {
   if (!stores || stores.length === 0) return null;
 
   return (
@@ -657,13 +757,14 @@ function VerifiedStoresSection({ stores }) {
             </p>
           </div>
         </div>
-        <Link
-          href="/vendors/verified"
+        <button
+          type="button"
+          onClick={onJoinVerifiedStore}
           className="inline-flex items-center gap-1 rounded-full border border-slate-200 dark:border-slate-600 px-3 py-1 text-[10px] font-semibold text-slate-800 dark:text-slate-200 transition hover:border-slate-900 dark:hover:border-slate-400 hover:bg-slate-900 dark:hover:bg-slate-700 hover:text-white dark:hover:text-slate-100"
         >
           Join as a verified store
           <ArrowRightIcon size={14} />
-        </Link>
+        </button>
       </div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {stores.map((v) => (
@@ -687,7 +788,7 @@ function VerifiedStoresSection({ stores }) {
             <div className="mt-2 flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-300">
               <span className="inline-flex items-center gap-0.5">
                 <StarIcon size={12} className="text-amber-400" aria-hidden />
-                <span>{v.rating.toFixed(1)}</span>
+                <span>{Number(v.rating).toFixed(1)}</span>
               </span>
               <span>{v.orders} orders</span>
             </div>
