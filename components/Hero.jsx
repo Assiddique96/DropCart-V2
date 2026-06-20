@@ -406,7 +406,7 @@ const Hero = () => {
       {/* Main hero grid */}
       <div className="mx-auto mt-4 flex max-w-7xl gap-4 lg:gap-6 xl:gap-8 max-xl:flex-col">
         {/* Hero left (infinite main slider) */}
-        <div className="group relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-transparent border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300">
+        <div className="group relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-transparent border-0 transition-all duration-300">
           <div
             className={`flex h-full transition-transform duration-500 ease-out ${
               animating ? "" : "transition-none"
@@ -420,7 +420,7 @@ const Hero = () => {
             {featuredSlides.map((slide, idx) => (
               <article
                 key={idx}
-                className="relative min-h-[320px] w-full min-w-full shrink-0 sm:min-h-[360px] lg:min-h-[420px]"
+                className="relative min-h-[320px] w-full min-w-full shrink-0 sm:min-h-[360px] lg:min-h-[420px] bg-black"
               >
                 {isValidImageSrc(slide.image) && (
                   <Image
@@ -433,9 +433,9 @@ const Hero = () => {
                   />
                 )}
 
-                {/* dark overlay only, no gray background */}
+                {/* light, non‑gray overlay for text readability */}
                 <div
-                  className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/30"
+                  className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/10 to-transparent"
                   aria-hidden
                 />
 
@@ -547,9 +547,7 @@ const Hero = () => {
               <button
                 type="button"
                 aria-label="Next slide"
-                onClick={() =>
-                  setFi((fi + 1) % featuredSlides.length)
-                }
+                onClick={() => setFi((fi + 1) % featuredSlides.length)}
                 className="absolute right-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-black/60 p-2 text-white hover:bg-black/80 lg:flex border border-white/20"
               >
                 <ChevronRightIcon size={18} />
@@ -661,7 +659,7 @@ function PromoCarousel({ slides, index, setIndex }) {
   const currentSlide = slides[index];
 
   return (
-    <aside className="relative flex w-full flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-transparent border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300">
+    <aside className="relative flex w-full flex-1 min-h-[180px] overflow-hidden rounded-3xl bg-transparent border-0 transition-all duration-300">
       <Link
         href={currentSlide.href || "/shop"}
         className="group relative block min-h-[180px] w-full"
@@ -676,8 +674,9 @@ function PromoCarousel({ slides, index, setIndex }) {
           />
         )}
 
+        {/* lighter overlay so image is visible */}
         <div
-          className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20"
+          className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/10 to-transparent"
           aria-hidden
         />
 
@@ -772,7 +771,7 @@ function VerifiedStoresSection({ stores, onJoinVerifiedStore }) {
               href={v.href}
               className="group flex flex-col justify-between rounded-2xl bg-white dark:bg-slate-800 p-3 text-slate-800 dark:text-slate-200 transition hover:-translate-y-0.5 ring-1 ring-slate-100 dark:ring-slate-700 hover:ring-slate-900 dark:hover:ring-slate-500"
             >
-              <div className="flex items-center justify-between gap-1">
+              <div className="flex items-center justify_between gap-1">
                 <p className="line-clamp-1 text-[11px] font-semibold sm:text-xs text-slate-800 dark:text-slate-200">
                   {v.name}
                 </p>
