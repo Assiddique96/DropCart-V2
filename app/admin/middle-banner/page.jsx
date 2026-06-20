@@ -1,219 +1,89 @@
-"use client";
+import { PrismaClient } from "@prisma/client";
 
-import { useState } from "react";
+const prisma = new PrismaClient();
 
-export default function MiddleBannerAdminPage() {
-  const [form, setForm] = useState({
-    title: "",
-    subtitle: "",
-    imageUrl: "",
-    linkUrl: "",
-    ctaText: "",
-    position: 0,
-    isActive: true,
-    countryCode: "",
-    startsAt: "",
-    endsAt: "",
-  });
-
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
+export default async function handler(req, res) {
+  if (req.method === "POST") {
     try {
-      const res = await fetch("/api/admin/middle-banners", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
+      const {
+        title,
+        subtitle,
+        imageUrl,
+        linkUrl,
+        ctaText,
+        position,
+        isActive,
+        countryCode,
+        startsAt,
+        endsAt,
+      } = req.body;
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to create banner");
+      if (!title || !imageUrl) {
+        return res.status(400).json({ message: "Title and imageUrl are required" });
       }
 
-      setMessage("Middle banner created successfully.");
-
-      setForm({
-        title: "",
-        subtitle: "",
-        imageUrl: "",
-        linkUrl: "",
-        ctaText: "",
-        position: 0,
-        isActive: true,
-        countryCode: "",
-        startsAt: "",
-        endsAt: "",
+      const banner = await prisma.middleBanner.create({
+        data: {
+          title,
+          subtitle: subtitle || null,
+          imageUrl,
+          linkUrl: linkUrl || null,
+          ctaText: ctaText || null,
+          position: Number(position || 0),
+          isActive: Boolean(isActive ?? true),
+          countryCode: countryCode || null,
+          startsAt: startsAt ? new Date(startsAt) : null,
+          endsAt: endsAt ? new Date(endsAt) : null,
+        },
       });
+
+      return res.status(201).json({ banner });
     } catch (error) {
-      setMessage(error.message || "Something went wrong.");
-    } finally {
-      setLoading(false);
+      console.error("POST /api/admin/middle-banners error:", error);
+      return res.status(500).json({ message: "Failed to create banner" });
     }
-  };
+  }
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="mx-auto max-w-3xl rounded-2xl bg-white p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-gray-900">Middle Banner Manager</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Create and manage the banner shown in the middle row of the homepage.
-        </p>
+  if (req.method === "PUT") {
+    try {
+      const { id, ...data } = req.body;
+      if (!id) return res.status(400).json({ message: "id is required" });
 
-        {message && (
-          <div className="mt-4 rounded-lg bg-gray-100 px-4 py-3 text-sm text-gray-800">
-            {message}
-          </div>
-        )}
+      const banner = await prisma.middleBanner.update({
+        where: { id },
+        data: {
+          title: data.title,
+          subtitle: data.subtitle || null,
+          imageUrl: data.imageUrl,
+          linkUrl: data.linkUrl || null,
+          ctaText: data.ctaText || null,
+          position: data.position !== undefined ? Number(data.position) : undefined,
+          isActive: data.isActive !== undefined ? Boolean(data.isActive) : undefined,
+          countryCode: data.countryCode || null,
+          startsAt: data.startsAt ? new Date(data.startsAt) : null,
+          endsAt: data.endsAt ? new Date(data.endsAt) : null,
+        },
+      });
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Title</label>
-            <input
-              type="text"
-              name="title"
-              value={form.title}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black"
-              placeholder="Example: Flash Deals"
-              required
-            />
-          </div>
+      return res.status(200).json({ banner });
+    } catch (error) {
+      console.error("PUT /api/admin/middle-banners error:", error);
+      return res.status(500).json({ message: "Failed to update banner" });
+    }
+  }
 
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Subtitle</label>
-            <input
-              type="text"
-              name="subtitle"
-              value={form.subtitle}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black"
-              placeholder="Example: Limited time offers"
-            />
-          </div>
+  if (req.method === "DELETE") {
+    try {
+      const { id } = req.body;
+      if (!id) return res.status(400).json({ message: "id is required" });
 
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Image URL</label>
-            <input
-              type="text"
-              name="imageUrl"
-              value={form.imageUrl}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black"
-              placeholder="https://..."
-              required
-            />
-          </div>
+      await prisma.middleBanner.delete({ where: { id } });
+      return res.status(200).json({ message: "Banner deleted" });
+    } catch (error) {
+      console.error("DELETE /api/admin/middle-banners error:", error);
+      return res.status(500).json({ message: "Failed to delete banner" });
+    }
+  }
 
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Link URL</label>
-            <input
-              type="text"
-              name="linkUrl"
-              value={form.linkUrl}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black"
-              placeholder="/shop or https://..."
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">CTA Text</label>
-            <input
-              type="text"
-              name="ctaText"
-              value={form.ctaText}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black"
-              placeholder="Shop now"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Position</label>
-              <input
-                type="number"
-                name="position"
-                value={form.position}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black"
-              />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Country Code</label>
-              <input
-                type="text"
-                name="countryCode"
-                value={form.countryCode}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black"
-                placeholder="NG, MT, RU"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Starts At</label>
-              <input
-                type="datetime-local"
-                name="startsAt"
-                value={form.startsAt}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black"
-              />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Ends At</label>
-              <input
-                type="datetime-local"
-                name="endsAt"
-                value={form.endsAt}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black"
-              />
-            </div>
-          </div>
-
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-            <input
-              type="checkbox"
-              name="isActive"
-              checked={form.isActive}
-              onChange={handleChange}
-              className="h-4 w-4"
-            />
-            Active
-          </label>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-lg bg-black px-5 py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {loading ? "Saving..." : "Create Banner"}
-          </button>
-        </form>
-      </div>
-    </div>
-  );
+  return res.status(405).json({ message: "Method not allowed" });
 }
