@@ -8,8 +8,24 @@ export default async function handler(req, res) {
   }
 
   try {
+    const now = new Date();
+
     const banners = await prisma.middleBanner.findMany({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        OR: [
+          { startsAt: null },
+          { startsAt: { lte: now } },
+        ],
+        AND: [
+          {
+            OR: [
+              { endsAt: null },
+              { endsAt: { gte: now } },
+            ],
+          },
+        ],
+      },
       orderBy: { position: "asc" },
     });
 
