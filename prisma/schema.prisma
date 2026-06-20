@@ -434,17 +434,17 @@ model AdRequest {
 }
 
 model MiddleBanner {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
-  subtitle    String?
+  subtitle    String?   // nullable
   imageUrl    String
-  linkUrl     String?
-  ctaText     String?
-  position    Int      @default(0)
-  isActive    Boolean  @default(true)
-  countryCode String?
-  startsAt    DateTime?
-  endsAt      DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  linkUrl     String?   // nullable
+  ctaText     String?   // nullable
+  position    Int       @default(0)
+  isActive    Boolean   @default(true)
+  countryCode String?   // nullable
+  startsAt    DateTime? // nullable
+  endsAt      DateTime? // nullable
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
