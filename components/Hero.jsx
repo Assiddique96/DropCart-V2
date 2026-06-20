@@ -122,7 +122,6 @@ const Hero = () => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "₦";
   const products = useSelector((state) => state?.product?.list ?? []);
 
-  // Optional: user & store state slices (defensive access)
   const user = useSelector((state) => state?.auth?.user ?? null);
   const store = useSelector((state) => state?.store?.currentStore ?? null);
   const isVerifiedStore = store?.isVerified ?? false;
@@ -434,7 +433,7 @@ const Hero = () => {
                   />
                 )}
 
-                {/* dark overlay only */}
+                {/* dark overlay only, no gray background */}
                 <div
                   className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/30"
                   aria-hidden
