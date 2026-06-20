@@ -254,7 +254,9 @@ const Hero = () => {
       : remote.featured?.length
       ? remote.featured.map((s) => ({
           ...s,
-          image: isValidImageSrc(s.image) ? s.image : defaults.featured[0].image,
+          image: isValidImageSrc(s.image)
+            ? s.image
+            : defaults.featured[0].image,
         }))
       : defaults.featured;
 
@@ -300,15 +302,12 @@ const Hero = () => {
 
     const loadHeroMeta = async () => {
       try {
-        const [
-          verifiedStoresRes,
-          wholesaleRes,
-          vendorRes,
-        ] = await Promise.all([
-          fetch("/api/verified-stores"),
-          fetch("/api/wholesale"),
-          fetch("/api/vendor-center"),
-        ]);
+        const [verifiedStoresRes, wholesaleRes, vendorRes] =
+          await Promise.all([
+            fetch("/api/verified-stores"),
+            fetch("/api/wholesale"),
+            fetch("/api/vendor-center"),
+          ]);
 
         const [verifiedStoresData, wholesaleData, vendorData] =
           await Promise.all([
@@ -324,7 +323,6 @@ const Hero = () => {
         setVendorCenterPromo(vendorData?.heroPromo || null);
       } catch (e) {
         if (cancelled) return;
-        // graceful fallback – keep defaults
         setVerifiedStores([]);
         setWholesalePromo(null);
         setVendorCenterPromo(null);
@@ -338,7 +336,11 @@ const Hero = () => {
   }, []);
 
   const microPromos = useMemo(() => {
-    return defaults.microPromos.map((p) => {
+    // keep defaults.microPromos out of the dependency array by
+    // taking a local reference to the array
+    const base = defaults.microPromos;
+
+    return base.map((p) => {
       if (p.key === "wholesale" && wholesalePromo) {
         return {
           ...p,
@@ -357,30 +359,25 @@ const Hero = () => {
       }
       return p;
     });
-  }, [defaults.microPromos, wholesalePromo, vendorCenterPromo]);
+  }, [defaults, wholesalePromo, vendorCenterPromo]);
 
   /** JOIN AS VERIFIED STORE – ROUTING LOGIC */
 
   const handleJoinVerifiedStore = () => {
-    // you can refine these routes to real URLs:
     if (!user) {
-      // No account → signup
       router.push("/auth/signup");
       return;
     }
 
     if (hasStore) {
       if (isVerifiedStore) {
-        // already verified – maybe go to verified store dashboard/settings
         router.push("/vendors/verified/dashboard");
       } else {
-        // has store but not verified – go to verification flow
         router.push("/vendors/verify-store");
       }
       return;
     }
 
-    // logged in but no store → Sell on Shpinx onboarding
     router.push("/vendors");
   };
 
@@ -577,7 +574,6 @@ const Hero = () => {
           verifiedStores.length
             ? verifiedStores
             : [
-                // fallback – optional
                 {
                   id: 1,
                   name: "Lagos Tech Hub",
@@ -767,33 +763,44 @@ function VerifiedStoresSection({ stores, onJoinVerifiedStore }) {
         </button>
       </div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {stores.map((v) => (
-          <Link
-            key={v.id}
-            href={v.href}
-            className="group flex flex-col justify-between rounded-2xl bg-white dark:bg-slate-800 p-3 text-slate-800 dark:text-slate-200 transition hover:-translate-y-0.5 ring-1 ring-slate-100 dark:ring-slate-700 hover:ring-slate-900 dark:hover:ring-slate-500"
-          >
-            <div className="flex items-center justify-between gap-1">
-              <p className="line-clamp-1 text-[11px] font-semibold sm:text-xs text-slate-800 dark:text-slate-200">
-                {v.name}
+        {stores.map((v) => {
+          const ratingNumber = Number(v.rating);
+          const ratingDisplay = Number.isFinite(ratingNumber)
+            ? ratingNumber.toFixed(1)
+            : v.rating ?? "-";
+
+          return (
+            <Link
+              key={v.id}
+              href={v.href}
+              className="group flex flex-col justify-between rounded-2xl bg-white dark:bg-slate-800 p-3 text-slate-800 dark:text-slate-200 transition hover:-translate-y-0.5 ring-1 ring-slate-100 dark:ring-slate-700 hover:ring-slate-900 dark:hover:ring-slate-500"
+            >
+              <div className="flex items-center justify-between gap-1">
+                <p className="line-clamp-1 text-[11px] font-semibold sm:text-xs text-slate-800 dark:text-slate-200">
+                  {v.name}
+                </p>
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900 px-2 py-0.5 text-[9px] font-semibold text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500">
+                  <ShieldCheckIcon size={11} />
+                  Verified
+                </span>
+              </div>
+              <p className="mt-1 line-clamp-1 text-[10px] text-slate-500 dark:text-slate-300">
+                {v.tag}
               </p>
-              <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900 px-2 py-0.5 text-[9px] font-semibold text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500">
-                <ShieldCheckIcon size={11} />
-                Verified
-              </span>
-            </div>
-            <p className="mt-1 line-clamp-1 text-[10px] text-slate-500 dark:text-slate-300">
-              {v.tag}
-            </p>
-            <div className="mt-2 flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-300">
-              <span className="inline-flex items-center gap-0.5">
-                <StarIcon size={12} className="text-amber-400" aria-hidden />
-                <span>{Number(v.rating).toFixed(1)}</span>
-              </span>
-              <span>{v.orders} orders</span>
-            </div>
-          </Link>
-        ))}
+              <div className="mt-2 flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-300">
+                <span className="inline-flex items-center gap-0.5">
+                  <StarIcon
+                    size={12}
+                    className="text-amber-400"
+                    aria-hidden
+                  />
+                  <span>{ratingDisplay}</span>
+                </span>
+                <span>{v.orders} orders</span>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
