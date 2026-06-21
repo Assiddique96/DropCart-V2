@@ -370,10 +370,12 @@ const Hero = () => {
                   />
                 )}
 
-                <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-6 lg:p-10 pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/55 to-black/50 dark:from-black/75 dark:via-black/65 dark:to-black/55" />
+
+                <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-6 lg:p-10">
                   <div className="flex flex-wrap items-center gap-2">
                     {(slide.badgeText || slide.badgeLabel) && (
-                      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-600 dark:border-slate-500 bg-black/40 px-3 py-1 text-[11px] text-white dark:text-slate-200 backdrop-blur-md pointer-events-auto">
+                      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-600 dark:border-slate-500 bg-black/40 px-3 py-1 text-[11px] text-slate-200 dark:text-slate-200 backdrop-blur-md">
                         {slide.badgeLabel && (
                           <span className="rounded-full bg-slate-700 dark:bg-slate-600 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white dark:text-slate-100">
                             {slide.badgeLabel}
@@ -381,27 +383,27 @@ const Hero = () => {
                         )}
                         <span className="line-clamp-1">{slide.badgeText}</span>
                         <ChevronRightIcon
-                          className="hidden shrink-0 text-slate-200 dark:text-slate-300 transition-all group-hover:translate-x-0.5 sm:block"
+                          className="hidden shrink-0 text-slate-400 dark:text-slate-300 transition-all group-hover:translate-x-0.5 sm:block"
                           size={14}
                         />
                       </div>
                     )}
                   </div>
 
-                  <div className="mt-6 max-w-xl space-y-4 pointer-events-auto">
+                  <div className="mt-6 max-w-xl">
                     {slide.title && (
-                      <h1 className="text-balance text-2xl font-semibold leading-tight text-white sm:text-3xl md:text-4xl lg:text-[2.5rem] drop-shadow">
+                      <h1 className="text-balance text-2xl font-semibold leading-tight text-white sm:text-3xl md:text-4xl lg:text-[2.5rem]">
                         {slide.title}
                       </h1>
                     )}
                     {(slide.line1 || slide.line2) && (
-                      <div className="space-y-1 text-xs font-medium text-white sm:text-sm drop-shadow">
+                      <div className="mt-3 space-y-1 text-xs font-medium text-slate-200 sm:mt-4 sm:text-sm">
                         {slide.line1 && <p>{slide.line1}</p>}
                         {slide.line2 && <p>{slide.line2}</p>}
                       </div>
                     )}
                     {(slide.price || slide.priceLabel) && (
-                      <div className="flex flex-wrap items-baseline gap-2 text-xs text-white sm:text-sm drop-shadow">
+                      <div className="mt-4 flex flex-wrap items-baseline gap-2 text-xs text-slate-200 sm:mt-6 sm:text-sm">
                         {slide.priceLabel && <p>{slide.priceLabel}</p>}
                         {slide.price && (
                           <p className="text-2xl font-semibold sm:text-3xl">
@@ -410,11 +412,11 @@ const Hero = () => {
                         )}
                       </div>
                     )}
-                    <div className="flex flex-wrap items-center gap-3">
+                    <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-8">
                       {slide.cta && slide.href && (
                         <Link
                           href={slide.href}
-                          className="inline-flex items-center justify-center rounded-full bg-slate-900/90 px-6 py-2 text-xs font-semibold text-white transition hover:scale-[1.02] active:scale-95 sm:px-8 sm:py-3 sm:text-sm border border-slate-700"
+                          className="inline-flex items-center justify-center rounded-full bg-slate-800/90 px-6 py-2 text-xs font-semibold text-white transition hover:scale-[1.02] active:scale-95 sm:px-8 sm:py-3 sm:text-sm border border-slate-600"
                         >
                           {slide.cta}
                           <ArrowRightIcon size={18} className="ml-1.5" />
@@ -422,7 +424,7 @@ const Hero = () => {
                       )}
                       <Link
                         href="/shop?tag=offers"
-                        className="inline-flex items-center text-[11px] font-medium text-white underline-offset-2 hover:underline sm:text-xs"
+                        className="inline-flex items-center text-[11px] font-medium text-slate-300 underline-offset-2 hover:underline sm:text-xs"
                       >
                         View all offers
                         <ChevronRightIcon size={14} className="ml-1" />
@@ -431,10 +433,10 @@ const Hero = () => {
                   </div>
 
                   {featuredSlides.length > 1 && (
-                    <div className="mt-4 flex items-center justify-between text-[11px] text-white pointer-events-auto">
+                    <div className="mt-4 flex items-center justify-between text-[11px] text-slate-300">
                       <div className="flex items-center gap-1">
-                        <span>{fi + 1}</span>
-                        <span className="opacity-70">
+                        <span className="text-slate-100">{fi + 1}</span>
+                        <span className="text-slate-400">
                           / {featuredSlides.length}
                         </span>
                       </div>
@@ -447,8 +449,8 @@ const Hero = () => {
                             onClick={() => setFi(i)}
                             className={`h-1.5 rounded-full transition-all ${
                               i === fi
-                                ? "w-5 bg-white"
-                                : "w-2 bg-white/60 hover:bg-white"
+                                ? "w-5 bg-slate-200"
+                                : "w-2 bg-slate-500 hover:bg-slate-300"
                             }`}
                           />
                         ))}
@@ -555,17 +557,18 @@ function PromoCarousel({ slides, index, setIndex }) {
             sizes="(max-width: 1280px) 100vw, 380px"
           />
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/45 to-transparent" />
 
-        <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-5 pointer-events-none">
-          <div className="flex flex-col gap-1 pointer-events-auto">
-            <p className="max-w-[14rem] text-base font-semibold leading-tight text-white sm:text-lg drop-shadow">
+        <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-5">
+          <div className="flex flex-col gap-1">
+            <p className="max-w-[14rem] text-base font-semibold leading-tight text-white sm:text-lg">
               {currentSlide.title || "Offers"}
             </p>
-            <p className="text-[11px] text-white sm:text-xs drop-shadow">
+            <p className="text-[11px] text-slate-200 sm:text-xs">
               {currentSlide.subtitle || "View more electronics deals today"}
             </p>
           </div>
-          <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-white sm:text-xs pointer-events-auto">
+          <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-slate-200 sm:text-xs">
             View more
             <ArrowRightIcon
               className="shrink-0 transition-transform group-hover:translate-x-0.5"
