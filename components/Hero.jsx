@@ -315,93 +315,102 @@ const Hero = () => {
           />
         )}
 
-        {/* Minimal overlay – text readable but image visible */}
+        {/* Minimal overlay – Smooth gradient fading to transparent so the right side stays crisp */}
         <div
-          className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent"
+          className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent md:w-2/3"
           aria-hidden
         />
 
-        <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 sm:p-6 lg:p-10">
-          <div className="flex flex-wrap items-center gap-2">
-            {(slide.badgeText || slide.badgeLabel) && (
-              <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-600/60 bg-black/50 px-3 py-1 text-[11px] text-slate-100 backdrop-blur-md">
-                {slide.badgeLabel && (
-                  <span className="rounded-full bg-slate-700 dark:bg-slate-600 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white dark:text-slate-100">
-                    {slide.badgeLabel}
-                  </span>
-                )}
-                <span className="line-clamp-1">{slide.badgeText}</span>
-                <ChevronRightIcon
-                  className="hidden shrink-0 text-slate-300 sm:block"
-                  size={14}
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="mt-6 max-w-xl">
-            {slide.title && (
-              <h1 className="text-balance text-2xl font-semibold leading-tight text-white sm:text-3xl md:text-4xl lg:text-[2.5rem]">
-                {slide.title}
-              </h1>
-            )}
-            {(slide.line1 || slide.line2) && (
-              <div className="mt-3 space-y-1 text-xs font-medium text-slate-200 sm:mt-4 sm:text-sm">
-                {slide.line1 && <p>{slide.line1}</p>}
-                {slide.line2 && <p>{slide.line2}</p>}
-              </div>
-            )}
-            {(slide.price || slide.priceLabel) && (
-              <div className="mt-4 flex flex-wrap items-baseline gap-2 text-xs text-slate-200 sm:mt-6 sm:text-sm">
-                {slide.priceLabel && <p>{slide.priceLabel}</p>}
-                {slide.price && (
-                  <p className="text-2xl font-semibold sm:text-3xl">
-                    {slide.price}
-                  </p>
-                )}
-              </div>
-            )}
-            <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-8">
-              {slide.cta && slide.href && (
-                <Link
-                  href={slide.href}
-                  className="inline-flex items-center justify-center rounded-full bg-slate-800/90 px-6 py-2 text-xs font-semibold text-white transition hover:scale-[1.02] active:scale-95 sm:px-8 sm:py-3 sm:text-sm border border-slate-600"
-                >
-                  {slide.cta}
-                  <ArrowRightIcon size={18} className="ml-1.5" />
-                </Link>
-              )}
-              <Link
-                href="/shop?sort=discount"
-                className="inline-flex items-center text-[11px] font-medium text-slate-100 underline-offset-2 hover:underline sm:text-xs"
-              >
-                View all offers
-                <ChevronRightIcon size={14} className="ml-1" />
-              </Link>
-            </div>
-          </div>
-
-          {featuredSlides.length > 1 && (
-            <div className="mt-4 flex items-center justify-between text-[11px] text-slate-300">
-              <div className="flex items-center gap-1">
-                <span className="text-slate-100">{fi + 1}</span>
-                <span className="text-slate-300">/ {featuredSlides.length}</span>
-              </div>
-              <div className="flex gap-1.5">
-                {featuredSlides.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    aria-label={`Go to slide ${i + 1}`}
-                    onClick={() => setFi(i)}
-                    className={`h-1.5 rounded-full transition-all ${
-                      i === fi ? "w-5 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
-                    }`}
+        {/* FIX APPLIED HERE: Added `grid grid-cols-1 md:grid-cols-2` to force text content to only occupy the left half on larger screens */}
+        <div className="absolute inset-0 z-10 grid grid-cols-1 md:grid-cols-2 p-4 sm:p-6 lg:p-10">
+          
+          {/* Column 1: Text Content wrapper */}
+          <div className="flex flex-col justify-between h-full max-w-xl">
+            <div className="flex flex-wrap items-center gap-2">
+              {(slide.badgeText || slide.badgeLabel) && (
+                <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-600/60 bg-black/50 px-3 py-1 text-[11px] text-slate-100 backdrop-blur-md">
+                  {slide.badgeLabel && (
+                    <span className="rounded-full bg-slate-700 dark:bg-slate-600 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white dark:text-slate-100">
+                      {slide.badgeLabel}
+                    </span>
+                  )}
+                  <span className="line-clamp-1">{slide.badgeText}</span>
+                  <ChevronRightIcon
+                    className="hidden shrink-0 text-slate-300 sm:block"
+                    size={14}
                   />
-                ))}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6">
+              {slide.title && (
+                <h1 className="text-balance text-2xl font-semibold leading-tight text-white sm:text-3xl md:text-4xl lg:text-[2.5rem]">
+                  {slide.title}
+                </h1>
+              )}
+              {(slide.line1 || slide.line2) && (
+                <div className="mt-3 space-y-1 text-xs font-medium text-slate-200 sm:mt-4 sm:text-sm">
+                  {slide.line1 && <p>{slide.line1}</p>}
+                  {slide.line2 && <p>{slide.line2}</p>}
+                </div>
+              )}
+              {(slide.price || slide.priceLabel) && (
+                <div className="mt-4 flex flex-wrap items-baseline gap-2 text-xs text-slate-200 sm:mt-6 sm:text-sm">
+                  {slide.priceLabel && <p>{slide.priceLabel}</p>}
+                  {slide.price && (
+                    <p className="text-2xl font-semibold sm:text-3xl">
+                      {slide.price}
+                    </p>
+                  )}
+                </div>
+              )}
+              <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-8">
+                {slide.cta && slide.href && (
+                  <Link
+                    href={slide.href}
+                    className="inline-flex items-center justify-center rounded-full bg-slate-800/90 px-6 py-2 text-xs font-semibold text-white transition hover:scale-[1.02] active:scale-95 sm:px-8 sm:py-3 sm:text-sm border border-slate-600"
+                  >
+                    {slide.cta}
+                    <ArrowRightIcon size={18} className="ml-1.5" />
+                  </Link>
+                )}
+                <Link
+                  href="/shop?sort=discount"
+                  className="inline-flex items-center text-[11px] font-medium text-slate-100 underline-offset-2 hover:underline sm:text-xs"
+                >
+                  View all offers
+                  <ChevronRightIcon size={14} className="ml-1" />
+                </Link>
               </div>
             </div>
-          )}
+
+            {featuredSlides.length > 1 && (
+              <div className="mt-4 flex items-center justify-between text-[11px] text-slate-300">
+                <div className="flex items-center gap-1">
+                  <span className="text-slate-100">{fi + 1}</span>
+                  <span className="text-slate-300">/ {featuredSlides.length}</span>
+                </div>
+                <div className="flex gap-1.5">
+                  {featuredSlides.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      aria-label={`Go to slide ${i + 1}`}
+                      onClick={() => setFi(i)}
+                      className={`h-1.5 rounded-full transition-all ${
+                        i === fi ? "w-5 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Column 2: Empty spacer to explicitly keep the right side clear for your image */}
+          <div className="hidden md:block" />
+          
         </div>
       </article>
     ))}
