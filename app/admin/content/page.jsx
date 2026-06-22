@@ -32,7 +32,7 @@ export default function AdminContentPage() {
         const headers = { Authorization: `Bearer ${token}` }
         const [contentRes, bannerRes] = await Promise.all([
           axios.get("/api/admin/content", { headers }),
-          axios.get("/api/admin/middle-banner", { headers }),
+          axios.get("/api/admin/middle-banners", { headers }),
         ])
         setCategories(contentRes.data.categories || [])
         setFaqItems(contentRes.data.faqItems || [])
@@ -67,7 +67,7 @@ export default function AdminContentPage() {
     setSavingBanners(true)
     try {
       const token = await getToken()
-      await axios.put("/api/admin/middle-banner", { banners: middleBanners }, {
+      await axios.put("/api/admin/middle-banners", { banners: middleBanners }, {
         headers: { Authorization: `Bearer ${token}` },
       })
       toast.success("Middle banners saved.")
