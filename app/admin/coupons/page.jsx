@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import { format } from "date-fns"
 import toast from "react-hot-toast"
-import { Trash2Icon, InfinityIcon, SearchIcon, XIcon, PercentIcon, BanknoteIcon } from "lucide-react"
+import { Trash2Icon, InfinityIcon, SearchIcon, XIcon } from "lucide-react"
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
 
@@ -19,10 +19,14 @@ const Toggle = ({ checked, onChange, label }) => (
 
 export default function AdminCoupons() {
     const { getToken } = useAuth()
+    
+    // Helper to get today's date in YYYY-MM-DD string format for safe HTML input binding
+    const getTodayString = () => new Date().toISOString().split('T')[0]
+
     const [coupons, setCoupons] = useState([])
     const [newCoupon, setNewCoupon] = useState({
         code: '', description: '', discount: '', forNewUser: false,
-        forMember: false, isPublic: false, expiresAt: new Date(), maxUses: '',
+        forMember: false, isPublic: false, expiresAt: getTodayString(), maxUses: '',
     })
     const [confirmDelete, setConfirmDelete] = useState(null)
     const [search, setSearch] = useState('')
@@ -33,7 +37,7 @@ export default function AdminCoupons() {
         try {
             const token = await getToken()
             const { data } = await axios.get("/api/admin/coupon", { headers: { Authorization: `Bearer ${token}` } })
-            setCoupons(data.coupons)
+            setCoupons(data.coupons || [])
         } catch (e) { toast.error(e?.response?.data?.message || e.message) }
     }
 
@@ -49,7 +53,7 @@ export default function AdminCoupons() {
             }
             const { data } = await axios.post("/api/admin/coupon", { coupon: payload }, { headers: { Authorization: `Bearer ${token}` } })
             toast.success(data.message)
-            setNewCoupon({ code: '', description: '', discount: '', forNewUser: false, forMember: false, isPublic: false, expiresAt: new Date(), maxUses: '' })
+            setNewCoupon({ code: '', description: '', discount: '', forNewUser: false, forMember: false, isPublic: false, expiresAt: getTodayString(), maxUses: '' })
             fetchCoupons()
         } catch (e) { toast.error(e?.response?.data?.message || e.message) }
     }
@@ -65,6 +69,32 @@ export default function AdminCoupons() {
     }
 
     useEffect(() => { fetchCoupons() }, [])
+
+    // --- Dynamic Filtering Logic for Coupons ---
+    const filteredCoupons = coupons.filter(coupon => {
+        // 1. Search Query Match
+        const matchesSearch = search === '' || 
+            coupon.code.toLowerCase().includes(search.toLowerCase()) ||
+            (coupon.description && coupon.description.toLowerCase().includes(search.toLowerCase()));
+
+        // 2. Coupon Discount Type Match
+        const matchesType = filterType === '' || coupon.discountType === filterType;
+
+        // 3. Coupon Status Match
+        let matchesStatus = true;
+        const isExpired = new Date(coupon.expiresAt) < new Date();
+        const isExhausted = coupon.maxUses !== null && coupon.usageCount >= coupon.maxUses;
+
+        if (filterStatus === 'active') {
+            matchesStatus = !isExpired && !isExhausted;
+        } else if (filterStatus === 'expired') {
+            matchesStatus = isExpired;
+        } else if (filterStatus === 'exhausted') {
+            matchesStatus = isExhausted;
+        }
+
+        return matchesSearch && matchesType && matchesStatus;
+    });
 
     return (
         <div className="text-slate-500 dark:text-slate-300 mb-40">
@@ -99,7 +129,7 @@ export default function AdminCoupons() {
                         <label className="text-xs text-slate-400 mb-1 block">Expiry Date *</label>
                         <input type="date" required
                             className="w-full p-2.5 border border-slate-200 dark:border-slate-700 outline-slate-400 rounded-lg text-sm"
-                            value={format(new Date(newCoupon.expiresAt), 'yyyy-MM-dd')}
+                            value={newCoupon.expiresAt}
                             onChange={e => setNewCoupon({ ...newCoupon, expiresAt: e.target.value })} />
                     </div>
                     <div>
@@ -178,7 +208,7 @@ export default function AdminCoupons() {
                                         <td className="py-3 px-4">
                                             <div className="flex items-center gap-1.5">
                                                 <span className={`text-xs font-medium ${isExhausted ? 'text-red-500' : 'text-slate-700 dark:text-slate-200'}`}>
-                                                    {coupon.usageCount}
+                                                    {coupon.usageCount || 0}
                                                 </span>
                                                 <span className="text-slate-300">/</span>
                                                 {coupon.maxUses === null
@@ -209,7 +239,11 @@ export default function AdminCoupons() {
                                 )
                             })}
                             {filteredCoupons.length === 0 && (
-                                <tr><td colSpan={6} className="text-center py-12 text-slate-400">{coupons.length === 0 ? 'No coupons yet.' : 'No coupons match filters.'}</td></tr>
+                                <tr>
+                                    <td colSpan={6} className="text-center py-12 text-slate-400">
+                                        {coupons.length === 0 ? 'No coupons yet.' : 'No coupons match filters.'}
+                                    </td>
+                                </tr>
                             )}
                         </tbody>
                     </table>
