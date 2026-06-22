@@ -231,7 +231,7 @@ const ProductDetails = ({ product }) => {
       {/* Image gallery */}
       <div className="grid gap-4 max-w-[600px]">
         <div
-          className="relative aspect-[4/3] w-full max-h-[520px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 cursor-pointer"
+          className="relative aspect-square w-full rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 cursor-pointer"
           onClick={openZoom}
         >
           {mainImage && (
@@ -240,7 +240,7 @@ const ProductDetails = ({ product }) => {
               alt={product.name}
               fill
               priority
-              className="object-cover"
+              className="object-contain p-2"
               sizes="(max-width: 1024px) 100vw, 560px"
             />
           )}

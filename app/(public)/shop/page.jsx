@@ -8,6 +8,7 @@ import {
   XIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  PackageIcon,
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -37,8 +38,42 @@ const SORT_OPTIONS = [
   { value: "price_desc", label: "Price: High to Low" },
   { value: "top_rated", label: "Top Rated" },
   { value: "most_reviewed", label: "Most Reviewed" },
+  { value: "popular", label: "Most Popular" },
+  { value: "discount", label: "Biggest Discount" },
 ];
 const PAGE_SIZE = 12;
+
+function resolveInitialSort(searchParams) {
+  const sortParam = searchParams.get("sort");
+  const tagParam = searchParams.get("tag");
+
+  if (sortParam === "newest" || tagParam === "new") return "newest";
+  if (sortParam === "popular" || tagParam === "top") return "popular";
+  if (sortParam === "rating") return "top_rated";
+  if (sortParam === "discount") return "discount";
+  if (sortParam === "promo" || tagParam === "offers") return "discount";
+  if (sortParam === "price_asc") return "price_asc";
+  if (sortParam === "price_desc") return "price_desc";
+  return "newest";
+}
+
+function resolvePageTitle(searchParams) {
+  const tag = searchParams.get("tag");
+  const sort = searchParams.get("sort");
+  const origin = searchParams.get("origin");
+  const isWholesale = searchParams.get("wholesale");
+  const maxPrice = searchParams.get("maxPrice");
+
+  if (isWholesale === "true") return "Wholesale Products";
+  if (origin === "abroad") return "Shipped from Abroad";
+  if (tag === "new" || sort === "newest") return "New Arrivals";
+  if (tag === "top" || sort === "popular") return "Best Sellers";
+  if (tag === "offers" || sort === "promo") return "Special Offers";
+  if (sort === "discount") return "Biggest Discounts";
+  if (sort === "rating") return "Top Rated";
+  if (maxPrice) return `Products Under ₦${Number(maxPrice).toLocaleString()}`;
+  return "All Products";
+}
 
 function ShopContent() {
   const searchParams = useSearchParams();
@@ -48,21 +83,29 @@ function ShopContent() {
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [category, setCategory] = useState(searchParams.get("category") || "");
-  const [sort, setSort] = useState("newest");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const [sort, setSort] = useState(() => resolveInitialSort(searchParams));
+  const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || "");
+  const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "");
   const [minRating, setMinRating] = useState(0);
   const [inStockOnly, setInStockOnly] = useState(false);
+  const [wholesaleOnly, setWholesaleOnly] = useState(
+    searchParams.get("wholesale") === "true"
+  );
+  const [originFilter, setOriginFilter] = useState(
+    searchParams.get("origin") || ""
+  );
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
 
-  // Debounce search input
+  const pageTitle = resolvePageTitle(searchParams);
+
+  // Debounce search
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 300);
     return () => clearTimeout(t);
   }, [search]);
 
-  // Reset page when filters change
+  // Reset page on filter change
   useEffect(() => {
     setPage(1);
   }, [
@@ -73,6 +116,8 @@ function ShopContent() {
     maxPrice,
     minRating,
     inStockOnly,
+    wholesaleOnly,
+    originFilter,
   ]);
 
   const filtered = useMemo(() => {
@@ -85,12 +130,21 @@ function ShopContent() {
         (p) =>
           p.name.toLowerCase().includes(q) ||
           p.description?.toLowerCase().includes(q) ||
-          p.category?.toLowerCase().includes(q),
+          p.category?.toLowerCase().includes(q)
       );
     }
 
     // Category
     if (category) list = list.filter((p) => p.category === category);
+
+    // Wholesale
+    if (wholesaleOnly) list = list.filter((p) => p.isWholesale);
+
+    // Origin
+    if (originFilter === "abroad")
+      list = list.filter((p) => p.origin === "ABROAD");
+    else if (originFilter === "local")
+      list = list.filter((p) => p.origin !== "ABROAD");
 
     // Price range
     if (minPrice !== "") list = list.filter((p) => p.price >= Number(minPrice));
@@ -130,14 +184,28 @@ function ShopContent() {
         break;
       case "most_reviewed":
         list.sort(
-          (a, b) => (b.rating?.length || 0) - (a.rating?.length || 0),
+          (a, b) => (b.rating?.length || 0) - (a.rating?.length || 0)
         );
+        break;
+      case "popular":
+        // More orders + better rating = more popular
+        list.sort(
+          (a, b) => (b.rating?.length || 0) - (a.rating?.length || 0)
+        );
+        break;
+      case "discount":
+        list.sort((a, b) => {
+          const discA =
+            a.mrp > 0 ? ((a.mrp - a.price) / a.mrp) * 100 : 0;
+          const discB =
+            b.mrp > 0 ? ((b.mrp - b.price) / b.mrp) * 100 : 0;
+          return discB - discA;
+        });
         break;
       default:
         list.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
-        break;
     }
 
     return list;
@@ -150,12 +218,14 @@ function ShopContent() {
     maxPrice,
     minRating,
     inStockOnly,
+    wholesaleOnly,
+    originFilter,
   ]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated = filtered.slice(
     (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE,
+    page * PAGE_SIZE
   );
 
   const activeFilterCount = [
@@ -164,6 +234,8 @@ function ShopContent() {
     maxPrice,
     minRating > 0,
     inStockOnly,
+    wholesaleOnly,
+    originFilter,
   ].filter(Boolean).length;
 
   const groupedPaginatedProducts = useMemo(() => {
@@ -176,7 +248,7 @@ function ShopContent() {
       groups[group].push(product);
     });
     return Object.entries(groups).sort(
-      ([a], [b]) => CATEGORIES.indexOf(a) - CATEGORIES.indexOf(b),
+      ([a], [b]) => CATEGORIES.indexOf(a) - CATEGORIES.indexOf(b)
     );
   }, [paginated]);
 
@@ -186,31 +258,41 @@ function ShopContent() {
     setMaxPrice("");
     setMinRating(0);
     setInStockOnly(false);
+    setWholesaleOnly(false);
+    setOriginFilter("");
     setSearch("");
   };
 
   return (
     <div className="min-h-[70vh] mx-6 mb-20 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-wrap items-center justify-between gap-4 my-6">
+        <div className="flex flex-wrap items-start justify-between gap-4 my-6">
           <div>
             <h1 className="text-3xl text-slate-800 dark:text-slate-50 font-semibold">
-              All Products
+              {pageTitle}
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-300 mt-1 max-w-xl">
               Discover top-rated products from verified sellers. Use filters to
               refine results by price, category, rating, and availability.
             </p>
             <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">
-              {filtered.length} product
-              {filtered.length !== 1 ? "s" : ""} found
+              {filtered.length} product{filtered.length !== 1 ? "s" : ""} found
             </p>
+
+            {/* Wholesale badge */}
+            {wholesaleOnly && (
+              <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 px-3 py-1 text-xs font-semibold text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-600">
+                <PackageIcon size={13} /> Wholesale / Bulk Pricing
+              </div>
+            )}
+
+            {/* Category pills */}
             <div className="mt-4 flex flex-wrap gap-2">
               <button
                 onClick={() => setCategory("")}
                 className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                   category === ""
-                    ? "bg-slate-900 text-white"
+                    ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                 }`}
               >
@@ -222,7 +304,7 @@ function ShopContent() {
                   onClick={() => setCategory(c)}
                   className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                     category === c
-                      ? "bg-slate-900 text-white"
+                      ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                   }`}
                 >
@@ -240,12 +322,12 @@ function ShopContent() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search products..."
-                className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-lg px-4 py-2 text-sm outline-none w-56 pr-8 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-lg px-4 py-2 text-sm outline-none w-56 pr-8 text-slate-800 dark:text-slate-100 placeholder:text-slate-400"
               />
               {search && (
                 <button
                   onClick={() => setSearch("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
                   <XIcon size={14} />
                 </button>
@@ -268,10 +350,10 @@ function ShopContent() {
             {/* Filter toggle */}
             <button
               onClick={() => setShowFilters((v) => !v)}
-              className={`flex items.CENTER gap-2 px-4 py-2 rounded-lg text-sm border transition ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm border transition ${
                 showFilters
-                  ? "bg-slate-800 text-white border-slate-800"
-                  : "border-slate-200 text-slate-600 hover:border-slate-400 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-500"
+                  ? "bg-slate-800 text-white border-slate-800 dark:bg-slate-100 dark:text-slate-900"
+                  : "border-slate-200 text-slate-600 hover:border-slate-400 dark:border-slate-700 dark:text-slate-200"
               }`}
             >
               <SlidersHorizontalIcon size={15} />
@@ -286,7 +368,7 @@ function ShopContent() {
             {activeFilterCount > 0 && (
               <button
                 onClick={clearFilters}
-                className="text-xs text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 transition flex items-center gap-1"
+                className="text-xs text-slate-400 hover:text-red-500 transition flex items-center gap-1"
               >
                 <XIcon size={12} /> Clear all
               </button>
@@ -296,7 +378,7 @@ function ShopContent() {
 
         {/* Filter panel */}
         {showFilters && (
-          <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 mb-6 grid grid-cols-2 md:grid-cols-4 gap-5">
+          <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 mb-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
             {/* Category */}
             <div>
               <p className="text-xs font-semibold text-slate-500 dark:text-slate-300 uppercase mb-2">
@@ -350,13 +432,11 @@ function ShopContent() {
                 {[1, 2, 3, 4, 5].map((r) => (
                   <button
                     key={r}
-                    onClick={() =>
-                      setMinRating(minRating === r ? 0 : r)
-                    }
+                    onClick={() => setMinRating(minRating === r ? 0 : r)}
                     className={`px-2 py-1 rounded text-xs border transition ${
                       minRating >= r
                         ? "bg-green-500 text-white border-green-500"
-                        : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-300 hover:border-green-300 dark:hover:border-green-400"
+                        : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-300"
                     }`}
                   >
                     {r}★
@@ -365,12 +445,28 @@ function ShopContent() {
               </div>
             </div>
 
-            {/* In stock */}
+            {/* Origin */}
+            <div>
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-300 uppercase mb-2">
+                Origin
+              </p>
+              <select
+                value={originFilter}
+                onChange={(e) => setOriginFilter(e.target.value)}
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-sm outline-none bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+              >
+                <option value="">All</option>
+                <option value="local">Local / Nigeria</option>
+                <option value="abroad">Shipped from Abroad</option>
+              </select>
+            </div>
+
+            {/* Availability / Wholesale */}
             <div>
               <p className="text-xs font-semibold text-slate-500 dark:text-slate-300 uppercase mb-2">
                 Availability
               </p>
-              <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-600 dark:text-slate-200">
+              <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-600 dark:text-slate-200 mb-2">
                 <input
                   type="checkbox"
                   checked={inStockOnly}
@@ -378,6 +474,15 @@ function ShopContent() {
                   className="accent-green-500 w-4 h-4"
                 />
                 In Stock Only
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-600 dark:text-slate-200">
+                <input
+                  type="checkbox"
+                  checked={wholesaleOnly}
+                  onChange={(e) => setWholesaleOnly(e.target.checked)}
+                  className="accent-amber-500 w-4 h-4"
+                />
+                Wholesale Only
               </label>
             </div>
           </div>
@@ -387,13 +492,11 @@ function ShopContent() {
         {paginated.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-slate-400 dark:text-slate-500">
             <p className="text-xl font-medium mb-2">No products found</p>
-            <p className="text-sm">
-              Try adjusting your filters or search term
-            </p>
+            <p className="text-sm">Try adjusting your filters or search term</p>
             {activeFilterCount > 0 && (
               <button
                 onClick={clearFilters}
-                className="mt-4 px-5 py-2 bg-slate-800 text-white rounded-lg text-sm hover:bg-slate-900 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white transition"
+                className="mt-4 px-5 py-2 bg-slate-800 text-white rounded-lg text-sm hover:bg-slate-900 transition"
               >
                 Clear Filters
               </button>
@@ -409,8 +512,7 @@ function ShopContent() {
                       {group}
                     </h2>
                     <p className="text-xs text-slate-500 dark:text-slate-300 mt-1">
-                      {products.length} product
-                      {products.length !== 1 ? "s" : ""} in this category.
+                      {products.length} product{products.length !== 1 ? "s" : ""} in this category.
                     </p>
                   </div>
                   <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-600 dark:text-slate-200">
@@ -441,9 +543,7 @@ function ShopContent() {
             {Array.from({ length: totalPages }, (_, i) => i + 1)
               .filter(
                 (p) =>
-                  p === 1 ||
-                  p === totalPages ||
-                  Math.abs(p - page) <= 1,
+                  p === 1 || p === totalPages || Math.abs(p - page) <= 1
               )
               .reduce((acc, p, idx, arr) => {
                 if (idx > 0 && p - arr[idx - 1] > 1) acc.push("...");
@@ -452,10 +552,7 @@ function ShopContent() {
               }, [])
               .map((p, i) =>
                 p === "..." ? (
-                  <span
-                    key={`ellipsis-${i}`}
-                    className="px-2 text-slate-400 dark:text-slate-500"
-                  >
+                  <span key={`ellipsis-${i}`} className="px-2 text-slate-400">
                     …
                   </span>
                 ) : (
@@ -470,7 +567,7 @@ function ShopContent() {
                   >
                     {p}
                   </button>
-                ),
+                )
               )}
 
             <button
@@ -491,7 +588,7 @@ export default function Shop() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-[70vh] flex items-center justify-center text-slate-400 dark:text-slate-500">
+        <div className="min-h-[70vh] flex items-center justify-center text-slate-400">
           Loading shop...
         </div>
       }

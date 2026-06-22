@@ -5,7 +5,7 @@ import Image from "next/image"
 import Loading from "@/components/Loading"
 import { useAuth, useUser } from "@clerk/nextjs"
 import axios from "axios"
-import { PencilIcon, Trash2Icon, XIcon, CheckIcon, CopyIcon, UploadIcon, DownloadIcon, PlusIcon } from "lucide-react"
+import { PencilIcon, Trash2Icon, XIcon, CheckIcon, CopyIcon, UploadIcon, DownloadIcon, PlusIcon, SearchIcon, CheckSquareIcon, SquareIcon, SlidersHorizontalIcon } from "lucide-react"
 import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
 
 const categories = ['Electronics', 'Clothing', 'Home & Garden', 'Beauty & Health', 'Toys & Games', 'Sports & Outdoors', 'Books & Media', 'Food & Beverage', 'Hobbies & Crafts', 'Automotive', 'Baby & Kids', 'Pet Supplies', 'Office Supplies', 'Industrial & Scientific', 'Accessories', 'Smartphones', 'Laptops', 'Solars', 'Others']
@@ -56,9 +56,18 @@ export default function StoreManageProducts() {
     const [deletingId, setDeletingId] = useState(null)
     const [confirmDeleteId, setConfirmDeleteId] = useState(null)
     const [requestingAd, setRequestingAd] = useState(null)
+
     const [cloning, setCloning] = useState(null)
     const [importing, setImporting] = useState(false)
     const csvRef = useRef()
+
+    // Search, filter, bulk selection
+    const [search, setSearch] = useState('')
+    const [categoryFilter, setCategoryFilter] = useState('')
+    const [stockFilter, setStockFilter] = useState('')
+    const [selected, setSelected] = useState(new Set())
+    const [confirmBulkDelete, setConfirmBulkDelete] = useState(false)
+    const [bulkDeleting, setBulkDeleting] = useState(false)
 
     const parsePrice = (value) => {
         const price = parseFloat(value)
@@ -817,13 +826,65 @@ export default function StoreManageProducts() {
         if (user) fetchProducts()
     }, [user])
 
+    // Filtered / searched product list
+    const filteredProducts = products.filter(p => {
+        if (search.trim()) {
+            const q = search.toLowerCase()
+            if (!p.name.toLowerCase().includes(q) && !p.sku?.toLowerCase().includes(q) && !p.category?.toLowerCase().includes(q)) return false
+        }
+        if (categoryFilter && p.category !== categoryFilter) return false
+        if (stockFilter === 'in_stock' && !p.inStock) return false
+        if (stockFilter === 'out_of_stock' && p.inStock) return false
+        return true
+    })
+
+    const toggleSelect = (id) => setSelected(prev => {
+        const next = new Set(prev); next.has(id) ? next.delete(id) : next.add(id); return next
+    })
+    const toggleSelectAll = () => {
+        if (selected.size === filteredProducts.length) setSelected(new Set())
+        else setSelected(new Set(filteredProducts.map(p => p.id)))
+    }
+    const allSelected = filteredProducts.length > 0 && selected.size === filteredProducts.length
+
+    const executeBulkDelete = async () => {
+        setBulkDeleting(true)
+        try {
+            const headers = await getStoreAuthHeaders(getToken)
+            await Promise.all([...selected].map(id => axios.delete(`/api/store/product?productId=${id}`, { headers })))
+            toast.success(`${selected.size} product(s) deleted.`)
+            setProducts(prev => prev.filter(p => !selected.has(p.id)))
+            setSelected(new Set())
+            setConfirmBulkDelete(false)
+        } catch (e) { toast.error(e?.response?.data?.error || e.message) }
+        setBulkDeleting(false)
+    }
+
     if (loading) return <Loading />
 
     return (
         <div className="text-slate-500 dark:text-slate-300 mb-28">
             <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
                 <h1 className="text-2xl">Manage <span className="text-slate-800 dark:text-slate-100 font-medium">Products</span></h1>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                    <div className="relative">
+                        <SearchIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input type="text" value={search} onChange={e => { setSearch(e.target.value); setSelected(new Set()) }}
+                            placeholder="Search products..."
+                            className="border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-8 py-2 text-sm outline-none w-48 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200" />
+                        {search && <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400"><XIcon size={13} /></button>}
+                    </div>
+                    <select value={categoryFilter} onChange={e => { setCategoryFilter(e.target.value); setSelected(new Set()) }}
+                        className="border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900">
+                        <option value="">All Categories</option>
+                        {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                    <select value={stockFilter} onChange={e => { setStockFilter(e.target.value); setSelected(new Set()) }}
+                        className="border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900">
+                        <option value="">All Stock</option>
+                        <option value="in_stock">In Stock</option>
+                        <option value="out_of_stock">Out of Stock</option>
+                    </select>
                     <button onClick={downloadCSVTemplate}
                         className="flex items-center gap-1.5 text-xs px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 dark:text-slate-300 hover:border-slate-400 transition">
                         <DownloadIcon size={13} /> CSV Template
@@ -835,12 +896,42 @@ export default function StoreManageProducts() {
                 </div>
             </div>
 
-            {products.length === 0 ? (
-                <p className="text-slate-400">No products yet. Add your first product.</p>
+            {/* Bulk action bar */}
+            {selected.size > 0 && (
+                <div className="flex items-center gap-3 mb-4 px-4 py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl">
+                    <span className="text-sm font-medium">{selected.size} selected</span>
+                    <div className="flex gap-2 ml-auto">
+                        <button onClick={() => setConfirmBulkDelete(true)}
+                            className="flex items-center gap-1.5 px-4 py-1.5 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium transition">
+                            <Trash2Icon size={14} /> Delete selected
+                        </button>
+                        <button onClick={() => setSelected(new Set())}
+                            className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm transition">
+                            <XIcon size={14} />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Select all row */}
+            {filteredProducts.length > 0 && (
+                <div className="flex items-center gap-2 mb-3 text-xs text-slate-500 dark:text-slate-400">
+                    <button onClick={toggleSelectAll} className="flex items-center gap-1.5 hover:text-slate-700 dark:hover:text-slate-200 transition">
+                        {allSelected ? <CheckSquareIcon size={15} className="text-slate-800 dark:text-slate-100" /> : <SquareIcon size={15} />}
+                        {allSelected ? 'Deselect all' : `Select all (${filteredProducts.length})`}
+                    </button>
+                    <span className="text-slate-300 dark:text-slate-600">•</span>
+                    <span>{filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} shown</span>
+                </div>
+            )}
+
+            {filteredProducts.length === 0 ? (
+                <p className="text-slate-400">{products.length === 0 ? 'No products yet. Add your first product.' : 'No products match your filters.'}</p>
             ) : (
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                    {products.map((product) => (
-                        <div key={product.id} className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+                    {filteredProducts.map((product) => (
+                        <div key={product.id} className={`relative rounded-3xl border bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-slate-900 ${selected.has(product.id) ? 'border-blue-400 dark:border-blue-500 ring-1 ring-blue-300' : 'border-slate-200 dark:border-slate-800'}`}>
+                            <button onClick={() => toggleSelect(product.id)} className="absolute top-3 right-3 z-10 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">{selected.has(product.id) ? <CheckSquareIcon size={16} className="text-blue-600" /> : <SquareIcon size={16} />}</button>
                             <div className="flex gap-4">
                                 <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-950">
                                     <Image src={product.images[0]} alt={product.name} fill className="object-cover" sizes="112px" />
@@ -967,6 +1058,23 @@ export default function StoreManageProducts() {
                                 className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 py-2 rounded hover:bg-slate-200 transition text-sm">
                                 Cancel
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {confirmBulkDelete && (
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg p-6 max-w-sm w-full mx-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-2">Delete {selected.size} products?</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-300 mb-4">This will permanently delete {selected.size} selected products and cannot be undone.</p>
+                        <div className="flex gap-3">
+                            <button onClick={executeBulkDelete} disabled={bulkDeleting}
+                                className="flex-1 bg-red-500 text-white py-2 rounded-lg text-sm hover:bg-red-600 transition disabled:opacity-50">
+                                {bulkDeleting ? 'Deleting...' : `Delete ${selected.size}`}
+                            </button>
+                            <button onClick={() => setConfirmBulkDelete(false)}
+                                className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 py-2 rounded-lg text-sm hover:bg-slate-200 transition">Cancel</button>
                         </div>
                     </div>
                 </div>

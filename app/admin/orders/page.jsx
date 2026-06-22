@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useMemo, useState } from "react"
+import ExportOrdersButton from "@/components/ExportOrdersButton"
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
 import toast from "react-hot-toast"
@@ -68,6 +69,7 @@ export default function AdminOrdersPage() {
             {data.total || 0} total
           </p>
         </div>
+        <ExportOrdersButton endpoint="/api/admin/orders-export" token={null} getHeaders={async () => { const t = await getToken(); return { Authorization: `Bearer ${t}` } }} />
 
         <form onSubmit={submitSearch} className="flex items-center gap-2 flex-wrap">
           <div className="relative">

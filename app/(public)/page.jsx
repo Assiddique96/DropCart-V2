@@ -8,9 +8,27 @@ import Newsletter from "@/components/Newsletter";
 import MiddleBannerRow, {
   defaultMiddleBanners,
 } from "@/components/MiddleBannerRow";
-// import InfiniteProductsGrid from "@/components/InfiniteProductsGrid";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [middleBanners, setMiddleBanners] = useState(defaultMiddleBanners);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/home/middle-banner");
+        const { banners } = await res.json();
+        if (!cancelled && Array.isArray(banners) && banners.length > 0) {
+          setMiddleBanners(banners);
+        }
+      } catch {
+        // keep defaults
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <div className="bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-100">
       {/* Top hero section */}
@@ -23,18 +41,13 @@ export default function Home() {
 
       {/* Flash deals / International shipping / Installment plans */}
       <section className="mt-4">
-        <MiddleBannerRow banners={defaultMiddleBanners} />
+        <MiddleBannerRow banners={middleBanners} />
       </section>
 
       {/* Best selling section */}
       <section className="mt-6">
         <BestSelling />
       </section>
-
-      {/* Infinite scroll product feed (Wildberries‑like long page) */}
-      {/* <section className="mt-8">
-        <InfiniteProductsGrid />
-      </section> */}
 
       {/* Info / trust / specs + newsletter */}
       <section className="mt-10">

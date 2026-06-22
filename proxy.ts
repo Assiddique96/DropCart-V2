@@ -1,57 +1,86 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-// Define ONLY the pages that any random guest visitor can see
+/**
+ * Route matchers for public endpoints
+ */
 const isPublicRoute = createRouteMatcher([
-  '/',                     // Main landing page
-  '/about(.*)',            // About page
-  '/cart(.*)',             // Shopping cart (accessible to guests)
-  '/wishlist(.*)',         // Wishlist page (accessible to guests)
-  '/contact(.*)',          // Contact page
-  '/cookies(.*)',          // Cookies policy
-  '/faq(.*)',              // FAQ page
-  '/pricing(.*)',          // Pricing page
-  '/privacy(.*)',          // Privacy policy
-  '/product(.*)',          // Viewing products
-  '/shop(.*)',             // Browsing the shop marketplace
-  '/terms(.*)',            // Terms of service
-  '/track(.*)',            // Order tracking page
-  '/app(.*)',              // Main app page (will show login/signup for guests)
-  '/api/products(.*)',     // Public products API used by home/product pages
-  '/api/categories(.*)',   // Public categories API used by home/product pages
-  '/api/brands(.*)',       // Public brands API used by home/product pages
-  '/api/home/content(.*)', // Hero / home page content
-  '/api/contact(.*)',      // Public contact form submission
-  '/api/track(.*)',        // Public order tracking API
-  '/api/search-by-image(.*)', // Public image search API used by navbar
-  '/api/config(.*)',       // Public checkout / cart configuration
-  '/api/coupon(.*)',       // Public coupon validation API
-  '/api/paystack(.*)',     // Public Paystack payment API + webhooks
-  '/api/flutterwave(.*)',  // Public Flutterwave payment API + verification
-  '/api/stripe(.*)',       // Public Stripe payment API + webhooks
-  '/api/lemonsqueezy(.*)', // Public LemonSqueezy payment API + webhooks
-  '/api/store/data(.*)',   // Store profile dynamic data API
-  '/api/store/products(.*)', // Store products API
-  '/api/inngest(.*)',          // Inngest API routes (for event handling, etc.)
-  '/api/trpc(.*)',            // tRPC API routes (for client-server communication)
-  '/api/flutterwave/webhook(.*)', // Flutterwave payment processor webhook
-  '/product/(.*)',          // Product listing and details pages
+  // Marketing & Public Pages
+  "/",
+  "/about(.*)",
+  "/app(.*)",
+  "/cart(.*)",
+  "/contact(.*)",
+  "/cookies(.*)",
+  "/faq(.*)",
+  "/loading(.*)",
+  "/pricing(.*)",
+  "/privacy(.*)",
+  "/product(.*)",
+  "/shop(.*)",
+  "/terms(.*)",
+  "/track(.*)",
+  "/wholesale(.*)",
+  "/wishlist(.*)",
 
-  
+  // Auth Pages
+  "/sign-in(.*)",
+  "/sign-up(.*)",
 
+  // Public API Routes
+  "/api/brands(.*)",
+  "/api/categories(.*)",
+  "/api/config(.*)",
+  "/api/contact(.*)",
+  "/api/coupon(.*)",
+  "/api/home(.*)",
+  "/api/inngest(.*)",
+  "/api/platform/categories(.*)",
+  "/api/products(.*)",
+  "/api/rating(.*)",
+  "/api/recommendations(.*)",
+  "/api/search-by-image(.*)",
+  "/api/search(.*)",
+  "/api/store/data(.*)",
+  "/api/store/products(.*)",
+  "/api/track(.*)",
+  "/api/trpc(.*)",
+  "/api/verified-stores(.*)",
+
+  // Payment APIs & Webhooks
+  "/api/flutterwave(.*)",
+  "/api/lemonsqueezy(.*)",
+  "/api/paystack(.*)",
+  "/api/stripe(.*)",
 ]);
 
+const SECURITY_HEADERS = {
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "SAMEORIGIN",
+  "X-XSS-Protection": "1; mode=block",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+};
+
 export default clerkMiddleware(async (auth, request) => {
-  // Accessing /create-store or /orders will still force a login/signup
+  // Protect non-public routes
   if (!isPublicRoute(request)) {
     await auth.protect();
   }
+
+  // Attach security headers to every response
+  const response = NextResponse.next();
+  for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
+    response.headers.set(key, value);
+  }
+  return response;
 });
 
 export const config = {
   matcher: [
     // Skip Next.js internals and all static asset files
-    '/((?!_next|[^?]*\\.[\\w]+).*)',
+    "/((?!_next|[^?]*\\.[\\w]+).*)",
     // Always run for API routes
-    '/(api|trpc)(.*)',
+    "/(api|trpc)(.*)",
   ],
 };

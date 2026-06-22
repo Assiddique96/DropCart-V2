@@ -1,4 +1,5 @@
 'use client'
+import { SearchIcon, XIcon } from "lucide-react"
 import StoreInfo from "@/components/admin/StoreInfo"
 import Loading from "@/components/Loading"
 import { useAuth, useUser } from "@clerk/nextjs"
@@ -12,6 +13,7 @@ export default function AdminStores() {
     const [stores, setStores] = useState([])
     const [counts, setCounts] = useState({ total: 0, approved: 0, pending: 0, rejected: 0 })
     const [statusFilter, setStatusFilter] = useState("all")
+    const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(true)
 
     const fetchStores = async () => {
@@ -55,13 +57,26 @@ export default function AdminStores() {
         }
     }, [user])
 
-    const filteredStores = statusFilter === "all"
-        ? stores
-        : stores.filter((store) => store.status === statusFilter)
+    const filteredStores = stores.filter(store => {
+        if (statusFilter !== 'all' && store.status !== statusFilter) return false
+        if (search.trim()) {
+            const q = search.toLowerCase()
+            if (!store.name?.toLowerCase().includes(q) && !store.username?.toLowerCase().includes(q) && !store.email?.toLowerCase().includes(q)) return false
+        }
+        return true
+    })
 
     return !loading ? (
         <div className="text-slate-500 dark:text-slate-300 mb-28">
-            <h1 className="text-2xl">All <span className="text-slate-800 dark:text-slate-100 font-medium">Stores</span></h1>
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
+                <h1 className="text-2xl">All <span className="text-slate-800 dark:text-slate-100 font-medium">Stores</span></h1>
+                <div className="relative">
+                    <SearchIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search stores..."
+                        className="border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-8 py-2 text-sm outline-none w-56 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200" />
+                    {search && <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400"><XIcon size={13} /></button>}
+                </div>
+            </div>
             <div className="mt-4 flex flex-wrap gap-2 text-sm">
                 {[
                     { key: "all", label: `All (${counts.total})` },

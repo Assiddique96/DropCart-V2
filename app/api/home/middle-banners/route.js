@@ -1,15 +1,12 @@
-import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
+import prisma from "src/db"; // Reusing your main prisma instance from file 1
 
-const prisma = new PrismaClient();
-
-export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
-
+/** GET /api/home/middle-banners */
+export async function GET() {
   try {
     const now = new Date();
 
+    // Fetches active banners where the current date falls within their schedule
     const banners = await prisma.middleBanner.findMany({
       where: {
         isActive: true,
@@ -29,9 +26,12 @@ export default async function handler(req, res) {
       orderBy: { position: "asc" },
     });
 
-    return res.status(200).json({ banners });
+    return NextResponse.json({ banners });
   } catch (error) {
     console.error("GET /api/home/middle-banners error:", error);
-    return res.status(500).json({ message: "Failed to load middle banners" });
+    return NextResponse.json(
+      { message: "Failed to load middle banners" },
+      { status: 500 }
+    );
   }
 }

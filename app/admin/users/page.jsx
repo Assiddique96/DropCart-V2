@@ -6,7 +6,7 @@ import toast from "react-hot-toast"
 import Loading from "@/components/Loading"
 import Image from "next/image"
 import Link from "next/link"
-import { SearchIcon, ShieldOffIcon, ShieldCheckIcon, StoreIcon, XIcon } from "lucide-react"
+import { SearchIcon, ShieldOffIcon, ShieldCheckIcon, StoreIcon, XIcon, CheckSquareIcon, SquareIcon } from "lucide-react"
 
 export default function AdminUsers() {
     const { getToken } = useAuth()
@@ -17,35 +17,49 @@ export default function AdminUsers() {
     const [totalPages, setTotalPages] = useState(1)
     const [search, setSearch] = useState('')
     const [debouncedSearch, setDebouncedSearch] = useState('')
+    const [statusFilter, setStatusFilter] = useState('') // '' | 'active' | 'banned'
+    const [storeFilter, setStoreFilter] = useState('')   // '' | 'has_store' | 'no_store'
     const [banModal, setBanModal] = useState(null)
     const [banReason, setBanReason] = useState('')
     const [actioning, setActioning] = useState(false)
     const [storesModalUser, setStoresModalUser] = useState(null)
     const [togglingStoreId, setTogglingStoreId] = useState(null)
 
+    // Bulk selection
+    const [selected, setSelected] = useState(new Set())
+    const [bulkAction, setBulkAction] = useState('')
+    const [bulkProcessing, setBulkProcessing] = useState(false)
+    const [confirmBulk, setConfirmBulk] = useState(false)
+
     useEffect(() => {
         const t = setTimeout(() => setDebouncedSearch(search), 350)
         return () => clearTimeout(t)
     }, [search])
 
-    useEffect(() => { setPage(1) }, [debouncedSearch])
+    useEffect(() => { setPage(1); setSelected(new Set()) }, [debouncedSearch, statusFilter, storeFilter])
 
     const fetchUsers = async () => {
         setLoading(true)
         try {
             const token = await getToken()
-            const { data } = await axios.get(
-                `/api/admin/users?search=${encodeURIComponent(debouncedSearch)}&page=${page}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            )
-            setUsers(data.users)
+            const params = new URLSearchParams({
+                search: debouncedSearch,
+                page,
+                ...(statusFilter && { status: statusFilter }),
+            })
+            const { data } = await axios.get(`/api/admin/users?${params}`, { headers: { Authorization: `Bearer ${token}` } })
+            let list = data.users
+            // Client-side store filter (API may not support it natively)
+            if (storeFilter === 'has_store') list = list.filter(u => u.stores?.length > 0)
+            if (storeFilter === 'no_store') list = list.filter(u => !u.stores?.length)
+            setUsers(list)
             setTotal(data.total)
             setTotalPages(data.totalPages)
         } catch (e) { toast.error(e?.response?.data?.error || e.message) }
         setLoading(false)
     }
 
-    useEffect(() => { fetchUsers() }, [debouncedSearch, page])
+    useEffect(() => { fetchUsers() }, [debouncedSearch, statusFilter, storeFilter, page])
 
     const handleBanAction = async () => {
         if (!banModal) return
@@ -70,16 +84,12 @@ export default function AdminUsers() {
         setTogglingStoreId(storeId)
         try {
             const token = await getToken()
-            const { data } = await axios.post("/api/admin/toggle-store", { storeId }, {
-                headers: { Authorization: `Bearer ${token}` },
-            })
+            const { data } = await axios.post("/api/admin/toggle-store", { storeId }, { headers: { Authorization: `Bearer ${token}` } })
             toast.success(data.message || "Store status updated")
-            // Update stores in modal immediately for better UX.
             setStoresModalUser(prev => prev ? ({
                 ...prev,
                 stores: prev.stores.map(s => s.id === storeId ? { ...s, isActive: !s.isActive } : s),
             }) : prev)
-            // Keep table state in sync too.
             setUsers(prev => prev.map(u => u.id === storesModalUser.id
                 ? { ...u, stores: u.stores.map(s => s.id === storeId ? { ...s, isActive: !s.isActive } : s) }
                 : u
@@ -90,6 +100,47 @@ export default function AdminUsers() {
         setTogglingStoreId(null)
     }
 
+    // Bulk selection helpers
+    const toggleSelect = (id) => {
+        setSelected(prev => {
+            const next = new Set(prev)
+            if (next.has(id)) next.delete(id)
+            else next.add(id)
+            return next
+        })
+    }
+    const toggleSelectAll = () => {
+        if (selected.size === users.length) setSelected(new Set())
+        else setSelected(new Set(users.map(u => u.id)))
+    }
+    const allSelected = users.length > 0 && selected.size === users.length
+    const someSelected = selected.size > 0 && !allSelected
+
+    const handleBulkApply = () => {
+        if (!bulkAction || selected.size === 0) return
+        setConfirmBulk(true)
+    }
+
+    const executeBulkAction = async () => {
+        setBulkProcessing(true)
+        try {
+            const token = await getToken()
+            const ids = [...selected]
+            const action = bulkAction // 'ban' | 'unban'
+            await Promise.all(ids.map(userId =>
+                axios.patch("/api/admin/users", { userId, action, reason: "Bulk action by admin" }, { headers: { Authorization: `Bearer ${token}` } })
+            ))
+            toast.success(`${ids.length} user(s) ${action === 'ban' ? 'banned' : 'unbanned'}.`)
+            setSelected(new Set())
+            setConfirmBulk(false)
+            setBulkAction('')
+            fetchUsers()
+        } catch (e) {
+            toast.error(e?.response?.data?.error || e.message)
+        }
+        setBulkProcessing(false)
+    }
+
     return (
         <div className="text-slate-500 dark:text-slate-300 mb-28">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
@@ -97,14 +148,56 @@ export default function AdminUsers() {
                     <h1 className="text-2xl">User <span className="text-slate-800 dark:text-slate-100 font-medium">Management</span></h1>
                     <p className="text-xs text-slate-400 mt-0.5">{total} total users</p>
                 </div>
-                <div className="relative">
-                    <SearchIcon size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                    <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-                        placeholder="Search by name or email..."
-                        className="border border-slate-200 dark:border-slate-700 rounded-lg pl-9 pr-8 py-2 text-sm outline-none w-60" />
-                    {search && <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"><XIcon size={13} /></button>}
+                <div className="flex gap-3 flex-wrap items-center">
+                    {/* Search */}
+                    <div className="relative">
+                        <SearchIcon size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+                            placeholder="Search by name or email..."
+                            className="border border-slate-200 dark:border-slate-700 rounded-lg pl-9 pr-8 py-2 text-sm outline-none w-60 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200" />
+                        {search && <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"><XIcon size={13} /></button>}
+                    </div>
+
+                    {/* Status filter */}
+                    <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+                        className="border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="banned">Banned</option>
+                    </select>
+
+                    {/* Store filter */}
+                    <select value={storeFilter} onChange={e => setStoreFilter(e.target.value)}
+                        className="border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900">
+                        <option value="">All Users</option>
+                        <option value="has_store">Has Store</option>
+                        <option value="no_store">No Store</option>
+                    </select>
                 </div>
             </div>
+
+            {/* Bulk action bar */}
+            {selected.size > 0 && (
+                <div className="flex items-center gap-3 mb-4 px-4 py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl">
+                    <span className="text-sm font-medium">{selected.size} selected</span>
+                    <div className="flex items-center gap-2 ml-auto">
+                        <select value={bulkAction} onChange={e => setBulkAction(e.target.value)}
+                            className="rounded-lg px-3 py-1.5 text-sm bg-slate-800 dark:bg-slate-700 border border-slate-600 text-white outline-none">
+                            <option value="">Bulk action…</option>
+                            <option value="ban">Ban selected</option>
+                            <option value="unban">Unban selected</option>
+                        </select>
+                        <button onClick={handleBulkApply} disabled={!bulkAction}
+                            className="px-4 py-1.5 text-sm bg-red-600 hover:bg-red-700 rounded-lg disabled:opacity-40 transition font-medium">
+                            Apply
+                        </button>
+                        <button onClick={() => setSelected(new Set())}
+                            className="px-3 py-1.5 text-sm bg-slate-700 hover:bg-slate-600 rounded-lg transition">
+                            <XIcon size={14} />
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {loading ? <Loading /> : (
                 <>
@@ -112,6 +205,16 @@ export default function AdminUsers() {
                         <table className="w-full text-sm text-left">
                             <thead className="bg-slate-50 dark:bg-slate-900 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-300">
                                 <tr>
+                                    <th className="px-4 py-3 w-10">
+                                        <button onClick={toggleSelectAll} className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
+                                            {allSelected
+                                                ? <CheckSquareIcon size={16} className="text-slate-800 dark:text-slate-100" />
+                                                : someSelected
+                                                ? <CheckSquareIcon size={16} className="text-slate-400" />
+                                                : <SquareIcon size={16} />
+                                            }
+                                        </button>
+                                    </th>
                                     <th className="px-4 py-3">User</th>
                                     <th className="px-4 py-3 hidden md:table-cell">Email</th>
                                     <th className="px-4 py-3 hidden lg:table-cell">Orders</th>
@@ -122,7 +225,16 @@ export default function AdminUsers() {
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200">
                                 {users.map(user => (
-                                    <tr key={user.id} className={`hover:bg-slate-50 transition-colors ${user.isBanned ? 'bg-red-50/40' : ''}`}>
+                                    <tr key={user.id}
+                                        className={`hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors ${user.isBanned ? 'bg-red-50/40 dark:bg-red-900/10' : ''} ${selected.has(user.id) ? 'bg-blue-50 dark:bg-blue-900/10' : ''}`}>
+                                        <td className="px-4 py-3">
+                                            <button onClick={() => toggleSelect(user.id)}>
+                                                {selected.has(user.id)
+                                                    ? <CheckSquareIcon size={16} className="text-blue-600" />
+                                                    : <SquareIcon size={16} className="text-slate-400 hover:text-slate-700" />
+                                                }
+                                            </button>
+                                        </td>
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-3">
                                                 <Image src={user.image} alt="" width={32} height={32} className="rounded-full" />
@@ -133,18 +245,15 @@ export default function AdminUsers() {
                                         <td className="px-4 py-3 hidden lg:table-cell">{user._count?.buyerOrders ?? 0}</td>
                                         <td className="px-4 py-3 hidden lg:table-cell">
                                             {user.stores?.[0] ? (
-                                                <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${user.stores[0].isActive ? 'bg-green-50 text-green-700' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300'}`}>
+                                                <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${user.stores[0].isActive ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300'}`}>
                                                     <StoreIcon size={11} /> {user.stores[0].name}
                                                 </span>
-                                            ) : <span className="text-slate-300 text-xs">—</span>}
+                                            ) : <span className="text-slate-300 dark:text-slate-600 text-xs">—</span>}
                                             {!!user.stores?.length && (
                                                 <div className="mt-1">
                                                     <p className="text-[10px] text-slate-400">{user.stores.length} store(s)</p>
                                                     {user.stores.length > 1 && (
-                                                        <button
-                                                            onClick={() => setStoresModalUser(user)}
-                                                            className="text-[10px] text-blue-500 hover:underline mt-0.5"
-                                                        >
+                                                        <button onClick={() => setStoresModalUser(user)} className="text-[10px] text-blue-500 hover:underline mt-0.5">
                                                             View / modify all
                                                         </button>
                                                     )}
@@ -152,7 +261,7 @@ export default function AdminUsers() {
                                             )}
                                         </td>
                                         <td className="px-4 py-3">
-                                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${user.isBanned ? 'bg-red-100 text-red-600' : 'bg-green-50 text-green-700'}`}>
+                                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${user.isBanned ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400'}`}>
                                                 {user.isBanned ? 'Banned' : 'Active'}
                                             </span>
                                         </td>
@@ -172,7 +281,7 @@ export default function AdminUsers() {
                                     </tr>
                                 ))}
                                 {users.length === 0 && (
-                                    <tr><td colSpan={6} className="text-center py-12 text-slate-400">No users found.</td></tr>
+                                    <tr><td colSpan={7} className="text-center py-12 text-slate-400">No users found.</td></tr>
                                 )}
                             </tbody>
                         </table>
@@ -182,7 +291,7 @@ export default function AdminUsers() {
                         <div className="flex items-center justify-center gap-2 mt-6">
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
                                 <button key={p} onClick={() => setPage(p)}
-                                    className={`w-8 h-8 rounded-lg text-sm transition ${page === p ? 'bg-slate-800 text-white' : 'border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'}`}>
+                                    className={`w-8 h-8 rounded-lg text-sm transition ${page === p ? 'bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900' : 'border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
                                     {p}
                                 </button>
                             ))}
@@ -191,6 +300,7 @@ export default function AdminUsers() {
                 </>
             )}
 
+            {/* Single ban/unban modal */}
             {banModal && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
                     <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg p-6 max-w-md w-full mx-4">
@@ -202,7 +312,7 @@ export default function AdminUsers() {
                                 <p className="text-sm text-slate-500 dark:text-slate-300 mb-3">This will suspend their account and deactivate their store.</p>
                                 <textarea value={banReason} onChange={e => setBanReason(e.target.value)}
                                     placeholder="Reason for ban (optional)" rows={3}
-                                    className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none resize-none mb-4" />
+                                    className="w-full border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none resize-none mb-4 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100" />
                             </>
                         ) : (
                             <p className="text-sm text-slate-500 dark:text-slate-300 mb-4">Their account access will be restored. Store remains inactive until manually re-enabled.</p>
@@ -219,15 +329,38 @@ export default function AdminUsers() {
                 </div>
             )}
 
+            {/* Bulk action confirm */}
+            {confirmBulk && (
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg p-6 max-w-md w-full mx-4">
+                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">
+                            {bulkAction === 'ban' ? `Ban ${selected.size} users?` : `Unban ${selected.size} users?`}
+                        </h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-300 mb-4">
+                            {bulkAction === 'ban'
+                                ? `This will suspend ${selected.size} accounts and deactivate their stores.`
+                                : `This will restore access for ${selected.size} accounts.`}
+                        </p>
+                        <div className="flex gap-3">
+                            <button onClick={executeBulkAction} disabled={bulkProcessing}
+                                className={`flex-1 py-2 rounded-lg text-white text-sm disabled:opacity-50 ${bulkAction === 'ban' ? 'bg-red-500 hover:bg-red-600' : 'bg-green-600 hover:bg-green-700'} transition`}>
+                                {bulkProcessing ? "Processing..." : "Confirm"}
+                            </button>
+                            <button onClick={() => setConfirmBulk(false)}
+                                className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm hover:bg-slate-200 transition">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Stores modal */}
             {storesModalUser && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
                     <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg p-6 max-w-2xl w-full mx-4">
                         <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">
                             {storesModalUser.name}&apos;s Stores
                         </h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-300 mb-4">
-                            View and toggle all stores linked to this seller.
-                        </p>
+                        <p className="text-sm text-slate-500 dark:text-slate-300 mb-4">View and toggle all stores linked to this seller.</p>
                         <div className="space-y-2 max-h-[420px] overflow-y-auto pr-1">
                             {storesModalUser.stores?.map((store) => (
                                 <div key={store.id} className="flex items-center justify-between gap-3 border border-slate-200 dark:border-slate-700 rounded-lg p-3">
@@ -244,19 +377,13 @@ export default function AdminUsers() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         {store.username && (
-                                            <Link
-                                                href={`/shop/${store.username}`}
-                                                target="_blank"
-                                                className="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
-                                            >
+                                            <Link href={`/shop/${store.username}`} target="_blank"
+                                                className="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
                                                 Open store
                                             </Link>
                                         )}
-                                        <button
-                                            onClick={() => toggleUserStore(store.id)}
-                                            disabled={togglingStoreId === store.id}
-                                            className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-white hover:bg-slate-900 disabled:opacity-50 transition"
-                                        >
+                                        <button onClick={() => toggleUserStore(store.id)} disabled={togglingStoreId === store.id}
+                                            className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-white hover:bg-slate-900 disabled:opacity-50 transition">
                                             {togglingStoreId === store.id ? "Updating..." : store.isActive ? "Deactivate" : "Activate"}
                                         </button>
                                     </div>
@@ -264,10 +391,8 @@ export default function AdminUsers() {
                             ))}
                         </div>
                         <div className="flex justify-end mt-5">
-                            <button
-                                onClick={() => setStoresModalUser(null)}
-                                className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm hover:bg-slate-200 transition"
-                            >
+                            <button onClick={() => setStoresModalUser(null)}
+                                className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm hover:bg-slate-200 transition">
                                 Close
                             </button>
                         </div>

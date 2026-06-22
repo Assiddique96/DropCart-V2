@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import Loading from "../Loading"
 import Link from "next/link"
-import { ArrowRightIcon, ArrowUpRightIcon, CircleDollarSignIcon, HomeIcon, LayoutListIcon, SquarePenIcon, SquarePlusIcon, StoreIcon, UserCircleIcon, ShieldCheckIcon } from "lucide-react"
+import { ArrowRightIcon, ArrowUpRightIcon, CircleDollarSignIcon, HomeIcon, LayoutListIcon, SquarePenIcon, SquarePlusIcon, StoreIcon, UserCircleIcon, ShieldCheckIcon, TagIcon, BarChart2Icon } from "lucide-react"
 import { useAuth, useUser } from "@clerk/nextjs"
 import axios from "axios"
 import { ACTIVE_STORE_KEY, getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
@@ -62,10 +62,12 @@ const StoreLayout = ({ children }) => {
             }
             navItems={[
                 { name: 'Dashboard',       href: '/store',                icon: HomeIcon },
+                { name: 'Analytics',       href: '/store/analytics',      icon: BarChart2Icon },
                 { name: 'Add Product',     href: '/store/add-product',    icon: SquarePlusIcon },
                 { name: 'Manage Product',  href: '/store/manage-product', icon: SquarePenIcon },
                 { name: 'Orders',          href: '/store/orders',         icon: LayoutListIcon },
                 { name: 'Payouts',         href: '/store/payouts',        icon: CircleDollarSignIcon },
+                { name: 'Coupons',         href: '/store/coupons',        icon: TagIcon },
                 { name: 'Delivery Fee',    href: '/store/delivery-fee',   icon: CircleDollarSignIcon },
                 { name: 'Store Profile',   href: '/store/profile',        icon: UserCircleIcon },
                 { name: 'Verify Store',    href: '/store/verify',         icon: ShieldCheckIcon },

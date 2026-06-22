@@ -1,10 +1,11 @@
 'use client'
 import { useEffect, useState } from "react"
+import ExportOrdersButton from "@/components/ExportOrdersButton"
 import Loading from "@/components/Loading"
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
 import toast from "react-hot-toast"
-import { XCircleIcon, TruckIcon, PackageCheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
+import { XCircleIcon, TruckIcon, PackageCheckIcon, ChevronDownIcon, ChevronUpIcon, SearchIcon, XIcon } from "lucide-react"
 import { shortenId } from "@/lib/format"
 import { isOrderConsideredPaid } from "@/lib/orderPayment"
 import { getStoreAuthHeaders } from "@/lib/storeAuthHeaders"
@@ -28,6 +29,8 @@ export default function StoreOrders() {
     const [fulfillmentOpen, setFulfillmentOpen] = useState(null)
     const [fulfillQty, setFulfillQty] = useState({})
     const [submitting, setSubmitting] = useState(false)
+    const [search, setSearch] = useState('')
+    const [statusFilter, setStatusFilter] = useState('')
 
     const { getToken } = useAuth()
 
@@ -116,15 +119,44 @@ export default function StoreOrders() {
 
     if (loading) return <Loading />
 
+    const filteredOrders = orders.filter(order => {
+        if (statusFilter && order.status !== statusFilter) return false
+        if (search.trim()) {
+            const q = search.toLowerCase()
+            if (!order.id.toLowerCase().includes(q) && !order.user?.name?.toLowerCase().includes(q) && !order.user?.email?.toLowerCase().includes(q)) return false
+        }
+        return true
+    })
+
     return (
         <div>
-            <h1 className="text-2xl text-slate-500 dark:text-slate-300 mb-5">Store <span className="text-slate-800 dark:text-slate-100 font-medium">Orders</span></h1>
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <h1 className="text-2xl text-slate-500 dark:text-slate-300">Store <span className="text-slate-800 dark:text-slate-100 font-medium">Orders</span></h1>
+                <div className="flex gap-3 flex-wrap items-center">
+                    <ExportOrdersButton endpoint="/api/store/orders-export" getHeaders={() => getStoreAuthHeaders(getToken)} />
+                    <div className="relative">
+                        <SearchIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search orders..."
+                            className="border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-8 py-2 text-sm outline-none w-52 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200" />
+                        {search && <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400"><XIcon size={13} /></button>}
+                    </div>
+                    <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+                        className="border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900">
+                        <option value="">All Statuses</option>
+                        <option value="ORDER_PLACED">Order Placed</option>
+                        <option value="PROCESSING">Processing</option>
+                        <option value="SHIPPED">Shipped</option>
+                        <option value="DELIVERED">Delivered</option>
+                        <option value="CANCELLED">Cancelled</option>
+                    </select>
+                </div>
+            </div>
 
-            {orders.length === 0 ? (
-                <p className="text-slate-400">No orders yet.</p>
+            {filteredOrders.length === 0 ? (
+                <p className="text-slate-400">{orders.length === 0 ? 'No orders yet.' : 'No orders match your filters.'}</p>
             ) : (
                 <div className="space-y-3 max-w-5xl">
-                    {orders.map((order, index) => (
+                    {filteredOrders.map((order, index) => (
                         <div key={order.id} className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm">
                             {/* Order header row */}
                             <div className="flex flex-wrap items-center gap-3 px-4 py-3 bg-slate-50 dark:bg-slate-900 text-xs text-slate-500 dark:text-slate-300 cursor-pointer"

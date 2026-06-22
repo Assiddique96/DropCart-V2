@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import { format } from "date-fns"
 import toast from "react-hot-toast"
-import { Trash2Icon, InfinityIcon } from "lucide-react"
+import { Trash2Icon, InfinityIcon, SearchIcon, XIcon, PercentIcon, BanknoteIcon } from "lucide-react"
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
 
@@ -25,6 +25,9 @@ export default function AdminCoupons() {
         forMember: false, isPublic: false, expiresAt: new Date(), maxUses: '',
     })
     const [confirmDelete, setConfirmDelete] = useState(null)
+    const [search, setSearch] = useState('')
+    const [filterType, setFilterType] = useState('')
+    const [filterStatus, setFilterStatus] = useState('')
 
     const fetchCoupons = async () => {
         try {
@@ -123,7 +126,32 @@ export default function AdminCoupons() {
 
             {/* List Coupons */}
             <div className="mt-12">
-                <h2 className="text-2xl mb-4">All <span className="text-slate-800 dark:text-slate-100 font-medium">Coupons</span></h2>
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <h2 className="text-2xl">All <span className="text-slate-800 dark:text-slate-100 font-medium">Coupons</span>
+                        <span className="text-sm font-normal text-slate-400 ml-2">({filteredCoupons.length})</span>
+                    </h2>
+                    <div className="flex gap-2 flex-wrap">
+                        <div className="relative">
+                            <SearchIcon size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search coupons..."
+                                className="border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-7 py-1.5 text-xs outline-none w-44 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200" />
+                            {search && <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400"><XIcon size={12} /></button>}
+                        </div>
+                        <select value={filterType} onChange={e => setFilterType(e.target.value)}
+                            className="border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs outline-none text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900">
+                            <option value="">All Types</option>
+                            <option value="PERCENTAGE">Percentage</option>
+                            <option value="FIXED">Fixed</option>
+                        </select>
+                        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
+                            className="border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs outline-none text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="expired">Expired</option>
+                            <option value="exhausted">Exhausted</option>
+                        </select>
+                    </div>
+                </div>
                 <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm max-w-5xl">
                     <table className="w-full bg-white dark:bg-slate-900 text-sm">
                         <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-300">
@@ -137,7 +165,7 @@ export default function AdminCoupons() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                            {coupons.map(coupon => {
+                            {filteredCoupons.map(coupon => {
                                 const isExpired = new Date(coupon.expiresAt) < new Date()
                                 const isExhausted = coupon.maxUses !== null && coupon.usageCount >= coupon.maxUses
                                 return (
@@ -146,7 +174,7 @@ export default function AdminCoupons() {
                                             <span className="font-mono font-semibold text-slate-800 dark:text-slate-100">{coupon.code}</span>
                                             {coupon.description && <p className="text-xs text-slate-400 truncate max-w-[140px]">{coupon.description}</p>}
                                         </td>
-                                        <td className="py-3 px-4 font-medium text-green-700">{coupon.discount}%</td>
+                                        <td className="py-3 px-4 font-medium text-green-700">{coupon.discountType === 'FIXED' ? `₦${coupon.discount.toLocaleString()}` : `${coupon.discount}%`}</td>
                                         <td className="py-3 px-4">
                                             <div className="flex items-center gap-1.5">
                                                 <span className={`text-xs font-medium ${isExhausted ? 'text-red-500' : 'text-slate-700 dark:text-slate-200'}`}>
@@ -180,8 +208,8 @@ export default function AdminCoupons() {
                                     </tr>
                                 )
                             })}
-                            {coupons.length === 0 && (
-                                <tr><td colSpan={6} className="text-center py-12 text-slate-400">No coupons yet.</td></tr>
+                            {filteredCoupons.length === 0 && (
+                                <tr><td colSpan={6} className="text-center py-12 text-slate-400">{coupons.length === 0 ? 'No coupons yet.' : 'No coupons match filters.'}</td></tr>
                             )}
                         </tbody>
                     </table>
