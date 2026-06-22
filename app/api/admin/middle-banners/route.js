@@ -82,45 +82,58 @@ export async function PUT(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
-    const {
-      id,
-      title,
-      subtitle,
-      imageUrl,
-      linkUrl,
-      ctaText,
-      position,
-      isActive,
-      countryCode,
-      startsAt,
-      endsAt,
-    } = body;
-
-    if (!id) {
-      return NextResponse.json({ message: "id is required" }, { status: 400 });
+    const body = await request.json().catch(() => null);
+    
+    // Check if the frontend array wrapper exists
+    if (!body || !Array.isArray(body.banners)) {
+      return NextResponse.json({ message: "banners array is required" }, { status: 400 });
     }
 
-    const banner = await prisma.middleBanner.update({
-      where: { id },
-      data: {
-        title,
-        subtitle: subtitle || null,
-        imageUrl,
-        linkUrl: linkUrl || null,
-        ctaText: ctaText || null,
-        position: position !== undefined ? Number(position) : undefined,
-        isActive: isActive !== undefined ? Boolean(isActive) : undefined,
-        countryCode: countryCode || null,
-        startsAt: startsAt ? new Date(startsAt) : null,
-        endsAt: endsAt ? new Date(endsAt) : null,
-      },
-    });
+    const updatedBanners = [];
 
-    return NextResponse.json({ banner });
+    // Safely parse and upsert every banner in the loop
+    for (let i = 0; i < body.banners.length; i++) {
+      const b = body.banners[i];
+      
+      // Map your frontend keys (image, href, cta) to backend keys (imageUrl, linkUrl, ctaText)
+      const bannerData = {
+        title: String(b.title || "").trim(),
+        subtitle: b.subtitle ? String(b.subtitle).trim() : null,
+        imageUrl: String(b.image || "").trim(),
+        linkUrl: String(b.href || "/shop").trim(),
+        ctaText: String(b.cta || "View deals").trim(),
+        position: i, // Auto-order based on form position arrangement
+        isActive: true,
+      };
+
+      if (!bannerData.title || !bannerData.imageUrl) {
+        return NextResponse.json({ message: `Banner #${i + 1} requires a Title and Image URL.` }, { status: 400 });
+      }
+
+      // Next.js client-side Date.now() IDs are too large for standard DB integer columns. 
+      // If it looks like a temporary key, create a fresh record instead.
+      const isTempId = !b.id || String(b.id).length > 9;
+
+      let savedBanner;
+      if (isTempId) {
+        savedBanner = await prisma.middleBanner.create({
+          data: bannerData,
+        });
+      } else {
+        savedBanner = await prisma.middleBanner.upsert({
+          where: { id: Number(b.id) },
+          update: bannerData,
+          create: bannerData,
+        });
+      }
+
+      updatedBanners.push(savedBanner);
+    }
+
+    return NextResponse.json({ message: "Middle banners saved.", banners: updatedBanners });
   } catch (error) {
     console.error("PUT /api/admin/middle-banners error:", error);
-    return NextResponse.json({ message: error.message || "Failed to update banner" }, { status: 500 });
+    return NextResponse.json({ message: error.message || "Failed to update banners" }, { status: 500 });
   }
 }
 
