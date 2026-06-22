@@ -175,7 +175,6 @@ const Hero = () => {
         if (!cancelled) setRemote(j);
       } catch {
         if (!cancelled) setRemote({ featured: [], promo1: [], promo2: [] });
-        if (!cancelled) setRemote({ featured: [], promo1: [], promo2: [] });
       }
     })();
     return () => { cancelled = true; };
@@ -252,7 +251,6 @@ const Hero = () => {
   const microPromos = useMemo(() => {
     return defaults.microPromos.map((p) => {
       if (p.key === "vendor-center") {
-        // Smart vendor-center link
         if (!user) return { ...p, href: "/create-store" };
         if (hasStore && !isVerifiedStore) return { ...p, label: "Verify Store", desc: "Get verified badge", href: "/store/verify" };
         if (hasStore) return { ...p, label: "My Dashboard", desc: "Manage your store", href: "/store" };
@@ -287,156 +285,156 @@ const Hero = () => {
       </div>
 
       <div className="mx-auto mt-4 flex max-w-7xl gap-4 lg:gap-6 xl:gap-8 max-xl:flex-col">
-{/* Hero left – infinite main slider */}
-<div className="group relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-transparent border-0 transition-all duration-300">
-  <div
-    className={`flex h-full transition-transform duration-500 ease-out ${
-      animating ? "" : "transition-none"
-    }`}
-    style={{
-      transform: `translateX(-${fi * 100}%)`,
-      width: `${featuredSlides.length * 100}%`,
-    }}
-  >
-    {featuredSlides.map((slide, idx) => (
-      <article
-        key={idx}
-        className="relative min-h-[320px] min-w-full shrink-0 sm:min-h-[360px] lg:min-h-[420px] bg-black"
-        style={{ width: `${100 / featuredSlides.length}%` }}
-      >
-        {isValidImageSrc(slide.image) && (
-          <Image
-            src={slide.image}
-            alt={slide.title || "Featured promo"}
-            fill
-            className="object-cover object-center"
-            sizes="(max-width: 1280px) 100vw, min(896px, 100vw)"
-            priority={idx === 0}
-          />
-        )}
-
-        {/* Minimal overlay – Smooth gradient fading to transparent so the right side stays crisp */}
-        <div
-          className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent md:w-2/3"
-          aria-hidden
-        />
-
-        {/* FIX APPLIED HERE: Added `grid grid-cols-1 md:grid-cols-2` to force text content to only occupy the left half on larger screens */}
-        <div className="absolute inset-0 z-10 grid grid-cols-1 md:grid-cols-2 p-4 sm:p-6 lg:p-10">
-          
-          {/* Column 1: Text Content wrapper */}
-          <div className="flex flex-col justify-between h-full max-w-xl">
-            <div className="flex flex-wrap items-center gap-2">
-              {(slide.badgeText || slide.badgeLabel) && (
-                <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-600/60 bg-black/50 px-3 py-1 text-[11px] text-slate-100 backdrop-blur-md">
-                  {slide.badgeLabel && (
-                    <span className="rounded-full bg-slate-700 dark:bg-slate-600 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white dark:text-slate-100">
-                      {slide.badgeLabel}
-                    </span>
-                  )}
-                  <span className="line-clamp-1">{slide.badgeText}</span>
-                  <ChevronRightIcon
-                    className="hidden shrink-0 text-slate-300 sm:block"
-                    size={14}
+        {/* Hero left – infinite main slider */}
+        <div className="group relative flex flex-1 flex-col overflow-hidden rounded-3xl bg-transparent border-0 transition-all duration-300">
+          <div
+            className={`flex h-full transition-transform duration-500 ease-out ${
+              animating ? "" : "transition-none"
+            }`}
+            style={{
+              transform: `translateX(-${fi * (100 / featuredSlides.length)}%)`,
+              width: `${featuredSlides.length * 100}%`,
+            }}
+          >
+            {featuredSlides.map((slide, idx) => (
+              <article
+                key={idx}
+                className="relative min-h-[320px] shrink-0 sm:min-h-[360px] lg:min-h-[420px] bg-black"
+                style={{ width: `${100 / featuredSlides.length}%` }}
+              >
+                {isValidImageSrc(slide.image) && (
+                  <Image
+                    src={slide.image}
+                    alt={slide.title || "Featured promo"}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 1280px) 100vw, min(896px, 100vw)"
+                    priority={idx === 0}
                   />
-                </div>
-              )}
-            </div>
-
-            <div className="mt-6">
-              {slide.title && (
-                <h1 className="text-balance text-2xl font-semibold leading-tight text-white sm:text-3xl md:text-4xl lg:text-[2.5rem]">
-                  {slide.title}
-                </h1>
-              )}
-              {(slide.line1 || slide.line2) && (
-                <div className="mt-3 space-y-1 text-xs font-medium text-slate-200 sm:mt-4 sm:text-sm">
-                  {slide.line1 && <p>{slide.line1}</p>}
-                  {slide.line2 && <p>{slide.line2}</p>}
-                </div>
-              )}
-              {(slide.price || slide.priceLabel) && (
-                <div className="mt-4 flex flex-wrap items-baseline gap-2 text-xs text-slate-200 sm:mt-6 sm:text-sm">
-                  {slide.priceLabel && <p>{slide.priceLabel}</p>}
-                  {slide.price && (
-                    <p className="text-2xl font-semibold sm:text-3xl">
-                      {slide.price}
-                    </p>
-                  )}
-                </div>
-              )}
-              <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-8">
-                {slide.cta && slide.href && (
-                  <Link
-                    href={slide.href}
-                    className="inline-flex items-center justify-center rounded-full bg-slate-800/90 px-6 py-2 text-xs font-semibold text-white transition hover:scale-[1.02] active:scale-95 sm:px-8 sm:py-3 sm:text-sm border border-slate-600"
-                  >
-                    {slide.cta}
-                    <ArrowRightIcon size={18} className="ml-1.5" />
-                  </Link>
                 )}
-                <Link
-                  href="/shop?sort=discount"
-                  className="inline-flex items-center text-[11px] font-medium text-slate-100 underline-offset-2 hover:underline sm:text-xs"
-                >
-                  View all offers
-                  <ChevronRightIcon size={14} className="ml-1" />
-                </Link>
-              </div>
-            </div>
 
-            {featuredSlides.length > 1 && (
-              <div className="mt-4 flex items-center justify-between text-[11px] text-slate-300">
-                <div className="flex items-center gap-1">
-                  <span className="text-slate-100">{fi + 1}</span>
-                  <span className="text-slate-300">/ {featuredSlides.length}</span>
+                {/* Smooth gradient fading to transparent so the right side stays crisp */}
+                <div
+                  className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent md:w-2/3"
+                  aria-hidden
+                />
+
+                {/* Grid layout to limit text space and clear up image side split */}
+                <div className="absolute inset-0 z-10 grid grid-cols-1 md:grid-cols-2 p-4 sm:p-6 lg:p-10">
+                  
+                  {/* Column 1: Text Content wrapper */}
+                  <div className="flex flex-col justify-between h-full max-w-xl">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {(slide.badgeText || slide.badgeLabel) && (
+                        <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-600/60 bg-black/50 px-3 py-1 text-[11px] text-slate-100 backdrop-blur-md">
+                          {slide.badgeLabel && (
+                            <span className="rounded-full bg-slate-700 dark:bg-slate-600 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white dark:text-slate-100">
+                              {slide.badgeLabel}
+                            </span>
+                          )}
+                          <span className="line-clamp-1">{slide.badgeText}</span>
+                          <ChevronRightIcon
+                            className="hidden shrink-0 text-slate-300 sm:block"
+                            size={14}
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="mt-6">
+                      {slide.title && (
+                        <h1 className="text-balance text-2xl font-semibold leading-tight text-white sm:text-3xl md:text-4xl lg:text-[2.5rem]">
+                          {slide.title}
+                        </h1>
+                      )}
+                      {(slide.line1 || slide.line2) && (
+                        <div className="mt-3 space-y-1 text-xs font-medium text-slate-200 sm:mt-4 sm:text-sm">
+                          {slide.line1 && <p>{slide.line1}</p>}
+                          {slide.line2 && <p>{slide.line2}</p>}
+                        </div>
+                      )}
+                      {(slide.price || slide.priceLabel) && (
+                        <div className="mt-4 flex flex-wrap items-baseline gap-2 text-xs text-slate-200 sm:mt-6 sm:text-sm">
+                          {slide.priceLabel && <p>{slide.priceLabel}</p>}
+                          {slide.price && (
+                            <p className="text-2xl font-semibold sm:text-3xl">
+                              {slide.price}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-8">
+                        {slide.cta && slide.href && (
+                          <Link
+                            href={slide.href}
+                            className="inline-flex items-center justify-center rounded-full bg-slate-800/90 px-6 py-2 text-xs font-semibold text-white transition hover:scale-[1.02] active:scale-95 sm:px-8 sm:py-3 sm:text-sm border border-slate-600"
+                          >
+                            {slide.cta}
+                            <ArrowRightIcon size={18} className="ml-1.5" />
+                          </Link>
+                        )}
+                        <Link
+                          href="/shop?sort=discount"
+                          className="inline-flex items-center text-[11px] font-medium text-slate-100 underline-offset-2 hover:underline sm:text-xs"
+                        >
+                          View all offers
+                          <ChevronRightIcon size={14} className="ml-1" />
+                        </Link>
+                      </div>
+                    </div>
+
+                    {featuredSlides.length > 1 && (
+                      <div className="mt-4 flex items-center justify-between text-[11px] text-slate-300">
+                        <div className="flex items-center gap-1">
+                          <span className="text-slate-100">{fi + 1}</span>
+                          <span className="text-slate-300">/ {featuredSlides.length}</span>
+                        </div>
+                        <div className="flex gap-1.5">
+                          {featuredSlides.map((_, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              aria-label={`Go to slide ${i + 1}`}
+                              onClick={() => setFi(i)}
+                              className={`h-1.5 rounded-full transition-all ${
+                                i === fi ? "w-5 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Column 2: Empty layout placeholder spacer to clear the right side image content */}
+                  <div className="hidden md:block" />
+                  
                 </div>
-                <div className="flex gap-1.5">
-                  {featuredSlides.map((_, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      aria-label={`Go to slide ${i + 1}`}
-                      onClick={() => setFi(i)}
-                      className={`h-1.5 rounded-full transition-all ${
-                        i === fi ? "w-5 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+              </article>
+            ))}
           </div>
-          
-          {/* Column 2: Empty spacer to explicitly keep the right side clear for your image */}
-          <div className="hidden md:block" />
-          
-        </div>
-      </article>
-    ))}
-  </div>
 
-  {featuredSlides.length > 1 && (
-    <>
-      <button
-        type="button"
-        aria-label="Previous slide"
-        onClick={() => setFi(fi - 1 < 0 ? featuredSlides.length - 1 : fi - 1)}
-        className="absolute left-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-black/60 p-2 text-white hover:bg-black/80 lg:flex border border-white/20"
-      >
-        <ChevronLeftIcon size={18} />
-      </button>
-      <button
-        type="button"
-        aria-label="Next slide"
-        onClick={() => setFi((fi + 1) % featuredSlides.length)}
-        className="absolute right-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-black/60 p-2 text-white hover:bg-black/80 lg:flex border border-white/20"
-      >
-        <ChevronRightIcon size={18} />
-      </button>
-    </>
-  )}
-</div>
+          {featuredSlides.length > 1 && (
+            <>
+              <button
+                type="button"
+                aria-label="Previous slide"
+                onClick={() => setFi(fi - 1 < 0 ? featuredSlides.length - 1 : fi - 1)}
+                className="absolute left-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-black/60 p-2 text-white hover:bg-black/80 lg:flex border border-white/20"
+              >
+                <ChevronLeftIcon size={18} />
+              </button>
+              <button
+                type="button"
+                aria-label="Next slide"
+                onClick={() => setFi((fi + 1) % featuredSlides.length)}
+                className="absolute right-2 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-black/60 p-2 text-white hover:bg-black/80 lg:flex border border-white/20"
+              >
+                <ChevronRightIcon size={18} />
+              </button>
+            </>
+          )}
+        </div>
 
         <div className="flex w-full flex-col gap-4 text-sm md:flex-row xl:max-w-sm xl:flex-col">
           <PromoCarousel slides={promo1Slides} index={p1i} setIndex={setP1i} />
@@ -444,7 +442,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Verified stores section – real data from /api/verified-stores */}
+      {/* Verified stores section */}
       <VerifiedStoresSection
         stores={
           verifiedStores.length
@@ -459,7 +457,7 @@ const Hero = () => {
         onJoinVerifiedStore={handleJoinVerifiedStore}
       />
 
-      {/* Micro promos row – wholesale + vendor center */}
+      {/* Micro promos row */}
       <div className="mx-auto mt-4 grid max-w-7xl grid-cols-2 gap-2 text-[11px] sm:grid-cols-4 sm:text-xs">
         {microPromos.map((p) => (
           <Link
@@ -490,7 +488,7 @@ const Hero = () => {
   );
 };
 
-/** PromoCarousel */
+/** PromoCarousel Component remains below unchanged */
 function PromoCarousel({ slides, index, setIndex }) {
   if (!slides || slides.length === 0) return null;
   const length = slides.length;
@@ -513,7 +511,6 @@ function PromoCarousel({ slides, index, setIndex }) {
           />
         )}
 
-        {/* Minimal bottom overlay for text readability – image stays visible */}
         <div
           className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent"
           aria-hidden
@@ -567,7 +564,7 @@ function PromoCarousel({ slides, index, setIndex }) {
   );
 }
 
-/** VerifiedStoresSection */
+/** VerifiedStoresSection Component remains below unchanged */
 function VerifiedStoresSection({ stores, onJoinVerifiedStore }) {
   if (!stores || stores.length === 0) return null;
   return (
@@ -598,9 +595,7 @@ function VerifiedStoresSection({ stores, onJoinVerifiedStore }) {
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {stores.map((v) => {
           const ratingNum = Number(v.rating);
-          const ratingDisplay = Number.isFinite(ratingNum)
-            ? ratingNum.toFixed(1)
-            : "-";
+          const ratingDisplay = Number.isFinite(ratingNum) ? ratingNum.toFixed(1) : "-";
           return (
             <Link
               key={v.id}
