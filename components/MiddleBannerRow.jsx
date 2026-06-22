@@ -116,34 +116,5 @@ const MiddleBannerRow = ({ banners }) => {
   );
 };
 
-export const defaultMiddleBanners = [
-  {
-    id: 1,
-    size: "lg",
-    title: "Flash deals for SMEs",
-    subtitle: "Limited-time bulk discounts on core gadgets",
-    cta: "Browse flash deals",
-    href: "/flash-deals",
-    image: assets.hero_product_img1,
-  },
-  {
-    id: 2,
-    size: "sm",
-    title: "International shipping",
-    subtitle: "Malta & EU warehouse for cross-border orders",
-    cta: "View options",
-    href: "/intl-shipping",
-    image: assets.hero_product_img2,
-  },
-  {
-    id: 3,
-    size: "sm",
-    title: "Installment plans",
-    subtitle: "Flexible financing for growing businesses",
-    cta: "Check eligibility",
-    href: "/installments",
-    image: assets.hero_model_img,
-  },
-];
 
 export default MiddleBannerRow;

@@ -5,25 +5,27 @@ import LatestProducts from "@/components/LatestProducts";
 import BestSelling from "@/components/BestSelling";
 import OurSpecs from "@/components/OurSpec";
 import Newsletter from "@/components/Newsletter";
-import MiddleBannerRow, {
-  defaultMiddleBanners,
-} from "@/components/MiddleBannerRow";
+import MiddleBannerRow from "@/components/MiddleBannerRow"; // Removed defaultMiddleBanners import
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [middleBanners, setMiddleBanners] = useState(defaultMiddleBanners);
+  // Initialize as an empty array so no dummy data flashes on load
+  const [middleBanners, setMiddleBanners] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/home/middle-banner");
+        // Appended the "s" to hit your clean database public endpoint
+        const res = await fetch("/api/home/middle-banners");
+        if (!res.ok) throw new Error("Failed to load banners");
+        
         const { banners } = await res.json();
-        if (!cancelled && Array.isArray(banners) && banners.length > 0) {
+        if (!cancelled && Array.isArray(banners)) {
           setMiddleBanners(banners);
         }
-      } catch {
-        // keep defaults
+      } catch (error) {
+        console.error("Home banner fetch error:", error);
       }
     })();
     return () => { cancelled = true; };
