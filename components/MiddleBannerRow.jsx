@@ -35,6 +35,11 @@ const MiddleBannerRow = ({ banners }) => {
 
   const hero = banners[active];
 
+  // Map backend database keys to local variables with fallback logic
+  const bannerImage = hero.imageUrl || hero.image;
+  const bannerHref = hero.linkUrl || hero.href || "/shop";
+  const bannerCta = hero.ctaText || hero.cta || "View deals";
+
   return (
     <div ref={containerRef} className="mx-auto mt-6 w-full max-w-7xl px-3 sm:px-4">
       <div className="relative overflow-hidden rounded-[2.6rem] border border-cyan-400/15 bg-slate-50 shadow-[0_0_80px_rgba(15,23,42,0.12)] dark:bg-[#02040d] dark:shadow-[0_0_120px_rgba(34,211,238,0.12)]">
@@ -53,16 +58,16 @@ const MiddleBannerRow = ({ banners }) => {
 
         <div className="relative min-h-[460px] p-4 sm:p-6 lg:p-8">
           <Link
-            href={hero.href || "/shop"}
+            href={bannerHref}
             className="relative grid min-h-[420px] place-items-center overflow-hidden rounded-[2.1rem] border border-slate-200/80 bg-white/70 backdrop-blur-2xl transition-transform duration-500 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(15,23,42,0.25)] dark:border-white/10 dark:bg-white/5 dark:hover:shadow-[0_0_60px_rgba(34,211,238,0.35)]"
           >
             <div
               key={hero.id}
               className="relative h-full w-full animate-[heroSlide_0.6s_ease-out]"
             >
-              {isValidImageSrc(hero.image) && (
+              {isValidImageSrc(bannerImage) && (
                 <Image
-                  src={hero.image}
+                  src={bannerImage}
                   alt={hero.title || "Flash deals"}
                   fill
                   className="object-cover object-center scale-110"
@@ -95,7 +100,7 @@ const MiddleBannerRow = ({ banners }) => {
 
                 <div className="mt-8 flex flex-wrap items-center gap-3">
                   <span className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white/80 px-4 py-2 text-xs font-medium text-slate-900 backdrop-blur-md dark:border-white/10 dark:bg-black/30 dark:text-white/88">
-                    {hero.cta || "View deals"}
+                    {bannerCta}
                     <ArrowRightIcon size={15} />
                   </span>
                   <span className="rounded-full border border-fuchsia-300/40 bg-fuchsia-100/60 px-4 py-2 text-xs font-medium text-fuchsia-700 backdrop-blur-md dark:border-fuchsia-400/20 dark:bg-fuchsia-500/10 dark:text-fuchsia-100">
