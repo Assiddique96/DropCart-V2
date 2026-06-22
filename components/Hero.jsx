@@ -431,8 +431,6 @@ const Hero = () => {
         <div className="flex w-full flex-col gap-4 text-sm md:flex-row xl:max-w-sm xl:flex-col">
           <PromoCarousel slides={promo1Slides} index={p1i} setIndex={setP1i} />
           <PromoCarousel slides={promo2Slides} index={p2i} setIndex={setP2i} />
-          <PromoCarousel slides={promo1Slides} index={p1i} setIndex={setP1i} />
-          <PromoCarousel slides={promo2Slides} index={p2i} setIndex={setP2i} />
         </div>
       </div>
 
