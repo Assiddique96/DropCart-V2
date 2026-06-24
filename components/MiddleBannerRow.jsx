@@ -103,9 +103,7 @@ const MiddleBannerRow = ({ banners }) => {
                     {bannerCta}
                     <ArrowRightIcon size={15} />
                   </span>
-                  <span className="rounded-full border border-fuchsia-300/40 bg-fuchsia-100/60 px-4 py-2 text-xs font-medium text-fuchsia-700 backdrop-blur-md dark:border-fuchsia-400/20 dark:bg-fuchsia-500/10 dark:text-fuchsia-100">
-                    {mounted ? "Live motion" : "Loading"}
-                  </span>
+                  
                 </div>
               </div>
             </div>
