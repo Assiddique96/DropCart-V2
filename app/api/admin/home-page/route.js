@@ -11,6 +11,7 @@ import {
 } from "@/lib/homePageContent";
 
 /** GET /api/admin/home-page — load saved JSON (may be empty arrays) */
+export const dynamic = "force-dynamic";
 export async function GET(request) {
   try {
     const { userId } = getAuth(request);
