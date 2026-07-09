@@ -358,6 +358,22 @@ exports.Prisma.PlatformConfigScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.MiddleBannerScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  subtitle: 'subtitle',
+  imageUrl: 'imageUrl',
+  linkUrl: 'linkUrl',
+  ctaText: 'ctaText',
+  position: 'position',
+  isActive: 'isActive',
+  countryCode: 'countryCode',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.AdRequestScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
@@ -465,6 +481,7 @@ exports.Prisma.ModelName = {
   StoreRating: 'StoreRating',
   Payout: 'Payout',
   PlatformConfig: 'PlatformConfig',
+  MiddleBanner: 'MiddleBanner',
   AdRequest: 'AdRequest'
 };
 

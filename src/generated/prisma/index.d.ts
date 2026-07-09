@@ -124,6 +124,11 @@ export type Payout = $Result.DefaultSelection<Prisma.$PayoutPayload>
  */
 export type PlatformConfig = $Result.DefaultSelection<Prisma.$PlatformConfigPayload>
 /**
+ * Model MiddleBanner
+ * 
+ */
+export type MiddleBanner = $Result.DefaultSelection<Prisma.$MiddleBannerPayload>
+/**
  * Model AdRequest
  * 
  */
@@ -519,6 +524,16 @@ export class PrismaClient<
     * ```
     */
   get platformConfig(): Prisma.PlatformConfigDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.middleBanner`: Exposes CRUD operations for the **MiddleBanner** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MiddleBanners
+    * const middleBanners = await prisma.middleBanner.findMany()
+    * ```
+    */
+  get middleBanner(): Prisma.MiddleBannerDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.adRequest`: Exposes CRUD operations for the **AdRequest** model.
@@ -979,6 +994,7 @@ export namespace Prisma {
     StoreRating: 'StoreRating',
     Payout: 'Payout',
     PlatformConfig: 'PlatformConfig',
+    MiddleBanner: 'MiddleBanner',
     AdRequest: 'AdRequest'
   };
 
@@ -995,7 +1011,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "notification" | "product" | "productWholesaleTier" | "productVariantGroup" | "productVariantOption" | "order" | "orderItem" | "refund" | "rating" | "address" | "coupon" | "store" | "storeRating" | "payout" | "platformConfig" | "adRequest"
+      modelProps: "user" | "notification" | "product" | "productWholesaleTier" | "productVariantGroup" | "productVariantOption" | "order" | "orderItem" | "refund" | "rating" | "address" | "coupon" | "store" | "storeRating" | "payout" | "platformConfig" | "middleBanner" | "adRequest"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2183,6 +2199,80 @@ export namespace Prisma {
           }
         }
       }
+      MiddleBanner: {
+        payload: Prisma.$MiddleBannerPayload<ExtArgs>
+        fields: Prisma.MiddleBannerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MiddleBannerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MiddleBannerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>
+          }
+          findFirst: {
+            args: Prisma.MiddleBannerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MiddleBannerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>
+          }
+          findMany: {
+            args: Prisma.MiddleBannerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>[]
+          }
+          create: {
+            args: Prisma.MiddleBannerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>
+          }
+          createMany: {
+            args: Prisma.MiddleBannerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MiddleBannerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>[]
+          }
+          delete: {
+            args: Prisma.MiddleBannerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>
+          }
+          update: {
+            args: Prisma.MiddleBannerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>
+          }
+          deleteMany: {
+            args: Prisma.MiddleBannerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MiddleBannerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MiddleBannerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>[]
+          }
+          upsert: {
+            args: Prisma.MiddleBannerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>
+          }
+          aggregate: {
+            args: Prisma.MiddleBannerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMiddleBanner>
+          }
+          groupBy: {
+            args: Prisma.MiddleBannerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MiddleBannerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MiddleBannerCountArgs<ExtArgs>
+            result: $Utils.Optional<MiddleBannerCountAggregateOutputType> | number
+          }
+        }
+      }
       AdRequest: {
         payload: Prisma.$AdRequestPayload<ExtArgs>
         fields: Prisma.AdRequestFieldRefs
@@ -2381,6 +2471,7 @@ export namespace Prisma {
     storeRating?: StoreRatingOmit
     payout?: PayoutOmit
     platformConfig?: PlatformConfigOmit
+    middleBanner?: MiddleBannerOmit
     adRequest?: AdRequestOmit
   }
 
@@ -22309,6 +22400,1144 @@ export namespace Prisma {
 
 
   /**
+   * Model MiddleBanner
+   */
+
+  export type AggregateMiddleBanner = {
+    _count: MiddleBannerCountAggregateOutputType | null
+    _avg: MiddleBannerAvgAggregateOutputType | null
+    _sum: MiddleBannerSumAggregateOutputType | null
+    _min: MiddleBannerMinAggregateOutputType | null
+    _max: MiddleBannerMaxAggregateOutputType | null
+  }
+
+  export type MiddleBannerAvgAggregateOutputType = {
+    position: number | null
+  }
+
+  export type MiddleBannerSumAggregateOutputType = {
+    position: number | null
+  }
+
+  export type MiddleBannerMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    subtitle: string | null
+    imageUrl: string | null
+    linkUrl: string | null
+    ctaText: string | null
+    position: number | null
+    isActive: boolean | null
+    countryCode: string | null
+    startsAt: Date | null
+    endsAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MiddleBannerMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    subtitle: string | null
+    imageUrl: string | null
+    linkUrl: string | null
+    ctaText: string | null
+    position: number | null
+    isActive: boolean | null
+    countryCode: string | null
+    startsAt: Date | null
+    endsAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MiddleBannerCountAggregateOutputType = {
+    id: number
+    title: number
+    subtitle: number
+    imageUrl: number
+    linkUrl: number
+    ctaText: number
+    position: number
+    isActive: number
+    countryCode: number
+    startsAt: number
+    endsAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MiddleBannerAvgAggregateInputType = {
+    position?: true
+  }
+
+  export type MiddleBannerSumAggregateInputType = {
+    position?: true
+  }
+
+  export type MiddleBannerMinAggregateInputType = {
+    id?: true
+    title?: true
+    subtitle?: true
+    imageUrl?: true
+    linkUrl?: true
+    ctaText?: true
+    position?: true
+    isActive?: true
+    countryCode?: true
+    startsAt?: true
+    endsAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MiddleBannerMaxAggregateInputType = {
+    id?: true
+    title?: true
+    subtitle?: true
+    imageUrl?: true
+    linkUrl?: true
+    ctaText?: true
+    position?: true
+    isActive?: true
+    countryCode?: true
+    startsAt?: true
+    endsAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MiddleBannerCountAggregateInputType = {
+    id?: true
+    title?: true
+    subtitle?: true
+    imageUrl?: true
+    linkUrl?: true
+    ctaText?: true
+    position?: true
+    isActive?: true
+    countryCode?: true
+    startsAt?: true
+    endsAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MiddleBannerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MiddleBanner to aggregate.
+     */
+    where?: MiddleBannerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MiddleBanners to fetch.
+     */
+    orderBy?: MiddleBannerOrderByWithRelationInput | MiddleBannerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MiddleBannerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MiddleBanners from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MiddleBanners.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MiddleBanners
+    **/
+    _count?: true | MiddleBannerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MiddleBannerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MiddleBannerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MiddleBannerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MiddleBannerMaxAggregateInputType
+  }
+
+  export type GetMiddleBannerAggregateType<T extends MiddleBannerAggregateArgs> = {
+        [P in keyof T & keyof AggregateMiddleBanner]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMiddleBanner[P]>
+      : GetScalarType<T[P], AggregateMiddleBanner[P]>
+  }
+
+
+
+
+  export type MiddleBannerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MiddleBannerWhereInput
+    orderBy?: MiddleBannerOrderByWithAggregationInput | MiddleBannerOrderByWithAggregationInput[]
+    by: MiddleBannerScalarFieldEnum[] | MiddleBannerScalarFieldEnum
+    having?: MiddleBannerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MiddleBannerCountAggregateInputType | true
+    _avg?: MiddleBannerAvgAggregateInputType
+    _sum?: MiddleBannerSumAggregateInputType
+    _min?: MiddleBannerMinAggregateInputType
+    _max?: MiddleBannerMaxAggregateInputType
+  }
+
+  export type MiddleBannerGroupByOutputType = {
+    id: string
+    title: string
+    subtitle: string | null
+    imageUrl: string
+    linkUrl: string | null
+    ctaText: string | null
+    position: number
+    isActive: boolean
+    countryCode: string | null
+    startsAt: Date | null
+    endsAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: MiddleBannerCountAggregateOutputType | null
+    _avg: MiddleBannerAvgAggregateOutputType | null
+    _sum: MiddleBannerSumAggregateOutputType | null
+    _min: MiddleBannerMinAggregateOutputType | null
+    _max: MiddleBannerMaxAggregateOutputType | null
+  }
+
+  type GetMiddleBannerGroupByPayload<T extends MiddleBannerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MiddleBannerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MiddleBannerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MiddleBannerGroupByOutputType[P]>
+            : GetScalarType<T[P], MiddleBannerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MiddleBannerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    subtitle?: boolean
+    imageUrl?: boolean
+    linkUrl?: boolean
+    ctaText?: boolean
+    position?: boolean
+    isActive?: boolean
+    countryCode?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["middleBanner"]>
+
+  export type MiddleBannerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    subtitle?: boolean
+    imageUrl?: boolean
+    linkUrl?: boolean
+    ctaText?: boolean
+    position?: boolean
+    isActive?: boolean
+    countryCode?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["middleBanner"]>
+
+  export type MiddleBannerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    subtitle?: boolean
+    imageUrl?: boolean
+    linkUrl?: boolean
+    ctaText?: boolean
+    position?: boolean
+    isActive?: boolean
+    countryCode?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["middleBanner"]>
+
+  export type MiddleBannerSelectScalar = {
+    id?: boolean
+    title?: boolean
+    subtitle?: boolean
+    imageUrl?: boolean
+    linkUrl?: boolean
+    ctaText?: boolean
+    position?: boolean
+    isActive?: boolean
+    countryCode?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type MiddleBannerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "subtitle" | "imageUrl" | "linkUrl" | "ctaText" | "position" | "isActive" | "countryCode" | "startsAt" | "endsAt" | "createdAt" | "updatedAt", ExtArgs["result"]["middleBanner"]>
+
+  export type $MiddleBannerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MiddleBanner"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      subtitle: string | null
+      imageUrl: string
+      linkUrl: string | null
+      ctaText: string | null
+      position: number
+      isActive: boolean
+      countryCode: string | null
+      startsAt: Date | null
+      endsAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["middleBanner"]>
+    composites: {}
+  }
+
+  type MiddleBannerGetPayload<S extends boolean | null | undefined | MiddleBannerDefaultArgs> = $Result.GetResult<Prisma.$MiddleBannerPayload, S>
+
+  type MiddleBannerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MiddleBannerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MiddleBannerCountAggregateInputType | true
+    }
+
+  export interface MiddleBannerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MiddleBanner'], meta: { name: 'MiddleBanner' } }
+    /**
+     * Find zero or one MiddleBanner that matches the filter.
+     * @param {MiddleBannerFindUniqueArgs} args - Arguments to find a MiddleBanner
+     * @example
+     * // Get one MiddleBanner
+     * const middleBanner = await prisma.middleBanner.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MiddleBannerFindUniqueArgs>(args: SelectSubset<T, MiddleBannerFindUniqueArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MiddleBanner that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MiddleBannerFindUniqueOrThrowArgs} args - Arguments to find a MiddleBanner
+     * @example
+     * // Get one MiddleBanner
+     * const middleBanner = await prisma.middleBanner.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MiddleBannerFindUniqueOrThrowArgs>(args: SelectSubset<T, MiddleBannerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MiddleBanner that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MiddleBannerFindFirstArgs} args - Arguments to find a MiddleBanner
+     * @example
+     * // Get one MiddleBanner
+     * const middleBanner = await prisma.middleBanner.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MiddleBannerFindFirstArgs>(args?: SelectSubset<T, MiddleBannerFindFirstArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MiddleBanner that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MiddleBannerFindFirstOrThrowArgs} args - Arguments to find a MiddleBanner
+     * @example
+     * // Get one MiddleBanner
+     * const middleBanner = await prisma.middleBanner.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MiddleBannerFindFirstOrThrowArgs>(args?: SelectSubset<T, MiddleBannerFindFirstOrThrowArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MiddleBanners that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MiddleBannerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MiddleBanners
+     * const middleBanners = await prisma.middleBanner.findMany()
+     * 
+     * // Get first 10 MiddleBanners
+     * const middleBanners = await prisma.middleBanner.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const middleBannerWithIdOnly = await prisma.middleBanner.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MiddleBannerFindManyArgs>(args?: SelectSubset<T, MiddleBannerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MiddleBanner.
+     * @param {MiddleBannerCreateArgs} args - Arguments to create a MiddleBanner.
+     * @example
+     * // Create one MiddleBanner
+     * const MiddleBanner = await prisma.middleBanner.create({
+     *   data: {
+     *     // ... data to create a MiddleBanner
+     *   }
+     * })
+     * 
+     */
+    create<T extends MiddleBannerCreateArgs>(args: SelectSubset<T, MiddleBannerCreateArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MiddleBanners.
+     * @param {MiddleBannerCreateManyArgs} args - Arguments to create many MiddleBanners.
+     * @example
+     * // Create many MiddleBanners
+     * const middleBanner = await prisma.middleBanner.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MiddleBannerCreateManyArgs>(args?: SelectSubset<T, MiddleBannerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MiddleBanners and returns the data saved in the database.
+     * @param {MiddleBannerCreateManyAndReturnArgs} args - Arguments to create many MiddleBanners.
+     * @example
+     * // Create many MiddleBanners
+     * const middleBanner = await prisma.middleBanner.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MiddleBanners and only return the `id`
+     * const middleBannerWithIdOnly = await prisma.middleBanner.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MiddleBannerCreateManyAndReturnArgs>(args?: SelectSubset<T, MiddleBannerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MiddleBanner.
+     * @param {MiddleBannerDeleteArgs} args - Arguments to delete one MiddleBanner.
+     * @example
+     * // Delete one MiddleBanner
+     * const MiddleBanner = await prisma.middleBanner.delete({
+     *   where: {
+     *     // ... filter to delete one MiddleBanner
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MiddleBannerDeleteArgs>(args: SelectSubset<T, MiddleBannerDeleteArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MiddleBanner.
+     * @param {MiddleBannerUpdateArgs} args - Arguments to update one MiddleBanner.
+     * @example
+     * // Update one MiddleBanner
+     * const middleBanner = await prisma.middleBanner.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MiddleBannerUpdateArgs>(args: SelectSubset<T, MiddleBannerUpdateArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MiddleBanners.
+     * @param {MiddleBannerDeleteManyArgs} args - Arguments to filter MiddleBanners to delete.
+     * @example
+     * // Delete a few MiddleBanners
+     * const { count } = await prisma.middleBanner.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MiddleBannerDeleteManyArgs>(args?: SelectSubset<T, MiddleBannerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MiddleBanners.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MiddleBannerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MiddleBanners
+     * const middleBanner = await prisma.middleBanner.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MiddleBannerUpdateManyArgs>(args: SelectSubset<T, MiddleBannerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MiddleBanners and returns the data updated in the database.
+     * @param {MiddleBannerUpdateManyAndReturnArgs} args - Arguments to update many MiddleBanners.
+     * @example
+     * // Update many MiddleBanners
+     * const middleBanner = await prisma.middleBanner.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MiddleBanners and only return the `id`
+     * const middleBannerWithIdOnly = await prisma.middleBanner.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MiddleBannerUpdateManyAndReturnArgs>(args: SelectSubset<T, MiddleBannerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MiddleBanner.
+     * @param {MiddleBannerUpsertArgs} args - Arguments to update or create a MiddleBanner.
+     * @example
+     * // Update or create a MiddleBanner
+     * const middleBanner = await prisma.middleBanner.upsert({
+     *   create: {
+     *     // ... data to create a MiddleBanner
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MiddleBanner we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MiddleBannerUpsertArgs>(args: SelectSubset<T, MiddleBannerUpsertArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MiddleBanners.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MiddleBannerCountArgs} args - Arguments to filter MiddleBanners to count.
+     * @example
+     * // Count the number of MiddleBanners
+     * const count = await prisma.middleBanner.count({
+     *   where: {
+     *     // ... the filter for the MiddleBanners we want to count
+     *   }
+     * })
+    **/
+    count<T extends MiddleBannerCountArgs>(
+      args?: Subset<T, MiddleBannerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MiddleBannerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MiddleBanner.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MiddleBannerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MiddleBannerAggregateArgs>(args: Subset<T, MiddleBannerAggregateArgs>): Prisma.PrismaPromise<GetMiddleBannerAggregateType<T>>
+
+    /**
+     * Group by MiddleBanner.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MiddleBannerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MiddleBannerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MiddleBannerGroupByArgs['orderBy'] }
+        : { orderBy?: MiddleBannerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MiddleBannerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMiddleBannerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MiddleBanner model
+   */
+  readonly fields: MiddleBannerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MiddleBanner.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MiddleBannerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MiddleBanner model
+   */
+  interface MiddleBannerFieldRefs {
+    readonly id: FieldRef<"MiddleBanner", 'String'>
+    readonly title: FieldRef<"MiddleBanner", 'String'>
+    readonly subtitle: FieldRef<"MiddleBanner", 'String'>
+    readonly imageUrl: FieldRef<"MiddleBanner", 'String'>
+    readonly linkUrl: FieldRef<"MiddleBanner", 'String'>
+    readonly ctaText: FieldRef<"MiddleBanner", 'String'>
+    readonly position: FieldRef<"MiddleBanner", 'Int'>
+    readonly isActive: FieldRef<"MiddleBanner", 'Boolean'>
+    readonly countryCode: FieldRef<"MiddleBanner", 'String'>
+    readonly startsAt: FieldRef<"MiddleBanner", 'DateTime'>
+    readonly endsAt: FieldRef<"MiddleBanner", 'DateTime'>
+    readonly createdAt: FieldRef<"MiddleBanner", 'DateTime'>
+    readonly updatedAt: FieldRef<"MiddleBanner", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MiddleBanner findUnique
+   */
+  export type MiddleBannerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MiddleBanner
+     */
+    select?: MiddleBannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MiddleBanner
+     */
+    omit?: MiddleBannerOmit<ExtArgs> | null
+    /**
+     * Filter, which MiddleBanner to fetch.
+     */
+    where: MiddleBannerWhereUniqueInput
+  }
+
+  /**
+   * MiddleBanner findUniqueOrThrow
+   */
+  export type MiddleBannerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MiddleBanner
+     */
+    select?: MiddleBannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MiddleBanner
+     */
+    omit?: MiddleBannerOmit<ExtArgs> | null
+    /**
+     * Filter, which MiddleBanner to fetch.
+     */
+    where: MiddleBannerWhereUniqueInput
+  }
+
+  /**
+   * MiddleBanner findFirst
+   */
+  export type MiddleBannerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MiddleBanner
+     */
+    select?: MiddleBannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MiddleBanner
+     */
+    omit?: MiddleBannerOmit<ExtArgs> | null
+    /**
+     * Filter, which MiddleBanner to fetch.
+     */
+    where?: MiddleBannerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MiddleBanners to fetch.
+     */
+    orderBy?: MiddleBannerOrderByWithRelationInput | MiddleBannerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MiddleBanners.
+     */
+    cursor?: MiddleBannerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MiddleBanners from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MiddleBanners.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MiddleBanners.
+     */
+    distinct?: MiddleBannerScalarFieldEnum | MiddleBannerScalarFieldEnum[]
+  }
+
+  /**
+   * MiddleBanner findFirstOrThrow
+   */
+  export type MiddleBannerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MiddleBanner
+     */
+    select?: MiddleBannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MiddleBanner
+     */
+    omit?: MiddleBannerOmit<ExtArgs> | null
+    /**
+     * Filter, which MiddleBanner to fetch.
+     */
+    where?: MiddleBannerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MiddleBanners to fetch.
+     */
+    orderBy?: MiddleBannerOrderByWithRelationInput | MiddleBannerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MiddleBanners.
+     */
+    cursor?: MiddleBannerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MiddleBanners from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MiddleBanners.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MiddleBanners.
+     */
+    distinct?: MiddleBannerScalarFieldEnum | MiddleBannerScalarFieldEnum[]
+  }
+
+  /**
+   * MiddleBanner findMany
+   */
+  export type MiddleBannerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MiddleBanner
+     */
+    select?: MiddleBannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MiddleBanner
+     */
+    omit?: MiddleBannerOmit<ExtArgs> | null
+    /**
+     * Filter, which MiddleBanners to fetch.
+     */
+    where?: MiddleBannerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MiddleBanners to fetch.
+     */
+    orderBy?: MiddleBannerOrderByWithRelationInput | MiddleBannerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MiddleBanners.
+     */
+    cursor?: MiddleBannerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MiddleBanners from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MiddleBanners.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MiddleBanners.
+     */
+    distinct?: MiddleBannerScalarFieldEnum | MiddleBannerScalarFieldEnum[]
+  }
+
+  /**
+   * MiddleBanner create
+   */
+  export type MiddleBannerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MiddleBanner
+     */
+    select?: MiddleBannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MiddleBanner
+     */
+    omit?: MiddleBannerOmit<ExtArgs> | null
+    /**
+     * The data needed to create a MiddleBanner.
+     */
+    data: XOR<MiddleBannerCreateInput, MiddleBannerUncheckedCreateInput>
+  }
+
+  /**
+   * MiddleBanner createMany
+   */
+  export type MiddleBannerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MiddleBanners.
+     */
+    data: MiddleBannerCreateManyInput | MiddleBannerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MiddleBanner createManyAndReturn
+   */
+  export type MiddleBannerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MiddleBanner
+     */
+    select?: MiddleBannerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MiddleBanner
+     */
+    omit?: MiddleBannerOmit<ExtArgs> | null
+    /**
+     * The data used to create many MiddleBanners.
+     */
+    data: MiddleBannerCreateManyInput | MiddleBannerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MiddleBanner update
+   */
+  export type MiddleBannerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MiddleBanner
+     */
+    select?: MiddleBannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MiddleBanner
+     */
+    omit?: MiddleBannerOmit<ExtArgs> | null
+    /**
+     * The data needed to update a MiddleBanner.
+     */
+    data: XOR<MiddleBannerUpdateInput, MiddleBannerUncheckedUpdateInput>
+    /**
+     * Choose, which MiddleBanner to update.
+     */
+    where: MiddleBannerWhereUniqueInput
+  }
+
+  /**
+   * MiddleBanner updateMany
+   */
+  export type MiddleBannerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MiddleBanners.
+     */
+    data: XOR<MiddleBannerUpdateManyMutationInput, MiddleBannerUncheckedUpdateManyInput>
+    /**
+     * Filter which MiddleBanners to update
+     */
+    where?: MiddleBannerWhereInput
+    /**
+     * Limit how many MiddleBanners to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MiddleBanner updateManyAndReturn
+   */
+  export type MiddleBannerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MiddleBanner
+     */
+    select?: MiddleBannerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MiddleBanner
+     */
+    omit?: MiddleBannerOmit<ExtArgs> | null
+    /**
+     * The data used to update MiddleBanners.
+     */
+    data: XOR<MiddleBannerUpdateManyMutationInput, MiddleBannerUncheckedUpdateManyInput>
+    /**
+     * Filter which MiddleBanners to update
+     */
+    where?: MiddleBannerWhereInput
+    /**
+     * Limit how many MiddleBanners to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MiddleBanner upsert
+   */
+  export type MiddleBannerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MiddleBanner
+     */
+    select?: MiddleBannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MiddleBanner
+     */
+    omit?: MiddleBannerOmit<ExtArgs> | null
+    /**
+     * The filter to search for the MiddleBanner to update in case it exists.
+     */
+    where: MiddleBannerWhereUniqueInput
+    /**
+     * In case the MiddleBanner found by the `where` argument doesn't exist, create a new MiddleBanner with this data.
+     */
+    create: XOR<MiddleBannerCreateInput, MiddleBannerUncheckedCreateInput>
+    /**
+     * In case the MiddleBanner was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MiddleBannerUpdateInput, MiddleBannerUncheckedUpdateInput>
+  }
+
+  /**
+   * MiddleBanner delete
+   */
+  export type MiddleBannerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MiddleBanner
+     */
+    select?: MiddleBannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MiddleBanner
+     */
+    omit?: MiddleBannerOmit<ExtArgs> | null
+    /**
+     * Filter which MiddleBanner to delete.
+     */
+    where: MiddleBannerWhereUniqueInput
+  }
+
+  /**
+   * MiddleBanner deleteMany
+   */
+  export type MiddleBannerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MiddleBanners to delete
+     */
+    where?: MiddleBannerWhereInput
+    /**
+     * Limit how many MiddleBanners to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MiddleBanner without action
+   */
+  export type MiddleBannerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MiddleBanner
+     */
+    select?: MiddleBannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MiddleBanner
+     */
+    omit?: MiddleBannerOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model AdRequest
    */
 
@@ -23845,6 +25074,25 @@ export namespace Prisma {
   };
 
   export type PlatformConfigScalarFieldEnum = (typeof PlatformConfigScalarFieldEnum)[keyof typeof PlatformConfigScalarFieldEnum]
+
+
+  export const MiddleBannerScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    subtitle: 'subtitle',
+    imageUrl: 'imageUrl',
+    linkUrl: 'linkUrl',
+    ctaText: 'ctaText',
+    position: 'position',
+    isActive: 'isActive',
+    countryCode: 'countryCode',
+    startsAt: 'startsAt',
+    endsAt: 'endsAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MiddleBannerScalarFieldEnum = (typeof MiddleBannerScalarFieldEnum)[keyof typeof MiddleBannerScalarFieldEnum]
 
 
   export const AdRequestScalarFieldEnum: {
@@ -25638,6 +26886,100 @@ export namespace Prisma {
     key?: StringWithAggregatesFilter<"PlatformConfig"> | string
     value?: StringWithAggregatesFilter<"PlatformConfig"> | string
     updatedAt?: DateTimeWithAggregatesFilter<"PlatformConfig"> | Date | string
+  }
+
+  export type MiddleBannerWhereInput = {
+    AND?: MiddleBannerWhereInput | MiddleBannerWhereInput[]
+    OR?: MiddleBannerWhereInput[]
+    NOT?: MiddleBannerWhereInput | MiddleBannerWhereInput[]
+    id?: StringFilter<"MiddleBanner"> | string
+    title?: StringFilter<"MiddleBanner"> | string
+    subtitle?: StringNullableFilter<"MiddleBanner"> | string | null
+    imageUrl?: StringFilter<"MiddleBanner"> | string
+    linkUrl?: StringNullableFilter<"MiddleBanner"> | string | null
+    ctaText?: StringNullableFilter<"MiddleBanner"> | string | null
+    position?: IntFilter<"MiddleBanner"> | number
+    isActive?: BoolFilter<"MiddleBanner"> | boolean
+    countryCode?: StringNullableFilter<"MiddleBanner"> | string | null
+    startsAt?: DateTimeNullableFilter<"MiddleBanner"> | Date | string | null
+    endsAt?: DateTimeNullableFilter<"MiddleBanner"> | Date | string | null
+    createdAt?: DateTimeFilter<"MiddleBanner"> | Date | string
+    updatedAt?: DateTimeFilter<"MiddleBanner"> | Date | string
+  }
+
+  export type MiddleBannerOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subtitle?: SortOrderInput | SortOrder
+    imageUrl?: SortOrder
+    linkUrl?: SortOrderInput | SortOrder
+    ctaText?: SortOrderInput | SortOrder
+    position?: SortOrder
+    isActive?: SortOrder
+    countryCode?: SortOrderInput | SortOrder
+    startsAt?: SortOrderInput | SortOrder
+    endsAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MiddleBannerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MiddleBannerWhereInput | MiddleBannerWhereInput[]
+    OR?: MiddleBannerWhereInput[]
+    NOT?: MiddleBannerWhereInput | MiddleBannerWhereInput[]
+    title?: StringFilter<"MiddleBanner"> | string
+    subtitle?: StringNullableFilter<"MiddleBanner"> | string | null
+    imageUrl?: StringFilter<"MiddleBanner"> | string
+    linkUrl?: StringNullableFilter<"MiddleBanner"> | string | null
+    ctaText?: StringNullableFilter<"MiddleBanner"> | string | null
+    position?: IntFilter<"MiddleBanner"> | number
+    isActive?: BoolFilter<"MiddleBanner"> | boolean
+    countryCode?: StringNullableFilter<"MiddleBanner"> | string | null
+    startsAt?: DateTimeNullableFilter<"MiddleBanner"> | Date | string | null
+    endsAt?: DateTimeNullableFilter<"MiddleBanner"> | Date | string | null
+    createdAt?: DateTimeFilter<"MiddleBanner"> | Date | string
+    updatedAt?: DateTimeFilter<"MiddleBanner"> | Date | string
+  }, "id">
+
+  export type MiddleBannerOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subtitle?: SortOrderInput | SortOrder
+    imageUrl?: SortOrder
+    linkUrl?: SortOrderInput | SortOrder
+    ctaText?: SortOrderInput | SortOrder
+    position?: SortOrder
+    isActive?: SortOrder
+    countryCode?: SortOrderInput | SortOrder
+    startsAt?: SortOrderInput | SortOrder
+    endsAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: MiddleBannerCountOrderByAggregateInput
+    _avg?: MiddleBannerAvgOrderByAggregateInput
+    _max?: MiddleBannerMaxOrderByAggregateInput
+    _min?: MiddleBannerMinOrderByAggregateInput
+    _sum?: MiddleBannerSumOrderByAggregateInput
+  }
+
+  export type MiddleBannerScalarWhereWithAggregatesInput = {
+    AND?: MiddleBannerScalarWhereWithAggregatesInput | MiddleBannerScalarWhereWithAggregatesInput[]
+    OR?: MiddleBannerScalarWhereWithAggregatesInput[]
+    NOT?: MiddleBannerScalarWhereWithAggregatesInput | MiddleBannerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MiddleBanner"> | string
+    title?: StringWithAggregatesFilter<"MiddleBanner"> | string
+    subtitle?: StringNullableWithAggregatesFilter<"MiddleBanner"> | string | null
+    imageUrl?: StringWithAggregatesFilter<"MiddleBanner"> | string
+    linkUrl?: StringNullableWithAggregatesFilter<"MiddleBanner"> | string | null
+    ctaText?: StringNullableWithAggregatesFilter<"MiddleBanner"> | string | null
+    position?: IntWithAggregatesFilter<"MiddleBanner"> | number
+    isActive?: BoolWithAggregatesFilter<"MiddleBanner"> | boolean
+    countryCode?: StringNullableWithAggregatesFilter<"MiddleBanner"> | string | null
+    startsAt?: DateTimeNullableWithAggregatesFilter<"MiddleBanner"> | Date | string | null
+    endsAt?: DateTimeNullableWithAggregatesFilter<"MiddleBanner"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"MiddleBanner"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"MiddleBanner"> | Date | string
   }
 
   export type AdRequestWhereInput = {
@@ -27479,6 +28821,118 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MiddleBannerCreateInput = {
+    id?: string
+    title: string
+    subtitle?: string | null
+    imageUrl: string
+    linkUrl?: string | null
+    ctaText?: string | null
+    position?: number
+    isActive?: boolean
+    countryCode?: string | null
+    startsAt?: Date | string | null
+    endsAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MiddleBannerUncheckedCreateInput = {
+    id?: string
+    title: string
+    subtitle?: string | null
+    imageUrl: string
+    linkUrl?: string | null
+    ctaText?: string | null
+    position?: number
+    isActive?: boolean
+    countryCode?: string | null
+    startsAt?: Date | string | null
+    endsAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MiddleBannerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    ctaText?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MiddleBannerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    ctaText?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MiddleBannerCreateManyInput = {
+    id?: string
+    title: string
+    subtitle?: string | null
+    imageUrl: string
+    linkUrl?: string | null
+    ctaText?: string | null
+    position?: number
+    isActive?: boolean
+    countryCode?: string | null
+    startsAt?: Date | string | null
+    endsAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MiddleBannerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    ctaText?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MiddleBannerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    ctaText?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AdRequestCreateInput = {
     id?: string
     status?: $Enums.AdRequestStatus
@@ -29062,6 +30516,62 @@ export namespace Prisma {
     key?: SortOrder
     value?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type MiddleBannerCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subtitle?: SortOrder
+    imageUrl?: SortOrder
+    linkUrl?: SortOrder
+    ctaText?: SortOrder
+    position?: SortOrder
+    isActive?: SortOrder
+    countryCode?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MiddleBannerAvgOrderByAggregateInput = {
+    position?: SortOrder
+  }
+
+  export type MiddleBannerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subtitle?: SortOrder
+    imageUrl?: SortOrder
+    linkUrl?: SortOrder
+    ctaText?: SortOrder
+    position?: SortOrder
+    isActive?: SortOrder
+    countryCode?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MiddleBannerMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subtitle?: SortOrder
+    imageUrl?: SortOrder
+    linkUrl?: SortOrder
+    ctaText?: SortOrder
+    position?: SortOrder
+    isActive?: SortOrder
+    countryCode?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MiddleBannerSumOrderByAggregateInput = {
+    position?: SortOrder
   }
 
   export type EnumAdRequestStatusFilter<$PrismaModel = never> = {

@@ -428,6 +428,22 @@ model PlatformConfig {
   updatedAt DateTime @updatedAt
 }
 
+model MiddleBanner {
+  id          String    @id @default(cuid())
+  title       String
+  subtitle    String?
+  imageUrl    String
+  linkUrl     String?
+  ctaText     String?
+  position    Int       @default(0)
+  isActive    Boolean   @default(true)
+  countryCode String?
+  startsAt    DateTime?
+  endsAt      DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 enum AdRequestStatus {
   PENDING
   APPROVED

@@ -1,14 +1,109 @@
 'use client'
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
 import toast from "react-hot-toast"
 import Loading from "@/components/Loading"
-import { PlusIcon, SaveIcon, Trash2Icon, ImageIcon } from "lucide-react"
+import { PlusIcon, SaveIcon, Trash2Icon, ImageIcon, UploadIcon, XIcon } from "lucide-react"
 
 const emptyCategory = () => ({ name: "", subcategories: [""] })
 const emptyFaq = () => ({ question: "", answer: "" })
-const emptyBanner = () => ({ id: Date.now(), title: "", subtitle: "", cta: "View deals", href: "/shop", image: "" })
+const emptyBanner = () => ({ id: `temp-${Date.now()}`, title: "", subtitle: "", cta: "View deals", href: "/shop", image: "" })
+
+function BannerImageField({ label, url, getToken, disabled, onChange }) {
+  const inputRef = useRef(null)
+  const [uploading, setUploading] = useState(false)
+  const [uploadSuccess, setUploadSuccess] = useState(false)
+
+  const pickFile = () => inputRef.current?.click()
+
+  const onFile = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ""
+    if (!file) return
+    setUploading(true)
+    setUploadSuccess(false)
+    try {
+      const token = await getToken()
+      const fd = new FormData()
+      fd.append("image", file)
+      const { data } = await axios.post("/api/admin/middle-banners/upload", fd, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (data?.url) {
+        onChange(data.url)
+        setUploadSuccess(true)
+        toast.success("Image uploaded.")
+      } else {
+        toast.error("Upload did not return a URL.")
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.error || error.message)
+    }
+    setUploading(false)
+  }
+
+  const hasUrl = typeof url === "string" && url.trim() !== ""
+
+  return (
+    <div className="sm:col-span-2 space-y-3">
+      <p className="text-xs text-slate-500">{label}</p>
+      <div className="grid gap-3">
+        <label className="text-xs text-slate-500 block">
+          Image URL
+          <input
+            type="text"
+            value={url ?? ""}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="https://example.com/banner.jpg"
+            className="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm outline-none text-slate-800 dark:text-slate-100"
+          />
+        </label>
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            className="hidden"
+            onChange={onFile}
+            disabled={disabled || uploading}
+          />
+          <button
+            type="button"
+            onClick={pickFile}
+            disabled={disabled || uploading}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 disabled:opacity-50"
+          >
+            <UploadIcon size={16} />
+            {uploading ? "Uploading…" : hasUrl ? "Replace image" : "Upload image"}
+          </button>
+          {hasUrl && (
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-red-300 text-sm text-red-600 hover:bg-red-50"
+            >
+              <XIcon size={14} /> Clear
+            </button>
+          )}
+        </div>
+        {hasUrl ? (
+          <>
+            <div className="relative h-24 w-full overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={url.trim()} alt="Banner preview" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none' }} />
+            </div>
+            {uploadSuccess && !uploading && (
+              <p className="text-xs text-emerald-600">Image successfully uploaded and set.</p>
+            )}
+          </>
+        ) : (
+          <p className="text-xs text-slate-400">You can paste an image URL or upload a file directly.</p>
+        )}
+      </div>
+    </div>
+  )
+}
 
 export default function AdminContentPage() {
   const { getToken } = useAuth()
@@ -166,20 +261,13 @@ export default function AdminContentPage() {
                       placeholder="/shop or /wholesale"
                       className="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm outline-none text-slate-800 dark:text-slate-100" />
                   </label>
-                  <label className="text-xs text-slate-500 block sm:col-span-2">
-                    Image URL
-                    <div className="mt-1 flex gap-2 items-start">
-                      <input value={banner.image} onChange={(e) => updateBanner(idx, "image", e.target.value)}
-                        placeholder="https://res.cloudinary.com/... or leave empty for no image"
-                        className="flex-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm outline-none text-slate-800 dark:text-slate-100" />
-                      {banner.image && (
-                        <div className="w-16 h-10 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shrink-0 bg-slate-100">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={banner.image} alt="preview" className="w-full h-full object-cover" onError={(e) => { e.target.style.display='none' }} />
-                        </div>
-                      )}
-                    </div>
-                  </label>
+                  <BannerImageField
+                    label="Image URL or upload"
+                    url={banner.image}
+                    getToken={getToken}
+                    disabled={savingBanners}
+                    onChange={(value) => updateBanner(idx, "image", value)}
+                  />
                 </div>
               </div>
             ))}

@@ -118,9 +118,8 @@ export async function PUT(request) {
         return NextResponse.json({ message: `Banner #${i + 1} requires a Title and Image URL.` }, { status: 400 });
       }
 
-      // Next.js client-side Date.now() IDs are too large for standard DB integer columns. 
-      // If it looks like a temporary key, create a fresh record instead.
-      const isTempId = !b.id || String(b.id).length > 9;
+      // Treat temporary front-end IDs as new records.
+      const isTempId = !b.id || typeof b.id !== 'string' || b.id.startsWith('temp-');
 
       if (!prisma?.middleBanner?.create || !prisma?.middleBanner?.upsert) {
         return NextResponse.json({ message: "Middle banner storage is not configured" }, { status: 501 });
@@ -133,7 +132,7 @@ export async function PUT(request) {
         });
       } else {
         savedBanner = await prisma.middleBanner.upsert({
-          where: { id: Number(b.id) },
+          where: { id: b.id },
           update: bannerData,
           create: bannerData,
         });
