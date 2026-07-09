@@ -95,6 +95,10 @@ const OrderSummary = ({ totalPrice, items }) => {
         origin: product.origin,
         deliveryWithinState: product.deliveryWithinState !== false,
         deliveryNationwide: product.deliveryNationwide !== false,
+        useDefaultShipping: product.useDefaultShipping !== false,
+        customLocalFee: product.customLocalFee,
+        customNationwideFee: product.customNationwideFee,
+        customAbroadFee: product.customAbroadFee,
       });
     });
 
@@ -120,10 +124,29 @@ const OrderSummary = ({ totalPrice, items }) => {
       const storeHasAbroad = storeItems.some((item) => item.origin === "ABROAD");
 
       if (storeHasAbroad) {
-        totalFee += storeAbroadFee;
+        let fee = storeAbroadFee;
+        const customAbroadFees = storeItems
+          .filter((i) => i.origin === "ABROAD" && i.useDefaultShipping === false && i.customAbroadFee != null)
+          .map((i) => i.customAbroadFee);
+        if (customAbroadFees.length > 0) fee = Math.max(fee, ...customAbroadFees);
+        totalFee += fee;
       } else {
         const requiresNationwide = storeItems.some((item) => !item.deliveryWithinState);
-        totalFee += sameState && !requiresNationwide ? storeLocalFee : storeNationwideFee;
+        if (sameState && !requiresNationwide) {
+          let fee = storeLocalFee;
+          const customFees = storeItems
+            .filter((i) => i.useDefaultShipping === false && i.customLocalFee != null)
+            .map((i) => i.customLocalFee);
+          if (customFees.length > 0) fee = Math.max(fee, ...customFees);
+          totalFee += fee;
+        } else {
+          let fee = storeNationwideFee;
+          const customFees = storeItems
+            .filter((i) => i.useDefaultShipping === false && i.customNationwideFee != null)
+            .map((i) => i.customNationwideFee);
+          if (customFees.length > 0) fee = Math.max(fee, ...customFees);
+          totalFee += fee;
+        }
       }
     });
 

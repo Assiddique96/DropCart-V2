@@ -18,6 +18,9 @@ export default function AdminSettings() {
         shipping_abroad_fee: 15000,
         shipping_free_above: 0,
         tax_rate: 0,
+        ad_price_per_day: 500,
+        ad_min_duration_days: 3,
+        ad_max_duration_days: 30,
     })
 
     useEffect(() => {
@@ -73,6 +76,24 @@ export default function AdminSettings() {
             label: 'VAT / Tax Rate (%)',
             description: '🧾 Percentage tax applied to every order at checkout (applies to subtotal + shipping). Set to 0 to disable tax.',
             min: 0, max: 100, step: 0.5,
+        },
+        {
+            key: 'ad_price_per_day',
+            label: `Featured Ad Price (${currency} / day)`,
+            description: '📌 What sellers pay per day to feature a product on the home page. Total price = price/day × requested duration.',
+            min: 0, step: 50,
+        },
+        {
+            key: 'ad_min_duration_days',
+            label: 'Minimum Ad Duration (days)',
+            description: 'Shortest featured-slot duration a seller can request.',
+            min: 1, step: 1,
+        },
+        {
+            key: 'ad_max_duration_days',
+            label: 'Maximum Ad Duration (days)',
+            description: 'Longest featured-slot duration a seller can request.',
+            min: 1, step: 1,
         },
     ]
 

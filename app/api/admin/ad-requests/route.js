@@ -1,16 +1,17 @@
 import prisma from "@/src/db";
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { getAuth } from "@clerk/nextjs/server";
+import authAdmin from "@/middlewares/authAdmin";
 import { writeAuditLog, AUDIT_ACTIONS } from "@/lib/auditLog";
+import { inngest } from "@/inngest/client";
 
-export async function GET() {
+export async function GET(request) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
+    const { userId } = getAuth(request);
+    const isAdmin = await authAdmin(userId);
+    if (!isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    // TODO: Check if user is admin
 
     const adRequests = await prisma.adRequest.findMany({
       include: {
@@ -41,12 +42,11 @@ export async function GET() {
 
 export async function PUT(request) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
+    const { userId } = getAuth(request);
+    const isAdmin = await authAdmin(userId);
+    if (!isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    // TODO: Check if user is admin
 
     const body = await request.json();
     const { id, status, adminNote } = body;
@@ -69,12 +69,20 @@ export async function PUT(request) {
     }
 
     // Update the request
+    const now = new Date();
+    const startsAt = status === "APPROVED" ? now : null;
+    const endsAt = status === "APPROVED"
+      ? new Date(now.getTime() + adRequest.durationDays * 24 * 60 * 60 * 1000)
+      : null;
+
     const updatedRequest = await prisma.adRequest.update({
       where: { id },
       data: {
         status,
         adminNote,
-        approvedAt: status === "APPROVED" ? new Date() : null,
+        approvedAt: status === "APPROVED" ? now : null,
+        startsAt,
+        endsAt,
       },
       include: {
         product: {
@@ -129,6 +137,16 @@ export async function PUT(request) {
         where: { key: "home_page_content" },
         update: { value: JSON.stringify(content) },
         create: { key: "home_page_content", value: JSON.stringify(content) },
+      });
+
+      // Schedule automatic removal once the seller's paid duration ends
+      await inngest.send({
+        name: "app/ad.approved",
+        data: {
+          adRequestId: updatedRequest.id,
+          productId: updatedRequest.product.id,
+          endsAt: endsAt.toISOString(),
+        },
       });
     }
 

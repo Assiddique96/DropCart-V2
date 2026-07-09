@@ -18,7 +18,7 @@ export async function GET(request) {
       prisma.store.count({ where: { status: "rejected" } }),
       prisma.user.count(),
       prisma.order.findMany({
-        select: { createdAt: true, total: true, isPaid: true, status: true, paymentMethod: true },
+        select: { createdAt: true, total: true, isPaid: true, status: true, paymentMethod: true, platformFee: true },
       }),
       prisma.order.count({ where: { status: "CANCELLED" } }),
       prisma.order.findMany({
@@ -58,6 +58,11 @@ export async function GET(request) {
       .filter((o) => isOrderConsideredPaid(o))
       .reduce((s, o) => s + o.total, 0);
     const unpaidRevenue = totalRevenue - paidRevenue;
+    // Platform's commission earnings on paid orders (0 for orders placed
+    // before commission tracking was added — see Order.platformFee).
+    const totalCommissionEarned = allOrders
+      .filter((o) => isOrderConsideredPaid(o))
+      .reduce((s, o) => s + (o.platformFee || 0), 0);
 
     return NextResponse.json({
       orders,
@@ -72,6 +77,7 @@ export async function GET(request) {
       revenue: totalRevenue.toFixed(2),
       paidRevenue: paidRevenue.toFixed(2),
       unpaidRevenue: unpaidRevenue.toFixed(2),
+      totalCommissionEarned: totalCommissionEarned.toFixed(2),
       allOrders,
       recentOrders: recentOrders.map((o) => ({
         ...o,

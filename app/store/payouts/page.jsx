@@ -15,6 +15,8 @@ const EMPTY_DATA = {
   payouts: [],
   store: null,
   totalDeliveredRevenue: 0,
+  totalGrossRevenue: 0,
+  totalCommission: 0,
   totalPaidOut: 0,
   totalRequested: 0,
   availableBalance: 0,
@@ -54,6 +56,8 @@ export default function SellerPayouts() {
         payouts: Array.isArray(res.payouts) ? res.payouts : [],
         store: res.store ?? null,
         totalDeliveredRevenue: safeNum(res.totalDeliveredRevenue),
+        totalGrossRevenue: safeNum(res.totalGrossRevenue),
+        totalCommission: safeNum(res.totalCommission),
         totalPaidOut: safeNum(res.totalPaidOut),
         totalRequested: safeNum(res.totalRequested),
         availableBalance: safeNum(res.availableBalance),
@@ -106,10 +110,13 @@ export default function SellerPayouts() {
 
   const cards = [
     {
-      label: "Total Revenue (Delivered)",
+      label: "Net Revenue (after commission)",
       value: fmt(currency, data.totalDeliveredRevenue),
       icon: TrendingUpIcon,
       color: "text-green-600 bg-green-50 dark:bg-green-900/20 dark:text-green-400",
+      sub: data.totalCommission > 0
+        ? `${fmt(currency, data.totalGrossRevenue)} gross − ${fmt(currency, data.totalCommission)} platform fee`
+        : null,
     },
     {
       label: "Total Paid Out",
@@ -185,6 +192,7 @@ export default function SellerPayouts() {
             <div className="min-w-0">
               <p className="text-xs text-slate-400 truncate">{card.label}</p>
               <p className="text-lg font-semibold text-slate-800 dark:text-slate-100 mt-0.5 truncate">{card.value}</p>
+              {card.sub && <p className="text-[11px] text-slate-400 truncate mt-0.5">{card.sub}</p>}
             </div>
           </div>
         ))}

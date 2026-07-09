@@ -83,6 +83,15 @@ export default function AdminAdRequestsPage() {
                       <p className="text-sm text-slate-500 dark:text-slate-400">
                         ₦{request.product.price.toLocaleString()}
                       </p>
+                      <p className="mt-1 text-sm font-medium text-fuchsia-600 dark:text-fuchsia-400">
+                        {request.durationDays} day{request.durationDays === 1 ? '' : 's'} · ₦{request.totalPrice.toLocaleString()} total
+                        <span className="text-slate-400 font-normal"> (₦{request.pricePerDay.toLocaleString()}/day)</span>
+                      </p>
+                      {request.status === 'APPROVED' && request.endsAt && (
+                        <p className="mt-0.5 text-xs text-slate-400">
+                          Live until {new Date(request.endsAt).toLocaleDateString()}
+                        </p>
+                      )}
                     </div>
                     <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
                       request.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' :

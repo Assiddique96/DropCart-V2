@@ -1,37 +1,108 @@
 "use client";
 import ProductCard from "@/components/ProductCard";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MailIcon, MapPinIcon, ShieldCheckIcon, AlertCircleIcon, StarIcon } from "lucide-react";
+import { MailIcon, MapPinIcon, ShieldCheckIcon, AlertCircleIcon, StarIcon, StoreIcon, ClockIcon, EyeIcon } from "lucide-react";
 import Loading from "@/components/Loading";
 import Image from "next/image";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useAuth } from "@clerk/nextjs";
+import { rootHref } from "@/lib/subdomain";
 
 export default function StoreShop() {
   const { username } = useParams();
+  const { getToken, isLoaded } = useAuth();
   const [products, setProducts] = useState([]);
   const [storeInfo, setStoreInfo] = useState(null);
+  // "not_found"  -> no store has ever used this username
+  // "not_active" -> store exists but isn't live yet (pending/paused/rejected)
+  const [errorType, setErrorType] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchStoreData = async () => {
     setLoading(true);
+    setErrorType(null);
     try {
-      const { data } = await axios.get(`/api/store/data?username=${username}`);
+      // Send the auth token (if any) so the store owner can preview their
+      // own pending storefront — everyone else just gets the public result.
+      const token = await getToken().catch(() => null);
+      const { data } = await axios.get(`/api/store/data?username=${username}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       setStoreInfo(data.store);
       setProducts(data.store.Product);
     } catch (error) {
-      toast.error(error.response?.data?.error || error.message);
+      const code = error.response?.data?.error;
+      setErrorType(code === "not_found" ? "not_found" : "not_active");
+      if (code !== "not_found" && code !== "not_active") {
+        toast.error(code || error.message);
+      }
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchStoreData();
-  }, [username]);
+    if (isLoaded) fetchStoreData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username, isLoaded]);
+
+  if (!loading && errorType === "not_found") {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-6">
+        <StoreIcon className="w-14 h-14 text-slate-300 dark:text-slate-700 mb-4" />
+        <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100">
+          Store not found
+        </h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-sm">
+          This store may have been renamed, or the address is incorrect.
+        </p>
+        <Link
+          href={rootHref("/shop")}
+          className="mt-6 inline-flex items-center px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-medium hover:opacity-90 transition-all"
+        >
+          Browse all stores
+        </Link>
+      </div>
+    );
+  }
+
+  if (!loading && errorType === "not_active") {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-6">
+        <ClockIcon className="w-14 h-14 text-slate-300 dark:text-slate-700 mb-4" />
+        <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100">
+          This store isn&apos;t live yet
+        </h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-sm">
+          It may be new, temporarily paused, or no longer accepting orders. Check back later.
+        </p>
+        <Link
+          href={rootHref("/shop")}
+          className="mt-6 inline-flex items-center px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-medium hover:opacity-90 transition-all"
+        >
+          Browse all stores
+        </Link>
+      </div>
+    );
+  }
 
   return !loading ? (
     <div className="min-h-[70vh] mx-6 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100">
+      {/* Owner-only preview banner — shown when the store isn't live yet
+          but the visitor is the store's own owner. */}
+      {storeInfo?.preview && (
+        <div className="max-w-7xl mx-auto mt-6 flex items-center gap-3 rounded-xl border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/30 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
+          <EyeIcon className="w-4 h-4 shrink-0" />
+          <span>
+            <strong>Preview only</strong> — visitors can&apos;t see this yet. Your store status is{" "}
+            <strong className="capitalize">{storeInfo.status}</strong>
+            {storeInfo.verificationStatus === "unverified" && " and unverified"}. It&apos;ll go live once approved.
+          </span>
+        </div>
+      )}
+
       {/* Store card; banner is the card background when set */}
       {storeInfo && (
         <div

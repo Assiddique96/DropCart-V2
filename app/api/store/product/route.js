@@ -60,6 +60,10 @@ export async function POST(request) {
       manufacturer:   formData.get("manufacturer"),
       material:       formData.get("material"),
       guaranteePeriod: formData.get("guaranteePeriod"),
+      useDefaultShipping: formData.get("useDefaultShipping"),
+      customLocalFee: formData.get("customLocalFee"),
+      customNationwideFee: formData.get("customNationwideFee"),
+      customAbroadFee: formData.get("customAbroadFee"),
     });
 
     if (errors.length > 0) return NextResponse.json({ error: errors.join(" ") }, { status: 400 });
@@ -208,6 +212,10 @@ export async function PATCH(request) {
       deliveryWithinState: formData.get("deliveryWithinState") ?? String(existing.deliveryWithinState),
       deliveryNationwide: formData.get("deliveryNationwide") ?? String(existing.deliveryNationwide),
       deliveryInternational: formData.get("deliveryInternational") ?? String(existing.deliveryInternational),
+      useDefaultShipping: formData.has("useDefaultShipping") ? formData.get("useDefaultShipping") : String(existing.useDefaultShipping),
+      customLocalFee: formData.has("customLocalFee") ? formData.get("customLocalFee") : existing.customLocalFee,
+      customNationwideFee: formData.has("customNationwideFee") ? formData.get("customNationwideFee") : existing.customNationwideFee,
+      customAbroadFee: formData.has("customAbroadFee") ? formData.get("customAbroadFee") : existing.customAbroadFee,
     });
 
     const newImageFiles = formData.getAll("images").filter((i) => i instanceof File && i.size > 0);

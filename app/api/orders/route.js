@@ -117,6 +117,7 @@ export async function POST(request) {
     let shippingAbroadFee = 15000;
     let shippingFreeAbove = 0;
     let taxRate           = 0; // platform VAT/tax percentage
+    let commissionRate    = 5; // % of product subtotal kept by the platform
 
     const ordersByStore = new Map();
     const productQuantityMap = new Map();
@@ -127,13 +128,14 @@ export async function POST(request) {
 
     try {
       const configRows = await prisma.platformConfig.findMany({
-        where: { key: { in: ["shipping_base_fee", "shipping_abroad_fee", "shipping_free_above", "tax_rate"] } },
+        where: { key: { in: ["shipping_base_fee", "shipping_abroad_fee", "shipping_free_above", "tax_rate", "commission_rate"] } },
       });
       configRows.forEach((r) => {
         if (r.key === "shipping_base_fee")    shippingLocalFee  = parseFloat(r.value);
         if (r.key === "shipping_abroad_fee")  shippingAbroadFee = parseFloat(r.value);
         if (r.key === "shipping_free_above")  shippingFreeAbove = parseFloat(r.value);
         if (r.key === "tax_rate")             taxRate           = parseFloat(r.value);
+        if (r.key === "commission_rate")      commissionRate    = parseFloat(r.value);
       });
     } catch {
       // non-fatal — use defaults
@@ -155,6 +157,10 @@ export async function POST(request) {
                 quantity: true,
                 inStock: true,
                 isWholesale: true,
+                useDefaultShipping: true,
+                customLocalFee: true,
+                customNationwideFee: true,
+                customAbroadFee: true,
                 wholesaleTiers: { orderBy: { minQty: "asc" } },
                 variantGroups: { include: { options: true } },
                 store: {
@@ -284,6 +290,10 @@ export async function POST(request) {
             deliveryWithinState: product.deliveryWithinState !== false,
             deliveryNationwide: product.deliveryNationwide !== false,
             deliveryInternational: product.origin === 'ABROAD' ? true : product.deliveryInternational === true,
+            useDefaultShipping: product.useDefaultShipping !== false,
+            customLocalFee: product.customLocalFee,
+            customNationwideFee: product.customNationwideFee,
+            customAbroadFee: product.customAbroadFee,
         });
     }
 
@@ -383,28 +393,59 @@ export async function POST(request) {
             let applicableShippingFee;
             if (storeHasAbroad) {
                 applicableShippingFee = storeAbroadFee;
+                const customAbroadFees = sellerItems
+                    .filter((i) => i.origin === 'ABROAD' && i.useDefaultShipping === false && i.customAbroadFee != null)
+                    .map((i) => i.customAbroadFee);
+                if (customAbroadFees.length > 0) {
+                    applicableShippingFee = Math.max(applicableShippingFee, ...customAbroadFees);
+                }
             } else {
                 const requiresNationwide = localItems.some((item) => !item.deliveryWithinState);
                 console.log(`[DEBUG_ORDER] storeId=${storeId} requiresNationwide=${requiresNationwide} sameState=${sameState}`);
                 if (sameState && !requiresNationwide) {
                     applicableShippingFee = storeLocalFee;
+                    const customLocalFees = localItems
+                        .filter((i) => i.useDefaultShipping === false && i.customLocalFee != null)
+                        .map((i) => i.customLocalFee);
+                    if (customLocalFees.length > 0) {
+                        applicableShippingFee = Math.max(applicableShippingFee, ...customLocalFees);
+                    }
                 } else {
                     applicableShippingFee = storeNationwideFee;
+                    const customNationwideFees = localItems
+                        .filter((i) => i.useDefaultShipping === false && i.customNationwideFee != null)
+                        .map((i) => i.customNationwideFee);
+                    if (customNationwideFees.length > 0) {
+                        applicableShippingFee = Math.max(applicableShippingFee, ...customNationwideFees);
+                    }
                 }
                 console.log(`[DEBUG_ORDER] storeId=${storeId} applicableShippingFee=${applicableShippingFee}`);
             }
 
             const qualifiesForFreeShipping = !storeHasAbroad && storeFreeAbove > 0 && total >= storeFreeAbove;
 
-            if (!isPlusMemeber && !qualifiesForFreeShipping) {
-                total += applicableShippingFee;
+            const shippingFeeCharged = (!isPlusMemeber && !qualifiesForFreeShipping) ? applicableShippingFee : 0;
+            if (shippingFeeCharged > 0) {
+                total += shippingFeeCharged;
             }
 
+            // Commission applies to product subtotal only (not shipping, which
+            // passes through to the seller to cover courier costs, and not tax,
+            // which is collected on the government's behalf).
+            const subtotalForCommission = parseFloat((total - shippingFeeCharged).toFixed(2));
+            const platformFee = parseFloat(((subtotalForCommission * commissionRate) / 100).toFixed(2));
+
             // Apply platform VAT/tax on (subtotal + shipping)
+            let taxAmount = 0;
             if (taxRate > 0) {
-                const taxAmount = parseFloat(((total * taxRate) / 100).toFixed(2));
+                taxAmount = parseFloat(((total * taxRate) / 100).toFixed(2));
                 total += taxAmount;
             }
+
+            // What the seller is owed: their product revenue plus the shipping
+            // fee (to cover courier costs), minus the platform's commission.
+            // Tax is excluded — it's collected on the government's behalf.
+            const sellerPayout = parseFloat((subtotalForCommission - platformFee + shippingFeeCharged).toFixed(2));
 
             const normalizedSellerItems = Object.values(
                 sellerItems.reduce((acc, item) => {
@@ -437,6 +478,12 @@ export async function POST(request) {
                     notes,
                     isCouponUsed: couponCode ? true : false,
                     coupon: coupon ? coupon : {},
+                    subtotal: subtotalForCommission,
+                    shippingFee: shippingFeeCharged,
+                    taxAmount,
+                    commissionRate,
+                    platformFee,
+                    sellerPayout,
                     orderItems: {
                         create: normalizedSellerItems.map(item => ({
                             productId: item.productId,

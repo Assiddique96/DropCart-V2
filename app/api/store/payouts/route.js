@@ -19,10 +19,18 @@ export async function GET(request) {
         status: "DELIVERED",
         OR: [{ isPaid: true }, { paymentMethod: "COD" }],
       },
-      select: { total: true },
+      select: { total: true, sellerPayout: true, platformFee: true },
     });
 
-    const totalDeliveredRevenue = deliveredOrders.reduce((acc, o) => acc + o.total, 0);
+    // sellerPayout (total minus platform commission) is what's actually owed.
+    // Orders placed before commission tracking was added default to
+    // sellerPayout: 0 — fall back to the full order total for those so we
+    // never retroactively deduct a commission sellers weren't charged.
+    const payoutFor = (o) => (o.sellerPayout > 0 ? o.sellerPayout : o.total);
+
+    const totalDeliveredRevenue = deliveredOrders.reduce((acc, o) => acc + payoutFor(o), 0);
+    const totalGrossRevenue = deliveredOrders.reduce((acc, o) => acc + o.total, 0);
+    const totalCommission = deliveredOrders.reduce((acc, o) => acc + (o.platformFee || 0), 0);
 
     // All payouts for this store
     const store = await prisma.store.findUnique({
@@ -57,7 +65,9 @@ export async function GET(request) {
     return NextResponse.json({
       payouts,
       store,
-      totalDeliveredRevenue: parseFloat(totalDeliveredRevenue.toFixed(2)),
+      totalDeliveredRevenue: parseFloat(totalDeliveredRevenue.toFixed(2)), // net of commission — what you're owed
+      totalGrossRevenue: parseFloat(totalGrossRevenue.toFixed(2)),         // before commission
+      totalCommission: parseFloat(totalCommission.toFixed(2)),            // platform's cut
       totalPaidOut: parseFloat(totalPaidOut.toFixed(2)),
       totalRequested: parseFloat(totalRequested.toFixed(2)),
       availableBalance,
@@ -91,10 +101,11 @@ export async function POST(request) {
         status: "DELIVERED",
         OR: [{ isPaid: true }, { paymentMethod: "COD" }],
       },
-      select: { total: true },
+      select: { total: true, sellerPayout: true },
     });
 
-    const totalDeliveredRevenue = deliveredOrders.reduce((acc, o) => acc + o.total, 0);
+    const payoutFor = (o) => (o.sellerPayout > 0 ? o.sellerPayout : o.total);
+    const totalDeliveredRevenue = deliveredOrders.reduce((acc, o) => acc + payoutFor(o), 0);
     const payouts = await prisma.payout.findMany({ where: { storeId } });
 
     const totalPaidOut = payouts

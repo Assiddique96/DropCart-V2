@@ -129,6 +129,51 @@ export const deleteExpiredCoupons = inngest.createFunction(
 );
 
 /**
+ * Remove a featured/sponsored product from the home page once its paid
+ * duration (AdRequest.durationDays, priced via ad_price_per_day) ends.
+ * Triggered by: app/ad.approved  Data: { adRequestId, productId, endsAt }
+ */
+export const expireFeaturedAd = inngest.createFunction(
+    {
+        id: 'expire-featured-ad',
+        triggers: [{ event: 'app/ad.approved' }]
+    },
+    async ({ event, step }) => {
+        const { data } = event;
+        const endsAt = new Date(data.endsAt);
+        await step.sleepUntil('wait-for-ad-expiry', endsAt);
+
+        await step.run('remove-ad-from-homepage', async () => {
+            // Only remove if the request is still APPROVED (admin may have
+            // since rejected/replaced it, or a newer request may exist).
+            const current = await prisma.adRequest.findUnique({ where: { id: data.adRequestId } });
+            if (!current || current.status !== 'APPROVED') return;
+
+            const homePageContent = await prisma.platformConfig.findUnique({
+                where: { key: 'home_page_content' },
+            });
+            if (!homePageContent?.value) return;
+
+            let content;
+            try {
+                content = JSON.parse(homePageContent.value);
+            } catch {
+                return;
+            }
+
+            content.featured = (content.featured || []).filter(
+                (slide) => slide.href !== `/product/${data.productId}`
+            );
+
+            await prisma.platformConfig.update({
+                where: { key: 'home_page_content' },
+                data: { value: JSON.stringify(content) },
+            });
+        });
+    }
+);
+
+/**
  * Send order confirmation email to buyer.
  * Triggered by: app/order.confirmed
  * Data: { orderId, userEmail, userName, orderTotal, currency, items[] }

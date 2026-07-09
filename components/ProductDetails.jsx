@@ -213,9 +213,16 @@ const ProductDetails = ({ product }) => {
     ? product.store.deliveryStates.join(", ")
     : product.store?.state || "seller's state";
   const countryLabel = product.store?.country || "Nigeria";
-  const withinStateFee = product.store?.shippingLocalFee ?? shippingFees.local;
-  const nationwideFee = product.store?.shippingNationwideFee ?? withinStateFee;
-  const internationalFee = product.store?.shippingAbroadFee ?? shippingFees.abroad;
+  const hasCustomShipping = product.useDefaultShipping === false;
+  const withinStateFee = hasCustomShipping && product.customLocalFee != null
+    ? Math.max(product.store?.shippingLocalFee ?? shippingFees.local, product.customLocalFee)
+    : product.store?.shippingLocalFee ?? shippingFees.local;
+  const nationwideFee = hasCustomShipping && product.customNationwideFee != null
+    ? Math.max(product.store?.shippingNationwideFee ?? withinStateFee, product.customNationwideFee)
+    : product.store?.shippingNationwideFee ?? withinStateFee;
+  const internationalFee = hasCustomShipping && product.customAbroadFee != null
+    ? Math.max(product.store?.shippingAbroadFee ?? shippingFees.abroad, product.customAbroadFee)
+    : product.store?.shippingAbroadFee ?? shippingFees.abroad;
 
   const shippingFee = isAbroad
     ? internationalFee

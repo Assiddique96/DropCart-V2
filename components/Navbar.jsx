@@ -17,6 +17,7 @@ import NotificationBell from "./NotificationBell";
 import axios from "axios";
 import ThemeToggle from "./ThemeToggle";
 import shpinxLogo from "@/assets/logo.png";
+import { getSubdomainFromHost, isStoreSubdomain, buildRootDomainUrl } from "@/lib/subdomain";
 
 const CATEGORIES = [
   { name: "Electronics", icon: MonitorIcon, color: "text-cyan-500 dark:text-cyan-400", desc: "Phones, laptops, gadgets" },
@@ -57,6 +58,26 @@ const Navbar = () => {
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  // Whether we're currently rendering on a store's subdomain (e.g.
+  // adaelectronics.dropcart.ng). Starts false to match SSR output, then
+  // resolves after mount — avoids a hydration mismatch on link hrefs.
+  const [onStoreSubdomain, setOnStoreSubdomain] = useState(false);
+
+  useEffect(() => {
+    setOnStoreSubdomain(isStoreSubdomain(getSubdomainFromHost(window.location.host)));
+  }, []);
+
+  /** Cart, wishlist, dashboards, auth, and cross-store browsing always live on the root domain. */
+  const toRoot = (path) => (onStoreSubdomain ? buildRootDomainUrl(path) : path);
+
+  /** Same as toRoot, but for imperative onClick navigation (router.push can't cross a real origin). */
+  const goRoot = (path) => {
+    if (onStoreSubdomain) {
+      window.location.href = buildRootDomainUrl(path);
+    } else {
+      router.push(path);
+    }
+  };
   const [isSeller, setIsSeller] = useState(false);
 
   const [locationLabel, setLocationLabel] = useState("Detecting…");
@@ -196,8 +217,8 @@ const Navbar = () => {
   const dashboardLabel = isAdmin ? "Admin Dashboard" : "Store Dashboard";
 
   const storeCta = isSeller
-    ? { label: "Store Dashboard", href: "/store", emoji: "🏪" }
-    : { label: "Create a Store", href: "/create-store", emoji: "🏪" };
+    ? { label: "Store Dashboard", href: toRoot("/store"), emoji: "🏪" }
+    : { label: "Create a Store", href: toRoot("/create-store"), emoji: "🏪" };
   const featuredLinks = [...FEATURED_LINKS, storeCta];
 
   return (
@@ -239,7 +260,7 @@ const Navbar = () => {
             )}
           </div>
 
-          <Link href="/track" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 text-slate-600 dark:text-slate-300">
+          <Link href={toRoot("/track")} className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 text-slate-600 dark:text-slate-300">
             Track order
           </Link>
         </div>
@@ -308,7 +329,7 @@ const Navbar = () => {
             {/* Dashboard link – shown if admin or seller */}
             {dashboardHref && (
               <Link
-                href={dashboardHref}
+                href={toRoot(dashboardHref)}
                 title={dashboardLabel}
                 className="relative flex flex-col items-center gap-1 hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-110 group"
               >
@@ -323,7 +344,7 @@ const Navbar = () => {
               </Link>
             )}
 
-            <Link href="/wishlist" className="relative flex flex-col items-center gap-1 hover:text-fuchsia-500 dark:hover:text-fuchsia-400 transition-all duration-300 hover:scale-110 group">
+            <Link href={toRoot("/wishlist")} className="relative flex flex-col items-center gap-1 hover:text-fuchsia-500 dark:hover:text-fuchsia-400 transition-all duration-300 hover:scale-110 group">
               <div className="relative">
                 <HeartIcon size={22} className="group-hover:animate-pulse" />
               </div>
@@ -335,7 +356,7 @@ const Navbar = () => {
               )}
             </Link>
 
-            <Link href="/cart" className="relative flex flex-col items-center gap-1 hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-110 group">
+            <Link href={toRoot("/cart")} className="relative flex flex-col items-center gap-1 hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-110 group">
               <div className="relative">
                 <ShoppingCart size={22} className="group-hover:animate-pulse" />
               </div>
@@ -375,7 +396,7 @@ const Navbar = () => {
             <ThemeToggle compact />
             {/* Dashboard icon – mobile only shows icon */}
             {dashboardHref && user && (
-              <Link href={dashboardHref} title={dashboardLabel}
+              <Link href={toRoot(dashboardHref)} title={dashboardLabel}
                 className="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-700">
                 {isAdmin
                   ? <ShieldCheckIcon size={20} className="text-fuchsia-500" />
@@ -395,16 +416,16 @@ const Navbar = () => {
       {/* Desktop sub-nav */}
       <div className="hidden md:block border-t border-slate-100 dark:border-slate-700/50 bg-slate-50/70 dark:bg-slate-900/60 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 lg:px-10 flex items-center gap-6 h-12 text-xs font-bold text-slate-600 dark:text-slate-300 overflow-x-auto no-scrollbar">
-          <Link href="/shop?sort=discount" className="text-fuchsia-500 font-bold hover:scale-110 transition-all animate-pulse">SALE</Link>
-          <Link href="/shop?origin=abroad" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105">Shipped from abroad</Link>
-          <Link href="/shop?sort=popular" className="hover:text-fuchsia-500 dark:hover:text-fuchsia-400 transition-all duration-300 hover:scale-105">Best sellers</Link>
-          <Link href="/shop?sort=newest" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105">New arrivals</Link>
-          <Link href="/shop?category=Electronics" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105">Electronics</Link>
-          <Link href="/shop?category=Clothing" className="hover:text-fuchsia-500 dark:hover:text-fuchsia-400 transition-all duration-300 hover:scale-105">Fashion</Link>
-          <Link href="/shop?category=Home%20%26%20Garden" className="hover:text-amber-500 dark:hover:text-amber-400 transition-all duration-300 hover:scale-105">Home & living</Link>
-          <Link href="/shop?category=Beauty%20%26%20Health" className="hover:text-violet-500 dark:hover:text-violet-400 transition-all duration-300 hover:scale-105">Beauty</Link>
+          <Link href={toRoot("/shop?sort=discount")} className="text-fuchsia-500 font-bold hover:scale-110 transition-all animate-pulse">SALE</Link>
+          <Link href={toRoot("/shop?origin=abroad")} className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105">Shipped from abroad</Link>
+          <Link href={toRoot("/shop?sort=popular")} className="hover:text-fuchsia-500 dark:hover:text-fuchsia-400 transition-all duration-300 hover:scale-105">Best sellers</Link>
+          <Link href={toRoot("/shop?sort=newest")} className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105">New arrivals</Link>
+          <Link href={toRoot("/shop?category=Electronics")} className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105">Electronics</Link>
+          <Link href={toRoot("/shop?category=Clothing")} className="hover:text-fuchsia-500 dark:hover:text-fuchsia-400 transition-all duration-300 hover:scale-105">Fashion</Link>
+          <Link href={toRoot("/shop?category=Home%20%26%20Garden")} className="hover:text-amber-500 dark:hover:text-amber-400 transition-all duration-300 hover:scale-105">Home & living</Link>
+          <Link href={toRoot("/shop?category=Beauty%20%26%20Health")} className="hover:text-violet-500 dark:hover:text-violet-400 transition-all duration-300 hover:scale-105">Beauty</Link>
           <Link href="/wholesale" className="hover:text-amber-500 dark:hover:text-amber-400 transition-all duration-300 hover:scale-105">Wholesale</Link>
-          <Link href="/create-store" className="ml-auto hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105">Sell on Shpinx</Link>
+          <Link href={toRoot("/create-store")} className="ml-auto hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 hover:scale-105">Sell on Shpinx</Link>
         </div>
       </div>
 
@@ -428,7 +449,7 @@ const Navbar = () => {
               </p>
               <div className="space-y-2">
                 {featuredLinks.map((link) => (
-                  <Link key={link.href} href={link.href} onClick={() => setCatalogOpen(false)}
+                  <Link key={link.href} href={toRoot(link.href)} onClick={() => setCatalogOpen(false)}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
                     <span className="text-lg">{link.emoji}</span>
                     <span className="font-medium">{link.label}</span>
@@ -465,7 +486,7 @@ const Navbar = () => {
                 { label: "Orders", href: "/orders", icon: PackageIcon },
                 { label: "Track", href: "/track", icon: Search },
               ].map((item) => (
-                <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
+                <Link key={item.href} href={toRoot(item.href)} onClick={() => setMobileOpen(false)}
                   className="relative flex flex-col items-center gap-2 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-700/50">
                   <item.icon size={20} />
                   <span className="font-medium">{item.label}</span>
@@ -504,10 +525,10 @@ const Navbar = () => {
               <div className="flex items-center gap-3">
                 <UserButton>
                   <UserButton.MenuItems>
-                    {isSeller && <UserButton.Action labelIcon={<StoreIcon size={16} />} label="Store Dashboard" onClick={() => router.push("/store")} />}
-                    {isAdmin && <UserButton.Action labelIcon={<ShieldCheckIcon size={16} />} label="Admin Dashboard" onClick={() => router.push("/admin")} />}
-                    <UserButton.Action labelIcon={<PackageIcon size={16} />} label="My Orders" onClick={() => router.push("/orders")} />
-                    <UserButton.Action labelIcon={<HeartIcon size={16} />} label="Wishlist" onClick={() => router.push("/wishlist")} />
+                    {isSeller && <UserButton.Action labelIcon={<StoreIcon size={16} />} label="Store Dashboard" onClick={() => goRoot("/store")} />}
+                    {isAdmin && <UserButton.Action labelIcon={<ShieldCheckIcon size={16} />} label="Admin Dashboard" onClick={() => goRoot("/admin")} />}
+                    <UserButton.Action labelIcon={<PackageIcon size={16} />} label="My Orders" onClick={() => goRoot("/orders")} />
+                    <UserButton.Action labelIcon={<HeartIcon size={16} />} label="Wishlist" onClick={() => goRoot("/wishlist")} />
                   </UserButton.MenuItems>
                 </UserButton>
                 <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">

@@ -10,7 +10,8 @@ import {
   sendOrderShippedEmail,
   notifySellerNewOrder,
   notifyAdminAndSellerStoreCreated,
-  notifyAdminAndSellerStoreUpdated
+  notifyAdminAndSellerStoreUpdated,
+  expireFeaturedAd
 
 } from "@/inngest/functions";
 
@@ -26,6 +27,7 @@ export const { GET, POST, PUT } = serve({
     sendOrderShippedEmail,
     notifySellerNewOrder,
     notifyAdminAndSellerStoreCreated,
-    notifyAdminAndSellerStoreUpdated
+    notifyAdminAndSellerStoreUpdated,
+    expireFeaturedAd
   ],
 });

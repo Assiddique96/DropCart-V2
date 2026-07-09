@@ -76,6 +76,15 @@ model Product {
     downloadUrl  String?        // secure URL for digital file (set after order paid)
     /// Wholesale/bulk pricing — store owner enables this; tiers define qty-based prices
     isWholesale  Boolean        @default(false)
+    /// Per-product shipping fee override. When false, customLocalFee/
+    /// customNationwideFee/customAbroadFee (if set) take precedence over the
+    /// store's default shippingLocalFee/shippingNationwideFee/shippingAbroadFee
+    /// for orders containing this product — useful for heavy or duty-liable
+    /// items that cost more to ship than the store's flat rate.
+    useDefaultShipping Boolean @default(true)
+    customLocalFee      Float?
+    customNationwideFee Float?
+    customAbroadFee     Float?
     storeId      String
     createdAt    DateTime       @default(now())
     updatedAt    DateTime       @updatedAt
@@ -200,6 +209,14 @@ model Order {
     coupon          Json          @default("{}")
     notes           String?       // buyer special instructions
     trackingNumber  String?       // shipping tracking number (auto-generated when marked SHIPPED)
+    /// Breakdown captured at order time so historical orders remain accurate
+    /// even if platform config (commission_rate, shipping fees) changes later.
+    subtotal        Float         @default(0) // product revenue after coupon discount, before shipping/tax
+    shippingFee     Float         @default(0)
+    taxAmount       Float         @default(0)
+    commissionRate  Float         @default(0) // % applied to subtotal at the time this order was placed
+    platformFee     Float         @default(0) // = subtotal * commissionRate / 100
+    sellerPayout    Float         @default(0) // = subtotal - platformFee + shippingFee (what the seller is owed)
     orderItems      OrderItem[]
     storeRating     StoreRating?
 
@@ -403,6 +420,9 @@ model Payout {
  *   shipping_abroad_fee Float  (abroad product shipping fee)
  *   shipping_free_above Float  (order total above which shipping is free, e.g. 50000)
  *   tax_rate            Float  (VAT/Tax percentage applied at checkout, e.g. 7.5 = 7.5%. 0 = disabled)
+ *   ad_price_per_day     Float (e.g. 500 = ₦500/day for a featured product slot)
+ *   ad_min_duration_days Int   (minimum days a seller can request, e.g. 3)
+ *   ad_max_duration_days Int   (maximum days a seller can request, e.g. 30)
  */
 model PlatformConfig {
     key       String   @id
@@ -422,6 +442,16 @@ model AdRequest {
     productId   String
     storeId     String
     status      AdRequestStatus @default(PENDING)
+    /// Duration + pricing captured at request time from the platform's
+    /// configured ad_price_per_day rate — locks in the price even if the
+    /// admin changes rates later.
+    durationDays Int            @default(7)
+    pricePerDay  Float          @default(0)
+    totalPrice   Float          @default(0)
+    /// Set when the request is approved; the feature is auto-expired
+    /// (removed from home_page_content) once endsAt passes.
+    startsAt    DateTime?
+    endsAt      DateTime?
     requestedAt DateTime       @default(now())
     approvedAt  DateTime?
     adminNote   String?

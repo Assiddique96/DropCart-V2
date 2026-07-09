@@ -118,6 +118,9 @@ export type Payout = $Result.DefaultSelection<Prisma.$PayoutPayload>
  *  *   shipping_abroad_fee Float  (abroad product shipping fee)
  *  *   shipping_free_above Float  (order total above which shipping is free, e.g. 50000)
  *  *   tax_rate            Float  (VAT/Tax percentage applied at checkout, e.g. 7.5 = 7.5%. 0 = disabled)
+ *  *   ad_price_per_day     Float (e.g. 500 = ₦500/day for a featured product slot)
+ *  *   ad_min_duration_days Int   (minimum days a seller can request, e.g. 3)
+ *  *   ad_max_duration_days Int   (maximum days a seller can request, e.g. 30)
  */
 export type PlatformConfig = $Result.DefaultSelection<Prisma.$PlatformConfigPayload>
 /**
@@ -125,11 +128,6 @@ export type PlatformConfig = $Result.DefaultSelection<Prisma.$PlatformConfigPayl
  * 
  */
 export type AdRequest = $Result.DefaultSelection<Prisma.$AdRequestPayload>
-/**
- * Model MiddleBanner
- * 
- */
-export type MiddleBanner = $Result.DefaultSelection<Prisma.$MiddleBannerPayload>
 
 /**
  * Enums
@@ -531,16 +529,6 @@ export class PrismaClient<
     * ```
     */
   get adRequest(): Prisma.AdRequestDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.middleBanner`: Exposes CRUD operations for the **MiddleBanner** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more MiddleBanners
-    * const middleBanners = await prisma.middleBanner.findMany()
-    * ```
-    */
-  get middleBanner(): Prisma.MiddleBannerDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -991,8 +979,7 @@ export namespace Prisma {
     StoreRating: 'StoreRating',
     Payout: 'Payout',
     PlatformConfig: 'PlatformConfig',
-    AdRequest: 'AdRequest',
-    MiddleBanner: 'MiddleBanner'
+    AdRequest: 'AdRequest'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1008,7 +995,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "notification" | "product" | "productWholesaleTier" | "productVariantGroup" | "productVariantOption" | "order" | "orderItem" | "refund" | "rating" | "address" | "coupon" | "store" | "storeRating" | "payout" | "platformConfig" | "adRequest" | "middleBanner"
+      modelProps: "user" | "notification" | "product" | "productWholesaleTier" | "productVariantGroup" | "productVariantOption" | "order" | "orderItem" | "refund" | "rating" | "address" | "coupon" | "store" | "storeRating" | "payout" | "platformConfig" | "adRequest"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2270,80 +2257,6 @@ export namespace Prisma {
           }
         }
       }
-      MiddleBanner: {
-        payload: Prisma.$MiddleBannerPayload<ExtArgs>
-        fields: Prisma.MiddleBannerFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.MiddleBannerFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.MiddleBannerFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>
-          }
-          findFirst: {
-            args: Prisma.MiddleBannerFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.MiddleBannerFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>
-          }
-          findMany: {
-            args: Prisma.MiddleBannerFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>[]
-          }
-          create: {
-            args: Prisma.MiddleBannerCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>
-          }
-          createMany: {
-            args: Prisma.MiddleBannerCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.MiddleBannerCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>[]
-          }
-          delete: {
-            args: Prisma.MiddleBannerDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>
-          }
-          update: {
-            args: Prisma.MiddleBannerUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>
-          }
-          deleteMany: {
-            args: Prisma.MiddleBannerDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.MiddleBannerUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.MiddleBannerUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>[]
-          }
-          upsert: {
-            args: Prisma.MiddleBannerUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MiddleBannerPayload>
-          }
-          aggregate: {
-            args: Prisma.MiddleBannerAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateMiddleBanner>
-          }
-          groupBy: {
-            args: Prisma.MiddleBannerGroupByArgs<ExtArgs>
-            result: $Utils.Optional<MiddleBannerGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.MiddleBannerCountArgs<ExtArgs>
-            result: $Utils.Optional<MiddleBannerCountAggregateOutputType> | number
-          }
-        }
-      }
     }
   } & {
     other: {
@@ -2469,7 +2382,6 @@ export namespace Prisma {
     payout?: PayoutOmit
     platformConfig?: PlatformConfigOmit
     adRequest?: AdRequestOmit
-    middleBanner?: MiddleBannerOmit
   }
 
   /* Types for Logging */
@@ -5242,12 +5154,18 @@ export namespace Prisma {
     mrp: number | null
     price: number | null
     quantity: number | null
+    customLocalFee: number | null
+    customNationwideFee: number | null
+    customAbroadFee: number | null
   }
 
   export type ProductSumAggregateOutputType = {
     mrp: number | null
     price: number | null
     quantity: number | null
+    customLocalFee: number | null
+    customNationwideFee: number | null
+    customAbroadFee: number | null
   }
 
   export type ProductMinAggregateOutputType = {
@@ -5273,6 +5191,10 @@ export namespace Prisma {
     isDigital: boolean | null
     downloadUrl: string | null
     isWholesale: boolean | null
+    useDefaultShipping: boolean | null
+    customLocalFee: number | null
+    customNationwideFee: number | null
+    customAbroadFee: number | null
     storeId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -5301,6 +5223,10 @@ export namespace Prisma {
     isDigital: boolean | null
     downloadUrl: string | null
     isWholesale: boolean | null
+    useDefaultShipping: boolean | null
+    customLocalFee: number | null
+    customNationwideFee: number | null
+    customAbroadFee: number | null
     storeId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -5331,6 +5257,10 @@ export namespace Prisma {
     isDigital: number
     downloadUrl: number
     isWholesale: number
+    useDefaultShipping: number
+    customLocalFee: number
+    customNationwideFee: number
+    customAbroadFee: number
     storeId: number
     createdAt: number
     updatedAt: number
@@ -5342,12 +5272,18 @@ export namespace Prisma {
     mrp?: true
     price?: true
     quantity?: true
+    customLocalFee?: true
+    customNationwideFee?: true
+    customAbroadFee?: true
   }
 
   export type ProductSumAggregateInputType = {
     mrp?: true
     price?: true
     quantity?: true
+    customLocalFee?: true
+    customNationwideFee?: true
+    customAbroadFee?: true
   }
 
   export type ProductMinAggregateInputType = {
@@ -5373,6 +5309,10 @@ export namespace Prisma {
     isDigital?: true
     downloadUrl?: true
     isWholesale?: true
+    useDefaultShipping?: true
+    customLocalFee?: true
+    customNationwideFee?: true
+    customAbroadFee?: true
     storeId?: true
     createdAt?: true
     updatedAt?: true
@@ -5401,6 +5341,10 @@ export namespace Prisma {
     isDigital?: true
     downloadUrl?: true
     isWholesale?: true
+    useDefaultShipping?: true
+    customLocalFee?: true
+    customNationwideFee?: true
+    customAbroadFee?: true
     storeId?: true
     createdAt?: true
     updatedAt?: true
@@ -5431,6 +5375,10 @@ export namespace Prisma {
     isDigital?: true
     downloadUrl?: true
     isWholesale?: true
+    useDefaultShipping?: true
+    customLocalFee?: true
+    customNationwideFee?: true
+    customAbroadFee?: true
     storeId?: true
     createdAt?: true
     updatedAt?: true
@@ -5548,6 +5496,10 @@ export namespace Prisma {
     isDigital: boolean
     downloadUrl: string | null
     isWholesale: boolean
+    useDefaultShipping: boolean
+    customLocalFee: number | null
+    customNationwideFee: number | null
+    customAbroadFee: number | null
     storeId: string
     createdAt: Date
     updatedAt: Date
@@ -5597,6 +5549,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: boolean
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: boolean
+    customNationwideFee?: boolean
+    customAbroadFee?: boolean
     storeId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -5634,6 +5590,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: boolean
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: boolean
+    customNationwideFee?: boolean
+    customAbroadFee?: boolean
     storeId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -5665,6 +5625,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: boolean
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: boolean
+    customNationwideFee?: boolean
+    customAbroadFee?: boolean
     storeId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -5696,12 +5660,16 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: boolean
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: boolean
+    customNationwideFee?: boolean
+    customAbroadFee?: boolean
     storeId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mrp" | "price" | "images" | "category" | "inStock" | "quantity" | "sku" | "tags" | "scheduledAt" | "origin" | "deliveryWithinState" | "deliveryNationwide" | "deliveryInternational" | "madeIn" | "manufacturer" | "material" | "guaranteePeriod" | "acceptCod" | "isDigital" | "downloadUrl" | "isWholesale" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mrp" | "price" | "images" | "category" | "inStock" | "quantity" | "sku" | "tags" | "scheduledAt" | "origin" | "deliveryWithinState" | "deliveryNationwide" | "deliveryInternational" | "madeIn" | "manufacturer" | "material" | "guaranteePeriod" | "acceptCod" | "isDigital" | "downloadUrl" | "isWholesale" | "useDefaultShipping" | "customLocalFee" | "customNationwideFee" | "customAbroadFee" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     store?: boolean | StoreDefaultArgs<ExtArgs>
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
@@ -5759,6 +5727,17 @@ export namespace Prisma {
        * Wholesale/bulk pricing — store owner enables this; tiers define qty-based prices
        */
       isWholesale: boolean
+      /**
+       * Per-product shipping fee override. When false, customLocalFee/
+       * customNationwideFee/customAbroadFee (if set) take precedence over the
+       * store's default shippingLocalFee/shippingNationwideFee/shippingAbroadFee
+       * for orders containing this product — useful for heavy or duty-liable
+       * items that cost more to ship than the store's flat rate.
+       */
+      useDefaultShipping: boolean
+      customLocalFee: number | null
+      customNationwideFee: number | null
+      customAbroadFee: number | null
       storeId: string
       createdAt: Date
       updatedAt: Date
@@ -6215,6 +6194,10 @@ export namespace Prisma {
     readonly isDigital: FieldRef<"Product", 'Boolean'>
     readonly downloadUrl: FieldRef<"Product", 'String'>
     readonly isWholesale: FieldRef<"Product", 'Boolean'>
+    readonly useDefaultShipping: FieldRef<"Product", 'Boolean'>
+    readonly customLocalFee: FieldRef<"Product", 'Float'>
+    readonly customNationwideFee: FieldRef<"Product", 'Float'>
+    readonly customAbroadFee: FieldRef<"Product", 'Float'>
     readonly storeId: FieldRef<"Product", 'String'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
@@ -10190,10 +10173,22 @@ export namespace Prisma {
 
   export type OrderAvgAggregateOutputType = {
     total: number | null
+    subtotal: number | null
+    shippingFee: number | null
+    taxAmount: number | null
+    commissionRate: number | null
+    platformFee: number | null
+    sellerPayout: number | null
   }
 
   export type OrderSumAggregateOutputType = {
     total: number | null
+    subtotal: number | null
+    shippingFee: number | null
+    taxAmount: number | null
+    commissionRate: number | null
+    platformFee: number | null
+    sellerPayout: number | null
   }
 
   export type OrderMinAggregateOutputType = {
@@ -10210,6 +10205,12 @@ export namespace Prisma {
     isCouponUsed: boolean | null
     notes: string | null
     trackingNumber: string | null
+    subtotal: number | null
+    shippingFee: number | null
+    taxAmount: number | null
+    commissionRate: number | null
+    platformFee: number | null
+    sellerPayout: number | null
   }
 
   export type OrderMaxAggregateOutputType = {
@@ -10226,6 +10227,12 @@ export namespace Prisma {
     isCouponUsed: boolean | null
     notes: string | null
     trackingNumber: string | null
+    subtotal: number | null
+    shippingFee: number | null
+    taxAmount: number | null
+    commissionRate: number | null
+    platformFee: number | null
+    sellerPayout: number | null
   }
 
   export type OrderCountAggregateOutputType = {
@@ -10243,16 +10250,34 @@ export namespace Prisma {
     coupon: number
     notes: number
     trackingNumber: number
+    subtotal: number
+    shippingFee: number
+    taxAmount: number
+    commissionRate: number
+    platformFee: number
+    sellerPayout: number
     _all: number
   }
 
 
   export type OrderAvgAggregateInputType = {
     total?: true
+    subtotal?: true
+    shippingFee?: true
+    taxAmount?: true
+    commissionRate?: true
+    platformFee?: true
+    sellerPayout?: true
   }
 
   export type OrderSumAggregateInputType = {
     total?: true
+    subtotal?: true
+    shippingFee?: true
+    taxAmount?: true
+    commissionRate?: true
+    platformFee?: true
+    sellerPayout?: true
   }
 
   export type OrderMinAggregateInputType = {
@@ -10269,6 +10294,12 @@ export namespace Prisma {
     isCouponUsed?: true
     notes?: true
     trackingNumber?: true
+    subtotal?: true
+    shippingFee?: true
+    taxAmount?: true
+    commissionRate?: true
+    platformFee?: true
+    sellerPayout?: true
   }
 
   export type OrderMaxAggregateInputType = {
@@ -10285,6 +10316,12 @@ export namespace Prisma {
     isCouponUsed?: true
     notes?: true
     trackingNumber?: true
+    subtotal?: true
+    shippingFee?: true
+    taxAmount?: true
+    commissionRate?: true
+    platformFee?: true
+    sellerPayout?: true
   }
 
   export type OrderCountAggregateInputType = {
@@ -10302,6 +10339,12 @@ export namespace Prisma {
     coupon?: true
     notes?: true
     trackingNumber?: true
+    subtotal?: true
+    shippingFee?: true
+    taxAmount?: true
+    commissionRate?: true
+    platformFee?: true
+    sellerPayout?: true
     _all?: true
   }
 
@@ -10406,6 +10449,12 @@ export namespace Prisma {
     coupon: JsonValue
     notes: string | null
     trackingNumber: string | null
+    subtotal: number
+    shippingFee: number
+    taxAmount: number
+    commissionRate: number
+    platformFee: number
+    sellerPayout: number
     _count: OrderCountAggregateOutputType | null
     _avg: OrderAvgAggregateOutputType | null
     _sum: OrderSumAggregateOutputType | null
@@ -10442,6 +10491,12 @@ export namespace Prisma {
     coupon?: boolean
     notes?: boolean
     trackingNumber?: boolean
+    subtotal?: boolean
+    shippingFee?: boolean
+    taxAmount?: boolean
+    commissionRate?: boolean
+    platformFee?: boolean
+    sellerPayout?: boolean
     orderItems?: boolean | Order$orderItemsArgs<ExtArgs>
     storeRating?: boolean | Order$storeRatingArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -10466,6 +10521,12 @@ export namespace Prisma {
     coupon?: boolean
     notes?: boolean
     trackingNumber?: boolean
+    subtotal?: boolean
+    shippingFee?: boolean
+    taxAmount?: boolean
+    commissionRate?: boolean
+    platformFee?: boolean
+    sellerPayout?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     store?: boolean | StoreDefaultArgs<ExtArgs>
     address?: boolean | AddressDefaultArgs<ExtArgs>
@@ -10486,6 +10547,12 @@ export namespace Prisma {
     coupon?: boolean
     notes?: boolean
     trackingNumber?: boolean
+    subtotal?: boolean
+    shippingFee?: boolean
+    taxAmount?: boolean
+    commissionRate?: boolean
+    platformFee?: boolean
+    sellerPayout?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     store?: boolean | StoreDefaultArgs<ExtArgs>
     address?: boolean | AddressDefaultArgs<ExtArgs>
@@ -10506,9 +10573,15 @@ export namespace Prisma {
     coupon?: boolean
     notes?: boolean
     trackingNumber?: boolean
+    subtotal?: boolean
+    shippingFee?: boolean
+    taxAmount?: boolean
+    commissionRate?: boolean
+    platformFee?: boolean
+    sellerPayout?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "total" | "status" | "userId" | "storeId" | "addressId" | "isPaid" | "paymentMethod" | "createdAt" | "updatedAt" | "isCouponUsed" | "coupon" | "notes" | "trackingNumber", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "total" | "status" | "userId" | "storeId" | "addressId" | "isPaid" | "paymentMethod" | "createdAt" | "updatedAt" | "isCouponUsed" | "coupon" | "notes" | "trackingNumber" | "subtotal" | "shippingFee" | "taxAmount" | "commissionRate" | "platformFee" | "sellerPayout", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orderItems?: boolean | Order$orderItemsArgs<ExtArgs>
     storeRating?: boolean | Order$storeRatingArgs<ExtArgs>
@@ -10554,6 +10627,16 @@ export namespace Prisma {
       coupon: Prisma.JsonValue
       notes: string | null
       trackingNumber: string | null
+      /**
+       * Breakdown captured at order time so historical orders remain accurate
+       * even if platform config (commission_rate, shipping fees) changes later.
+       */
+      subtotal: number
+      shippingFee: number
+      taxAmount: number
+      commissionRate: number
+      platformFee: number
+      sellerPayout: number
     }, ExtArgs["result"]["order"]>
     composites: {}
   }
@@ -10997,6 +11080,12 @@ export namespace Prisma {
     readonly coupon: FieldRef<"Order", 'Json'>
     readonly notes: FieldRef<"Order", 'String'>
     readonly trackingNumber: FieldRef<"Order", 'String'>
+    readonly subtotal: FieldRef<"Order", 'Float'>
+    readonly shippingFee: FieldRef<"Order", 'Float'>
+    readonly taxAmount: FieldRef<"Order", 'Float'>
+    readonly commissionRate: FieldRef<"Order", 'Float'>
+    readonly platformFee: FieldRef<"Order", 'Float'>
+    readonly sellerPayout: FieldRef<"Order", 'Float'>
   }
     
 
@@ -22225,8 +22314,22 @@ export namespace Prisma {
 
   export type AggregateAdRequest = {
     _count: AdRequestCountAggregateOutputType | null
+    _avg: AdRequestAvgAggregateOutputType | null
+    _sum: AdRequestSumAggregateOutputType | null
     _min: AdRequestMinAggregateOutputType | null
     _max: AdRequestMaxAggregateOutputType | null
+  }
+
+  export type AdRequestAvgAggregateOutputType = {
+    durationDays: number | null
+    pricePerDay: number | null
+    totalPrice: number | null
+  }
+
+  export type AdRequestSumAggregateOutputType = {
+    durationDays: number | null
+    pricePerDay: number | null
+    totalPrice: number | null
   }
 
   export type AdRequestMinAggregateOutputType = {
@@ -22234,6 +22337,11 @@ export namespace Prisma {
     productId: string | null
     storeId: string | null
     status: $Enums.AdRequestStatus | null
+    durationDays: number | null
+    pricePerDay: number | null
+    totalPrice: number | null
+    startsAt: Date | null
+    endsAt: Date | null
     requestedAt: Date | null
     approvedAt: Date | null
     adminNote: string | null
@@ -22246,6 +22354,11 @@ export namespace Prisma {
     productId: string | null
     storeId: string | null
     status: $Enums.AdRequestStatus | null
+    durationDays: number | null
+    pricePerDay: number | null
+    totalPrice: number | null
+    startsAt: Date | null
+    endsAt: Date | null
     requestedAt: Date | null
     approvedAt: Date | null
     adminNote: string | null
@@ -22258,6 +22371,11 @@ export namespace Prisma {
     productId: number
     storeId: number
     status: number
+    durationDays: number
+    pricePerDay: number
+    totalPrice: number
+    startsAt: number
+    endsAt: number
     requestedAt: number
     approvedAt: number
     adminNote: number
@@ -22267,11 +22385,28 @@ export namespace Prisma {
   }
 
 
+  export type AdRequestAvgAggregateInputType = {
+    durationDays?: true
+    pricePerDay?: true
+    totalPrice?: true
+  }
+
+  export type AdRequestSumAggregateInputType = {
+    durationDays?: true
+    pricePerDay?: true
+    totalPrice?: true
+  }
+
   export type AdRequestMinAggregateInputType = {
     id?: true
     productId?: true
     storeId?: true
     status?: true
+    durationDays?: true
+    pricePerDay?: true
+    totalPrice?: true
+    startsAt?: true
+    endsAt?: true
     requestedAt?: true
     approvedAt?: true
     adminNote?: true
@@ -22284,6 +22419,11 @@ export namespace Prisma {
     productId?: true
     storeId?: true
     status?: true
+    durationDays?: true
+    pricePerDay?: true
+    totalPrice?: true
+    startsAt?: true
+    endsAt?: true
     requestedAt?: true
     approvedAt?: true
     adminNote?: true
@@ -22296,6 +22436,11 @@ export namespace Prisma {
     productId?: true
     storeId?: true
     status?: true
+    durationDays?: true
+    pricePerDay?: true
+    totalPrice?: true
+    startsAt?: true
+    endsAt?: true
     requestedAt?: true
     approvedAt?: true
     adminNote?: true
@@ -22342,6 +22487,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: AdRequestAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AdRequestSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: AdRequestMinAggregateInputType
@@ -22372,6 +22529,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: AdRequestCountAggregateInputType | true
+    _avg?: AdRequestAvgAggregateInputType
+    _sum?: AdRequestSumAggregateInputType
     _min?: AdRequestMinAggregateInputType
     _max?: AdRequestMaxAggregateInputType
   }
@@ -22381,12 +22540,19 @@ export namespace Prisma {
     productId: string
     storeId: string
     status: $Enums.AdRequestStatus
+    durationDays: number
+    pricePerDay: number
+    totalPrice: number
+    startsAt: Date | null
+    endsAt: Date | null
     requestedAt: Date
     approvedAt: Date | null
     adminNote: string | null
     createdAt: Date
     updatedAt: Date
     _count: AdRequestCountAggregateOutputType | null
+    _avg: AdRequestAvgAggregateOutputType | null
+    _sum: AdRequestSumAggregateOutputType | null
     _min: AdRequestMinAggregateOutputType | null
     _max: AdRequestMaxAggregateOutputType | null
   }
@@ -22410,6 +22576,11 @@ export namespace Prisma {
     productId?: boolean
     storeId?: boolean
     status?: boolean
+    durationDays?: boolean
+    pricePerDay?: boolean
+    totalPrice?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
     requestedAt?: boolean
     approvedAt?: boolean
     adminNote?: boolean
@@ -22424,6 +22595,11 @@ export namespace Prisma {
     productId?: boolean
     storeId?: boolean
     status?: boolean
+    durationDays?: boolean
+    pricePerDay?: boolean
+    totalPrice?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
     requestedAt?: boolean
     approvedAt?: boolean
     adminNote?: boolean
@@ -22438,6 +22614,11 @@ export namespace Prisma {
     productId?: boolean
     storeId?: boolean
     status?: boolean
+    durationDays?: boolean
+    pricePerDay?: boolean
+    totalPrice?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
     requestedAt?: boolean
     approvedAt?: boolean
     adminNote?: boolean
@@ -22452,6 +22633,11 @@ export namespace Prisma {
     productId?: boolean
     storeId?: boolean
     status?: boolean
+    durationDays?: boolean
+    pricePerDay?: boolean
+    totalPrice?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
     requestedAt?: boolean
     approvedAt?: boolean
     adminNote?: boolean
@@ -22459,7 +22645,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type AdRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "storeId" | "status" | "requestedAt" | "approvedAt" | "adminNote" | "createdAt" | "updatedAt", ExtArgs["result"]["adRequest"]>
+  export type AdRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "storeId" | "status" | "durationDays" | "pricePerDay" | "totalPrice" | "startsAt" | "endsAt" | "requestedAt" | "approvedAt" | "adminNote" | "createdAt" | "updatedAt", ExtArgs["result"]["adRequest"]>
   export type AdRequestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     store?: boolean | StoreDefaultArgs<ExtArgs>
@@ -22484,6 +22670,20 @@ export namespace Prisma {
       productId: string
       storeId: string
       status: $Enums.AdRequestStatus
+      /**
+       * Duration + pricing captured at request time from the platform's
+       * configured ad_price_per_day rate — locks in the price even if the
+       * admin changes rates later.
+       */
+      durationDays: number
+      pricePerDay: number
+      totalPrice: number
+      /**
+       * Set when the request is approved; the feature is auto-expired
+       * (removed from home_page_content) once endsAt passes.
+       */
+      startsAt: Date | null
+      endsAt: Date | null
       requestedAt: Date
       approvedAt: Date | null
       adminNote: string | null
@@ -22918,6 +23118,11 @@ export namespace Prisma {
     readonly productId: FieldRef<"AdRequest", 'String'>
     readonly storeId: FieldRef<"AdRequest", 'String'>
     readonly status: FieldRef<"AdRequest", 'AdRequestStatus'>
+    readonly durationDays: FieldRef<"AdRequest", 'Int'>
+    readonly pricePerDay: FieldRef<"AdRequest", 'Float'>
+    readonly totalPrice: FieldRef<"AdRequest", 'Float'>
+    readonly startsAt: FieldRef<"AdRequest", 'DateTime'>
+    readonly endsAt: FieldRef<"AdRequest", 'DateTime'>
     readonly requestedAt: FieldRef<"AdRequest", 'DateTime'>
     readonly approvedAt: FieldRef<"AdRequest", 'DateTime'>
     readonly adminNote: FieldRef<"AdRequest", 'String'>
@@ -23343,1144 +23548,6 @@ export namespace Prisma {
 
 
   /**
-   * Model MiddleBanner
-   */
-
-  export type AggregateMiddleBanner = {
-    _count: MiddleBannerCountAggregateOutputType | null
-    _avg: MiddleBannerAvgAggregateOutputType | null
-    _sum: MiddleBannerSumAggregateOutputType | null
-    _min: MiddleBannerMinAggregateOutputType | null
-    _max: MiddleBannerMaxAggregateOutputType | null
-  }
-
-  export type MiddleBannerAvgAggregateOutputType = {
-    position: number | null
-  }
-
-  export type MiddleBannerSumAggregateOutputType = {
-    position: number | null
-  }
-
-  export type MiddleBannerMinAggregateOutputType = {
-    id: string | null
-    title: string | null
-    subtitle: string | null
-    imageUrl: string | null
-    linkUrl: string | null
-    ctaText: string | null
-    position: number | null
-    isActive: boolean | null
-    countryCode: string | null
-    startsAt: Date | null
-    endsAt: Date | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type MiddleBannerMaxAggregateOutputType = {
-    id: string | null
-    title: string | null
-    subtitle: string | null
-    imageUrl: string | null
-    linkUrl: string | null
-    ctaText: string | null
-    position: number | null
-    isActive: boolean | null
-    countryCode: string | null
-    startsAt: Date | null
-    endsAt: Date | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type MiddleBannerCountAggregateOutputType = {
-    id: number
-    title: number
-    subtitle: number
-    imageUrl: number
-    linkUrl: number
-    ctaText: number
-    position: number
-    isActive: number
-    countryCode: number
-    startsAt: number
-    endsAt: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type MiddleBannerAvgAggregateInputType = {
-    position?: true
-  }
-
-  export type MiddleBannerSumAggregateInputType = {
-    position?: true
-  }
-
-  export type MiddleBannerMinAggregateInputType = {
-    id?: true
-    title?: true
-    subtitle?: true
-    imageUrl?: true
-    linkUrl?: true
-    ctaText?: true
-    position?: true
-    isActive?: true
-    countryCode?: true
-    startsAt?: true
-    endsAt?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type MiddleBannerMaxAggregateInputType = {
-    id?: true
-    title?: true
-    subtitle?: true
-    imageUrl?: true
-    linkUrl?: true
-    ctaText?: true
-    position?: true
-    isActive?: true
-    countryCode?: true
-    startsAt?: true
-    endsAt?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type MiddleBannerCountAggregateInputType = {
-    id?: true
-    title?: true
-    subtitle?: true
-    imageUrl?: true
-    linkUrl?: true
-    ctaText?: true
-    position?: true
-    isActive?: true
-    countryCode?: true
-    startsAt?: true
-    endsAt?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type MiddleBannerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which MiddleBanner to aggregate.
-     */
-    where?: MiddleBannerWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MiddleBanners to fetch.
-     */
-    orderBy?: MiddleBannerOrderByWithRelationInput | MiddleBannerOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: MiddleBannerWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MiddleBanners from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MiddleBanners.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned MiddleBanners
-    **/
-    _count?: true | MiddleBannerCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: MiddleBannerAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: MiddleBannerSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: MiddleBannerMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: MiddleBannerMaxAggregateInputType
-  }
-
-  export type GetMiddleBannerAggregateType<T extends MiddleBannerAggregateArgs> = {
-        [P in keyof T & keyof AggregateMiddleBanner]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateMiddleBanner[P]>
-      : GetScalarType<T[P], AggregateMiddleBanner[P]>
-  }
-
-
-
-
-  export type MiddleBannerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MiddleBannerWhereInput
-    orderBy?: MiddleBannerOrderByWithAggregationInput | MiddleBannerOrderByWithAggregationInput[]
-    by: MiddleBannerScalarFieldEnum[] | MiddleBannerScalarFieldEnum
-    having?: MiddleBannerScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: MiddleBannerCountAggregateInputType | true
-    _avg?: MiddleBannerAvgAggregateInputType
-    _sum?: MiddleBannerSumAggregateInputType
-    _min?: MiddleBannerMinAggregateInputType
-    _max?: MiddleBannerMaxAggregateInputType
-  }
-
-  export type MiddleBannerGroupByOutputType = {
-    id: string
-    title: string
-    subtitle: string | null
-    imageUrl: string
-    linkUrl: string | null
-    ctaText: string | null
-    position: number
-    isActive: boolean
-    countryCode: string | null
-    startsAt: Date | null
-    endsAt: Date | null
-    createdAt: Date
-    updatedAt: Date
-    _count: MiddleBannerCountAggregateOutputType | null
-    _avg: MiddleBannerAvgAggregateOutputType | null
-    _sum: MiddleBannerSumAggregateOutputType | null
-    _min: MiddleBannerMinAggregateOutputType | null
-    _max: MiddleBannerMaxAggregateOutputType | null
-  }
-
-  type GetMiddleBannerGroupByPayload<T extends MiddleBannerGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<MiddleBannerGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof MiddleBannerGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], MiddleBannerGroupByOutputType[P]>
-            : GetScalarType<T[P], MiddleBannerGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type MiddleBannerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    title?: boolean
-    subtitle?: boolean
-    imageUrl?: boolean
-    linkUrl?: boolean
-    ctaText?: boolean
-    position?: boolean
-    isActive?: boolean
-    countryCode?: boolean
-    startsAt?: boolean
-    endsAt?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }, ExtArgs["result"]["middleBanner"]>
-
-  export type MiddleBannerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    title?: boolean
-    subtitle?: boolean
-    imageUrl?: boolean
-    linkUrl?: boolean
-    ctaText?: boolean
-    position?: boolean
-    isActive?: boolean
-    countryCode?: boolean
-    startsAt?: boolean
-    endsAt?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }, ExtArgs["result"]["middleBanner"]>
-
-  export type MiddleBannerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    title?: boolean
-    subtitle?: boolean
-    imageUrl?: boolean
-    linkUrl?: boolean
-    ctaText?: boolean
-    position?: boolean
-    isActive?: boolean
-    countryCode?: boolean
-    startsAt?: boolean
-    endsAt?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }, ExtArgs["result"]["middleBanner"]>
-
-  export type MiddleBannerSelectScalar = {
-    id?: boolean
-    title?: boolean
-    subtitle?: boolean
-    imageUrl?: boolean
-    linkUrl?: boolean
-    ctaText?: boolean
-    position?: boolean
-    isActive?: boolean
-    countryCode?: boolean
-    startsAt?: boolean
-    endsAt?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type MiddleBannerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "subtitle" | "imageUrl" | "linkUrl" | "ctaText" | "position" | "isActive" | "countryCode" | "startsAt" | "endsAt" | "createdAt" | "updatedAt", ExtArgs["result"]["middleBanner"]>
-
-  export type $MiddleBannerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "MiddleBanner"
-    objects: {}
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      title: string
-      subtitle: string | null
-      imageUrl: string
-      linkUrl: string | null
-      ctaText: string | null
-      position: number
-      isActive: boolean
-      countryCode: string | null
-      startsAt: Date | null
-      endsAt: Date | null
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["middleBanner"]>
-    composites: {}
-  }
-
-  type MiddleBannerGetPayload<S extends boolean | null | undefined | MiddleBannerDefaultArgs> = $Result.GetResult<Prisma.$MiddleBannerPayload, S>
-
-  type MiddleBannerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<MiddleBannerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: MiddleBannerCountAggregateInputType | true
-    }
-
-  export interface MiddleBannerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MiddleBanner'], meta: { name: 'MiddleBanner' } }
-    /**
-     * Find zero or one MiddleBanner that matches the filter.
-     * @param {MiddleBannerFindUniqueArgs} args - Arguments to find a MiddleBanner
-     * @example
-     * // Get one MiddleBanner
-     * const middleBanner = await prisma.middleBanner.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends MiddleBannerFindUniqueArgs>(args: SelectSubset<T, MiddleBannerFindUniqueArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one MiddleBanner that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {MiddleBannerFindUniqueOrThrowArgs} args - Arguments to find a MiddleBanner
-     * @example
-     * // Get one MiddleBanner
-     * const middleBanner = await prisma.middleBanner.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends MiddleBannerFindUniqueOrThrowArgs>(args: SelectSubset<T, MiddleBannerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first MiddleBanner that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MiddleBannerFindFirstArgs} args - Arguments to find a MiddleBanner
-     * @example
-     * // Get one MiddleBanner
-     * const middleBanner = await prisma.middleBanner.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends MiddleBannerFindFirstArgs>(args?: SelectSubset<T, MiddleBannerFindFirstArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first MiddleBanner that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MiddleBannerFindFirstOrThrowArgs} args - Arguments to find a MiddleBanner
-     * @example
-     * // Get one MiddleBanner
-     * const middleBanner = await prisma.middleBanner.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends MiddleBannerFindFirstOrThrowArgs>(args?: SelectSubset<T, MiddleBannerFindFirstOrThrowArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more MiddleBanners that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MiddleBannerFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all MiddleBanners
-     * const middleBanners = await prisma.middleBanner.findMany()
-     * 
-     * // Get first 10 MiddleBanners
-     * const middleBanners = await prisma.middleBanner.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const middleBannerWithIdOnly = await prisma.middleBanner.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends MiddleBannerFindManyArgs>(args?: SelectSubset<T, MiddleBannerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a MiddleBanner.
-     * @param {MiddleBannerCreateArgs} args - Arguments to create a MiddleBanner.
-     * @example
-     * // Create one MiddleBanner
-     * const MiddleBanner = await prisma.middleBanner.create({
-     *   data: {
-     *     // ... data to create a MiddleBanner
-     *   }
-     * })
-     * 
-     */
-    create<T extends MiddleBannerCreateArgs>(args: SelectSubset<T, MiddleBannerCreateArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many MiddleBanners.
-     * @param {MiddleBannerCreateManyArgs} args - Arguments to create many MiddleBanners.
-     * @example
-     * // Create many MiddleBanners
-     * const middleBanner = await prisma.middleBanner.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends MiddleBannerCreateManyArgs>(args?: SelectSubset<T, MiddleBannerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many MiddleBanners and returns the data saved in the database.
-     * @param {MiddleBannerCreateManyAndReturnArgs} args - Arguments to create many MiddleBanners.
-     * @example
-     * // Create many MiddleBanners
-     * const middleBanner = await prisma.middleBanner.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many MiddleBanners and only return the `id`
-     * const middleBannerWithIdOnly = await prisma.middleBanner.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends MiddleBannerCreateManyAndReturnArgs>(args?: SelectSubset<T, MiddleBannerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a MiddleBanner.
-     * @param {MiddleBannerDeleteArgs} args - Arguments to delete one MiddleBanner.
-     * @example
-     * // Delete one MiddleBanner
-     * const MiddleBanner = await prisma.middleBanner.delete({
-     *   where: {
-     *     // ... filter to delete one MiddleBanner
-     *   }
-     * })
-     * 
-     */
-    delete<T extends MiddleBannerDeleteArgs>(args: SelectSubset<T, MiddleBannerDeleteArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one MiddleBanner.
-     * @param {MiddleBannerUpdateArgs} args - Arguments to update one MiddleBanner.
-     * @example
-     * // Update one MiddleBanner
-     * const middleBanner = await prisma.middleBanner.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends MiddleBannerUpdateArgs>(args: SelectSubset<T, MiddleBannerUpdateArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more MiddleBanners.
-     * @param {MiddleBannerDeleteManyArgs} args - Arguments to filter MiddleBanners to delete.
-     * @example
-     * // Delete a few MiddleBanners
-     * const { count } = await prisma.middleBanner.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends MiddleBannerDeleteManyArgs>(args?: SelectSubset<T, MiddleBannerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more MiddleBanners.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MiddleBannerUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many MiddleBanners
-     * const middleBanner = await prisma.middleBanner.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends MiddleBannerUpdateManyArgs>(args: SelectSubset<T, MiddleBannerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more MiddleBanners and returns the data updated in the database.
-     * @param {MiddleBannerUpdateManyAndReturnArgs} args - Arguments to update many MiddleBanners.
-     * @example
-     * // Update many MiddleBanners
-     * const middleBanner = await prisma.middleBanner.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more MiddleBanners and only return the `id`
-     * const middleBannerWithIdOnly = await prisma.middleBanner.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends MiddleBannerUpdateManyAndReturnArgs>(args: SelectSubset<T, MiddleBannerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one MiddleBanner.
-     * @param {MiddleBannerUpsertArgs} args - Arguments to update or create a MiddleBanner.
-     * @example
-     * // Update or create a MiddleBanner
-     * const middleBanner = await prisma.middleBanner.upsert({
-     *   create: {
-     *     // ... data to create a MiddleBanner
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the MiddleBanner we want to update
-     *   }
-     * })
-     */
-    upsert<T extends MiddleBannerUpsertArgs>(args: SelectSubset<T, MiddleBannerUpsertArgs<ExtArgs>>): Prisma__MiddleBannerClient<$Result.GetResult<Prisma.$MiddleBannerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of MiddleBanners.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MiddleBannerCountArgs} args - Arguments to filter MiddleBanners to count.
-     * @example
-     * // Count the number of MiddleBanners
-     * const count = await prisma.middleBanner.count({
-     *   where: {
-     *     // ... the filter for the MiddleBanners we want to count
-     *   }
-     * })
-    **/
-    count<T extends MiddleBannerCountArgs>(
-      args?: Subset<T, MiddleBannerCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], MiddleBannerCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a MiddleBanner.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MiddleBannerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends MiddleBannerAggregateArgs>(args: Subset<T, MiddleBannerAggregateArgs>): Prisma.PrismaPromise<GetMiddleBannerAggregateType<T>>
-
-    /**
-     * Group by MiddleBanner.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MiddleBannerGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends MiddleBannerGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: MiddleBannerGroupByArgs['orderBy'] }
-        : { orderBy?: MiddleBannerGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, MiddleBannerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMiddleBannerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the MiddleBanner model
-   */
-  readonly fields: MiddleBannerFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for MiddleBanner.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__MiddleBannerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the MiddleBanner model
-   */
-  interface MiddleBannerFieldRefs {
-    readonly id: FieldRef<"MiddleBanner", 'String'>
-    readonly title: FieldRef<"MiddleBanner", 'String'>
-    readonly subtitle: FieldRef<"MiddleBanner", 'String'>
-    readonly imageUrl: FieldRef<"MiddleBanner", 'String'>
-    readonly linkUrl: FieldRef<"MiddleBanner", 'String'>
-    readonly ctaText: FieldRef<"MiddleBanner", 'String'>
-    readonly position: FieldRef<"MiddleBanner", 'Int'>
-    readonly isActive: FieldRef<"MiddleBanner", 'Boolean'>
-    readonly countryCode: FieldRef<"MiddleBanner", 'String'>
-    readonly startsAt: FieldRef<"MiddleBanner", 'DateTime'>
-    readonly endsAt: FieldRef<"MiddleBanner", 'DateTime'>
-    readonly createdAt: FieldRef<"MiddleBanner", 'DateTime'>
-    readonly updatedAt: FieldRef<"MiddleBanner", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * MiddleBanner findUnique
-   */
-  export type MiddleBannerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MiddleBanner
-     */
-    select?: MiddleBannerSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MiddleBanner
-     */
-    omit?: MiddleBannerOmit<ExtArgs> | null
-    /**
-     * Filter, which MiddleBanner to fetch.
-     */
-    where: MiddleBannerWhereUniqueInput
-  }
-
-  /**
-   * MiddleBanner findUniqueOrThrow
-   */
-  export type MiddleBannerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MiddleBanner
-     */
-    select?: MiddleBannerSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MiddleBanner
-     */
-    omit?: MiddleBannerOmit<ExtArgs> | null
-    /**
-     * Filter, which MiddleBanner to fetch.
-     */
-    where: MiddleBannerWhereUniqueInput
-  }
-
-  /**
-   * MiddleBanner findFirst
-   */
-  export type MiddleBannerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MiddleBanner
-     */
-    select?: MiddleBannerSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MiddleBanner
-     */
-    omit?: MiddleBannerOmit<ExtArgs> | null
-    /**
-     * Filter, which MiddleBanner to fetch.
-     */
-    where?: MiddleBannerWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MiddleBanners to fetch.
-     */
-    orderBy?: MiddleBannerOrderByWithRelationInput | MiddleBannerOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for MiddleBanners.
-     */
-    cursor?: MiddleBannerWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MiddleBanners from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MiddleBanners.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of MiddleBanners.
-     */
-    distinct?: MiddleBannerScalarFieldEnum | MiddleBannerScalarFieldEnum[]
-  }
-
-  /**
-   * MiddleBanner findFirstOrThrow
-   */
-  export type MiddleBannerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MiddleBanner
-     */
-    select?: MiddleBannerSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MiddleBanner
-     */
-    omit?: MiddleBannerOmit<ExtArgs> | null
-    /**
-     * Filter, which MiddleBanner to fetch.
-     */
-    where?: MiddleBannerWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MiddleBanners to fetch.
-     */
-    orderBy?: MiddleBannerOrderByWithRelationInput | MiddleBannerOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for MiddleBanners.
-     */
-    cursor?: MiddleBannerWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MiddleBanners from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MiddleBanners.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of MiddleBanners.
-     */
-    distinct?: MiddleBannerScalarFieldEnum | MiddleBannerScalarFieldEnum[]
-  }
-
-  /**
-   * MiddleBanner findMany
-   */
-  export type MiddleBannerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MiddleBanner
-     */
-    select?: MiddleBannerSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MiddleBanner
-     */
-    omit?: MiddleBannerOmit<ExtArgs> | null
-    /**
-     * Filter, which MiddleBanners to fetch.
-     */
-    where?: MiddleBannerWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MiddleBanners to fetch.
-     */
-    orderBy?: MiddleBannerOrderByWithRelationInput | MiddleBannerOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing MiddleBanners.
-     */
-    cursor?: MiddleBannerWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MiddleBanners from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MiddleBanners.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of MiddleBanners.
-     */
-    distinct?: MiddleBannerScalarFieldEnum | MiddleBannerScalarFieldEnum[]
-  }
-
-  /**
-   * MiddleBanner create
-   */
-  export type MiddleBannerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MiddleBanner
-     */
-    select?: MiddleBannerSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MiddleBanner
-     */
-    omit?: MiddleBannerOmit<ExtArgs> | null
-    /**
-     * The data needed to create a MiddleBanner.
-     */
-    data: XOR<MiddleBannerCreateInput, MiddleBannerUncheckedCreateInput>
-  }
-
-  /**
-   * MiddleBanner createMany
-   */
-  export type MiddleBannerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many MiddleBanners.
-     */
-    data: MiddleBannerCreateManyInput | MiddleBannerCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * MiddleBanner createManyAndReturn
-   */
-  export type MiddleBannerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MiddleBanner
-     */
-    select?: MiddleBannerSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the MiddleBanner
-     */
-    omit?: MiddleBannerOmit<ExtArgs> | null
-    /**
-     * The data used to create many MiddleBanners.
-     */
-    data: MiddleBannerCreateManyInput | MiddleBannerCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * MiddleBanner update
-   */
-  export type MiddleBannerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MiddleBanner
-     */
-    select?: MiddleBannerSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MiddleBanner
-     */
-    omit?: MiddleBannerOmit<ExtArgs> | null
-    /**
-     * The data needed to update a MiddleBanner.
-     */
-    data: XOR<MiddleBannerUpdateInput, MiddleBannerUncheckedUpdateInput>
-    /**
-     * Choose, which MiddleBanner to update.
-     */
-    where: MiddleBannerWhereUniqueInput
-  }
-
-  /**
-   * MiddleBanner updateMany
-   */
-  export type MiddleBannerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update MiddleBanners.
-     */
-    data: XOR<MiddleBannerUpdateManyMutationInput, MiddleBannerUncheckedUpdateManyInput>
-    /**
-     * Filter which MiddleBanners to update
-     */
-    where?: MiddleBannerWhereInput
-    /**
-     * Limit how many MiddleBanners to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * MiddleBanner updateManyAndReturn
-   */
-  export type MiddleBannerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MiddleBanner
-     */
-    select?: MiddleBannerSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the MiddleBanner
-     */
-    omit?: MiddleBannerOmit<ExtArgs> | null
-    /**
-     * The data used to update MiddleBanners.
-     */
-    data: XOR<MiddleBannerUpdateManyMutationInput, MiddleBannerUncheckedUpdateManyInput>
-    /**
-     * Filter which MiddleBanners to update
-     */
-    where?: MiddleBannerWhereInput
-    /**
-     * Limit how many MiddleBanners to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * MiddleBanner upsert
-   */
-  export type MiddleBannerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MiddleBanner
-     */
-    select?: MiddleBannerSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MiddleBanner
-     */
-    omit?: MiddleBannerOmit<ExtArgs> | null
-    /**
-     * The filter to search for the MiddleBanner to update in case it exists.
-     */
-    where: MiddleBannerWhereUniqueInput
-    /**
-     * In case the MiddleBanner found by the `where` argument doesn't exist, create a new MiddleBanner with this data.
-     */
-    create: XOR<MiddleBannerCreateInput, MiddleBannerUncheckedCreateInput>
-    /**
-     * In case the MiddleBanner was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<MiddleBannerUpdateInput, MiddleBannerUncheckedUpdateInput>
-  }
-
-  /**
-   * MiddleBanner delete
-   */
-  export type MiddleBannerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MiddleBanner
-     */
-    select?: MiddleBannerSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MiddleBanner
-     */
-    omit?: MiddleBannerOmit<ExtArgs> | null
-    /**
-     * Filter which MiddleBanner to delete.
-     */
-    where: MiddleBannerWhereUniqueInput
-  }
-
-  /**
-   * MiddleBanner deleteMany
-   */
-  export type MiddleBannerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which MiddleBanners to delete
-     */
-    where?: MiddleBannerWhereInput
-    /**
-     * Limit how many MiddleBanners to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * MiddleBanner without action
-   */
-  export type MiddleBannerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MiddleBanner
-     */
-    select?: MiddleBannerSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MiddleBanner
-     */
-    omit?: MiddleBannerOmit<ExtArgs> | null
-  }
-
-
-  /**
    * Enums
    */
 
@@ -24548,6 +23615,10 @@ export namespace Prisma {
     isDigital: 'isDigital',
     downloadUrl: 'downloadUrl',
     isWholesale: 'isWholesale',
+    useDefaultShipping: 'useDefaultShipping',
+    customLocalFee: 'customLocalFee',
+    customNationwideFee: 'customNationwideFee',
+    customAbroadFee: 'customAbroadFee',
     storeId: 'storeId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -24609,7 +23680,13 @@ export namespace Prisma {
     isCouponUsed: 'isCouponUsed',
     coupon: 'coupon',
     notes: 'notes',
-    trackingNumber: 'trackingNumber'
+    trackingNumber: 'trackingNumber',
+    subtotal: 'subtotal',
+    shippingFee: 'shippingFee',
+    taxAmount: 'taxAmount',
+    commissionRate: 'commissionRate',
+    platformFee: 'platformFee',
+    sellerPayout: 'sellerPayout'
   };
 
   export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
@@ -24775,6 +23852,11 @@ export namespace Prisma {
     productId: 'productId',
     storeId: 'storeId',
     status: 'status',
+    durationDays: 'durationDays',
+    pricePerDay: 'pricePerDay',
+    totalPrice: 'totalPrice',
+    startsAt: 'startsAt',
+    endsAt: 'endsAt',
     requestedAt: 'requestedAt',
     approvedAt: 'approvedAt',
     adminNote: 'adminNote',
@@ -24783,25 +23865,6 @@ export namespace Prisma {
   };
 
   export type AdRequestScalarFieldEnum = (typeof AdRequestScalarFieldEnum)[keyof typeof AdRequestScalarFieldEnum]
-
-
-  export const MiddleBannerScalarFieldEnum: {
-    id: 'id',
-    title: 'title',
-    subtitle: 'subtitle',
-    imageUrl: 'imageUrl',
-    linkUrl: 'linkUrl',
-    ctaText: 'ctaText',
-    position: 'position',
-    isActive: 'isActive',
-    countryCode: 'countryCode',
-    startsAt: 'startsAt',
-    endsAt: 'endsAt',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type MiddleBannerScalarFieldEnum = (typeof MiddleBannerScalarFieldEnum)[keyof typeof MiddleBannerScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -25229,6 +24292,10 @@ export namespace Prisma {
     isDigital?: BoolFilter<"Product"> | boolean
     downloadUrl?: StringNullableFilter<"Product"> | string | null
     isWholesale?: BoolFilter<"Product"> | boolean
+    useDefaultShipping?: BoolFilter<"Product"> | boolean
+    customLocalFee?: FloatNullableFilter<"Product"> | number | null
+    customNationwideFee?: FloatNullableFilter<"Product"> | number | null
+    customAbroadFee?: FloatNullableFilter<"Product"> | number | null
     storeId?: StringFilter<"Product"> | string
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
@@ -25265,6 +24332,10 @@ export namespace Prisma {
     isDigital?: SortOrder
     downloadUrl?: SortOrderInput | SortOrder
     isWholesale?: SortOrder
+    useDefaultShipping?: SortOrder
+    customLocalFee?: SortOrderInput | SortOrder
+    customNationwideFee?: SortOrderInput | SortOrder
+    customAbroadFee?: SortOrderInput | SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -25304,6 +24375,10 @@ export namespace Prisma {
     isDigital?: BoolFilter<"Product"> | boolean
     downloadUrl?: StringNullableFilter<"Product"> | string | null
     isWholesale?: BoolFilter<"Product"> | boolean
+    useDefaultShipping?: BoolFilter<"Product"> | boolean
+    customLocalFee?: FloatNullableFilter<"Product"> | number | null
+    customNationwideFee?: FloatNullableFilter<"Product"> | number | null
+    customAbroadFee?: FloatNullableFilter<"Product"> | number | null
     storeId?: StringFilter<"Product"> | string
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
@@ -25340,6 +24415,10 @@ export namespace Prisma {
     isDigital?: SortOrder
     downloadUrl?: SortOrderInput | SortOrder
     isWholesale?: SortOrder
+    useDefaultShipping?: SortOrder
+    customLocalFee?: SortOrderInput | SortOrder
+    customNationwideFee?: SortOrderInput | SortOrder
+    customAbroadFee?: SortOrderInput | SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -25378,6 +24457,10 @@ export namespace Prisma {
     isDigital?: BoolWithAggregatesFilter<"Product"> | boolean
     downloadUrl?: StringNullableWithAggregatesFilter<"Product"> | string | null
     isWholesale?: BoolWithAggregatesFilter<"Product"> | boolean
+    useDefaultShipping?: BoolWithAggregatesFilter<"Product"> | boolean
+    customLocalFee?: FloatNullableWithAggregatesFilter<"Product"> | number | null
+    customNationwideFee?: FloatNullableWithAggregatesFilter<"Product"> | number | null
+    customAbroadFee?: FloatNullableWithAggregatesFilter<"Product"> | number | null
     storeId?: StringWithAggregatesFilter<"Product"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
@@ -25607,6 +24690,12 @@ export namespace Prisma {
     coupon?: JsonFilter<"Order">
     notes?: StringNullableFilter<"Order"> | string | null
     trackingNumber?: StringNullableFilter<"Order"> | string | null
+    subtotal?: FloatFilter<"Order"> | number
+    shippingFee?: FloatFilter<"Order"> | number
+    taxAmount?: FloatFilter<"Order"> | number
+    commissionRate?: FloatFilter<"Order"> | number
+    platformFee?: FloatFilter<"Order"> | number
+    sellerPayout?: FloatFilter<"Order"> | number
     orderItems?: OrderItemListRelationFilter
     storeRating?: XOR<StoreRatingNullableScalarRelationFilter, StoreRatingWhereInput> | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -25630,6 +24719,12 @@ export namespace Prisma {
     coupon?: SortOrder
     notes?: SortOrderInput | SortOrder
     trackingNumber?: SortOrderInput | SortOrder
+    subtotal?: SortOrder
+    shippingFee?: SortOrder
+    taxAmount?: SortOrder
+    commissionRate?: SortOrder
+    platformFee?: SortOrder
+    sellerPayout?: SortOrder
     orderItems?: OrderItemOrderByRelationAggregateInput
     storeRating?: StoreRatingOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
@@ -25656,6 +24751,12 @@ export namespace Prisma {
     coupon?: JsonFilter<"Order">
     notes?: StringNullableFilter<"Order"> | string | null
     trackingNumber?: StringNullableFilter<"Order"> | string | null
+    subtotal?: FloatFilter<"Order"> | number
+    shippingFee?: FloatFilter<"Order"> | number
+    taxAmount?: FloatFilter<"Order"> | number
+    commissionRate?: FloatFilter<"Order"> | number
+    platformFee?: FloatFilter<"Order"> | number
+    sellerPayout?: FloatFilter<"Order"> | number
     orderItems?: OrderItemListRelationFilter
     storeRating?: XOR<StoreRatingNullableScalarRelationFilter, StoreRatingWhereInput> | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -25679,6 +24780,12 @@ export namespace Prisma {
     coupon?: SortOrder
     notes?: SortOrderInput | SortOrder
     trackingNumber?: SortOrderInput | SortOrder
+    subtotal?: SortOrder
+    shippingFee?: SortOrder
+    taxAmount?: SortOrder
+    commissionRate?: SortOrder
+    platformFee?: SortOrder
+    sellerPayout?: SortOrder
     _count?: OrderCountOrderByAggregateInput
     _avg?: OrderAvgOrderByAggregateInput
     _max?: OrderMaxOrderByAggregateInput
@@ -25704,6 +24811,12 @@ export namespace Prisma {
     coupon?: JsonWithAggregatesFilter<"Order">
     notes?: StringNullableWithAggregatesFilter<"Order"> | string | null
     trackingNumber?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    subtotal?: FloatWithAggregatesFilter<"Order"> | number
+    shippingFee?: FloatWithAggregatesFilter<"Order"> | number
+    taxAmount?: FloatWithAggregatesFilter<"Order"> | number
+    commissionRate?: FloatWithAggregatesFilter<"Order"> | number
+    platformFee?: FloatWithAggregatesFilter<"Order"> | number
+    sellerPayout?: FloatWithAggregatesFilter<"Order"> | number
   }
 
   export type OrderItemWhereInput = {
@@ -26535,6 +25648,11 @@ export namespace Prisma {
     productId?: StringFilter<"AdRequest"> | string
     storeId?: StringFilter<"AdRequest"> | string
     status?: EnumAdRequestStatusFilter<"AdRequest"> | $Enums.AdRequestStatus
+    durationDays?: IntFilter<"AdRequest"> | number
+    pricePerDay?: FloatFilter<"AdRequest"> | number
+    totalPrice?: FloatFilter<"AdRequest"> | number
+    startsAt?: DateTimeNullableFilter<"AdRequest"> | Date | string | null
+    endsAt?: DateTimeNullableFilter<"AdRequest"> | Date | string | null
     requestedAt?: DateTimeFilter<"AdRequest"> | Date | string
     approvedAt?: DateTimeNullableFilter<"AdRequest"> | Date | string | null
     adminNote?: StringNullableFilter<"AdRequest"> | string | null
@@ -26549,6 +25667,11 @@ export namespace Prisma {
     productId?: SortOrder
     storeId?: SortOrder
     status?: SortOrder
+    durationDays?: SortOrder
+    pricePerDay?: SortOrder
+    totalPrice?: SortOrder
+    startsAt?: SortOrderInput | SortOrder
+    endsAt?: SortOrderInput | SortOrder
     requestedAt?: SortOrder
     approvedAt?: SortOrderInput | SortOrder
     adminNote?: SortOrderInput | SortOrder
@@ -26566,6 +25689,11 @@ export namespace Prisma {
     productId?: StringFilter<"AdRequest"> | string
     storeId?: StringFilter<"AdRequest"> | string
     status?: EnumAdRequestStatusFilter<"AdRequest"> | $Enums.AdRequestStatus
+    durationDays?: IntFilter<"AdRequest"> | number
+    pricePerDay?: FloatFilter<"AdRequest"> | number
+    totalPrice?: FloatFilter<"AdRequest"> | number
+    startsAt?: DateTimeNullableFilter<"AdRequest"> | Date | string | null
+    endsAt?: DateTimeNullableFilter<"AdRequest"> | Date | string | null
     requestedAt?: DateTimeFilter<"AdRequest"> | Date | string
     approvedAt?: DateTimeNullableFilter<"AdRequest"> | Date | string | null
     adminNote?: StringNullableFilter<"AdRequest"> | string | null
@@ -26580,14 +25708,21 @@ export namespace Prisma {
     productId?: SortOrder
     storeId?: SortOrder
     status?: SortOrder
+    durationDays?: SortOrder
+    pricePerDay?: SortOrder
+    totalPrice?: SortOrder
+    startsAt?: SortOrderInput | SortOrder
+    endsAt?: SortOrderInput | SortOrder
     requestedAt?: SortOrder
     approvedAt?: SortOrderInput | SortOrder
     adminNote?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: AdRequestCountOrderByAggregateInput
+    _avg?: AdRequestAvgOrderByAggregateInput
     _max?: AdRequestMaxOrderByAggregateInput
     _min?: AdRequestMinOrderByAggregateInput
+    _sum?: AdRequestSumOrderByAggregateInput
   }
 
   export type AdRequestScalarWhereWithAggregatesInput = {
@@ -26598,105 +25733,16 @@ export namespace Prisma {
     productId?: StringWithAggregatesFilter<"AdRequest"> | string
     storeId?: StringWithAggregatesFilter<"AdRequest"> | string
     status?: EnumAdRequestStatusWithAggregatesFilter<"AdRequest"> | $Enums.AdRequestStatus
+    durationDays?: IntWithAggregatesFilter<"AdRequest"> | number
+    pricePerDay?: FloatWithAggregatesFilter<"AdRequest"> | number
+    totalPrice?: FloatWithAggregatesFilter<"AdRequest"> | number
+    startsAt?: DateTimeNullableWithAggregatesFilter<"AdRequest"> | Date | string | null
+    endsAt?: DateTimeNullableWithAggregatesFilter<"AdRequest"> | Date | string | null
     requestedAt?: DateTimeWithAggregatesFilter<"AdRequest"> | Date | string
     approvedAt?: DateTimeNullableWithAggregatesFilter<"AdRequest"> | Date | string | null
     adminNote?: StringNullableWithAggregatesFilter<"AdRequest"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"AdRequest"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"AdRequest"> | Date | string
-  }
-
-  export type MiddleBannerWhereInput = {
-    AND?: MiddleBannerWhereInput | MiddleBannerWhereInput[]
-    OR?: MiddleBannerWhereInput[]
-    NOT?: MiddleBannerWhereInput | MiddleBannerWhereInput[]
-    id?: StringFilter<"MiddleBanner"> | string
-    title?: StringFilter<"MiddleBanner"> | string
-    subtitle?: StringNullableFilter<"MiddleBanner"> | string | null
-    imageUrl?: StringFilter<"MiddleBanner"> | string
-    linkUrl?: StringNullableFilter<"MiddleBanner"> | string | null
-    ctaText?: StringNullableFilter<"MiddleBanner"> | string | null
-    position?: IntFilter<"MiddleBanner"> | number
-    isActive?: BoolFilter<"MiddleBanner"> | boolean
-    countryCode?: StringNullableFilter<"MiddleBanner"> | string | null
-    startsAt?: DateTimeNullableFilter<"MiddleBanner"> | Date | string | null
-    endsAt?: DateTimeNullableFilter<"MiddleBanner"> | Date | string | null
-    createdAt?: DateTimeFilter<"MiddleBanner"> | Date | string
-    updatedAt?: DateTimeFilter<"MiddleBanner"> | Date | string
-  }
-
-  export type MiddleBannerOrderByWithRelationInput = {
-    id?: SortOrder
-    title?: SortOrder
-    subtitle?: SortOrderInput | SortOrder
-    imageUrl?: SortOrder
-    linkUrl?: SortOrderInput | SortOrder
-    ctaText?: SortOrderInput | SortOrder
-    position?: SortOrder
-    isActive?: SortOrder
-    countryCode?: SortOrderInput | SortOrder
-    startsAt?: SortOrderInput | SortOrder
-    endsAt?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type MiddleBannerWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: MiddleBannerWhereInput | MiddleBannerWhereInput[]
-    OR?: MiddleBannerWhereInput[]
-    NOT?: MiddleBannerWhereInput | MiddleBannerWhereInput[]
-    title?: StringFilter<"MiddleBanner"> | string
-    subtitle?: StringNullableFilter<"MiddleBanner"> | string | null
-    imageUrl?: StringFilter<"MiddleBanner"> | string
-    linkUrl?: StringNullableFilter<"MiddleBanner"> | string | null
-    ctaText?: StringNullableFilter<"MiddleBanner"> | string | null
-    position?: IntFilter<"MiddleBanner"> | number
-    isActive?: BoolFilter<"MiddleBanner"> | boolean
-    countryCode?: StringNullableFilter<"MiddleBanner"> | string | null
-    startsAt?: DateTimeNullableFilter<"MiddleBanner"> | Date | string | null
-    endsAt?: DateTimeNullableFilter<"MiddleBanner"> | Date | string | null
-    createdAt?: DateTimeFilter<"MiddleBanner"> | Date | string
-    updatedAt?: DateTimeFilter<"MiddleBanner"> | Date | string
-  }, "id">
-
-  export type MiddleBannerOrderByWithAggregationInput = {
-    id?: SortOrder
-    title?: SortOrder
-    subtitle?: SortOrderInput | SortOrder
-    imageUrl?: SortOrder
-    linkUrl?: SortOrderInput | SortOrder
-    ctaText?: SortOrderInput | SortOrder
-    position?: SortOrder
-    isActive?: SortOrder
-    countryCode?: SortOrderInput | SortOrder
-    startsAt?: SortOrderInput | SortOrder
-    endsAt?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: MiddleBannerCountOrderByAggregateInput
-    _avg?: MiddleBannerAvgOrderByAggregateInput
-    _max?: MiddleBannerMaxOrderByAggregateInput
-    _min?: MiddleBannerMinOrderByAggregateInput
-    _sum?: MiddleBannerSumOrderByAggregateInput
-  }
-
-  export type MiddleBannerScalarWhereWithAggregatesInput = {
-    AND?: MiddleBannerScalarWhereWithAggregatesInput | MiddleBannerScalarWhereWithAggregatesInput[]
-    OR?: MiddleBannerScalarWhereWithAggregatesInput[]
-    NOT?: MiddleBannerScalarWhereWithAggregatesInput | MiddleBannerScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"MiddleBanner"> | string
-    title?: StringWithAggregatesFilter<"MiddleBanner"> | string
-    subtitle?: StringNullableWithAggregatesFilter<"MiddleBanner"> | string | null
-    imageUrl?: StringWithAggregatesFilter<"MiddleBanner"> | string
-    linkUrl?: StringNullableWithAggregatesFilter<"MiddleBanner"> | string | null
-    ctaText?: StringNullableWithAggregatesFilter<"MiddleBanner"> | string | null
-    position?: IntWithAggregatesFilter<"MiddleBanner"> | number
-    isActive?: BoolWithAggregatesFilter<"MiddleBanner"> | boolean
-    countryCode?: StringNullableWithAggregatesFilter<"MiddleBanner"> | string | null
-    startsAt?: DateTimeNullableWithAggregatesFilter<"MiddleBanner"> | Date | string | null
-    endsAt?: DateTimeNullableWithAggregatesFilter<"MiddleBanner"> | Date | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"MiddleBanner"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"MiddleBanner"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -26908,6 +25954,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutProductInput
@@ -26943,6 +25993,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26978,6 +26032,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
@@ -27013,6 +26071,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27048,6 +26110,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27078,6 +26144,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27107,6 +26177,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27335,6 +26409,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     orderItems?: OrderItemCreateNestedManyWithoutOrderInput
     storeRating?: StoreRatingCreateNestedOneWithoutOrderInput
     user: UserCreateNestedOneWithoutBuyerOrdersInput
@@ -27358,6 +26438,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     storeRating?: StoreRatingUncheckedCreateNestedOneWithoutOrderInput
     refund?: RefundUncheckedCreateNestedOneWithoutOrderInput
@@ -27375,6 +26461,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     orderItems?: OrderItemUpdateManyWithoutOrderNestedInput
     storeRating?: StoreRatingUpdateOneWithoutOrderNestedInput
     user?: UserUpdateOneRequiredWithoutBuyerOrdersNestedInput
@@ -27398,6 +26490,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     orderItems?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     storeRating?: StoreRatingUncheckedUpdateOneWithoutOrderNestedInput
     refund?: RefundUncheckedUpdateOneWithoutOrderNestedInput
@@ -27418,6 +26516,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
   }
 
   export type OrderUpdateManyMutationInput = {
@@ -27432,6 +26536,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
   }
 
   export type OrderUncheckedUpdateManyInput = {
@@ -27449,6 +26559,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
   }
 
   export type OrderItemCreateInput = {
@@ -28366,6 +27482,11 @@ export namespace Prisma {
   export type AdRequestCreateInput = {
     id?: string
     status?: $Enums.AdRequestStatus
+    durationDays?: number
+    pricePerDay?: number
+    totalPrice?: number
+    startsAt?: Date | string | null
+    endsAt?: Date | string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
     adminNote?: string | null
@@ -28380,6 +27501,11 @@ export namespace Prisma {
     productId: string
     storeId: string
     status?: $Enums.AdRequestStatus
+    durationDays?: number
+    pricePerDay?: number
+    totalPrice?: number
+    startsAt?: Date | string | null
+    endsAt?: Date | string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
     adminNote?: string | null
@@ -28390,6 +27516,11 @@ export namespace Prisma {
   export type AdRequestUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    durationDays?: IntFieldUpdateOperationsInput | number
+    pricePerDay?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28404,6 +27535,11 @@ export namespace Prisma {
     productId?: StringFieldUpdateOperationsInput | string
     storeId?: StringFieldUpdateOperationsInput | string
     status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    durationDays?: IntFieldUpdateOperationsInput | number
+    pricePerDay?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28416,6 +27552,11 @@ export namespace Prisma {
     productId: string
     storeId: string
     status?: $Enums.AdRequestStatus
+    durationDays?: number
+    pricePerDay?: number
+    totalPrice?: number
+    startsAt?: Date | string | null
+    endsAt?: Date | string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
     adminNote?: string | null
@@ -28426,6 +27567,11 @@ export namespace Prisma {
   export type AdRequestUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    durationDays?: IntFieldUpdateOperationsInput | number
+    pricePerDay?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28438,121 +27584,14 @@ export namespace Prisma {
     productId?: StringFieldUpdateOperationsInput | string
     storeId?: StringFieldUpdateOperationsInput | string
     status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    durationDays?: IntFieldUpdateOperationsInput | number
+    pricePerDay?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MiddleBannerCreateInput = {
-    id?: string
-    title: string
-    subtitle?: string | null
-    imageUrl: string
-    linkUrl?: string | null
-    ctaText?: string | null
-    position?: number
-    isActive?: boolean
-    countryCode?: string | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type MiddleBannerUncheckedCreateInput = {
-    id?: string
-    title: string
-    subtitle?: string | null
-    imageUrl: string
-    linkUrl?: string | null
-    ctaText?: string | null
-    position?: number
-    isActive?: boolean
-    countryCode?: string | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type MiddleBannerUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: StringFieldUpdateOperationsInput | string
-    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    ctaText?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: IntFieldUpdateOperationsInput | number
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MiddleBannerUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: StringFieldUpdateOperationsInput | string
-    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    ctaText?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: IntFieldUpdateOperationsInput | number
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MiddleBannerCreateManyInput = {
-    id?: string
-    title: string
-    subtitle?: string | null
-    imageUrl: string
-    linkUrl?: string | null
-    ctaText?: string | null
-    position?: number
-    isActive?: boolean
-    countryCode?: string | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type MiddleBannerUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: StringFieldUpdateOperationsInput | string
-    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    ctaText?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: IntFieldUpdateOperationsInput | number
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MiddleBannerUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: StringFieldUpdateOperationsInput | string
-    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    ctaText?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: IntFieldUpdateOperationsInput | number
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28895,6 +27934,17 @@ export namespace Prisma {
     not?: NestedEnumProductOriginFilter<$PrismaModel> | $Enums.ProductOrigin
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type StoreScalarRelationFilter = {
     is?: StoreWhereInput
     isNot?: StoreWhereInput
@@ -28965,6 +28015,10 @@ export namespace Prisma {
     isDigital?: SortOrder
     downloadUrl?: SortOrder
     isWholesale?: SortOrder
+    useDefaultShipping?: SortOrder
+    customLocalFee?: SortOrder
+    customNationwideFee?: SortOrder
+    customAbroadFee?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -28974,6 +28028,9 @@ export namespace Prisma {
     mrp?: SortOrder
     price?: SortOrder
     quantity?: SortOrder
+    customLocalFee?: SortOrder
+    customNationwideFee?: SortOrder
+    customAbroadFee?: SortOrder
   }
 
   export type ProductMaxOrderByAggregateInput = {
@@ -28999,6 +28056,10 @@ export namespace Prisma {
     isDigital?: SortOrder
     downloadUrl?: SortOrder
     isWholesale?: SortOrder
+    useDefaultShipping?: SortOrder
+    customLocalFee?: SortOrder
+    customNationwideFee?: SortOrder
+    customAbroadFee?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -29027,6 +28088,10 @@ export namespace Prisma {
     isDigital?: SortOrder
     downloadUrl?: SortOrder
     isWholesale?: SortOrder
+    useDefaultShipping?: SortOrder
+    customLocalFee?: SortOrder
+    customNationwideFee?: SortOrder
+    customAbroadFee?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -29036,6 +28101,9 @@ export namespace Prisma {
     mrp?: SortOrder
     price?: SortOrder
     quantity?: SortOrder
+    customLocalFee?: SortOrder
+    customNationwideFee?: SortOrder
+    customAbroadFee?: SortOrder
   }
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -29092,6 +28160,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumProductOriginFilter<$PrismaModel>
     _max?: NestedEnumProductOriginFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -29336,10 +28420,22 @@ export namespace Prisma {
     coupon?: SortOrder
     notes?: SortOrder
     trackingNumber?: SortOrder
+    subtotal?: SortOrder
+    shippingFee?: SortOrder
+    taxAmount?: SortOrder
+    commissionRate?: SortOrder
+    platformFee?: SortOrder
+    sellerPayout?: SortOrder
   }
 
   export type OrderAvgOrderByAggregateInput = {
     total?: SortOrder
+    subtotal?: SortOrder
+    shippingFee?: SortOrder
+    taxAmount?: SortOrder
+    commissionRate?: SortOrder
+    platformFee?: SortOrder
+    sellerPayout?: SortOrder
   }
 
   export type OrderMaxOrderByAggregateInput = {
@@ -29356,6 +28452,12 @@ export namespace Prisma {
     isCouponUsed?: SortOrder
     notes?: SortOrder
     trackingNumber?: SortOrder
+    subtotal?: SortOrder
+    shippingFee?: SortOrder
+    taxAmount?: SortOrder
+    commissionRate?: SortOrder
+    platformFee?: SortOrder
+    sellerPayout?: SortOrder
   }
 
   export type OrderMinOrderByAggregateInput = {
@@ -29372,10 +28474,22 @@ export namespace Prisma {
     isCouponUsed?: SortOrder
     notes?: SortOrder
     trackingNumber?: SortOrder
+    subtotal?: SortOrder
+    shippingFee?: SortOrder
+    taxAmount?: SortOrder
+    commissionRate?: SortOrder
+    platformFee?: SortOrder
+    sellerPayout?: SortOrder
   }
 
   export type OrderSumOrderByAggregateInput = {
     total?: SortOrder
+    subtotal?: SortOrder
+    shippingFee?: SortOrder
+    taxAmount?: SortOrder
+    commissionRate?: SortOrder
+    platformFee?: SortOrder
+    sellerPayout?: SortOrder
   }
 
   export type EnumOrderStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -29455,17 +28569,6 @@ export namespace Prisma {
     not?: NestedEnumRefundStatusFilter<$PrismaModel> | $Enums.RefundStatus
   }
 
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type RefundCountOrderByAggregateInput = {
     id?: SortOrder
     orderId?: SortOrder
@@ -29515,22 +28618,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRefundStatusFilter<$PrismaModel>
     _max?: NestedEnumRefundStatusFilter<$PrismaModel>
-  }
-
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type RatingUserIdProductIdOrderIdCompoundUniqueInput = {
@@ -29989,6 +29076,11 @@ export namespace Prisma {
     productId?: SortOrder
     storeId?: SortOrder
     status?: SortOrder
+    durationDays?: SortOrder
+    pricePerDay?: SortOrder
+    totalPrice?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
     requestedAt?: SortOrder
     approvedAt?: SortOrder
     adminNote?: SortOrder
@@ -29996,11 +29088,22 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type AdRequestAvgOrderByAggregateInput = {
+    durationDays?: SortOrder
+    pricePerDay?: SortOrder
+    totalPrice?: SortOrder
+  }
+
   export type AdRequestMaxOrderByAggregateInput = {
     id?: SortOrder
     productId?: SortOrder
     storeId?: SortOrder
     status?: SortOrder
+    durationDays?: SortOrder
+    pricePerDay?: SortOrder
+    totalPrice?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
     requestedAt?: SortOrder
     approvedAt?: SortOrder
     adminNote?: SortOrder
@@ -30013,11 +29116,22 @@ export namespace Prisma {
     productId?: SortOrder
     storeId?: SortOrder
     status?: SortOrder
+    durationDays?: SortOrder
+    pricePerDay?: SortOrder
+    totalPrice?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
     requestedAt?: SortOrder
     approvedAt?: SortOrder
     adminNote?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type AdRequestSumOrderByAggregateInput = {
+    durationDays?: SortOrder
+    pricePerDay?: SortOrder
+    totalPrice?: SortOrder
   }
 
   export type EnumAdRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -30028,62 +29142,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAdRequestStatusFilter<$PrismaModel>
     _max?: NestedEnumAdRequestStatusFilter<$PrismaModel>
-  }
-
-  export type MiddleBannerCountOrderByAggregateInput = {
-    id?: SortOrder
-    title?: SortOrder
-    subtitle?: SortOrder
-    imageUrl?: SortOrder
-    linkUrl?: SortOrder
-    ctaText?: SortOrder
-    position?: SortOrder
-    isActive?: SortOrder
-    countryCode?: SortOrder
-    startsAt?: SortOrder
-    endsAt?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type MiddleBannerAvgOrderByAggregateInput = {
-    position?: SortOrder
-  }
-
-  export type MiddleBannerMaxOrderByAggregateInput = {
-    id?: SortOrder
-    title?: SortOrder
-    subtitle?: SortOrder
-    imageUrl?: SortOrder
-    linkUrl?: SortOrder
-    ctaText?: SortOrder
-    position?: SortOrder
-    isActive?: SortOrder
-    countryCode?: SortOrder
-    startsAt?: SortOrder
-    endsAt?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type MiddleBannerMinOrderByAggregateInput = {
-    id?: SortOrder
-    title?: SortOrder
-    subtitle?: SortOrder
-    imageUrl?: SortOrder
-    linkUrl?: SortOrder
-    ctaText?: SortOrder
-    position?: SortOrder
-    isActive?: SortOrder
-    countryCode?: SortOrder
-    startsAt?: SortOrder
-    endsAt?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type MiddleBannerSumOrderByAggregateInput = {
-    position?: SortOrder
   }
 
   export type RatingCreateNestedManyWithoutUserInput = {
@@ -30484,6 +29542,14 @@ export namespace Prisma {
 
   export type EnumProductOriginFieldUpdateOperationsInput = {
     set?: $Enums.ProductOrigin
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type StoreUpdateOneRequiredWithoutProductNestedInput = {
@@ -30922,14 +29988,6 @@ export namespace Prisma {
 
   export type EnumRefundStatusFieldUpdateOperationsInput = {
     set?: $Enums.RefundStatus
-  }
-
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type OrderUpdateOneRequiredWithoutRefundNestedInput = {
@@ -31594,6 +30652,17 @@ export namespace Prisma {
     not?: NestedEnumProductOriginFilter<$PrismaModel> | $Enums.ProductOrigin
   }
 
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -31650,6 +30719,22 @@ export namespace Prisma {
     _max?: NestedEnumProductOriginFilter<$PrismaModel>
   }
 
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -31664,17 +30749,6 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedEnumVariantGroupTypeFilter<$PrismaModel = never> = {
@@ -31743,22 +30817,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRefundStatusFilter<$PrismaModel>
     _max?: NestedEnumRefundStatusFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumDiscountTypeFilter<$PrismaModel = never> = {
@@ -31990,6 +31048,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     orderItems?: OrderItemCreateNestedManyWithoutOrderInput
     storeRating?: StoreRatingCreateNestedOneWithoutOrderInput
     store: StoreCreateNestedOneWithoutOrderInput
@@ -32011,6 +31075,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     storeRating?: StoreRatingUncheckedCreateNestedOneWithoutOrderInput
     refund?: RefundUncheckedCreateNestedOneWithoutOrderInput
@@ -32243,6 +31313,12 @@ export namespace Prisma {
     coupon?: JsonFilter<"Order">
     notes?: StringNullableFilter<"Order"> | string | null
     trackingNumber?: StringNullableFilter<"Order"> | string | null
+    subtotal?: FloatFilter<"Order"> | number
+    shippingFee?: FloatFilter<"Order"> | number
+    taxAmount?: FloatFilter<"Order"> | number
+    commissionRate?: FloatFilter<"Order"> | number
+    platformFee?: FloatFilter<"Order"> | number
+    sellerPayout?: FloatFilter<"Order"> | number
   }
 
   export type NotificationUpsertWithWhereUniqueWithoutUserInput = {
@@ -32594,6 +31670,11 @@ export namespace Prisma {
   export type AdRequestCreateWithoutProductInput = {
     id?: string
     status?: $Enums.AdRequestStatus
+    durationDays?: number
+    pricePerDay?: number
+    totalPrice?: number
+    startsAt?: Date | string | null
+    endsAt?: Date | string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
     adminNote?: string | null
@@ -32606,6 +31687,11 @@ export namespace Prisma {
     id?: string
     storeId: string
     status?: $Enums.AdRequestStatus
+    durationDays?: number
+    pricePerDay?: number
+    totalPrice?: number
+    startsAt?: Date | string | null
+    endsAt?: Date | string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
     adminNote?: string | null
@@ -32843,6 +31929,11 @@ export namespace Prisma {
     productId?: StringFilter<"AdRequest"> | string
     storeId?: StringFilter<"AdRequest"> | string
     status?: EnumAdRequestStatusFilter<"AdRequest"> | $Enums.AdRequestStatus
+    durationDays?: IntFilter<"AdRequest"> | number
+    pricePerDay?: FloatFilter<"AdRequest"> | number
+    totalPrice?: FloatFilter<"AdRequest"> | number
+    startsAt?: DateTimeNullableFilter<"AdRequest"> | Date | string | null
+    endsAt?: DateTimeNullableFilter<"AdRequest"> | Date | string | null
     requestedAt?: DateTimeFilter<"AdRequest"> | Date | string
     approvedAt?: DateTimeNullableFilter<"AdRequest"> | Date | string | null
     adminNote?: StringNullableFilter<"AdRequest"> | string | null
@@ -32875,6 +31966,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutProductInput
@@ -32909,6 +32004,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32959,6 +32058,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
@@ -32993,6 +32096,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33027,6 +32134,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutProductInput
@@ -33061,6 +32172,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -33143,6 +32258,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
@@ -33177,6 +32296,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33773,6 +32896,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     storeRating?: StoreRatingCreateNestedOneWithoutOrderInput
     user: UserCreateNestedOneWithoutBuyerOrdersInput
     store: StoreCreateNestedOneWithoutOrderInput
@@ -33795,6 +32924,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     storeRating?: StoreRatingUncheckedCreateNestedOneWithoutOrderInput
     refund?: RefundUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -33829,6 +32964,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutProductInput
@@ -33863,6 +33002,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -33900,6 +33043,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     storeRating?: StoreRatingUpdateOneWithoutOrderNestedInput
     user?: UserUpdateOneRequiredWithoutBuyerOrdersNestedInput
     store?: StoreUpdateOneRequiredWithoutOrderNestedInput
@@ -33922,6 +33071,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     storeRating?: StoreRatingUncheckedUpdateOneWithoutOrderNestedInput
     refund?: RefundUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -33962,6 +33117,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
@@ -33996,6 +33155,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34017,6 +33180,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     orderItems?: OrderItemCreateNestedManyWithoutOrderInput
     storeRating?: StoreRatingCreateNestedOneWithoutOrderInput
     user: UserCreateNestedOneWithoutBuyerOrdersInput
@@ -34039,6 +33208,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     storeRating?: StoreRatingUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -34071,6 +33246,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     orderItems?: OrderItemUpdateManyWithoutOrderNestedInput
     storeRating?: StoreRatingUpdateOneWithoutOrderNestedInput
     user?: UserUpdateOneRequiredWithoutBuyerOrdersNestedInput
@@ -34093,6 +33274,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     orderItems?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     storeRating?: StoreRatingUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -34159,6 +33346,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutProductInput
@@ -34193,6 +33384,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -34286,6 +33481,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
@@ -34320,6 +33519,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34341,6 +33544,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     orderItems?: OrderItemCreateNestedManyWithoutOrderInput
     storeRating?: StoreRatingCreateNestedOneWithoutOrderInput
     user: UserCreateNestedOneWithoutBuyerOrdersInput
@@ -34362,6 +33571,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     storeRating?: StoreRatingUncheckedCreateNestedOneWithoutOrderInput
     refund?: RefundUncheckedCreateNestedOneWithoutOrderInput
@@ -34682,6 +33897,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
@@ -34716,6 +33935,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -34747,6 +33970,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     orderItems?: OrderItemCreateNestedManyWithoutOrderInput
     storeRating?: StoreRatingCreateNestedOneWithoutOrderInput
     user: UserCreateNestedOneWithoutBuyerOrdersInput
@@ -34768,6 +33997,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     storeRating?: StoreRatingUncheckedCreateNestedOneWithoutOrderInput
     refund?: RefundUncheckedCreateNestedOneWithoutOrderInput
@@ -34921,6 +34156,11 @@ export namespace Prisma {
   export type AdRequestCreateWithoutStoreInput = {
     id?: string
     status?: $Enums.AdRequestStatus
+    durationDays?: number
+    pricePerDay?: number
+    totalPrice?: number
+    startsAt?: Date | string | null
+    endsAt?: Date | string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
     adminNote?: string | null
@@ -34933,6 +34173,11 @@ export namespace Prisma {
     id?: string
     productId: string
     status?: $Enums.AdRequestStatus
+    durationDays?: number
+    pricePerDay?: number
+    totalPrice?: number
+    startsAt?: Date | string | null
+    endsAt?: Date | string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
     adminNote?: string | null
@@ -34994,6 +34239,10 @@ export namespace Prisma {
     isDigital?: BoolFilter<"Product"> | boolean
     downloadUrl?: StringNullableFilter<"Product"> | string | null
     isWholesale?: BoolFilter<"Product"> | boolean
+    useDefaultShipping?: BoolFilter<"Product"> | boolean
+    customLocalFee?: FloatNullableFilter<"Product"> | number | null
+    customNationwideFee?: FloatNullableFilter<"Product"> | number | null
+    customAbroadFee?: FloatNullableFilter<"Product"> | number | null
     storeId?: StringFilter<"Product"> | string
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
@@ -35255,6 +34504,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     orderItems?: OrderItemCreateNestedManyWithoutOrderInput
     user: UserCreateNestedOneWithoutBuyerOrdersInput
     store: StoreCreateNestedOneWithoutOrderInput
@@ -35277,6 +34532,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     refund?: RefundUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -35441,6 +34702,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     orderItems?: OrderItemUpdateManyWithoutOrderNestedInput
     user?: UserUpdateOneRequiredWithoutBuyerOrdersNestedInput
     store?: StoreUpdateOneRequiredWithoutOrderNestedInput
@@ -35463,6 +34730,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     orderItems?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     refund?: RefundUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -35719,6 +34992,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutProductInput
@@ -35753,6 +35030,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     storeId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -35892,6 +35173,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutProductNestedInput
@@ -35926,6 +35211,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36105,6 +35394,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
   }
 
   export type NotificationCreateManyUserInput = {
@@ -36337,6 +35632,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     orderItems?: OrderItemUpdateManyWithoutOrderNestedInput
     storeRating?: StoreRatingUpdateOneWithoutOrderNestedInput
     store?: StoreUpdateOneRequiredWithoutOrderNestedInput
@@ -36358,6 +35659,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     orderItems?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     storeRating?: StoreRatingUncheckedUpdateOneWithoutOrderNestedInput
     refund?: RefundUncheckedUpdateOneWithoutOrderNestedInput
@@ -36377,6 +35684,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
   }
 
   export type NotificationUpdateWithoutUserInput = {
@@ -36483,6 +35796,11 @@ export namespace Prisma {
     id?: string
     storeId: string
     status?: $Enums.AdRequestStatus
+    durationDays?: number
+    pricePerDay?: number
+    totalPrice?: number
+    startsAt?: Date | string | null
+    endsAt?: Date | string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
     adminNote?: string | null
@@ -36606,6 +35924,11 @@ export namespace Prisma {
   export type AdRequestUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    durationDays?: IntFieldUpdateOperationsInput | number
+    pricePerDay?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -36618,6 +35941,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     storeId?: StringFieldUpdateOperationsInput | string
     status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    durationDays?: IntFieldUpdateOperationsInput | number
+    pricePerDay?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -36629,6 +35957,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     storeId?: StringFieldUpdateOperationsInput | string
     status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    durationDays?: IntFieldUpdateOperationsInput | number
+    pricePerDay?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -36730,6 +36063,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
   }
 
   export type OrderUpdateWithoutAddressInput = {
@@ -36744,6 +36083,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     orderItems?: OrderItemUpdateManyWithoutOrderNestedInput
     storeRating?: StoreRatingUpdateOneWithoutOrderNestedInput
     user?: UserUpdateOneRequiredWithoutBuyerOrdersNestedInput
@@ -36765,6 +36110,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     orderItems?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     storeRating?: StoreRatingUncheckedUpdateOneWithoutOrderNestedInput
     refund?: RefundUncheckedUpdateOneWithoutOrderNestedInput
@@ -36784,6 +36135,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
   }
 
   export type ProductCreateManyStoreInput = {
@@ -36811,6 +36168,10 @@ export namespace Prisma {
     isDigital?: boolean
     downloadUrl?: string | null
     isWholesale?: boolean
+    useDefaultShipping?: boolean
+    customLocalFee?: number | null
+    customNationwideFee?: number | null
+    customAbroadFee?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -36829,6 +36190,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: string | null
     trackingNumber?: string | null
+    subtotal?: number
+    shippingFee?: number
+    taxAmount?: number
+    commissionRate?: number
+    platformFee?: number
+    sellerPayout?: number
   }
 
   export type StoreRatingCreateManyStoreInput = {
@@ -36869,6 +36236,11 @@ export namespace Prisma {
     id?: string
     productId: string
     status?: $Enums.AdRequestStatus
+    durationDays?: number
+    pricePerDay?: number
+    totalPrice?: number
+    startsAt?: Date | string | null
+    endsAt?: Date | string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
     adminNote?: string | null
@@ -36901,6 +36273,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
@@ -36935,6 +36311,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -36969,6 +36349,10 @@ export namespace Prisma {
     isDigital?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isWholesale?: BoolFieldUpdateOperationsInput | boolean
+    useDefaultShipping?: BoolFieldUpdateOperationsInput | boolean
+    customLocalFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customNationwideFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    customAbroadFee?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -36985,6 +36369,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     orderItems?: OrderItemUpdateManyWithoutOrderNestedInput
     storeRating?: StoreRatingUpdateOneWithoutOrderNestedInput
     user?: UserUpdateOneRequiredWithoutBuyerOrdersNestedInput
@@ -37006,6 +36396,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
     orderItems?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     storeRating?: StoreRatingUncheckedUpdateOneWithoutOrderNestedInput
     refund?: RefundUncheckedUpdateOneWithoutOrderNestedInput
@@ -37025,6 +36421,12 @@ export namespace Prisma {
     coupon?: JsonNullValueInput | InputJsonValue
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    commissionRate?: FloatFieldUpdateOperationsInput | number
+    platformFee?: FloatFieldUpdateOperationsInput | number
+    sellerPayout?: FloatFieldUpdateOperationsInput | number
   }
 
   export type StoreRatingUpdateWithoutStoreInput = {
@@ -37132,6 +36534,11 @@ export namespace Prisma {
   export type AdRequestUpdateWithoutStoreInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    durationDays?: IntFieldUpdateOperationsInput | number
+    pricePerDay?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -37144,6 +36551,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    durationDays?: IntFieldUpdateOperationsInput | number
+    pricePerDay?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -37155,6 +36567,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     status?: EnumAdRequestStatusFieldUpdateOperationsInput | $Enums.AdRequestStatus
+    durationDays?: IntFieldUpdateOperationsInput | number
+    pricePerDay?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null

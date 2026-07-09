@@ -80,6 +80,10 @@ export default function StoreAddProduct() {
         deliveryWithinState: true,
         deliveryNationwide: true,
         deliveryInternational: false,
+        useDefaultShipping: true,
+        customLocalFee: "",
+        customNationwideFee: "",
+        customAbroadFee: "",
     })
 
     const execCommand = (command, value = null) => {
@@ -272,7 +276,7 @@ export default function StoreAddProduct() {
             }
 
             // Reset form
-            setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", manufacturer: "", material: "", guaranteePeriod: "", acceptCod: true, deliveryWithinState: true, deliveryNationwide: true, deliveryInternational: false })
+            setProductInfo({ name: "", description: "", mrp: "", price: "", category: "", sku: "", quantity: "", scheduledAt: "", tags: [], origin: "LOCAL", madeIn: "", manufacturer: "", material: "", guaranteePeriod: "", acceptCod: true, deliveryWithinState: true, deliveryNationwide: true, deliveryInternational: false, useDefaultShipping: true, customLocalFee: "", customNationwideFee: "", customAbroadFee: "" })
             setImages([]); setAiUsed(false); setVariantGroups([]); setNewOptionInputs({})
             setIsWholesale(false); setWholesaleTiers([]); setNewTierInput({ minQty: "", maxQty: "", price: "" })
         } catch (error) {
@@ -520,6 +524,59 @@ export default function StoreAddProduct() {
                         </div>
                     </label>
                 )}
+
+                {/* Custom shipping fee override */}
+                <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+                    <label className="flex items-start gap-3 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={productInfo.useDefaultShipping}
+                            onChange={e => setProductInfo(p => ({ ...p, useDefaultShipping: e.target.checked }))}
+                            className="mt-0.5 accent-green-600"
+                        />
+                        <div>
+                            <span className="text-sm font-medium text-slate-800 dark:text-slate-100">Use Default Shipping Fee</span>
+                            <p className="text-xs text-slate-500 dark:text-slate-300 mt-1">
+                                Uses your store&apos;s flat shipping rate. Turn off to set a custom fee for this product only — useful for items that are heavy, oversized, or liable to import duties.
+                            </p>
+                        </div>
+                    </label>
+
+                    {!productInfo.useDefaultShipping && (
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2 pl-7">
+                            {productInfo.origin === 'LOCAL' && (
+                                <>
+                                    <div>
+                                        <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Local delivery fee ({currency})</label>
+                                        <input type="number" min="0" step="100" value={productInfo.customLocalFee}
+                                            onChange={e => setProductInfo(p => ({ ...p, customLocalFee: e.target.value }))}
+                                            placeholder="e.g. 12000"
+                                            className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Nationwide delivery fee ({currency})</label>
+                                        <input type="number" min="0" step="100" value={productInfo.customNationwideFee}
+                                            onChange={e => setProductInfo(p => ({ ...p, customNationwideFee: e.target.value }))}
+                                            placeholder="e.g. 18000"
+                                            className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
+                                    </div>
+                                </>
+                            )}
+                            {productInfo.origin === 'ABROAD' && (
+                                <div>
+                                    <label className="text-xs text-slate-500 dark:text-slate-300 mb-1 block">Abroad delivery fee ({currency})</label>
+                                    <input type="number" min="0" step="100" value={productInfo.customAbroadFee}
+                                        onChange={e => setProductInfo(p => ({ ...p, customAbroadFee: e.target.value }))}
+                                        placeholder="e.g. 30000"
+                                        className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm" />
+                                </div>
+                            )}
+                            <p className="sm:col-span-2 text-xs text-slate-400">
+                                Leave a field blank to fall back to your store&apos;s default for that delivery method. If an order mixes this product with others from your store, buyers are charged whichever fee is higher.
+                            </p>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="mb-6">

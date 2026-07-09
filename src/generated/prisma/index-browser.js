@@ -168,6 +168,10 @@ exports.Prisma.ProductScalarFieldEnum = {
   isDigital: 'isDigital',
   downloadUrl: 'downloadUrl',
   isWholesale: 'isWholesale',
+  useDefaultShipping: 'useDefaultShipping',
+  customLocalFee: 'customLocalFee',
+  customNationwideFee: 'customNationwideFee',
+  customAbroadFee: 'customAbroadFee',
   storeId: 'storeId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -217,7 +221,13 @@ exports.Prisma.OrderScalarFieldEnum = {
   isCouponUsed: 'isCouponUsed',
   coupon: 'coupon',
   notes: 'notes',
-  trackingNumber: 'trackingNumber'
+  trackingNumber: 'trackingNumber',
+  subtotal: 'subtotal',
+  shippingFee: 'shippingFee',
+  taxAmount: 'taxAmount',
+  commissionRate: 'commissionRate',
+  platformFee: 'platformFee',
+  sellerPayout: 'sellerPayout'
 };
 
 exports.Prisma.OrderItemScalarFieldEnum = {
@@ -353,25 +363,14 @@ exports.Prisma.AdRequestScalarFieldEnum = {
   productId: 'productId',
   storeId: 'storeId',
   status: 'status',
+  durationDays: 'durationDays',
+  pricePerDay: 'pricePerDay',
+  totalPrice: 'totalPrice',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
   requestedAt: 'requestedAt',
   approvedAt: 'approvedAt',
   adminNote: 'adminNote',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.MiddleBannerScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  subtitle: 'subtitle',
-  imageUrl: 'imageUrl',
-  linkUrl: 'linkUrl',
-  ctaText: 'ctaText',
-  position: 'position',
-  isActive: 'isActive',
-  countryCode: 'countryCode',
-  startsAt: 'startsAt',
-  endsAt: 'endsAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -466,8 +465,7 @@ exports.Prisma.ModelName = {
   StoreRating: 'StoreRating',
   Payout: 'Payout',
   PlatformConfig: 'PlatformConfig',
-  AdRequest: 'AdRequest',
-  MiddleBanner: 'MiddleBanner'
+  AdRequest: 'AdRequest'
 };
 
 /**

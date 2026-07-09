@@ -4,7 +4,7 @@ import OrdersAreaChart from "@/components/OrdersAreaChart"
 import MadeInPieChart from "@/components/MadeInPieChart"
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
-import { CircleDollarSignIcon, ShoppingBasketIcon, StoreIcon, TagsIcon, UsersIcon, XCircleIcon, CheckCircleIcon, BanknoteIcon, ShieldCheckIcon, ChevronRightIcon, ArrowUpRightIcon, CheckIcon, XIcon, ClockIcon, SlidersHorizontalIcon } from "lucide-react"
+import { CircleDollarSignIcon, ShoppingBasketIcon, StoreIcon, TagsIcon, UsersIcon, XCircleIcon, CheckCircleIcon, BanknoteIcon, ShieldCheckIcon, ChevronRightIcon, ArrowUpRightIcon, CheckIcon, XIcon, ClockIcon, SlidersHorizontalIcon, PercentIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import Link from "next/link"
@@ -15,7 +15,7 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true)
     const [filters, setFilters] = useState({ days: 7, paid: 'all' }) // days: 7|30|0(all) ; paid: all|paid|unpaid
     const [data, setData] = useState({
-        products: 0, revenue: 0, paidRevenue: 0, unpaidRevenue: 0,
+        products: 0, revenue: 0, paidRevenue: 0, unpaidRevenue: 0, totalCommissionEarned: 0,
         orders: 0, stores: 0, users: 0, cancelledOrders: 0, allOrders: [],
         recentOrders: [],
         recentStores: [],
@@ -100,6 +100,7 @@ export default function AdminDashboard() {
             cards: [
                 { title: 'Total Revenue', value: `${currency}${Number(data.revenue).toLocaleString()}`, icon: CircleDollarSignIcon, sub: `${currency}${Number(data.paidRevenue).toLocaleString()} paid`, color: 'text-emerald-700 bg-emerald-50 dark:bg-emerald-950/30', accent: 'border-l-emerald-500', href: '/admin/payouts' },
                 { title: 'Unpaid Revenue', value: `${currency}${Number(data.unpaidRevenue).toLocaleString()}`, icon: BanknoteIcon, color: 'text-amber-700 bg-amber-50 dark:bg-amber-950/30', accent: 'border-l-amber-500', href: '/admin/payouts' },
+                { title: 'Platform Commission Earned', value: `${currency}${Number(data.totalCommissionEarned).toLocaleString()}`, icon: PercentIcon, sub: 'On paid orders', color: 'text-fuchsia-700 bg-fuchsia-50 dark:bg-fuchsia-950/30', accent: 'border-l-fuchsia-500', href: '/admin/settings' },
             ],
         },
         {

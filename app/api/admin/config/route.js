@@ -10,6 +10,9 @@ const VALID_KEYS = [
   "shipping_abroad_fee",      // abroad product shipping (non-Plus members)
   "shipping_free_above",      // order total above which local shipping is free
   "tax_rate",                 // VAT/Tax % applied at checkout (0 = disabled)
+  "ad_price_per_day",         // featured-slot price, charged per day requested
+  "ad_min_duration_days",     // shortest ad a seller can request
+  "ad_max_duration_days",     // longest ad a seller can request
 ];
 
 // GET /api/admin/config — read all platform config values
@@ -31,6 +34,9 @@ export async function GET(request) {
       shipping_abroad_fee: 15000,
       shipping_free_above: 0,
       tax_rate: 0,
+      ad_price_per_day: 500,
+      ad_min_duration_days: 3,
+      ad_max_duration_days: 30,
     };
     return NextResponse.json({ config: { ...defaults, ...config } });
   } catch (error) {
@@ -49,6 +55,24 @@ export async function POST(request) {
 
     const body = await request.json();
     const updates = [];
+
+    // If both duration bounds are being set (or one is being set against the
+    // other's existing value), make sure min <= max.
+    if (body.ad_min_duration_days !== undefined || body.ad_max_duration_days !== undefined) {
+      const existing = await prisma.platformConfig.findMany({
+        where: { key: { in: ["ad_min_duration_days", "ad_max_duration_days"] } },
+      });
+      const existingMap = Object.fromEntries(existing.map((r) => [r.key, parseFloat(r.value)]));
+      const minVal = body.ad_min_duration_days !== undefined
+        ? parseFloat(body.ad_min_duration_days)
+        : existingMap.ad_min_duration_days ?? 3;
+      const maxVal = body.ad_max_duration_days !== undefined
+        ? parseFloat(body.ad_max_duration_days)
+        : existingMap.ad_max_duration_days ?? 30;
+      if (!isNaN(minVal) && !isNaN(maxVal) && minVal > maxVal) {
+        return NextResponse.json({ error: "Minimum ad duration can't be greater than maximum ad duration." }, { status: 400 });
+      }
+    }
 
     for (const key of VALID_KEYS) {
       if (body[key] !== undefined) {

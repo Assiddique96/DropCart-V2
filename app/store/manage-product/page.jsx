@@ -56,6 +56,7 @@ export default function StoreManageProducts() {
     const [deletingId, setDeletingId] = useState(null)
     const [confirmDeleteId, setConfirmDeleteId] = useState(null)
     const [requestingAd, setRequestingAd] = useState(null)
+    const [adConfig, setAdConfig] = useState(null) // { pricePerDay, minDurationDays, maxDurationDays }
 
     const [cloning, setCloning] = useState(null)
     const [importing, setImporting] = useState(false)
@@ -217,6 +218,53 @@ export default function StoreManageProducts() {
                         <span className="text-slate-400 font-normal pl-6">If unchecked, buyers must pay online.</span>
                     </label>
                 )}
+
+                <div className="flex flex-col gap-2 text-xs sm:col-span-2 lg:col-span-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3">
+                    <span className="flex items-center gap-2 cursor-pointer select-none font-medium text-slate-700 dark:text-slate-200">
+                        <input type="checkbox" checked={!!editForm.useDefaultShipping}
+                            onChange={e => setEditForm({ ...editForm, useDefaultShipping: e.target.checked })}
+                            className="accent-green-600" />
+                        Use Default Shipping Fee
+                    </span>
+                    <span className="text-slate-400 font-normal pl-6">
+                        Uses your store&apos;s flat rate. Turn off to set a custom fee for this product — useful for heavy, oversized, or duty-liable items.
+                    </span>
+                    {!editForm.useDefaultShipping && (
+                        <div className="grid gap-3 sm:grid-cols-2 pl-6 mt-1">
+                            {editForm.origin === 'LOCAL' && (
+                                <>
+                                    <label className="flex flex-col gap-1">
+                                        Local delivery fee
+                                        <input type="number" min="0" step="100" value={editForm.customLocalFee ?? ''}
+                                            onChange={e => setEditForm({ ...editForm, customLocalFee: e.target.value })}
+                                            placeholder="e.g. 12000"
+                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                    </label>
+                                    <label className="flex flex-col gap-1">
+                                        Nationwide delivery fee
+                                        <input type="number" min="0" step="100" value={editForm.customNationwideFee ?? ''}
+                                            onChange={e => setEditForm({ ...editForm, customNationwideFee: e.target.value })}
+                                            placeholder="e.g. 18000"
+                                            className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                    </label>
+                                </>
+                            )}
+                            {editForm.origin === 'ABROAD' && (
+                                <label className="flex flex-col gap-1">
+                                    Abroad delivery fee
+                                    <input type="number" min="0" step="100" value={editForm.customAbroadFee ?? ''}
+                                        onChange={e => setEditForm({ ...editForm, customAbroadFee: e.target.value })}
+                                        placeholder="e.g. 30000"
+                                        className="border border-slate-200 dark:border-slate-700 rounded p-2 outline-none text-sm bg-white dark:bg-slate-900" />
+                                </label>
+                            )}
+                            <p className="sm:col-span-2 text-slate-400">
+                                Leave blank to fall back to the store default for that method. If mixed with other products in one order, buyers are charged whichever fee is higher.
+                            </p>
+                        </div>
+                    )}
+                </div>
+
                 <label className="flex flex-col gap-1 text-xs">
                     SKU
                     <input type="text" value={editForm.sku ?? ''}
@@ -510,9 +558,30 @@ export default function StoreManageProducts() {
         setCloning(null)
     }
     const requestAd = async (productId) => {
-        setRequestingAd(productId)
         try {
-            await axios.post(`/api/products/${productId}/request-ad`, {}, {
+            let config = adConfig
+            if (!config) {
+                const { data } = await axios.get("/api/ads/config")
+                config = data
+                setAdConfig(data)
+            }
+
+            const input = prompt(
+                `Feature this product on the home page for ${currency}${config.pricePerDay.toLocaleString()}/day.\n` +
+                `Enter number of days (${config.minDurationDays}–${config.maxDurationDays}):`,
+                String(config.minDurationDays)
+            )
+            if (input === null) return // cancelled
+
+            const durationDays = Math.min(
+                Math.max(parseInt(input, 10) || config.minDurationDays, config.minDurationDays),
+                config.maxDurationDays
+            )
+            const totalPrice = durationDays * config.pricePerDay
+            if (!confirm(`Request a ${durationDays}-day featured ad for ${currency}${totalPrice.toLocaleString()} total?`)) return
+
+            setRequestingAd(productId)
+            await axios.post(`/api/products/${productId}/request-ad`, { durationDays }, {
                 headers: await getStoreAuthHeaders(getToken)
             })
             toast.success("Ad request submitted successfully!")
@@ -680,6 +749,10 @@ export default function StoreManageProducts() {
             deliveryNationwide: product.deliveryNationwide !== false,
             deliveryInternational: product.deliveryInternational === true,
             acceptCod: (product.origin ?? 'LOCAL') === 'ABROAD' ? false : product.acceptCod !== false,
+            useDefaultShipping: product.useDefaultShipping !== false,
+            customLocalFee: product.customLocalFee ?? '',
+            customNationwideFee: product.customNationwideFee ?? '',
+            customAbroadFee: product.customAbroadFee ?? '',
         })
         const basePrice = parsePrice(product.price)
         setVariantGroups(Array.isArray(product.variantGroups) ? product.variantGroups.map(group => ({
@@ -777,6 +850,10 @@ export default function StoreManageProducts() {
             formData.append("deliveryWithinState", editForm.deliveryWithinState ? "true" : "false")
             formData.append("deliveryNationwide", editForm.deliveryNationwide ? "true" : "false")
             formData.append("deliveryInternational", editForm.deliveryInternational ? "true" : "false")
+            formData.append("useDefaultShipping", editForm.useDefaultShipping ? "true" : "false")
+            formData.append("customLocalFee", editForm.customLocalFee ?? "")
+            formData.append("customNationwideFee", editForm.customNationwideFee ?? "")
+            formData.append("customAbroadFee", editForm.customAbroadFee ?? "")
             formData.append("existingImages", JSON.stringify(editImageUrls))
             newImages.forEach(img => formData.append("images", img))
             formData.append("isWholesale", editIsWholesale ? "true" : "false")

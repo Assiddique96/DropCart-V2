@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import Loading from "@/components/Loading";
 import { useAuth, useUser } from "@clerk/nextjs";
 import axios from "axios";
+import { ROOT_DOMAIN } from "@/lib/subdomain";
 
 export default function CreateStore() {
   const { user } = useUser();
@@ -211,6 +212,15 @@ export default function CreateStore() {
             placeholder="Enter your store username"
             className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 outline-slate-400 dark:outline-slate-500 w-full max-w-lg p-2 rounded"
           />
+          {storeInfo.username.trim() && (
+            <p className="text-xs text-slate-500 dark:text-slate-400 -mt-4">
+              Your storefront will be live at{" "}
+              <span className="font-medium text-slate-700 dark:text-slate-200">
+                {storeInfo.username.trim().toLowerCase().replace(/[^a-z0-9-]/g, "")}.{ROOT_DOMAIN}
+              </span>{" "}
+              — choose carefully, this can&apos;t be changed once your store is approved.
+            </p>
+          )}
 
           <p className="text-slate-700 dark:text-slate-200">Business Name</p>
           <input
