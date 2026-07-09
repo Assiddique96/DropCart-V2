@@ -15,6 +15,7 @@ import { useAuth, useUser } from "@clerk/nextjs";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { buildStoreSubdomainUrl } from "@/lib/subdomain";
 
 const StarRow = ({ count, total, label }) => (
   <div className="flex items-center gap-2 text-xs">
@@ -546,7 +547,7 @@ export default function ProductDescription({ product }) {
         </div>
         <div className="mt-5">
           <Link
-            href={`/shop/${product.store?.username || "#"}`}
+            href={product?.store?.username ? buildStoreSubdomainUrl(product.store.username, "/") : "/shop"}
             className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition"
           >
             View store <ArrowRight size={16} />

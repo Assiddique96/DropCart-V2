@@ -12,6 +12,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 const outfit = Outfit({ subsets: ["latin"], weight: ["400", "500", "600"] });
 
 export const metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://shpinx.com"),
   title: {
     default: "Shpinx — Nigeria's Multi-Vendor Marketplace",
     template: "%s — Shpinx",
