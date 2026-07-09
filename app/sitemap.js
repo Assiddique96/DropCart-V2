@@ -1,6 +1,6 @@
 import prisma from "@/src/db";
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://dropcart.ng";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://shpinx.com";
 
 export default async function sitemap() {
   const staticRoutes = [

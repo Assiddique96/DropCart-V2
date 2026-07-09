@@ -1,5 +1,5 @@
 export default function robots() {
-  const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://dropcart.ng";
+  const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://shpinx.com";
   return {
     rules: [
       {

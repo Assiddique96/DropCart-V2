@@ -59,7 +59,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   // Whether we're currently rendering on a store's subdomain (e.g.
-  // adaelectronics.dropcart.ng). Starts false to match SSR output, then
+  // adaelectronics.shpinx.com). Starts false to match SSR output, then
   // resolves after mount — avoids a hydration mismatch on link hrefs.
   const [onStoreSubdomain, setOnStoreSubdomain] = useState(false);
 
