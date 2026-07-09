@@ -8,6 +8,7 @@ import { sanitizeString } from "@/lib/sanitize";
 import { inngest } from "@/inngest/client";
 import { isOrderConsideredPaid } from "@/lib/orderPayment";
 import { createNotifications } from "@/lib/serverNotifications";
+import { formatOrderReference } from "@/lib/orderReference";
 
 // create order
 export async function POST(request) {
@@ -284,6 +285,7 @@ export async function POST(request) {
         }
         ordersByStore.get(storeId).push({
             ...item,
+            productName: product.name,
             price: effectivePrice,
             origin: product.origin ?? 'LOCAL',
             acceptCod: product.acceptCod !== false,
@@ -585,16 +587,18 @@ export async function POST(request) {
 
         if (buyer) {
             try {
+                const orderReferenceCode = formatOrderReference(orderIds[0] ?? orderIds.join(', '));
                 await inngest.send({
                     name: "app/order.confirmed",
                     data: {
-                        orderId: orderIds.join(', '),
+                        orderId: orderReferenceCode,
+                        orderIds: orderIds,
                         userEmail: buyer.email,
                         userName: buyer.name,
                         orderTotal: fullAmount,
                         currency,
                         items: Array.from(ordersByStore.values()).flat().map(i => ({
-                            name: i.name || i.id,
+                            name: i.productName || i.name || i.id,
                             quantity: i.quantity,
                             price: i.price,
                         })),
@@ -612,7 +616,7 @@ export async function POST(request) {
                     data: {
                         storeEmail: s.storeEmail,
                         storeName: s.storeName,
-                        orderId: s.orderId,
+                        orderId: formatOrderReference(s.orderId),
                         orderTotal: s.orderTotal,
                         currency,
                     }

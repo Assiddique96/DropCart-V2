@@ -4,6 +4,7 @@ import prisma from "@/src/db";
 import authSeller from "@/middlewares/authSeller";
 import { defaultLimiter } from "@/lib/rateLimit";
 import { createNotification } from "@/lib/serverNotifications";
+import { formatOrderReference } from "@/lib/orderReference";
 
 /**
  * POST /api/store/tracking
@@ -92,7 +93,7 @@ export async function POST(request) {
         if (buyer && store) {
           await inngest.send({
             name: "app/order.shipped",
-            data: { orderId, userEmail: buyer.email, userName: buyer.name, storeName: store.name },
+            data: { orderId: formatOrderReference(orderId), userEmail: buyer.email, userName: buyer.name, storeName: store.name },
           });
         }
       } catch (notifErr) {

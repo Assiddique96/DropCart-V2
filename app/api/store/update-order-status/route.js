@@ -4,6 +4,7 @@ import prisma from "@/src/db";
 import authSeller from "@/middlewares/authSeller";
 import { inngest } from "@/inngest/client";
 import { createNotification } from "@/lib/serverNotifications";
+import { formatOrderReference } from "@/lib/orderReference";
 
 const TRACKING_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // avoid confusing chars (0/O, 1/I)
 
@@ -91,7 +92,7 @@ export async function POST(request) {
           await inngest.send({
             name: "app/order.shipped",
             data: {
-              orderId,
+              orderId: formatOrderReference(orderId),
               userEmail: buyer.email,
               userName: buyer.name,
               storeName: store.name,

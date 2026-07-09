@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
-import prisma from "src/db"; // Reused your project's clean prisma instance import from File 1
+import prisma from "@/src/db";
 import authAdmin from "@/middlewares/authAdmin";
 
 // Helper function to verify admin access
@@ -15,6 +15,10 @@ export async function GET(request) {
   try {
     if (!(await checkAdmin(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (!prisma?.middleBanner?.findMany) {
+      return NextResponse.json({ banners: [] });
     }
 
     const banners = await prisma.middleBanner.findMany({
@@ -51,6 +55,10 @@ export async function POST(request) {
 
     if (!title || !imageUrl) {
       return NextResponse.json({ message: "Title and imageUrl are required" }, { status: 400 });
+    }
+
+    if (!prisma?.middleBanner?.create) {
+      return NextResponse.json({ message: "Middle banner storage is not configured" }, { status: 501 });
     }
 
     const banner = await prisma.middleBanner.create({
@@ -114,6 +122,10 @@ export async function PUT(request) {
       // If it looks like a temporary key, create a fresh record instead.
       const isTempId = !b.id || String(b.id).length > 9;
 
+      if (!prisma?.middleBanner?.create || !prisma?.middleBanner?.upsert) {
+        return NextResponse.json({ message: "Middle banner storage is not configured" }, { status: 501 });
+      }
+
       let savedBanner;
       if (isTempId) {
         savedBanner = await prisma.middleBanner.create({
@@ -149,6 +161,10 @@ export async function DELETE(request) {
 
     if (!id) {
       return NextResponse.json({ message: "id is required" }, { status: 400 });
+    }
+
+    if (!prisma?.middleBanner?.delete) {
+      return NextResponse.json({ message: "Middle banner storage is not configured" }, { status: 501 });
     }
 
     await prisma.middleBanner.delete({

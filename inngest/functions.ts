@@ -1,6 +1,7 @@
 import { inngest } from "./client";
 import { prisma } from "../src/db";
 import { resend } from "@/lib/resend";
+import { formatOrderReference } from "@/lib/orderReference";
 
 async function sendResendEmail(options: Parameters<typeof resend.emails.send>[0]) {
   try {
@@ -191,10 +192,11 @@ export const expireFeaturedAd = inngest.createFunction(
 export const sendOrderConfirmationEmail = inngest.createFunction(
   { id: 'send-order-confirmation-email', triggers: [{ event: 'app/order.confirmed' }] },
   async ({ event, step }) => {
-    const { orderId, userEmail, userName, orderTotal, currency, items } = event.data;
+    const { orderId, orderIds, userEmail, userName, orderTotal, currency, items } = event.data;
 
     await step.run('send-confirmation-email', async () => {
-      const itemListHtml = items.map(i => `<li>${i.name} × ${i.quantity} — ${currency}${i.price}</li>`).join('');
+      const referenceCode = orderId || formatOrderReference(orderIds?.[0] ?? orderIds ?? '');
+      const itemListHtml = items.map(i => `<li><strong>${i.name}</strong> × ${i.quantity} — ${currency}${i.price}</li>`).join('');
 
       const data = await sendResendEmail({
         from: 'Shpinx <orders@shpinx.com>', // Replace with your verified domain
@@ -202,10 +204,10 @@ export const sendOrderConfirmationEmail = inngest.createFunction(
         subject: 'Your Shpinx Order is Confirmed! 🎉',
         html: `
           <h1>Hi ${userName},</h1>
-          <p>Thank you for your order! Here's your summary:</p>
+          <p>Thank you for your order! Your order has been confirmed and the items below are now being prepared.</p>
+          <p><strong>Order Ref:</strong> ${referenceCode}</p>
           <ul>${itemListHtml}</ul>
-          <p><strong>Total: ${currency}${orderTotal}</strong></p>
-          <p>Order ID: ${orderId}</p>
+          <p><strong>Total:</strong> ${currency}${orderTotal}</p>
           <p>We'll notify you when your order ships.</p>
           <p>— The Shpinx Team</p>
         `,
@@ -225,13 +227,14 @@ export const sendOrderShippedEmail = inngest.createFunction(
     const { orderId, userEmail, userName, storeName } = event.data;
 
     await step.run('send-shipped-email', async () => {
+      const referenceCode = orderId || 'N/A';
       const data = await sendResendEmail({
         from: 'Shpinx <orders@shpinx.com>',
         to: [userEmail],
         subject: 'Your Shpinx Order Has Shipped! 🚚',
         html: `
           <p>Hi ${userName},</p>
-          <p>Great news — your order <strong>#${orderId}</strong> from ${storeName} has been shipped and is on its way to you.</p>
+          <p>Great news — your order <strong>${referenceCode}</strong> from ${storeName} has shipped and is on its way to you.</p>
           <p>Check your order status in My Orders on Shpinx.</p>
           <p>— The Shpinx Team</p>
         `,
@@ -258,7 +261,7 @@ export const notifySellerNewOrder = inngest.createFunction(
         html: `
           <p>Hi ${storeName},</p>
           <p>You have a new order!</p>
-          <p><strong>Order ID:</strong> ${orderId}<br />
+          <p><strong>Order Ref:</strong> ${orderId}<br />
           <strong>Order Total:</strong> ${currency}${orderTotal}</p>
           <p>Log in to your seller dashboard to view and process this order.</p>
           <p>— The Shpinx Team</p>
