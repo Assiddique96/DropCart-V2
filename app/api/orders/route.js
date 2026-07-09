@@ -575,6 +575,11 @@ export async function POST(request) {
                     storeName: store.name,
                     orderId: storeOrder.id,
                     orderTotal: storeOrder.total,
+                    items: Array.from(ordersByStore.values()).flat().filter((item) => item.storeId === storeId).map(i => ({
+                        name: i.productName || i.name || i.id,
+                        quantity: i.quantity,
+                        price: i.price,
+                    })),
                 });
             }
         }
@@ -619,6 +624,7 @@ export async function POST(request) {
                         orderId: formatOrderReference(s.orderId),
                         orderTotal: s.orderTotal,
                         currency,
+                        items: s.items || [],
                     }
                 });
             } catch (e) {

@@ -2,6 +2,7 @@ import { inngest } from "./client";
 import { prisma } from "../src/db";
 import { resend } from "@/lib/resend";
 import { formatOrderReference } from "@/lib/orderReference";
+import { buildOrderItemsHtml, getTrackingUrl } from "@/lib/orderEmail";
 
 async function sendResendEmail(options: Parameters<typeof resend.emails.send>[0]) {
   try {
@@ -196,19 +197,19 @@ export const sendOrderConfirmationEmail = inngest.createFunction(
 
     await step.run('send-confirmation-email', async () => {
       const referenceCode = orderId || formatOrderReference(orderIds?.[0] ?? orderIds ?? '');
-      const itemListHtml = items.map(i => `<li><strong>${i.name}</strong> × ${i.quantity} — ${currency}${i.price}</li>`).join('');
+      const itemListHtml = buildOrderItemsHtml(items, currency);
 
       const data = await sendResendEmail({
-        from: 'Shpinx <orders@shpinx.com>', // Replace with your verified domain
+        from: 'Shpinx <orders@shpinx.com>',
         to: [userEmail],
         subject: 'Your Shpinx Order is Confirmed! 🎉',
         html: `
           <h1>Hi ${userName},</h1>
           <p>Thank you for your order! Your order has been confirmed and the items below are now being prepared.</p>
           <p><strong>Order Ref:</strong> ${referenceCode}</p>
-          <ul>${itemListHtml}</ul>
+          ${itemListHtml}
           <p><strong>Total:</strong> ${currency}${orderTotal}</p>
-          <p>We'll notify you when your order ships.</p>
+          <p>We'll notify you when your order starts processing and again when it ships.</p>
           <p>— The Shpinx Team</p>
         `,
       });
@@ -221,10 +222,56 @@ export const sendOrderConfirmationEmail = inngest.createFunction(
 /**
  * Send shipping notification email to buyer.
  */
+function buildOrderStatusEmailHtml({ userName, referenceCode, storeName, items, currency, orderTotal, trackingNumber, message, ctaText, footer }: { userName: string; referenceCode: string; storeName?: string; items?: Array<{ name?: string; quantity?: number; price?: number }>; currency?: string; orderTotal?: number | string; trackingNumber?: string; message: string; ctaText: string; footer?: string; }) {
+  const itemListHtml = buildOrderItemsHtml(items, currency);
+  const trackingLink = getTrackingUrl(trackingNumber);
+
+  return `
+    <h1>Hi ${userName},</h1>
+    <p>${message}</p>
+    <p><strong>Order Ref:</strong> ${referenceCode}</p>
+    ${storeName ? `<p><strong>Store:</strong> ${storeName}</p>` : ""}
+    ${itemListHtml}
+    <p><strong>Total:</strong> ${currency}${orderTotal}</p>
+    ${trackingLink ? `<p><strong>Track your order:</strong> <a href="${trackingLink}">${trackingLink}</a></p>` : ""}
+    <p>${ctaText}</p>
+    <p>— The Shpinx Team</p>
+    ${footer ? `<p>${footer}</p>` : ""}
+  `;
+}
+
+export const sendOrderProcessingEmail = inngest.createFunction(
+  { id: 'send-order-processing-email', triggers: [{ event: 'app/order.processing' }] },
+  async ({ event, step }) => {
+    const { orderId, userEmail, userName, storeName, orderTotal, currency, items } = event.data;
+
+    await step.run('send-processing-email', async () => {
+      const referenceCode = orderId || 'N/A';
+      const data = await sendResendEmail({
+        from: 'Shpinx <orders@shpinx.com>',
+        to: [userEmail],
+        subject: 'Your Shpinx Order Is Being Processed 🛍️',
+        html: buildOrderStatusEmailHtml({
+          userName,
+          referenceCode,
+          storeName,
+          items,
+          currency,
+          orderTotal,
+          message: 'Your order is now being prepared by the seller and will be shipped soon.',
+          ctaText: 'We will update you again once your order has been shipped.',
+        }),
+      });
+
+      return data;
+    });
+  }
+);
+
 export const sendOrderShippedEmail = inngest.createFunction(
   { id: 'send-order-shipped-email', triggers: [{ event: 'app/order.shipped' }] },
   async ({ event, step }) => {
-    const { orderId, userEmail, userName, storeName } = event.data;
+    const { orderId, userEmail, userName, storeName, orderTotal, currency, items, trackingNumber } = event.data;
 
     await step.run('send-shipped-email', async () => {
       const referenceCode = orderId || 'N/A';
@@ -232,12 +279,74 @@ export const sendOrderShippedEmail = inngest.createFunction(
         from: 'Shpinx <orders@shpinx.com>',
         to: [userEmail],
         subject: 'Your Shpinx Order Has Shipped! 🚚',
-        html: `
-          <p>Hi ${userName},</p>
-          <p>Great news — your order <strong>${referenceCode}</strong> from ${storeName} has shipped and is on its way to you.</p>
-          <p>Check your order status in My Orders on Shpinx.</p>
-          <p>— The Shpinx Team</p>
-        `,
+        html: buildOrderStatusEmailHtml({
+          userName,
+          referenceCode,
+          storeName,
+          items,
+          currency,
+          orderTotal,
+          trackingNumber,
+          message: 'Great news — your order has shipped and is on its way to you.',
+          ctaText: 'Track your parcel using the link below.',
+        }),
+      });
+
+      return data;
+    });
+  }
+);
+
+export const sendOrderDeliveredEmail = inngest.createFunction(
+  { id: 'send-order-delivered-email', triggers: [{ event: 'app/order.delivered' }] },
+  async ({ event, step }) => {
+    const { orderId, userEmail, userName, storeName, orderTotal, currency, items } = event.data;
+
+    await step.run('send-delivered-email', async () => {
+      const referenceCode = orderId || 'N/A';
+      const data = await sendResendEmail({
+        from: 'Shpinx <orders@shpinx.com>',
+        to: [userEmail],
+        subject: 'Your Shpinx Order Has Been Delivered 📦',
+        html: buildOrderStatusEmailHtml({
+          userName,
+          referenceCode,
+          storeName,
+          items,
+          currency,
+          orderTotal,
+          message: 'Your order has been delivered. We hope you are enjoying it.',
+          ctaText: 'Please take a moment to rate the product and the store to help other shoppers.',
+          footer: 'Thanks for shopping with Shpinx.',
+        }),
+      });
+
+      return data;
+    });
+  }
+);
+
+export const sendOrderCancelledEmail = inngest.createFunction(
+  { id: 'send-order-cancelled-email', triggers: [{ event: 'app/order.cancelled' }] },
+  async ({ event, step }) => {
+    const { orderId, userEmail, userName, storeName, orderTotal, currency, items, reason } = event.data;
+
+    await step.run('send-cancelled-email', async () => {
+      const referenceCode = orderId || 'N/A';
+      const data = await sendResendEmail({
+        from: 'Shpinx <orders@shpinx.com>',
+        to: [userEmail],
+        subject: 'Your Shpinx Order Was Cancelled',
+        html: buildOrderStatusEmailHtml({
+          userName,
+          referenceCode,
+          storeName,
+          items,
+          currency,
+          orderTotal,
+          message: reason ? `Your order was cancelled. Reason: ${reason}` : 'Your order was cancelled.',
+          ctaText: 'If this was a mistake, you can contact the store or support for help.',
+        }),
       });
 
       return data;
@@ -251,9 +360,10 @@ export const sendOrderShippedEmail = inngest.createFunction(
 export const notifySellerNewOrder = inngest.createFunction(
   { id: 'notify-seller-new-order', triggers: [{ event: 'app/order.new' }] },
   async ({ event, step }) => {
-    const { storeEmail, storeName, orderId, orderTotal, currency } = event.data;
+    const { storeEmail, storeName, orderId, orderTotal, currency, items = [] } = event.data;
 
     await step.run('send-seller-notification', async () => {
+      const itemListHtml = buildOrderItemsHtml(items, currency);
       const data = await sendResendEmail({
         from: 'Shpinx Alerts <system@shpinx.com>',
         to: [storeEmail],
@@ -263,6 +373,7 @@ export const notifySellerNewOrder = inngest.createFunction(
           <p>You have a new order!</p>
           <p><strong>Order Ref:</strong> ${orderId}<br />
           <strong>Order Total:</strong> ${currency}${orderTotal}</p>
+          ${itemListHtml}
           <p>Log in to your seller dashboard to view and process this order.</p>
           <p>— The Shpinx Team</p>
         `,

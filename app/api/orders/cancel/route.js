@@ -3,6 +3,8 @@ import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/src/db";
 import { defaultLimiter } from "@/lib/rateLimit";
 import { createNotifications } from "@/lib/serverNotifications";
+import { inngest } from "@/inngest/client";
+import { formatOrderReference } from "@/lib/orderReference";
 
 /**
  * POST /api/orders/cancel
@@ -62,7 +64,7 @@ export async function POST(request) {
       return NextResponse.json({ error: "Order is already cancelled." }, { status: 409 });
     }
 
-    await prisma.order.update({
+    const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: {
         status: "CANCELLED",
@@ -76,6 +78,38 @@ export async function POST(request) {
         },
       },
     });
+
+    try {
+      const buyer = await prisma.user.findUnique({
+        where: { id: order.userId },
+        select: { name: true, email: true },
+      });
+      const items = await prisma.orderItem.findMany({
+        where: { orderId },
+        select: { productId: true, quantity: true, price: true },
+      });
+      if (buyer) {
+        await inngest.send({
+          name: "app/order.cancelled",
+          data: {
+            orderId: formatOrderReference(orderId),
+            userEmail: buyer.email,
+            userName: buyer.name,
+            storeName: order.store?.name || "Shpinx",
+            orderTotal: updatedOrder.total,
+            currency: process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "$",
+            items: items.map((item) => ({
+              name: item.productId,
+              quantity: item.quantity,
+              price: item.price,
+            })),
+            reason: reason || null,
+          },
+        });
+      }
+    } catch (notifError) {
+      console.error("Cancellation email error (non-fatal):", notifError);
+    }
 
     await createNotifications([
       {

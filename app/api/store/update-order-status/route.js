@@ -78,6 +78,44 @@ export async function POST(request) {
     }
 
     // Fire shipping notification when status changes to SHIPPED
+    if (status === "PROCESSING" && order.status !== "PROCESSING") {
+      try {
+        const buyer = await prisma.user.findUnique({
+          where: { id: order.userId },
+          select: { name: true, email: true },
+        });
+        const store = await prisma.store.findUnique({
+          where: { id: storeId },
+          select: { name: true },
+        });
+        const items = await prisma.orderItem.findMany({
+          where: { orderId },
+          include: { product: { select: { name: true } } },
+          select: { quantity: true, price: true },
+        });
+        if (buyer && store) {
+          await inngest.send({
+            name: "app/order.processing",
+            data: {
+              orderId: formatOrderReference(orderId),
+              userEmail: buyer.email,
+              userName: buyer.name,
+              storeName: store.name,
+              orderTotal: updatedOrder.total,
+              currency: process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "$",
+              items: items.map((item) => ({
+                name: item.product?.name || "Item",
+                quantity: item.quantity,
+                price: item.price,
+              })),
+            },
+          });
+        }
+      } catch (notifError) {
+        console.error("Processing notification error (non-fatal):", notifError);
+      }
+    }
+
     if (status === "SHIPPED" && order.status !== "SHIPPED") {
       try {
         const buyer = await prisma.user.findUnique({
@@ -88,6 +126,11 @@ export async function POST(request) {
           where: { id: storeId },
           select: { name: true },
         });
+        const items = await prisma.orderItem.findMany({
+          where: { orderId },
+          include: { product: { select: { name: true } } },
+          select: { quantity: true, price: true },
+        });
         if (buyer && store) {
           await inngest.send({
             name: "app/order.shipped",
@@ -96,11 +139,96 @@ export async function POST(request) {
               userEmail: buyer.email,
               userName: buyer.name,
               storeName: store.name,
+              orderTotal: updatedOrder.total,
+              currency: process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "$",
+              items: items.map((item) => ({
+                name: item.product?.name || "Item",
+                quantity: item.quantity,
+                price: item.price,
+              })),
+              trackingNumber: updatedOrder.trackingNumber,
             },
           });
         }
       } catch (notifError) {
         console.error("Shipping notification error (non-fatal):", notifError);
+      }
+    }
+
+    if (status === "DELIVERED" && order.status !== "DELIVERED") {
+      try {
+        const buyer = await prisma.user.findUnique({
+          where: { id: order.userId },
+          select: { name: true, email: true },
+        });
+        const store = await prisma.store.findUnique({
+          where: { id: storeId },
+          select: { name: true },
+        });
+        const items = await prisma.orderItem.findMany({
+          where: { orderId },
+          include: { product: { select: { name: true } } },
+          select: { quantity: true, price: true },
+        });
+        if (buyer && store) {
+          await inngest.send({
+            name: "app/order.delivered",
+            data: {
+              orderId: formatOrderReference(orderId),
+              userEmail: buyer.email,
+              userName: buyer.name,
+              storeName: store.name,
+              orderTotal: updatedOrder.total,
+              currency: process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "$",
+              items: items.map((item) => ({
+                name: item.product?.name || "Item",
+                quantity: item.quantity,
+                price: item.price,
+              })),
+            },
+          });
+        }
+      } catch (notifError) {
+        console.error("Delivery notification error (non-fatal):", notifError);
+      }
+    }
+
+    if (status === "CANCELLED" && order.status !== "CANCELLED") {
+      try {
+        const buyer = await prisma.user.findUnique({
+          where: { id: order.userId },
+          select: { name: true, email: true },
+        });
+        const store = await prisma.store.findUnique({
+          where: { id: storeId },
+          select: { name: true },
+        });
+        const items = await prisma.orderItem.findMany({
+          where: { orderId },
+          include: { product: { select: { name: true } } },
+          select: { quantity: true, price: true },
+        });
+        if (buyer && store) {
+          await inngest.send({
+            name: "app/order.cancelled",
+            data: {
+              orderId: formatOrderReference(orderId),
+              userEmail: buyer.email,
+              userName: buyer.name,
+              storeName: store.name,
+              orderTotal: updatedOrder.total,
+              currency: process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "$",
+              items: items.map((item) => ({
+                name: item.product?.name || "Item",
+                quantity: item.quantity,
+                price: item.price,
+              })),
+              reason: updatedOrder.coupon?.cancellationReason || null,
+            },
+          });
+        }
+      } catch (notifError) {
+        console.error("Cancellation notification error (non-fatal):", notifError);
       }
     }
 
