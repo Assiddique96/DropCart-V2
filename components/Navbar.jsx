@@ -273,7 +273,7 @@ const Navbar = () => {
       <div className="px-4 lg:px-10 py-4 bg-white dark:bg-slate-950">
         <div className="max-w-7xl mx-auto flex items-center gap-4 md:gap-6">
           {/* Logo */}
-          <Link href="/" className="relative flex items-center gap-3 shrink-0 group hover:scale-105 transition-all duration-300" onClick={() => setMobileOpen(false)}>
+          <Link href={onStoreSubdomain ? buildRootDomainUrl("/") : "/"} className="relative flex items-center gap-3 shrink-0 group hover:scale-105 transition-all duration-300" onClick={() => setMobileOpen(false)}>
             <div className="relative">
               <Image src={shpinxLogo} alt="Shpinx" width={36} height={36} className="w-11 h-11 rounded-xl shadow-[0_0_30px_rgba(34,211,238,0.4)] group-hover:shadow-[0_0_50px_rgba(34,211,238,0.6)] transition-all duration-300" />
               <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400/20 to-fuchsia-400/20 animate-pulse" />

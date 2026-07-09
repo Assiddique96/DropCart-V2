@@ -14,6 +14,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import CategoriesMarquee from "./CategoriesMarquee";
+import { buildStoreSubdomainUrl } from "@/lib/subdomain";
 
 /** Utils */
 function isValidImageSrc(src) {
@@ -599,7 +600,7 @@ function VerifiedStoresSection({ stores, onJoinVerifiedStore }) {
           return (
             <Link
               key={v.id}
-              href={v.href}
+              href={v.username ? buildStoreSubdomainUrl(v.username, "/") : v.href || "/shop"}
               className="group flex flex-col justify-between rounded-2xl bg-white dark:bg-slate-800 p-3 text-slate-800 dark:text-slate-200 transition hover:-translate-y-0.5 ring-1 ring-slate-100 dark:ring-slate-700 hover:ring-slate-900 dark:hover:ring-slate-500"
             >
               <div className="flex items-center justify-between gap-1">
