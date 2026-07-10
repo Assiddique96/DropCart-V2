@@ -120,27 +120,39 @@ export default function AdminContentPage() {
   // Middle banners
   const [middleBanners, setMiddleBanners] = useState([])
 
-  useEffect(() => {
-    ;(async () => {
-      try {
-        const token = await getToken()
-        const headers = { Authorization: `Bearer ${token}` }
-        const [contentRes, bannerRes] = await Promise.all([
-          axios.get("/api/admin/content", { headers }),
-          axios.get("/api/admin/middle-banners", { headers }),
-        ])
-        setCategories(contentRes.data.categories || [])
-        setFaqItems(contentRes.data.faqItems || [])
-        setPrivacyPolicy(contentRes.data.privacyPolicy || "")
-        setTermsOfUse(contentRes.data.termsOfUse || "")
-        setCookiesPolicy(contentRes.data.cookiesPolicy || "")
-        setMiddleBanners(bannerRes.data.banners || [])
-      } catch (e) {
-        toast.error(e?.response?.data?.error || e.message)
-      }
-      setLoading(false)
-    })()
-  }, [getToken])
+useEffect(() => {
+  ;(async () => {
+    try {
+      const token = await getToken()
+      const headers = { Authorization: `Bearer ${token}` }
+      const [contentRes, bannerRes] = await Promise.all([
+        axios.get("/api/admin/content", { headers }),
+        axios.get("/api/admin/middle-banners", { headers }),
+      ])
+      
+      setCategories(contentRes.data.categories || [])
+      setFaqItems(contentRes.data.faqItems || [])
+      setPrivacyPolicy(contentRes.data.privacyPolicy || "")
+      setTermsOfUse(contentRes.data.termsOfUse || "")
+      setCookiesPolicy(contentRes.data.cookiesPolicy || "")
+
+      // 🔥 FIX: Map backend/Prisma keys to your frontend form keys
+      const formattedBanners = (bannerRes.data.banners || []).map(b => ({
+        id: b.id,
+        title: b.title || "",
+        subtitle: b.subtitle || "",
+        cta: b.ctaText || "View deals",  // Maps ctaText -> cta
+        href: b.linkUrl || "/shop",     // Maps linkUrl -> href
+        image: b.imageUrl || "",        // Maps imageUrl -> image
+      }))
+      
+      setMiddleBanners(formattedBanners)
+    } catch (e) {
+      toast.error(e?.response?.data?.error || e.message)
+    }
+    setLoading(false)
+  })()
+}, [getToken])
 
   const save = async () => {
     setSaving(true)
