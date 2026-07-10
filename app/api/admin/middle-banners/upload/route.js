@@ -34,6 +34,14 @@ export async function POST(request) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const safeName = (file.name || "banner").replace(/[^a-zA-Z0-9_.-]/g, "_").slice(0, 120);
+    
+    // Upload file to ImageKit
+    const uploaded = await imagekit.upload({
+      file: buffer,
+      fileName: safeName,
+      folder: "/middle-banners",
+    });
+    
     const url = imagekit.url({
       path: uploaded.filePath,
       transformation: [{ quality: "auto" }, { format: "webp" }, { width: "1200" }],
