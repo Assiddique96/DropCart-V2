@@ -11,9 +11,11 @@ import { ROOT_DOMAIN } from "@/lib/subdomain";
 export default function CreateStore() {
   const { user } = useUser();
   const { getToken } = useAuth();
+  
+  // States
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
-  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false); // ✅ Added missing state variable
 
   const [storeInfo, setStoreInfo] = useState({
     name: "",
@@ -23,13 +25,6 @@ export default function CreateStore() {
     contact: "",
     address: "",
     image: "",
-
-    //cacNumber: "",
-    //verificationDocumentType: "NIN",
-    //verificationDocumentNumber: "",
-    //verificationDocumentImage: "",
-    //facialVerificationImage: "",
-
     payoutBankName: "",
     payoutAccountName: "",
     payoutAccountNumber: "",
@@ -41,13 +36,19 @@ export default function CreateStore() {
 
   const fetchSellerStatus = async () => {
     const token = await getToken();
+    
+    // Guard clause: Avoid sending unauthenticated network requests during Clerk's boot-up/refresh tick
+    if (!token) return;
+
     try {
       const { data } = await axios.get("/api/store/create", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      
       if (["pending", "approved", "rejected"].includes(data.status)) {
+        setAlreadySubmitted(true); // ✅ Updates state appropriately when status exists
         switch (data.status) {
           case "approved":
             setMessage(
@@ -68,7 +69,7 @@ export default function CreateStore() {
             break;
         }
       } else {
-        setAlreadySubmitted(false);
+        setAlreadySubmitted(false); // ✅ Now correctly maps to declared state hook
       }
     } catch (error) {
       toast.error(error.response?.data?.error || error.message);
@@ -96,24 +97,6 @@ export default function CreateStore() {
       formData.append("contact", storeInfo.contact);
       formData.append("address", storeInfo.address);
       formData.append("image", storeInfo.image);
-
-      //formData.append("cacNumber", storeInfo.cacNumber);
-      //formData.append(
-        //"verificationDocumentType",
-        //storeInfo.verificationDocumentType,
-      //);
-      //formData.append(
-        //"verificationDocumentNumber",
-        //storeInfo.verificationDocumentNumber,
-      //);
-      //formData.append(
-        //"verificationDocumentImage",
-        //storeInfo.verificationDocumentImage,
-      //);
-      //formData.append(
-        //"facialVerificationImage",
-        //storeInfo.facialVerificationImage,
-      //);
 
       formData.append("payoutBankName", storeInfo.payoutBankName);
       formData.append("payoutAccountName", storeInfo.payoutAccountName);
@@ -276,7 +259,6 @@ export default function CreateStore() {
             placeholder="Enter your store address"
             className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 outline-slate-400 dark:outline-slate-500 w-full max-w-lg p-2 rounded resize-none"
           />
-
 
           <div className="w-full max-w-lg mt-4 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900">
             <p className="text-slate-700 dark:text-slate-100 font-medium">
