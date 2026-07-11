@@ -13,6 +13,7 @@ export default function CreateStore() {
   const { getToken } = useAuth();
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
 
   const [storeInfo, setStoreInfo] = useState({
     name: "",
