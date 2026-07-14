@@ -8,6 +8,61 @@ import { useAuth, useUser } from "@clerk/nextjs";
 import axios from "axios";
 import { ROOT_DOMAIN } from "@/lib/subdomain";
 
+// Helper function to compress images using browser canvas
+const compressImage = (file, maxMb = 3.5) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = document.createElement("img"); // Use document.createElement instead of new Image() for browser compliance
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+
+        // If the image is extremely high resolution, scale it down
+        const maxDimension = 1580;
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Compress and convert to Blob (JPEG format)
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              reject(new Error("Canvas compression failed"));
+              return;
+            }
+            // Create a new File object from the compressed blob
+            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+              type: "image/jpeg",
+              lastModified: Date.now(),
+            });
+            resolve(compressedFile);
+          },
+          "image/jpeg",
+          0.75 // 75% quality is visually indistinguishable but drops size by up to 80%
+        );
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+};
+
 export default function CreateStore() {
   const { user } = useUser();
   const { getToken } = useAuth();
@@ -15,7 +70,7 @@ export default function CreateStore() {
   // States
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
-  const [alreadySubmitted, setAlreadySubmitted] = useState(false); // ✅ Added missing state variable
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
 
   const [storeInfo, setStoreInfo] = useState({
     name: "",
@@ -36,8 +91,6 @@ export default function CreateStore() {
 
   const fetchSellerStatus = async () => {
     const token = await getToken();
-    
-    // Guard clause: Avoid sending unauthenticated network requests during Clerk's boot-up/refresh tick
     if (!token) return;
 
     try {
@@ -48,7 +101,7 @@ export default function CreateStore() {
       });
       
       if (["pending", "approved", "rejected"].includes(data.status)) {
-        setAlreadySubmitted(true); // ✅ Updates state appropriately when status exists
+        setAlreadySubmitted(true);
         switch (data.status) {
           case "approved":
             setMessage(
@@ -69,7 +122,7 @@ export default function CreateStore() {
             break;
         }
       } else {
-        setAlreadySubmitted(false); // ✅ Now correctly maps to declared state hook
+        setAlreadySubmitted(false);
       }
     } catch (error) {
       toast.error(error.response?.data?.error || error.message);
@@ -96,7 +149,21 @@ export default function CreateStore() {
       formData.append("email", storeInfo.email);
       formData.append("contact", storeInfo.contact);
       formData.append("address", storeInfo.address);
-      formData.append("image", storeInfo.image);
+
+      // Handle Image: Check and compress if too large (Culprit 1 fix)
+      let uploadImage = storeInfo.image;
+      if (uploadImage && uploadImage.size > 4 * 1024 * 1024) { // > 4MB
+        try {
+          toast.loading("Compressing large image for mobile upload...", { id: "img-compress" });
+          uploadImage = await compressImage(uploadImage);
+          toast.success("Image optimized successfully!", { id: "img-compress" });
+        } catch (compressionErr) {
+          toast.dismiss("img-compress");
+          return toast.error("Could not process this image format. Try using a smaller photo.");
+        }
+      }
+      
+      formData.append("image", uploadImage);
 
       formData.append("payoutBankName", storeInfo.payoutBankName);
       formData.append("payoutAccountName", storeInfo.payoutAccountName);
@@ -177,12 +244,15 @@ export default function CreateStore() {
               width={150}
               height={100}
             />
+            {/* Culprit 2 fix: Explicitly define accepted standard web image formats instead of accept="image/*" */}
             <input
               type="file"
-              accept="image/*"
-              onChange={(e) =>
-                setStoreInfo({ ...storeInfo, image: e.target.files[0] })
-              }
+              accept="image/jpeg, image/png, image/webp" 
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setStoreInfo({ ...storeInfo, image: e.target.files[0] });
+                }
+              }}
               hidden
             />
           </label>
