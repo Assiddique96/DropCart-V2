@@ -105,6 +105,8 @@ export async function POST(request) {
           contact: sanitized.contact,
           address: sanitized.address,
           logo: logoUpload.url,
+          status: "approved",        // was implicit "pending" via schema default
+          isActive: true,             // was implicit false — this is what unlocks seller access
           verificationStatus: "unverified", // Default to unverified
         },
       });

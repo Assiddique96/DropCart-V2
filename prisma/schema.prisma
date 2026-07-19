@@ -348,7 +348,7 @@ model Store {
     shippingNationwideFee Float @default(0)
     shippingAbroadFee   Float   @default(15000)
     shippingFreeAbove   Float   @default(0)
-    status      String   @default("pending")
+    status      String   @default("approved")
     isActive    Boolean  @default(false)
     logo        String
     banner      String?
